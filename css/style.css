@@ -246,6 +246,19 @@ section {
   transform: scale(1.1) rotate(3deg);
 }
 
+/* ゲームカード内のキャラ画像 */
+.card-chara {
+  width: 55%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.game-card:hover .card-chara {
+  transform: scale(1.15) rotate(5deg);
+}
+
 .game-card__body {
   padding: 1.5rem;
 }

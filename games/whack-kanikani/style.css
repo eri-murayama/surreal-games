@@ -322,7 +322,7 @@ button:active {
 .side-deco {
   position: fixed;
   top: 0;
-  width: 180px;
+  width: 240px;
   height: 100vh;
   pointer-events: none;
   z-index: 0;
@@ -339,22 +339,22 @@ button:active {
 /* キャラ画像 */
 .deco-chara {
   position: absolute;
-  width: 120px;
+  width: 200px;
   height: auto;
-  opacity: 0.25;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  opacity: 0.35;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2));
 }
 
 .deco-chara--1 {
-  bottom: 60px;
-  left: 20px;
+  bottom: 40px;
+  left: 10px;
   transform: rotate(-10deg);
   animation: decoFloat1 4s ease-in-out infinite;
 }
 
 .deco-chara--2 {
-  bottom: 60px;
-  right: 20px;
+  bottom: 40px;
+  right: 10px;
   transform: scaleX(-1) rotate(-10deg);
   animation: decoFloat2 4s ease-in-out infinite;
 }
@@ -374,8 +374,8 @@ button:active {
   position: absolute;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 16px;
-  padding: 8px 12px;
-  font-size: 11px;
+  padding: 10px 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #d63384;
   line-height: 1.5;
@@ -395,8 +395,8 @@ button:active {
 }
 
 .deco-bubble--1 {
-  bottom: 190px;
-  left: 30px;
+  bottom: 260px;
+  left: 40px;
   animation: bubblePop 3s ease-in-out infinite;
 }
 
@@ -405,8 +405,8 @@ button:active {
 }
 
 .deco-bubble--2 {
-  bottom: 190px;
-  right: 30px;
+  bottom: 260px;
+  right: 40px;
   animation: bubblePop 3s ease-in-out 1.5s infinite;
 }
 
@@ -422,18 +422,18 @@ button:active {
 /* 散らばる星・花 */
 .deco-star {
   position: absolute;
-  font-size: 20px;
-  opacity: 0.4;
+  font-size: 28px;
+  opacity: 0.5;
   animation: starTwinkle 2s ease-in-out infinite;
 }
 
-.deco-star--2 { top: 25%; left: 40px; font-size: 24px; animation-delay: 0.7s; color: #ff69b4; }
-.deco-star--3 { top: 50%; left: 15px; font-size: 16px; animation-delay: 1.4s; color: #ffb6c1; }
-.side-deco--left > .deco-star { top: 15%; left: 25px; color: #fff; }
+.deco-star--2 { top: 25%; left: 50px; font-size: 34px; animation-delay: 0.7s; color: #ff69b4; }
+.deco-star--3 { top: 50%; left: 20px; font-size: 24px; animation-delay: 1.4s; color: #ffb6c1; }
+.side-deco--left > .deco-star { top: 12%; left: 30px; color: #fff; }
 
-.deco-star--4 { top: 20%; right: 30px; font-size: 22px; animation-delay: 0.3s; color: #fff; }
-.deco-star--5 { top: 40%; right: 50px; font-size: 18px; animation-delay: 1s; color: #ffb6c1; }
-.deco-star--6 { top: 60%; right: 20px; font-size: 26px; animation-delay: 1.8s; color: #ff69b4; }
+.deco-star--4 { top: 18%; right: 40px; font-size: 32px; animation-delay: 0.3s; color: #fff; }
+.deco-star--5 { top: 40%; right: 60px; font-size: 26px; animation-delay: 1s; color: #ffb6c1; }
+.deco-star--6 { top: 58%; right: 25px; font-size: 36px; animation-delay: 1.8s; color: #ff69b4; }
 
 @keyframes starTwinkle {
   0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
@@ -467,9 +467,9 @@ body::after {
 
 /* レスポンシブ */
 @media (max-width: 900px) {
-  .side-deco { width: 120px; }
-  .deco-chara { width: 80px; }
-  .deco-bubble { font-size: 9px; padding: 6px 8px; }
+  .side-deco { width: 160px; }
+  .deco-chara { width: 130px; }
+  .deco-bubble { font-size: 10px; padding: 8px 10px; }
 }
 
 @media (max-width: 650px) {
