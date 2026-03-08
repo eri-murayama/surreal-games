@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シュールゲームス - 意味不明なゲームを作っています</title>
+  <meta name="description" content="シュールギャグ専門のゲームスタジオ。意味不明だけどクセになるゲームをお届けします。">
+  <meta property="og:title" content="シュールゲームス">
+  <meta property="og:description" content="意味不明なゲームを作っています">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ヘッダー / ヒーロー -->
+  <header id="hero">
+    <div class="floating-shapes" aria-hidden="true">
+      <span class="shape shape--1">●</span>
+      <span class="shape shape--2">▲</span>
+      <span class="shape shape--3">■</span>
+      <span class="shape shape--4">◆</span>
+      <span class="shape shape--5">★</span>
+      <span class="shape shape--6">●</span>
+    </div>
+    <div class="hero-content">
+      <h1 class="glitch" id="logo" data-text="シュールゲームス">シュールゲームス</h1>
+      <p class="tagline">意味不明なゲームを作っています。<br>なぜかクセになる。たぶん。</p>
+      <nav class="hero-nav">
+        <a href="#games" class="nav-link">ゲーム一覧</a>
+        <a href="#about" class="nav-link">このスタジオとは</a>
+        <a href="#contact" class="nav-link">つながる</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ゲーム一覧 -->
+    <section id="games">
+      <h2 class="section-title fade-in">ゲーム一覧</h2>
+      <p class="section-subtitle fade-in">全部シュールです。覚悟してください。</p>
+
+      <div class="game-grid">
+
+        <!-- ゲームカード 1 -->
+        <article class="game-card fade-in">
+          <div class="game-card__image">
+            <div class="placeholder-art" style="--hue: 320;">
+              <span>🦑</span>
+            </div>
+          </div>
+          <div class="game-card__body">
+            <h3 class="game-card__title">イカ、走る。</h3>
+            <p class="game-card__desc">イカが陸上を走る。理由は聞かないでください。足は10本あるのに遅い。</p>
+            <div class="store-links">
+              <a href="#" class="store-btn store-btn--disabled" aria-label="App Store（準備中）">
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                App Store（準備中）
+              </a>
+              <a href="#" class="store-btn store-btn--disabled" aria-label="Google Play（準備中）">
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M3.18 23.67c.17.09.37.14.57.14.18 0 .36-.04.53-.13l9.3-5.18-2.84-2.84L3.18 23.67zM.32 1.03C.12 1.36 0 1.76 0 2.21v19.58c0 .45.12.85.32 1.18l8.76-8.76L.32 1.03zM23.18 10.47l-3.93-2.19-3.34 3.34 3.34 3.34 3.93-2.19c.66-.36 1.04-.95 1.04-1.65s-.38-1.29-1.04-1.65zM11.58 11.62L3.75.33C3.58.22 3.38.17 3.18.17c-.2 0-.4.05-.57.14l10.56 7.01-1.59 4.3z"/></svg>
+                Google Play（準備中）
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ゲームカード 2 -->
+        <article class="game-card fade-in">
+          <div class="game-card__image">
+            <div class="placeholder-art" style="--hue: 120;">
+              <span>🥒</span>
+            </div>
+          </div>
+          <div class="game-card__body">
+            <h3 class="game-card__title">きゅうりバトルロイヤル</h3>
+            <p class="game-card__desc">100本のきゅうりが最後の1本になるまで戦う。武器は漬物石。</p>
+            <div class="store-links">
+              <a href="#" class="store-btn store-btn--disabled" aria-label="App Store（準備中）">
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                App Store（準備中）
+              </a>
+              <a href="#" class="store-btn store-btn--disabled" aria-label="Google Play（準備中）">
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M3.18 23.67c.17.09.37.14.57.14.18 0 .36-.04.53-.13l9.3-5.18-2.84-2.84L3.18 23.67zM.32 1.03C.12 1.36 0 1.76 0 2.21v19.58c0 .45.12.85.32 1.18l8.76-8.76L.32 1.03zM23.18 10.47l-3.93-2.19-3.34 3.34 3.34 3.34 3.93-2.19c.66-.36 1.04-.95 1.04-1.65s-.38-1.29-1.04-1.65zM11.58 11.62L3.75.33C3.58.22 3.38.17 3.18.17c-.2 0-.4.05-.57.14l10.56 7.01-1.59 4.3z"/></svg>
+                Google Play（準備中）
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ゲームカード 3 -->
+        <article class="game-card fade-in">
+          <div class="game-card__image">
+            <div class="placeholder-art" style="--hue: 50;">
+              <span>🍞</span>
+            </div>
+          </div>
+          <div class="game-card__body">
+            <h3 class="game-card__title">食パンの冒険</h3>
+            <p class="game-card__desc">食パンが世界を救う壮大なRPG。ラスボスはトースター。焼かれたら負け。</p>
+            <div class="store-links">
+              <a href="#" class="store-btn store-btn--disabled" aria-label="App Store（準備中）">
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                App Store（準備中）
+              </a>
+              <a href="#" class="store-btn store-btn--disabled" aria-label="Google Play（準備中）">
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M3.18 23.67c.17.09.37.14.57.14.18 0 .36-.04.53-.13l9.3-5.18-2.84-2.84L3.18 23.67zM.32 1.03C.12 1.36 0 1.76 0 2.21v19.58c0 .45.12.85.32 1.18l8.76-8.76L.32 1.03zM23.18 10.47l-3.93-2.19-3.34 3.34 3.34 3.34 3.93-2.19c.66-.36 1.04-.95 1.04-1.65s-.38-1.29-1.04-1.65zM11.58 11.62L3.75.33C3.58.22 3.38.17 3.18.17c-.2 0-.4.05-.57.14l10.56 7.01-1.59 4.3z"/></svg>
+                Google Play（準備中）
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- このスタジオについて -->
+    <section id="about">
+      <h2 class="section-title fade-in">このスタジオとは</h2>
+      <div class="about-content fade-in">
+        <p>
+          <strong>シュールゲームス</strong>は、「なんでこれ作ったの？」と言われるゲームを
+          真剣に作っているスタジオです。
+        </p>
+        <p>
+          私たちのモットーは<em>「意味がないことに意味がある」</em>。
+          プレイした後に残るのは、笑いと、ほんの少しの困惑です。
+        </p>
+        <p>
+          全てのゲームは一人で開発しています。<br>
+          バグじゃありません。仕様です。たぶん。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- フッター / SNS -->
+  <footer id="contact">
+    <h2 class="section-title fade-in">つながる</h2>
+    <div class="social-links fade-in">
+      <a href="https://x.com/" class="social-link social-link--x" target="_blank" rel="noopener noreferrer" aria-label="X（旧Twitter）">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        <span>X でフォロー</span>
+      </a>
+    </div>
+    <p class="footer-copy">&copy; 2026 シュールゲームス. 意味はありません。</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
