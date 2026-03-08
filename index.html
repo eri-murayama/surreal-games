@@ -16,6 +16,20 @@
 </head>
 <body>
 
+  <!-- 固定ナビゲーション -->
+  <nav id="fixed-nav" class="fixed-nav">
+    <a href="#hero" class="fixed-nav__link">トップ</a>
+    <a href="#games" class="fixed-nav__link">ゲーム</a>
+    <a href="#gallery" class="fixed-nav__link">ギャラリー</a>
+    <a href="#about" class="fixed-nav__link">スタジオ</a>
+    <a href="#contact" class="fixed-nav__link">つながる</a>
+  </nav>
+
+  <!-- トップに戻るボタン -->
+  <a href="#hero" id="back-to-top" class="back-to-top" aria-label="トップに戻る">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+  </a>
+
   <!-- ヘッダー / ヒーロー -->
   <header id="hero">
     <div class="floating-shapes" aria-hidden="true">
@@ -28,9 +42,10 @@
     </div>
     <div class="hero-content">
       <h1 class="glitch" id="logo" data-text="シュールゲームス">シュールゲームス</h1>
-      <p class="tagline">意味不明なゲームを作っています。<br>なぜかクセになる。たぶん。</p>
+      <p class="tagline">かわいいキャラクターと過ごす、素敵な時間</p>
       <nav class="hero-nav">
         <a href="#games" class="nav-link">ゲーム一覧</a>
+        <a href="#gallery" class="nav-link">ギャラリー</a>
         <a href="#about" class="nav-link">このスタジオとは</a>
         <a href="#contact" class="nav-link">つながる</a>
       </nav>
@@ -41,7 +56,7 @@
     <!-- ゲーム一覧 -->
     <section id="games">
       <h2 class="section-title fade-in">ゲーム一覧</h2>
-      <p class="section-subtitle fade-in">全部シュールです。覚悟してください。</p>
+      <p class="section-subtitle fade-in">とってもおもしろいゲームだよ</p>
 
       <div class="game-grid">
 
@@ -127,21 +142,54 @@
       </div>
     </section>
 
+    <!-- ギャラリー -->
+    <section id="gallery">
+      <h2 class="section-title fade-in">ギャラリー</h2>
+      <p class="section-subtitle fade-in">とってもほっこりする絵だよ</p>
+      <div class="gallery-grid">
+        <figure class="gallery-item fade-in">
+          <figcaption class="gallery-caption">募集</figcaption>
+          <img src="assets/images/募集.png" alt="募集" loading="lazy">
+        </figure>
+        <figure class="gallery-item fade-in">
+          <figcaption class="gallery-caption">初めての方へ</figcaption>
+          <img src="assets/images/注意.jpg" alt="初めての方へ" loading="lazy">
+        </figure>
+        <figure class="gallery-item fade-in">
+          <figcaption class="gallery-caption">占い</figcaption>
+          <img src="assets/images/占い.png" alt="占い" loading="lazy">
+        </figure>
+        <figure class="gallery-item fade-in">
+          <figcaption class="gallery-caption">料理</figcaption>
+          <img src="assets/images/たこ.png" alt="料理" loading="lazy">
+        </figure>
+      </div>
+    </section>
+
     <!-- このスタジオについて -->
     <section id="about">
+      <div class="about-deco" aria-hidden="true">
+        <span class="about-deco__item about-deco__item--1">✦</span>
+        <span class="about-deco__item about-deco__item--2">❀</span>
+        <span class="about-deco__item about-deco__item--3">♪</span>
+        <span class="about-deco__item about-deco__item--4">✧</span>
+        <span class="about-deco__item about-deco__item--5">❀</span>
+        <span class="about-deco__item about-deco__item--6">♪</span>
+      </div>
       <h2 class="section-title fade-in">このスタジオとは</h2>
       <div class="about-content fade-in">
         <p>
-          <strong>シュールゲームス</strong>は、「なんでこれ作ったの？」と言われるゲームを
-          真剣に作っているスタジオです。
+          <strong>シュールゲームス</strong>は、<br>
+          <em>「みんなをにやにやいやらしい笑顔にしたい」</em><br>
+          そんな想いでつくったよ。
         </p>
         <p>
-          私たちのモットーは<em>「意味がないことに意味がある」</em>。
-          プレイした後に残るのは、笑いと、ほんの少しの困惑です。
+          全てのゲーム・絵は<br>
+          私と<strong>イマジナリーフレンドたち総勢500名</strong>で<br>
+          つくっているよ。
         </p>
         <p>
-          全てのゲームは一人で開発しています。<br>
-          バグじゃありません。仕様です。たぶん。
+          気になることがあったら、<strong>x</strong>で教えてね。
         </p>
       </div>
     </section>
@@ -155,10 +203,10 @@
         <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" aria-hidden="true">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
         </svg>
-        <span>X でフォロー</span>
+        <span>でフォロー</span>
       </a>
     </div>
-    <p class="footer-copy">&copy; 2026 シュールゲームス. 意味はありません。</p>
+    <p class="footer-copy">&copy; 2026 シュールゲームス.</p>
   </footer>
 
   <script src="js/main.js"></script>

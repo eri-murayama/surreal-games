@@ -39,6 +39,78 @@ body {
 }
 
 /* ========================================
+   固定ナビゲーション
+   ======================================== */
+
+.fixed-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: rgba(13, 2, 33, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--card-border);
+  z-index: 1000;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.fixed-nav.visible {
+  transform: translateY(0);
+}
+
+.fixed-nav__link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.fixed-nav__link:hover {
+  color: var(--accent-pink);
+  background: rgba(255, 110, 199, 0.1);
+}
+
+/* トップに戻るボタン */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-pink);
+  color: var(--bg-primary);
+  border-radius: 50%;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(255, 110, 199, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 30px rgba(255, 110, 199, 0.6);
+}
+
+/* ========================================
    ヒーロー
    ======================================== */
 
@@ -444,11 +516,87 @@ section {
 }
 
 /* ========================================
+   ギャラリー
+   ======================================== */
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.gallery-item {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(255, 110, 199, 0.2), 0 0 20px rgba(0, 255, 247, 0.1);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.gallery-caption {
+  padding: 0.8rem 1rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--accent-yellow);
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--card-border);
+}
+
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
    アバウト
    ======================================== */
 
 #about {
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, rgba(255, 110, 199, 0.06) 0%, transparent 70%);
+  border-top: 1px solid rgba(255, 110, 199, 0.1);
+  border-bottom: 1px solid rgba(0, 255, 247, 0.1);
+}
+
+.about-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.about-deco__item {
+  position: absolute;
+  opacity: 0.2;
+  animation: aboutFloat 6s ease-in-out infinite;
+}
+
+.about-deco__item--1 { top: 10%; left: 5%; font-size: 2.5rem; color: var(--accent-pink); animation-delay: 0s; }
+.about-deco__item--2 { top: 20%; right: 8%; font-size: 2rem; color: var(--accent-cyan); animation-delay: -1s; }
+.about-deco__item--3 { bottom: 25%; left: 10%; font-size: 1.8rem; color: var(--accent-yellow); animation-delay: -2s; }
+.about-deco__item--4 { bottom: 15%; right: 5%; font-size: 2.2rem; color: var(--accent-green); animation-delay: -3s; }
+.about-deco__item--5 { top: 50%; left: 2%; font-size: 1.5rem; color: var(--accent-pink); animation-delay: -4s; }
+.about-deco__item--6 { top: 40%; right: 3%; font-size: 1.8rem; color: var(--accent-yellow); animation-delay: -5s; }
+
+@keyframes aboutFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+  50% { transform: translateY(-15px) rotate(20deg); opacity: 0.35; }
 }
 
 .about-content {
