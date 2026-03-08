@@ -318,7 +318,164 @@ button:active {
   100% { transform: translateX(0); }
 }
 
+/* ===== 左右デコレーション ===== */
+.side-deco {
+  position: fixed;
+  top: 0;
+  width: 180px;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.side-deco--left {
+  left: 0;
+}
+
+.side-deco--right {
+  right: 0;
+}
+
+/* キャラ画像 */
+.deco-chara {
+  position: absolute;
+  width: 120px;
+  height: auto;
+  opacity: 0.25;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.deco-chara--1 {
+  bottom: 60px;
+  left: 20px;
+  transform: rotate(-10deg);
+  animation: decoFloat1 4s ease-in-out infinite;
+}
+
+.deco-chara--2 {
+  bottom: 60px;
+  right: 20px;
+  transform: scaleX(-1) rotate(-10deg);
+  animation: decoFloat2 4s ease-in-out infinite;
+}
+
+@keyframes decoFloat1 {
+  0%, 100% { transform: rotate(-10deg) translateY(0); }
+  50% { transform: rotate(-8deg) translateY(-12px); }
+}
+
+@keyframes decoFloat2 {
+  0%, 100% { transform: scaleX(-1) rotate(-10deg) translateY(0); }
+  50% { transform: scaleX(-1) rotate(-8deg) translateY(-12px); }
+}
+
+/* 吹き出し */
+.deco-bubble {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #d63384;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.deco-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(255, 255, 255, 0.7);
+}
+
+.deco-bubble--1 {
+  bottom: 190px;
+  left: 30px;
+  animation: bubblePop 3s ease-in-out infinite;
+}
+
+.deco-bubble--1::after {
+  left: 20px;
+}
+
+.deco-bubble--2 {
+  bottom: 190px;
+  right: 30px;
+  animation: bubblePop 3s ease-in-out 1.5s infinite;
+}
+
+.deco-bubble--2::after {
+  right: 20px;
+}
+
+@keyframes bubblePop {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* 散らばる星・花 */
+.deco-star {
+  position: absolute;
+  font-size: 20px;
+  opacity: 0.4;
+  animation: starTwinkle 2s ease-in-out infinite;
+}
+
+.deco-star--2 { top: 25%; left: 40px; font-size: 24px; animation-delay: 0.7s; color: #ff69b4; }
+.deco-star--3 { top: 50%; left: 15px; font-size: 16px; animation-delay: 1.4s; color: #ffb6c1; }
+.side-deco--left > .deco-star { top: 15%; left: 25px; color: #fff; }
+
+.deco-star--4 { top: 20%; right: 30px; font-size: 22px; animation-delay: 0.3s; color: #fff; }
+.deco-star--5 { top: 40%; right: 50px; font-size: 18px; animation-delay: 1s; color: #ffb6c1; }
+.deco-star--6 { top: 60%; right: 20px; font-size: 26px; animation-delay: 1.8s; color: #ff69b4; }
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 0.6; transform: scale(1.2) rotate(15deg); }
+}
+
+/* ===== 背景のハートパーティクル ===== */
+body::before,
+body::after {
+  content: '🦀 ❤ 🦀 ❤ 🦀 ❤ ✦ ❀ ♪ ✧';
+  position: fixed;
+  font-size: 14px;
+  opacity: 0.08;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: 20px;
+}
+
+body::before {
+  top: 10%;
+  left: -20px;
+  transform: rotate(-15deg);
+}
+
+body::after {
+  bottom: 10%;
+  right: -20px;
+  transform: rotate(10deg);
+}
+
 /* レスポンシブ */
+@media (max-width: 900px) {
+  .side-deco { width: 120px; }
+  .deco-chara { width: 80px; }
+  .deco-bubble { font-size: 9px; padding: 6px 8px; }
+}
+
+@media (max-width: 650px) {
+  .side-deco { display: none; }
+}
+
 @media (max-width: 420px) {
   .game-title { font-size: 18px; }
   #board { padding: 8px; gap: 4px; }
