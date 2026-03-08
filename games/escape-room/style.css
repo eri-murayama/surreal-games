@@ -1,0 +1,860 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #2e1a2e 0%, #1a1a2e 50%, #2e1a28 100%);
+  font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px 0;
+  overflow-y: auto;
+}
+
+/* ===== レイアウト ===== */
+#game-wrapper {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  max-width: 980px;
+  width: 100%;
+  padding: 0 10px;
+}
+
+#game-container {
+  width: 780px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-title {
+  text-align: center;
+  color: #f8d0e0;
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: 6px;
+  text-shadow: 0 0 15px rgba(248, 180, 210, 0.5);
+}
+
+/* ===== 部屋 ===== */
+#room {
+  width: 100%;
+  height: 380px;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid #8a5a78;
+  border-radius: 12px;
+  cursor: default;
+  background: linear-gradient(180deg, #e8b8cc 0%, #d4a0b8 55%, #c89a80 55%, #b88870 100%);
+  box-shadow: 0 0 30px rgba(200, 120, 160, 0.3), inset 0 0 40px rgba(0, 0, 0, 0.15);
+}
+
+#wall-back {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 55%;
+  background: linear-gradient(180deg, #f0c8d8 0%, #e0b0c4 40%, #d8a0b8 100%);
+}
+
+/* 壁紙の模様 */
+#wall-back::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 38px,
+    rgba(255,255,255,0.15) 38px,
+    rgba(255,255,255,0.15) 40px
+  );
+}
+
+#wall-back::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 78px,
+    rgba(255,200,220,0.2) 78px,
+    rgba(255,200,220,0.2) 80px
+  );
+}
+
+#floor {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 45%;
+  background: repeating-linear-gradient(90deg, #c89a80 0px, #d4a888 55px, #c89a80 57px);
+  background-size: 57px 100%;
+}
+
+#floor::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.02) 100%);
+}
+
+/* ===== クリッカブル ===== */
+.clickable { cursor: pointer; }
+.clickable:hover { filter: brightness(1.12); }
+
+/* ===== 扉 ===== */
+#door {
+  position: absolute;
+  left: 50px; top: 30px;
+  width: 110px; height: 195px;
+  z-index: 10;
+}
+
+#door-frame {
+  width: 100%; height: 100%;
+  background: #e8c0d0;
+  border: 5px solid #c090a8;
+  border-radius: 6px 6px 0 0;
+  padding: 7px;
+}
+
+#door-panel {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #f0d0e0 0%, #e8c0d4 50%, #ddb0c8 100%);
+  border: 2px solid #c8a0b8;
+  position: relative;
+  border-radius: 4px 4px 0 0;
+}
+
+#door-detail-top, #door-detail-bottom {
+  position: absolute;
+  left: 12%; width: 76%; height: 26%;
+  border: 2px solid rgba(180,140,160,0.5);
+  border-radius: 3px;
+}
+#door-detail-top { top: 8%; }
+#door-detail-bottom { bottom: 10%; }
+
+#doorknob {
+  position: absolute;
+  right: 10px; top: 48%;
+  width: 15px; height: 15px;
+  background: radial-gradient(circle at 35% 30%, #f8e080, #d0a040);
+  border-radius: 50%;
+  border: 1px solid #b89030;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+#keyhole {
+  position: absolute;
+  right: 13px; top: 55%;
+  width: 8px; height: 13px;
+}
+
+#keyhole::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 7px; height: 7px;
+  background: #5a3040;
+  border-radius: 50%;
+}
+
+#keyhole::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 3px; height: 7px;
+  background: #5a3040;
+}
+
+#door.door-open #door-panel {
+  animation: doorOpen 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes doorOpen {
+  0% { transform: perspective(800px) rotateY(0deg); transform-origin: left; }
+  100% { transform: perspective(800px) rotateY(-75deg); transform-origin: left; }
+}
+
+#door.door-open #door-frame {
+  background: linear-gradient(180deg, #fff8ee 0%, #fffcf4 100%);
+  box-shadow: inset 0 0 40px rgba(255, 240, 200, 0.8);
+}
+
+/* ===== 絵画 ===== */
+#painting {
+  position: absolute;
+  left: 250px; top: 20px;
+  width: 100px; height: 72px;
+  z-index: 5;
+}
+
+#painting-frame {
+  width: 100%; height: 100%;
+  background: #f0d0b8;
+  border: 5px solid #d8a890;
+  border-radius: 3px;
+  padding: 5px;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.2);
+}
+
+#painting-canvas {
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, #282848 0%, #383868 100%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 1px;
+}
+
+#painting-canvas .star {
+  color: #ffe84a;
+  font-size: 14px;
+  text-shadow: 0 0 4px rgba(255, 232, 74, 0.6);
+}
+
+#painting-canvas .moon {
+  color: #f0e080;
+  font-size: 20px;
+  text-shadow: 0 0 6px rgba(240, 224, 128, 0.5);
+}
+
+/* ===== 時計 ===== */
+#clock {
+  position: absolute;
+  right: 120px; top: 15px;
+  width: 62px; height: 62px;
+  z-index: 5;
+}
+
+#clock-face {
+  width: 100%; height: 100%;
+  background: radial-gradient(circle, #fff8f0 60%, #f0e0d0 100%);
+  border-radius: 50%;
+  border: 4px solid #d8a8b8;
+  position: relative;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.2);
+}
+
+#clock-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 5px; height: 5px;
+  background: #a06878;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+#clock-hand-hour {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 16px; height: 3px;
+  background: #a06878;
+  transform-origin: 0% 50%;
+  transform: rotate(0deg);
+  border-radius: 2px;
+  z-index: 2;
+}
+
+#clock-hand-minute {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 22px; height: 2px;
+  background: #c088a0;
+  transform-origin: 0% 50%;
+  transform: rotate(-90deg);
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.clock-number {
+  position: absolute;
+  font-size: 8px;
+  font-weight: 700;
+  color: #a08090;
+}
+
+.n12 { top: 3px; left: 50%; transform: translateX(-50%); }
+.n3 { right: 5px; top: 50%; transform: translateY(-50%); }
+.n6 { bottom: 3px; left: 50%; transform: translateX(-50%); }
+.n9 { left: 5px; top: 50%; transform: translateY(-50%); }
+
+/* ===== 窓 ===== */
+#window {
+  position: absolute;
+  left: 420px; top: 25px;
+  width: 110px; height: 80px;
+  background: #2a3a5a;
+  border: 6px solid #d8a8b8;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  overflow: hidden;
+  z-index: 5;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+.window-pane {
+  background: linear-gradient(135deg, #4060a0 0%, #305088 50%, #283870 100%);
+  border: 2px solid #d8a8b8;
+}
+
+#window-frame-v {
+  position: absolute;
+  left: 50%; top: 0;
+  width: 4px; height: 100%;
+  background: #d8a8b8;
+  transform: translateX(-50%);
+}
+
+#window-frame-h {
+  position: absolute;
+  top: 50%; left: 0;
+  width: 100%; height: 4px;
+  background: #d8a8b8;
+  transform: translateY(-50%);
+}
+
+/* ===== テーブル＋金庫 ===== */
+#table {
+  position: absolute;
+  right: 50px; bottom: 30px;
+  width: 140px; height: 90px;
+  z-index: 5;
+}
+
+#table-top {
+  position: absolute;
+  top: 0; left: -10px;
+  width: 160px; height: 12px;
+  background: linear-gradient(180deg, #e8c0a8 0%, #d8b098 100%);
+  border-radius: 4px;
+  border: 2px solid #c8a088;
+}
+
+.table-leg {
+  position: absolute;
+  top: 12px;
+  width: 10px; height: 78px;
+  background: linear-gradient(90deg, #c8a888, #d8b898, #c8a888);
+  border: 1px solid #b89878;
+  border-radius: 0 0 3px 3px;
+}
+
+.table-leg-left { left: 8px; }
+.table-leg-right { right: 8px; }
+
+#safe {
+  position: absolute;
+  right: 70px; bottom: 122px;
+  width: 76px; height: 50px;
+  z-index: 8;
+}
+
+#safe-body {
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, #b8c8b8 0%, #90a890 100%);
+  border: 3px solid #708870;
+  border-radius: 6px;
+  position: relative;
+  box-shadow: 1px 2px 6px rgba(0,0,0,0.3);
+}
+
+#safe-display {
+  position: absolute;
+  top: 7px; left: 50%;
+  transform: translateX(-50%);
+  background: #1a2a1a;
+  color: #4aea4a;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 2px 10px;
+  border-radius: 3px;
+  letter-spacing: 4px;
+  border: 1px solid #2a3a2a;
+}
+
+#safe-handle {
+  position: absolute;
+  right: 7px; bottom: 6px;
+  width: 16px; height: 16px;
+  border: 3px solid #a8b8a8;
+  border-radius: 50%;
+}
+
+#safe.safe-open #safe-body {
+  background: linear-gradient(180deg, #c0d0c0 0%, #a0b8a0 100%);
+  border-color: #80b080;
+}
+
+#safe.safe-open #safe-display { color: #8afa8a; }
+
+/* ===== 床のアイテム ===== */
+.floor-item {
+  z-index: 15;
+  position: absolute;
+}
+
+.floor-item.hidden { display: none; }
+
+#memo-on-floor {
+  left: 320px; bottom: 55px;
+  width: 46px; height: 46px;
+}
+
+.memo-shape {
+  font-size: 28px;
+  text-align: center;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+}
+
+#flashlight-on-floor {
+  left: 500px; bottom: 70px;
+  width: 46px; height: 46px;
+}
+
+.flashlight-shape {
+  font-size: 26px;
+  text-align: center;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+}
+
+.item-sparkle {
+  position: absolute;
+  top: -4px; right: -2px;
+  color: #ffe0a0;
+  font-size: 15px;
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+.sparkle2 { animation-delay: 0.7s; }
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.3) rotate(20deg); }
+}
+
+/* ===== 隠しメッセージ ===== */
+#hidden-message {
+  position: absolute;
+  left: 220px; top: 130px;
+  color: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  z-index: 4;
+  pointer-events: none;
+  transition: color 0.5s, text-shadow 0.5s;
+}
+
+#hidden-message.revealed {
+  color: rgba(100, 60, 80, 0.8);
+  text-shadow: 0 0 8px rgba(200, 100, 150, 0.4);
+}
+
+/* ===== セリフボックス ===== */
+#dialog-box {
+  width: 100%;
+  min-height: 88px;
+  background: linear-gradient(180deg, rgba(60, 30, 50, 0.96) 0%, rgba(40, 20, 35, 0.98) 100%);
+  border: 2px solid #b0789a;
+  border-radius: 14px;
+  margin-top: 10px;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(200, 150, 180, 0.2);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+#dialog-portrait {
+  width: 72px;
+  min-height: 88px;
+  background: linear-gradient(135deg, #4a2a3e 0%, #3a1a30 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid #6a4a5e;
+  flex-shrink: 0;
+}
+
+#portrait-icon {
+  font-size: 34px;
+}
+
+#dialog-content {
+  flex: 1;
+  padding: 12px 18px;
+  min-width: 0;
+}
+
+#dialog-name {
+  color: #f0a0c0;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: 3px;
+}
+
+#dialog-text {
+  color: #f8f0f4;
+  font-size: 15px;
+  line-height: 1.75;
+  min-height: 42px;
+}
+
+#dialog-indicator {
+  position: absolute;
+  bottom: 8px; right: 14px;
+  color: #8a6a7e;
+  font-size: 11px;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+/* ===== アイテムボックス ===== */
+#item-box {
+  width: 150px;
+  background: linear-gradient(180deg, rgba(60, 30, 50, 0.95) 0%, rgba(40, 20, 35, 0.97) 100%);
+  border: 2px solid #b0789a;
+  border-radius: 14px;
+  padding: 12px 8px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(200, 150, 180, 0.2);
+  margin-top: 30px;
+}
+
+#item-box-label {
+  color: #f0a0c0;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  letter-spacing: 4px;
+}
+
+#item-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.item-slot {
+  width: 56px; height: 56px;
+  background: rgba(80, 40, 60, 0.5);
+  border: 2px solid #6a4a5e;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  cursor: default;
+  transition: all 0.2s;
+}
+
+.item-slot.has-item {
+  cursor: pointer;
+  border-color: #a0708a;
+  background: rgba(100, 50, 70, 0.5);
+}
+
+.item-slot.has-item:hover {
+  border-color: #d0a0b8;
+  background: rgba(120, 60, 80, 0.6);
+  transform: scale(1.06);
+}
+
+.item-slot.selected {
+  border-color: #f8d060;
+  background: rgba(120, 100, 40, 0.5);
+  box-shadow: 0 0 12px rgba(248, 208, 96, 0.4);
+  animation: selectedPulse 2s ease-in-out infinite;
+}
+
+@keyframes selectedPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(248, 208, 96, 0.3); }
+  50% { box-shadow: 0 0 18px rgba(248, 208, 96, 0.6); }
+}
+
+#selected-item-name {
+  color: #f8d060;
+  font-size: 11px;
+  text-align: center;
+  margin-top: 8px;
+  min-height: 16px;
+  letter-spacing: 1px;
+}
+
+/* ===== モーダル共通 ===== */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(3px);
+}
+
+.modal.hidden { display: none; }
+
+/* ===== 金庫モーダル ===== */
+#safe-modal-content {
+  background: linear-gradient(180deg, #2a3a2a 0%, #1a2a1a 100%);
+  border: 3px solid #5a8a5a;
+  border-radius: 18px;
+  padding: 28px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  min-width: 280px;
+}
+
+#safe-modal-title {
+  color: #8aea8a;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  letter-spacing: 2px;
+}
+
+#safe-code-display {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.code-digit {
+  width: 48px; height: 56px;
+  background: #0a1a0a;
+  border: 2px solid #3a5a3a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4aea4a;
+  font-family: 'Courier New', monospace;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#safe-numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  max-width: 210px;
+  margin: 0 auto 14px;
+}
+
+.numpad-btn {
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: #2a4a2a;
+  color: #c0e8c0;
+  border: 2px solid #3a5a3a;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.numpad-btn:hover { background: #3a6a3a; transform: scale(1.05); }
+.numpad-btn:active { transform: scale(0.95); }
+
+.numpad-clear {
+  background: #4a2a2a;
+  border-color: #6a3a3a;
+  color: #f0a0a0;
+}
+.numpad-clear:hover { background: #6a3a3a; }
+
+.numpad-enter {
+  background: #2a4a3a;
+  border-color: #3a6a5a;
+  color: #a0f0c0;
+}
+.numpad-enter:hover { background: #3a6a4a; }
+
+#safe-result {
+  color: #f08080;
+  font-size: 13px;
+  min-height: 20px;
+  margin-bottom: 10px;
+}
+
+#safe-result.success { color: #80f080; }
+
+#safe-close-btn, #memo-close-btn {
+  padding: 8px 26px;
+  font-size: 14px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  background: transparent;
+  color: #a0a0c0;
+  border: 2px solid #5a5a7a;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 2px;
+}
+
+#safe-close-btn:hover, #memo-close-btn:hover {
+  background: rgba(80, 80, 120, 0.3);
+  color: #c0c0e0;
+}
+
+/* ===== メモモーダル ===== */
+#memo-modal-content { text-align: center; }
+
+#memo-paper {
+  background: linear-gradient(180deg, #fff8f0 0%, #f0e8d8 100%);
+  border-radius: 6px;
+  padding: 28px 36px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  transform: rotate(-1deg);
+  max-width: 340px;
+  border: 1px solid #d8d0b8;
+}
+
+.memo-line {
+  color: #3a3020;
+  font-size: 15px;
+  line-height: 2.2;
+  text-align: left;
+}
+
+.memo-hint {
+  color: #9a8060;
+  font-size: 12px;
+  margin-top: 10px;
+  font-style: italic;
+  text-align: center;
+}
+
+/* ===== クリア演出 ===== */
+#clear-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  animation: clearBg 3s forwards;
+}
+
+@keyframes clearBg {
+  0% { background: rgba(0, 0, 0, 0); }
+  30% { background: rgba(255, 240, 248, 0.92); }
+  100% { background: rgba(255, 245, 250, 0.96); }
+}
+
+.clear-title {
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: 14px;
+  color: transparent;
+  background: linear-gradient(135deg, #f06090 0%, #f0a040 25%, #a060f0 50%, #40b0f0 75%, #f06090 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  animation: clearTitleIn 1.5s 0.8s forwards, gradientShift 3s 0.8s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+}
+
+@keyframes clearTitleIn {
+  0% { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(2deg); }
+  70% { transform: scale(0.95) rotate(-1deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.clear-sub {
+  font-size: 18px;
+  color: #a08090;
+  letter-spacing: 6px;
+  margin-top: 18px;
+  opacity: 0;
+  animation: fadeUp 1s 2s forwards;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.clear-time {
+  font-size: 14px;
+  color: #b8a8b0;
+  margin-top: 8px;
+  opacity: 0;
+  animation: fadeUp 1s 2.5s forwards;
+}
+
+/* 紙吹雪 */
+.confetti {
+  position: fixed;
+  width: 10px; height: 10px;
+  z-index: 501;
+  opacity: 0;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% { opacity: 1; transform: translateY(-20px) rotate(0deg) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.5); }
+}
+
+.light-particle {
+  position: fixed;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  z-index: 502;
+  opacity: 0;
+  pointer-events: none;
+  animation: particleFloat 3s ease-out forwards;
+}
+
+@keyframes particleFloat {
+  0% { opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0) translateY(-200px); }
+}
