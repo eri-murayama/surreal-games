@@ -134,10 +134,10 @@ body {
 
 .mole {
   position: absolute;
-  bottom: -105%;
+  bottom: -120%;
   left: 50%;
   transform: translateX(-50%);
-  width: 95%;
+  width: 120%;
   height: auto;
   object-fit: contain;
   transition: bottom 0.15s ease-out;
@@ -145,11 +145,11 @@ body {
 }
 
 .hole.active .mole {
-  bottom: -5%;
+  bottom: -10%;
 }
 
 .hole.hit .mole {
-  bottom: -5%;
+  bottom: -10%;
   animation: hitSpin 0.4s ease-out forwards;
 }
 

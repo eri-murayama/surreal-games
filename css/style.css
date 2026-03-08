@@ -259,6 +259,52 @@ section {
   transform: scale(1.15) rotate(5deg);
 }
 
+/* かにかにカード: ホバーで飛び出し＆セリフ */
+.card-chara--kanikani {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.game-card:hover .card-chara--kanikani {
+  transform: scale(1.5) translateY(-15%) rotate(8deg);
+}
+
+.kanikani-speech {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(255, 255, 255, 0.95);
+  color: #d63384;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease 0.15s;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 5;
+}
+
+.kanikani-speech::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid rgba(255, 255, 255, 0.95);
+}
+
+.game-card:hover .kanikani-speech {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .game-card__body {
   padding: 1.5rem;
 }
