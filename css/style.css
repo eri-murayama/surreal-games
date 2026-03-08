@@ -322,6 +322,71 @@ section {
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
+/* さくらんぼカード: ホバーで飛び出し＆セリフ */
+.card-chara--sakuranbo {
+  width: 75%;
+  border-radius: 12px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  z-index: 10;
+  position: relative;
+}
+
+.game-card:hover .card-chara--sakuranbo {
+  transform: scale(2.5) translateY(-20%) rotate(-5deg);
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+}
+
+.game-card:has(.card-chara--sakuranbo) {
+  overflow: visible;
+}
+
+.game-card:has(.card-chara--sakuranbo) .game-card__image {
+  overflow: visible;
+}
+
+.game-card:has(.card-chara--sakuranbo) .placeholder-art {
+  overflow: visible;
+  position: relative;
+}
+
+.sakuranbo-speech {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px) scale(0.8);
+  background: #fff;
+  color: #8b2252;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 10px 16px;
+  border-radius: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+  box-shadow: 0 4px 20px rgba(139, 34, 82, 0.3);
+  border: 2px solid #c06080;
+  z-index: 20;
+}
+
+.sakuranbo-speech::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #fff;
+}
+
+.game-card:hover .sakuranbo-speech {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
 .game-card__body {
   padding: 1.5rem;
 }
