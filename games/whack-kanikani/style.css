@@ -1,0 +1,327 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(180deg, #ffb6c1 0%, #ff91a4 30%, #ff69b4 100%);
+  font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic Pro', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  overflow-x: hidden;
+  cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">🔨</text></svg>') 16 16, pointer;
+}
+
+#game-wrapper {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  position: relative;
+}
+
+/* タイトル */
+.game-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 32px;
+  color: #fff;
+  text-shadow: 3px 3px 0 #d63384, -1px -1px 0 #d63384, 1px -1px 0 #d63384, -1px 1px 0 #d63384;
+  margin-bottom: 4px;
+}
+
+.game-subtitle {
+  font-size: 13px;
+  color: #fff0f5;
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+
+/* HUD */
+#hud {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.hud-item {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 14px;
+  padding: 8px 20px;
+  min-width: 100px;
+}
+
+.hud-label {
+  display: block;
+  font-size: 11px;
+  color: #fff;
+  opacity: 0.8;
+  letter-spacing: 2px;
+}
+
+.hud-value {
+  display: block;
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
+  line-height: 1.2;
+}
+
+#timer.urgent {
+  color: #ff0;
+  animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* ゲームボード */
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 24px;
+  background: linear-gradient(180deg, #8B4513 0%, #6B3410 50%, #5a2d0c 100%);
+  border-radius: 20px;
+  border: 4px solid #4a2008;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+/* 穴 */
+.hole {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hole-bg {
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  width: 90%;
+  height: 40%;
+  background: radial-gradient(ellipse at center, #2a1505 0%, #3a2010 60%, #5a3518 100%);
+  border-radius: 50%;
+  z-index: 2;
+  border: 2px solid #1a0a02;
+}
+
+/* もぐら（かにかに）コンテナ */
+.mole-container {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 75%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.mole {
+  position: absolute;
+  bottom: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  transition: bottom 0.15s ease-out;
+  pointer-events: none;
+}
+
+.hole.active .mole {
+  bottom: 0%;
+}
+
+.hole.hit .mole {
+  bottom: 0%;
+  animation: hitSpin 0.4s ease-out forwards;
+}
+
+@keyframes hitSpin {
+  0% { transform: translateX(-50%) rotate(0deg) scale(1); }
+  30% { transform: translateX(-50%) rotate(15deg) scale(1.1); }
+  100% { transform: translateX(-50%) rotate(-20deg) scale(0.6) translateY(80%); opacity: 0.3; }
+}
+
+/* 叩いた時の穴のエフェクト */
+.hole.hit .hole-bg {
+  animation: holePulse 0.3s ease-out;
+}
+
+@keyframes holePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); box-shadow: 0 0 20px rgba(255, 200, 0, 0.5); }
+  100% { transform: scale(1); }
+}
+
+/* ヒットエフェクト（浮き上がるテキスト） */
+.hit-text {
+  position: fixed;
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 #d63384;
+  pointer-events: none;
+  z-index: 100;
+  animation: hitTextFloat 0.8s ease-out forwards;
+}
+
+.hit-text.combo {
+  font-size: 32px;
+  color: #ffff00;
+  text-shadow: 2px 2px 0 #ff6600;
+}
+
+@keyframes hitTextFloat {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  50% { opacity: 1; transform: translateY(-40px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-80px) scale(0.8); }
+}
+
+/* ミスエフェクト */
+.miss-text {
+  position: fixed;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  z-index: 100;
+  animation: missFloat 0.6s ease-out forwards;
+}
+
+@keyframes missFloat {
+  0% { opacity: 0.6; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* オーバーレイ */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+#overlay-content {
+  background: linear-gradient(180deg, #fff5f8 0%, #ffe0eb 100%);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border: 3px solid #ffb6c1;
+  max-width: 380px;
+  width: 90%;
+}
+
+.overlay-icon {
+  font-size: 64px;
+  margin-bottom: 12px;
+}
+
+#overlay-content h2 {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 28px;
+  color: #d63384;
+  margin-bottom: 12px;
+}
+
+#overlay-content p {
+  color: #6a3050;
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+#result-score {
+  font-size: 32px !important;
+  font-weight: 900;
+  color: #d63384 !important;
+}
+
+#result-rank {
+  font-size: 20px !important;
+  font-weight: 700;
+}
+
+#result-comment {
+  font-size: 13px !important;
+  color: #999 !important;
+  font-style: italic;
+}
+
+button {
+  margin-top: 16px;
+  padding: 14px 40px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: linear-gradient(180deg, #ff69b4 0%, #d63384 100%);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(214, 51, 132, 0.4);
+  letter-spacing: 2px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(214, 51, 132, 0.6);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* 画面揺れ */
+.screen-shake {
+  animation: shake 0.15s ease-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px) rotate(-0.5deg); }
+  50% { transform: translateX(4px) rotate(0.5deg); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* レスポンシブ */
+@media (max-width: 480px) {
+  .game-title { font-size: 24px; }
+  #board { padding: 14px; gap: 8px; }
+  .hud-item { padding: 6px 14px; min-width: 80px; }
+  .hud-value { font-size: 22px; }
+  #hud { gap: 10px; }
+  #overlay-content { padding: 28px 20px; }
+}
