@@ -609,3 +609,50 @@ document.getElementById('copy-code-btn').addEventListener('click', () => {
     }, 1500);
   });
 });
+
+// ===== モバイル対応 =====
+const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+const mobileTapBtn = document.getElementById('mobile-tap-btn');
+
+if (isMobile && mobileTapBtn) {
+  // バトル開始時にモバイルボタン表示
+  const origStartBattle = startBattle;
+  startBattle = function() {
+    origStartBattle();
+    mobileTapBtn.classList.remove('hidden');
+  };
+
+  // バトル終了時に非表示
+  const origEndBattle = endBattle;
+  endBattle = function() {
+    origEndBattle();
+    mobileTapBtn.classList.add('hidden');
+  };
+
+  // タッチイベントで連打
+  mobileTapBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (!gameRunning) return;
+
+    if (gameMode === 'local') {
+      // ローカル: P1として扱う
+      const player = PLAYER_DEFS[0];
+      if (counts[player.id] !== undefined) {
+        counts[player.id]++;
+        updateLane(player, counts[player.id]);
+      }
+    } else {
+      // オンライン
+      const player = onlinePlayers[myPlayerId];
+      if (player && counts[player.id] !== undefined) {
+        counts[player.id]++;
+        updateLane(player, counts[player.id]);
+        if (isHost) {
+          broadcast({ type: 'tap', playerId: player.id, count: counts[player.id] });
+        } else {
+          sendToHost({ type: 'tap', playerId: player.id, count: counts[player.id] });
+        }
+      }
+    }
+  }, { passive: false });
+}

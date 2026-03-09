@@ -700,6 +700,20 @@ footer {
    ======================================== */
 
 @media (max-width: 768px) {
+  .fixed-nav {
+    gap: 0.25rem;
+    padding: 0.4rem 0.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .fixed-nav__link {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+  }
+
   .game-grid {
     grid-template-columns: 1fr;
   }

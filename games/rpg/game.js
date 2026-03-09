@@ -862,3 +862,44 @@ document.getElementById('victory-btn').addEventListener('click', () => {
 
 // スタート
 gameLoop();
+
+// ===== モバイル操作パッド =====
+const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+const mobileControls = document.getElementById('mobile-controls');
+
+if (isMobile && mobileControls) {
+  mobileControls.classList.remove('hidden');
+
+  // D-padボタン: 押している間キー入力を模擬
+  let holdIntervals = {};
+
+  document.querySelectorAll('.dpad-btn, #action-btn').forEach(btn => {
+    const keyName = btn.dataset.key;
+
+    btn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      keys[keyName] = true;
+      keyJustPressed[keyName] = true;
+
+      // D-pad: 長押しで連続移動
+      if (keyName.startsWith('Arrow')) {
+        clearInterval(holdIntervals[keyName]);
+        holdIntervals[keyName] = setInterval(() => {
+          keys[keyName] = true;
+          keyJustPressed[keyName] = true;
+        }, 150);
+      }
+    }, { passive: false });
+
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      keys[keyName] = false;
+      clearInterval(holdIntervals[keyName]);
+    }, { passive: false });
+
+    btn.addEventListener('touchcancel', (e) => {
+      keys[keyName] = false;
+      clearInterval(holdIntervals[keyName]);
+    });
+  });
+}

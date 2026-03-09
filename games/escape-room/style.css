@@ -1305,6 +1305,11 @@ body {
 
 /* ===== モバイル対応 ===== */
 @media screen and (max-width: 980px) {
+  body {
+    align-items: center;
+    overflow: hidden;
+  }
+
   #game-wrapper {
     flex-direction: column-reverse;
     align-items: center;
@@ -1314,6 +1319,7 @@ body {
 
   #game-container {
     width: 100%;
+    max-width: 100%;
     flex-shrink: 1;
   }
 
