@@ -259,7 +259,7 @@ flashlightOnFloor.addEventListener('click', (e) => {
   state.flashlightPickedUp = true;
   flashlightOnFloor.classList.add('hidden');
   addItem('flashlight', '\u{1F526}', '懐中電灯');
-  showDialog('懐中電灯だ！この部屋の子はとってもえっちな子なんだね♪');
+  showDialog('懐中電灯だ！どうしてこんなところに？何かのプレイで使ったのかな…');
   checkItem('flashlight');
 });
 
@@ -271,7 +271,7 @@ dustOnFloor.addEventListener('click', (e) => {
   state.dustPickedUp = true;
   dustOnFloor.classList.add('hidden');
   addItem('dust', '\u{1F4A8}', 'ほこり');
-  showDialog('あっ、ほこりだ。この部屋の子はだらしない子なんだなあ。うふふ。');
+  showDialog('あっ、ほこりだ。この部屋の子はだらしないんだなあ。うふふ。');
 });
 
 // ===== お弁当 =====
@@ -301,7 +301,7 @@ document.getElementById('painting-close-btn').addEventListener('click', () => {
   paintingModal.classList.add('hidden');
   if (!state.paintingDestroyed) {
     state.paintingDestroyed = true;
-    showDialog('このセンスは僕と付き合ったらちゃんと矯正してあげなきゃ。<br>ビリビリ〜！');
+    showDialog('つまらない絵だ。貧乏ゆすりが止まらないや。破っておこう。<br>ビリビリ〜！');
     painting.classList.add('painting-destroyed');
   }
 });

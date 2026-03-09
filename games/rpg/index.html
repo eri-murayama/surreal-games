@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ドットクエスト</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1 class="game-title">ドットクエスト</h1>
+
+    <!-- ゲーム画面 -->
+    <div id="screen">
+      <canvas id="canvas" width="256" height="192"></canvas>
+
+      <!-- ステータスバー -->
+      <div id="status-bar">
+        <span id="stat-name">ゆうしゃ Lv.1</span>
+        <span id="stat-hp">HP 30/30</span>
+        <span id="stat-mp">MP 10/10</span>
+      </div>
+
+      <!-- メッセージボックス -->
+      <div id="msg-box" class="hidden">
+        <div id="msg-text"></div>
+        <div id="msg-indicator">▼</div>
+      </div>
+
+      <!-- バトル画面 -->
+      <div id="battle-overlay" class="hidden">
+        <div id="battle-enemy-area">
+          <canvas id="enemy-canvas" width="64" height="64"></canvas>
+          <div id="enemy-name"></div>
+          <div id="enemy-hp-bar"><div id="enemy-hp-fill"></div></div>
+        </div>
+        <div id="battle-log"></div>
+        <div id="battle-player-status">
+          <span id="battle-hp">HP 30/30</span>
+          <span id="battle-mp">MP 10/10</span>
+          <span id="battle-items">くすり x3</span>
+        </div>
+        <div id="battle-menu">
+          <button class="battle-btn" data-action="attack">たたかう</button>
+          <button class="battle-btn" data-action="magic">まほう</button>
+          <button class="battle-btn" data-action="item">くすり</button>
+          <button class="battle-btn" data-action="run">にげる</button>
+        </div>
+      </div>
+
+      <!-- タイトル画面 -->
+      <div id="title-screen">
+        <div id="title-logo">ドットクエスト</div>
+        <div id="title-sub">- シュールな冒険のはじまり -</div>
+        <button id="start-btn">ぼうけんをはじめる</button>
+        <p id="title-hint">矢印キーで移動 / スペースで調べる</p>
+      </div>
+
+      <!-- 勝利画面 -->
+      <div id="victory-screen" class="hidden">
+        <div id="victory-title">魔王を倒した！</div>
+        <div id="victory-sub"></div>
+        <button id="victory-btn">タイトルに戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

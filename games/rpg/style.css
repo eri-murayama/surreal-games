@@ -1,0 +1,340 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #1a1a2e;
+  font-family: 'DotGothic16', 'Zen Maru Gothic', monospace;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+#game-wrapper {
+  text-align: center;
+}
+
+.game-title {
+  font-family: 'DotGothic16', monospace;
+  font-size: 20px;
+  color: #8a8;
+  letter-spacing: 6px;
+  margin-bottom: 8px;
+}
+
+/* ===== ゲーム画面 ===== */
+#screen {
+  position: relative;
+  width: 512px;
+  height: 384px;
+  background: #000;
+  border: 4px solid #444;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0,0,0,0.6), 0 0 8px rgba(100,200,100,0.1);
+}
+
+#canvas {
+  width: 512px;
+  height: 384px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+/* ===== ステータスバー ===== */
+#status-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.8);
+  padding: 4px 10px;
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #cfc;
+  letter-spacing: 1px;
+  z-index: 10;
+}
+
+#stat-hp { color: #6f6; }
+#stat-mp { color: #6cf; }
+
+/* ===== メッセージボックス ===== */
+#msg-box {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: rgba(0,0,20,0.92);
+  border-top: 3px solid #668;
+  padding: 12px 16px;
+  z-index: 20;
+}
+
+#msg-text {
+  color: #eee;
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 1px;
+}
+
+#msg-indicator {
+  position: absolute;
+  bottom: 8px; right: 14px;
+  color: #88a;
+  font-size: 10px;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+/* ===== バトル画面 ===== */
+#battle-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0a0a1e 0%, #1a1a3e 100%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+}
+
+#battle-enemy-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+#enemy-canvas {
+  width: 128px;
+  height: 128px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+#enemy-name {
+  color: #faa;
+  font-size: 14px;
+  margin-top: 6px;
+  letter-spacing: 2px;
+}
+
+#enemy-hp-bar {
+  width: 120px;
+  height: 8px;
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 4px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+#enemy-hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f44, #f88);
+  transition: width 0.3s;
+  width: 100%;
+}
+
+#battle-log {
+  flex: 1;
+  width: 100%;
+  max-width: 440px;
+  color: #ddd;
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 10px 0;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#battle-player-status {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+#battle-hp { color: #6f6; }
+#battle-mp { color: #6cf; }
+#battle-items { color: #fc6; }
+
+#battle-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: 280px;
+  margin-bottom: 8px;
+}
+
+.battle-btn {
+  padding: 8px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 14px;
+  color: #cfc;
+  background: rgba(40,60,40,0.8);
+  border: 2px solid #4a6a4a;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 2px;
+}
+
+.battle-btn:hover,
+.battle-btn.selected {
+  background: rgba(60,90,60,0.9);
+  border-color: #8c8;
+  color: #fff;
+}
+
+.battle-btn:active { transform: scale(0.95); }
+
+.battle-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.battle-btn:disabled:hover {
+  background: rgba(40,60,40,0.8);
+  border-color: #4a6a4a;
+  color: #cfc;
+}
+
+/* ===== タイトル画面 ===== */
+#title-screen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0a1a0a 0%, #1a2a1a 50%, #0a1a0a 100%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#title-logo {
+  font-family: 'DotGothic16', monospace;
+  font-size: 36px;
+  color: #6f6;
+  letter-spacing: 8px;
+  text-shadow: 0 0 20px rgba(100,255,100,0.3);
+  margin-bottom: 8px;
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% { text-shadow: 0 0 10px rgba(100,255,100,0.2); }
+  50% { text-shadow: 0 0 25px rgba(100,255,100,0.5); }
+}
+
+#title-sub {
+  color: #686;
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin-bottom: 28px;
+}
+
+#start-btn {
+  padding: 10px 32px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 16px;
+  color: #cfc;
+  background: transparent;
+  border: 2px solid #4a6a4a;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 3px;
+  transition: all 0.2s;
+}
+
+#start-btn:hover {
+  background: rgba(60,100,60,0.3);
+  border-color: #8c8;
+  color: #fff;
+}
+
+#title-hint {
+  color: #454;
+  font-size: 11px;
+  margin-top: 16px;
+  letter-spacing: 1px;
+}
+
+/* ===== 勝利画面 ===== */
+#victory-screen {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#victory-title {
+  font-family: 'DotGothic16', monospace;
+  font-size: 28px;
+  color: #ffd700;
+  letter-spacing: 6px;
+  text-shadow: 0 0 20px rgba(255,215,0,0.4);
+  margin-bottom: 12px;
+}
+
+#victory-sub {
+  color: #aa8;
+  font-size: 13px;
+  margin-bottom: 24px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+#victory-btn {
+  padding: 8px 28px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 14px;
+  color: #cfc;
+  background: transparent;
+  border: 2px solid #4a6a4a;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: all 0.2s;
+}
+
+#victory-btn:hover {
+  background: rgba(60,100,60,0.3);
+  border-color: #8c8;
+}
+
+.hidden { display: none !important; }
+
+/* ===== 画面揺れ ===== */
+.shake { animation: shakeAnim 0.2s ease-out; }
+
+@keyframes shakeAnim {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+@media (max-width: 540px) {
+  #screen { width: 320px; height: 240px; }
+  #canvas { width: 320px; height: 240px; }
+  #status-bar { font-size: 10px; padding: 3px 6px; }
+  #msg-box { height: 60px; padding: 8px 10px; }
+  #msg-text { font-size: 11px; }
+  .battle-btn { font-size: 12px; padding: 6px; }
+  #battle-menu { width: 220px; }
+  #enemy-canvas { width: 80px; height: 80px; }
+  #title-logo { font-size: 24px; }
+}

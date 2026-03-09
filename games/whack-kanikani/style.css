@@ -101,7 +101,7 @@ body {
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  cursor: pointer;
+  cursor: none;
   -webkit-tap-highlight-color: transparent;
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 80%, #3a2010 0%, #5a3518 40%, transparent 70%);
@@ -286,7 +286,7 @@ button {
   color: #fff;
   border: none;
   border-radius: 999px;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.2s;
   box-shadow: 0 4px 15px rgba(214, 51, 132, 0.4);
   letter-spacing: 2px;
