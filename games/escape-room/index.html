@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>脱出ゲーム - かわいい部屋からの脱出</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,6 +205,13 @@
       <div id="item-inspect-name"></div>
       <button id="item-inspect-close-btn">とじる</button>
     </div>
+  </div>
+
+  <!-- スマホ縦持ち時の横向き推奨メッセージ -->
+  <div id="rotate-overlay">
+    <div id="rotate-icon">📱↻</div>
+    <div id="rotate-text">横向きにしてプレイしてね！</div>
+    <button id="rotate-dismiss">このまま遊ぶ</button>
   </div>
 
   <script src="game.js"></script>

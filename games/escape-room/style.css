@@ -1253,3 +1253,302 @@ body {
   20% { opacity: 1; transform: scale(1); }
   100% { opacity: 0; transform: scale(0) translateY(-200px); }
 }
+
+/* ===== 横向き推奨オーバーレイ ===== */
+#rotate-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(46, 26, 46, 0.95);
+  z-index: 9999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+#rotate-icon {
+  font-size: 60px;
+  animation: rotateHint 2s ease-in-out infinite;
+}
+
+@keyframes rotateHint {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+}
+
+#rotate-text {
+  color: #f8d0e0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+#rotate-dismiss {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  background: transparent;
+  color: #a0a0c0;
+  border: 2px solid #5a5a7a;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+#rotate-dismiss:hover {
+  background: rgba(80, 80, 120, 0.3);
+  color: #c0c0e0;
+}
+
+/* ===== モバイル対応 ===== */
+@media screen and (max-width: 980px) {
+  #game-wrapper {
+    flex-direction: column-reverse;
+    align-items: center;
+    max-width: 100%;
+    padding: 0 4px;
+  }
+
+  #game-container {
+    width: 100%;
+    flex-shrink: 1;
+  }
+
+  #room {
+    height: auto;
+    aspect-ratio: 780 / 380;
+  }
+
+  .game-title {
+    font-size: 16px;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+
+  /* アイテムボックスを横並びに */
+  #item-box {
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 6px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #item-box-label {
+    margin-bottom: 0;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  #item-slots {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .item-slot {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+
+  #selected-item-name {
+    margin-top: 0;
+    white-space: nowrap;
+    font-size: 10px;
+  }
+
+  /* セリフボックス */
+  #dialog-box {
+    margin-top: 6px;
+    min-height: 68px;
+  }
+
+  #dialog-portrait {
+    width: 56px;
+    min-height: 68px;
+  }
+
+  #dialog-content {
+    padding: 8px 12px;
+  }
+
+  #dialog-text {
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 34px;
+  }
+
+  #dialog-name {
+    font-size: 12px;
+  }
+
+  /* 部屋内の要素をスケーリング */
+  #room {
+    font-size: clamp(8px, 1.3vw, 16px);
+  }
+
+  #door {
+    left: 6.4%;
+    top: 7.9%;
+    width: 14.1%;
+    height: 51.3%;
+  }
+
+  #painting {
+    left: 32%;
+    top: 5.3%;
+    width: 12.8%;
+    height: 18.9%;
+  }
+
+  #clock {
+    right: 15.4%;
+    top: 3.9%;
+    width: 8%;
+    height: 16.3%;
+  }
+
+  #window {
+    left: 53.8%;
+    top: 6.6%;
+    width: 14.1%;
+    height: 21.1%;
+  }
+
+  #window-speech {
+    top: 30.3%;
+    left: 60.9%;
+    font-size: 9px;
+  }
+
+  #table {
+    right: 6.4%;
+    bottom: 7.9%;
+    width: 17.9%;
+    height: 23.7%;
+  }
+
+  #safe {
+    right: 9%;
+    bottom: 32.1%;
+    width: 9.7%;
+    height: 13.2%;
+  }
+
+  #memo-on-floor {
+    left: 41%;
+    bottom: 14.5%;
+    width: 5.9%;
+    height: 12.1%;
+  }
+
+  #flashlight-on-floor {
+    left: 64.1%;
+    bottom: 18.4%;
+    width: 5.9%;
+    height: 12.1%;
+  }
+
+  #dust-on-floor {
+    left: 23.1%;
+    bottom: 10.5%;
+    width: 5.9%;
+    height: 12.1%;
+  }
+
+  #bento-on-floor {
+    left: 55.1%;
+    bottom: 9.2%;
+    width: 5.9%;
+    height: 12.1%;
+  }
+
+  #hidden-message {
+    left: 28.2%;
+    top: 34.2%;
+    font-size: 10px;
+  }
+
+  .memo-shape { font-size: 22px; }
+  .flashlight-shape { font-size: 20px; }
+  .dust-shape { font-size: 20px; }
+  .bento-shape { font-size: 20px; }
+  .item-sparkle { font-size: 11px; }
+
+  .clock-number { font-size: 6px; }
+
+  /* モーダル調整 */
+  #safe-modal-content {
+    min-width: auto;
+    width: 90vw;
+    max-width: 320px;
+    padding: 18px;
+  }
+
+  #window-peek-frame {
+    width: 260px;
+    height: 260px;
+  }
+
+  #memo-paper {
+    max-width: 90vw;
+  }
+
+  /* クリア画面 */
+  .clear-title { font-size: 36px; letter-spacing: 8px; }
+  .clear-dialog { width: 95%; }
+}
+
+/* スマホ縦持ち時に横向き推奨を表示 */
+@media screen and (max-width: 680px) and (orientation: portrait) {
+  #rotate-overlay {
+    display: flex;
+  }
+
+  #rotate-overlay.dismissed {
+    display: none;
+  }
+}
+
+/* スマホ横向き時の微調整 */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  body {
+    padding: 4px 0;
+  }
+
+  .game-title {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  #dialog-box {
+    min-height: 56px;
+    margin-top: 4px;
+  }
+
+  #dialog-portrait {
+    width: 48px;
+    min-height: 56px;
+  }
+
+  #dialog-text {
+    font-size: 12px;
+    min-height: 28px;
+  }
+
+  #item-box {
+    padding: 4px 8px;
+  }
+
+  .item-slot {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+}
