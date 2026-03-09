@@ -543,6 +543,34 @@ button:active { transform: translateY(1px); }
 @media (max-width: 520px) {
   #player-lanes { flex-wrap: wrap; }
   .player-lane { width: 140px; }
+
+  .player-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 14px;
+  }
+
+  .player-select {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .setup-box {
+    padding: 20px 16px;
+  }
+
+  .setup-box h2 {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .mode-btn {
+    width: 140px;
+    padding: 14px 10px;
+  }
+
+  .mode-icon { font-size: 28px; }
+  .mode-label { font-size: 14px; }
 }
 
 /* ===== モバイル連打ボタン ===== */
@@ -552,8 +580,7 @@ button:active { transform: translateY(1px); }
   left: 0;
   width: 100%;
   height: 40vh;
-  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.2));
-  border-top: 3px solid rgba(255,255,255,0.4);
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.15));
   display: flex;
   align-items: center;
   justify-content: center;

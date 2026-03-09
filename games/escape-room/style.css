@@ -1254,60 +1254,11 @@ body {
   100% { opacity: 0; transform: scale(0) translateY(-200px); }
 }
 
-/* ===== 横向き推奨オーバーレイ ===== */
-#rotate-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(46, 26, 46, 0.95);
-  z-index: 9999;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-
-#rotate-icon {
-  font-size: 60px;
-  animation: rotateHint 2s ease-in-out infinite;
-}
-
-@keyframes rotateHint {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(90deg); }
-}
-
-#rotate-text {
-  color: #f8d0e0;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-#rotate-dismiss {
-  padding: 10px 24px;
-  font-size: 14px;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-weight: 700;
-  background: transparent;
-  color: #a0a0c0;
-  border: 2px solid #5a5a7a;
-  border-radius: 20px;
-  cursor: pointer;
-  margin-top: 12px;
-}
-
-#rotate-dismiss:hover {
-  background: rgba(80, 80, 120, 0.3);
-  color: #c0c0e0;
-}
-
 /* ===== モバイル対応 ===== */
 @media screen and (max-width: 980px) {
   body {
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
   #game-wrapper {
@@ -1407,17 +1358,41 @@ body {
   }
 
   #painting {
-    left: 32%;
-    top: 5.3%;
-    width: 12.8%;
-    height: 18.9%;
+    left: 30%;
+    top: 3%;
+    width: 14%;
+    height: 20%;
+  }
+
+  #painting-frame {
+    border-width: 3px;
+    padding: 3px;
   }
 
   #clock {
     right: 15.4%;
     top: 3.9%;
-    width: 8%;
-    height: 16.3%;
+    width: 7%;
+    height: 14%;
+  }
+
+  #clock-face {
+    border-width: 2px;
+  }
+
+  #clock-center {
+    width: 3px;
+    height: 3px;
+  }
+
+  #clock-hand-hour {
+    width: 10px;
+    height: 2px;
+  }
+
+  #clock-hand-minute {
+    width: 14px;
+    height: 1px;
   }
 
   #window {
@@ -1443,8 +1418,28 @@ body {
   #safe {
     right: 9%;
     bottom: 32.1%;
-    width: 9.7%;
-    height: 13.2%;
+    width: 8.5%;
+    height: 11.5%;
+  }
+
+  #safe-body {
+    border-width: 2px;
+    border-radius: 4px;
+  }
+
+  #safe-display {
+    font-size: 8px;
+    padding: 1px 5px;
+    letter-spacing: 2px;
+    top: 4px;
+  }
+
+  #safe-handle {
+    width: 10px;
+    height: 10px;
+    border-width: 2px;
+    right: 4px;
+    bottom: 3px;
   }
 
   #memo-on-floor {
@@ -1509,17 +1504,6 @@ body {
   /* クリア画面 */
   .clear-title { font-size: 36px; letter-spacing: 8px; }
   .clear-dialog { width: 95%; }
-}
-
-/* スマホ縦持ち時に横向き推奨を表示 */
-@media screen and (max-width: 680px) and (orientation: portrait) {
-  #rotate-overlay {
-    display: flex;
-  }
-
-  #rotate-overlay.dismissed {
-    display: none;
-  }
 }
 
 /* スマホ横向き時の微調整 */

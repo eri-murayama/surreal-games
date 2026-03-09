@@ -1,18 +1,3 @@
-// ===== 横向き推奨オーバーレイ =====
-const rotateOverlay = document.getElementById('rotate-overlay');
-const rotateDismiss = document.getElementById('rotate-dismiss');
-if (rotateDismiss) {
-  rotateDismiss.addEventListener('click', () => {
-    rotateOverlay.classList.add('dismissed');
-  });
-}
-// 横向きにしたら自動で消す
-window.addEventListener('orientationchange', () => {
-  if (screen.orientation && screen.orientation.type.includes('landscape')) {
-    rotateOverlay.classList.add('dismissed');
-  }
-});
-
 // ===== ゲーム状態 =====
 const state = {
   inventory: [],

@@ -12,6 +12,8 @@ body {
 
 #game-wrapper {
   text-align: center;
+  width: 100%;
+  max-width: 512px;
 }
 
 .game-title {
@@ -25,8 +27,10 @@ body {
 /* ===== ゲーム画面 ===== */
 #screen {
   position: relative;
-  width: 512px;
-  height: 384px;
+  width: 100%;
+  max-width: 512px;
+  height: auto;
+  aspect-ratio: 512 / 384;
   background: #000;
   border: 4px solid #444;
   border-radius: 4px;
@@ -35,8 +39,8 @@ body {
 }
 
 #canvas {
-  width: 512px;
-  height: 384px;
+  width: 100%;
+  height: 100%;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   display: block;
@@ -328,8 +332,8 @@ body {
 }
 
 @media (max-width: 540px) {
-  #screen { width: 320px; height: 240px; }
-  #canvas { width: 320px; height: 240px; }
+  #screen { width: 100%; height: auto; aspect-ratio: 512 / 384; }
+  #canvas { width: 100%; height: 100%; }
   #status-bar { font-size: 10px; padding: 3px 6px; }
   #msg-box { height: 60px; padding: 8px 10px; }
   #msg-text { font-size: 11px; }
