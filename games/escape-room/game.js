@@ -11,6 +11,17 @@ const state = {
   hiddenRevealed: false,
   safeCode: [],
   startTime: Date.now(),
+  // 全アイテムチェック用
+  checkedItems: {
+    door: false,
+    painting: false,
+    window: false,
+    clock: false,
+    table: false,
+    safe: false,
+    memo: false,
+    flashlight: false,
+  },
 };
 
 // 正解コード: 星=5, 時計=3, 5+3=8 → 538
@@ -32,6 +43,7 @@ const flashlightOnFloor = document.getElementById('flashlight-on-floor');
 const hiddenMessage = document.getElementById('hidden-message');
 const safeModal = document.getElementById('safe-modal');
 const memoModal = document.getElementById('memo-modal');
+const windowModal = document.getElementById('window-modal');
 
 // ===== セリフ表示 =====
 let currentInterval = null;
@@ -64,6 +76,21 @@ function showDialog(text, speaker = '主人公') {
       currentInterval = null;
     }
   }, 35);
+}
+
+// ===== 全アイテムチェック＆ドア解錠判定 =====
+function checkItem(key) {
+  state.checkedItems[key] = true;
+  checkAllItems();
+}
+
+function checkAllItems() {
+  const all = Object.values(state.checkedItems);
+  if (all.every(v => v) && !state.doorUnlocked) {
+    state.doorUnlocked = true;
+    showDialog('あれっ……なんかカチッて音がした！<br>扉の鍵が開いたかも！？');
+    door.classList.add('door-unlocked');
+  }
 }
 
 // ===== アイテム管理 =====
@@ -135,6 +162,7 @@ memoOnFloor.addEventListener('click', (e) => {
   memoOnFloor.classList.add('hidden');
   addItem('memo', '\u{1F4C4}', 'ナゾのメモ');
   showDialog('あっ、なんか紙が落ちてる！ なになに……？<br>アイテムからチェックしてみよっと！');
+  checkItem('memo');
 });
 
 // ===== 懐中電灯 =====
@@ -146,21 +174,24 @@ flashlightOnFloor.addEventListener('click', (e) => {
   flashlightOnFloor.classList.add('hidden');
   addItem('flashlight', '\u{1F526}', '懐中電灯');
   showDialog('おおっ、懐中電灯じゃん！ ラッキ〜！<br>暗いとこ照らせるかも！');
+  checkItem('flashlight');
 });
 
 // ===== 絵画 =====
 painting.addEventListener('click', (e) => {
   e.stopPropagation();
+  checkItem('painting');
   if (state.selectedItem === 'flashlight') {
-    showDialog('懐中電灯でピカーッ！ おお〜きれいな絵だ〜！<br>お星さまが 5コ と お月さまが 1コ あるね！');
+    showDialog('懐中電灯でピカーッ！ うわっ、なんかシュールな絵だ……！<br>なぞなぞ？ ねこはねこでも……いぬ！？');
   } else {
-    showDialog('壁に絵が飾ってある〜。夜空の絵っぽい？<br>暗くてよく見えないな……。');
+    showDialog('壁に絵が飾ってある〜。なんか変な絵だなあ……<br>暗くてよく見えないや。');
   }
 });
 
 // ===== 時計 =====
 clock.addEventListener('click', (e) => {
   e.stopPropagation();
+  checkItem('clock');
   if (state.selectedItem === 'flashlight') {
     showDialog('時計を照らしてみた！ えっと……<br>短い針が 3 で、長い針が 12 ……3時だ！ おやつの時間！');
   } else {
@@ -186,18 +217,27 @@ room.addEventListener('click', (e) => {
 // ===== 窓 =====
 windowEl.addEventListener('click', (e) => {
   e.stopPropagation();
-  showDialog('窓の外まっくら〜！ 夜なのかな？<br>ていうかここ何階だろ……飛び降りるのはムリだよね。');
+  checkItem('window');
+  windowModal.classList.remove('hidden');
+  showDialog('窓の外を覗いてみよう……！');
+});
+
+document.getElementById('window-close-btn').addEventListener('click', () => {
+  windowModal.classList.add('hidden');
+  showDialog('うわ〜、なんか不思議な景色だった……<br>ここ、どこなんだろ？');
 });
 
 // ===== テーブル =====
 table.addEventListener('click', (e) => {
   e.stopPropagation();
+  checkItem('table');
   showDialog('テーブルだ！ その上に何か箱っぽいのがある……<br>金庫かな？ 気になる〜！');
 });
 
 // ===== 金庫 =====
 safe.addEventListener('click', (e) => {
   e.stopPropagation();
+  checkItem('safe');
   if (state.safeOpened) {
     showDialog('金庫はもうカラッポだよ〜。');
     return;
@@ -254,7 +294,7 @@ function checkSafeCode() {
     setTimeout(() => {
       safeModal.classList.add('hidden');
       addItem('key', '\u{1F511}', '古びた鍵');
-      showDialog('やった〜！ 金庫が開いたよ！<br>中に鍵が入ってた！ これで扉が開くかも……！？');
+      showDialog('やった〜！ 金庫が開いたよ！<br>中に鍵が入ってた！');
     }, 1200);
   } else {
     result.textContent = 'ブッブー！ ハズレ〜！';
@@ -271,34 +311,34 @@ document.getElementById('safe-close-btn').addEventListener('click', () => {
 // ===== メモモーダル =====
 document.getElementById('memo-close-btn').addEventListener('click', () => {
   memoModal.classList.add('hidden');
-  showDialog('星の数……時計の数……足した数……？<br>うーん、あたし算数ニガテなんだけどな〜。');
+  showDialog('なんだこのメモ……シュールすぎる！<br>歯に挟まったら嫌なもの……いぬ！？');
 });
 
 // ===== 扉 =====
 door.addEventListener('click', (e) => {
   e.stopPropagation();
+  checkItem('door');
   if (state.cleared) return;
 
   if (state.doorUnlocked) {
-    showDialog('もう扉は開いてるよ〜！ ひかりがまぶし〜！');
-    return;
-  }
-
-  if (state.selectedItem === 'key') {
-    state.doorUnlocked = true;
-    removeItem('key');
+    // ドアを開ける
     door.classList.add('door-open');
-    showDialog('鍵を差し込んで……えいっ！ カチッ！<br>わあああ開いた〜〜〜！！！');
+    showDialog('アッ、引き戸かと思ってたけど押し戸だった！');
 
     setTimeout(() => {
       gameClear();
     }, 2500);
+    return;
+  }
+
+  if (state.selectedItem === 'key') {
+    showDialog('鍵を差してみたけど……合わないみたい？<br>なんか他に方法がありそう。');
   } else if (state.selectedItem === 'flashlight') {
-    showDialog('扉を照らしてみた！ 鍵穴がバッチリ見えるね。<br>でも鍵がないと開かないよ〜。');
+    showDialog('扉を照らしてみた！ 鍵穴がバッチリ見えるね。<br>でも鍵では開かないのかも……？');
   } else if (state.selectedItem === 'memo') {
     showDialog('扉にメモをかざしてみたけど何も起きない！<br>そりゃそうだよね〜あはは。');
   } else {
-    showDialog('がちゃがちゃ……ダメだ、鍵かかってる〜。<br>鍵穴があるから、どっかに鍵があるはず！');
+    showDialog('がちゃがちゃ……ダメだ、鍵かかってる〜。<br>部屋の中を全部調べたら何かわかるかも……！');
   }
 });
 
@@ -323,7 +363,7 @@ function gameClear() {
   createConfetti();
   createParticles();
 
-  showDialog('やった〜〜〜！！ 出られた〜！！<br>もう電車と間違えて変な部屋に入らないようにしよ……。', '主人公');
+  showDialog('やった〜〜〜！！ 出られた〜！！<br>押し戸って気づくの遅すぎたかな……あはは！', '主人公');
 }
 
 function createConfetti() {

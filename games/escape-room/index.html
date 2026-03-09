@@ -49,12 +49,7 @@
         <div id="painting" class="clickable" title="壁に絵が飾ってある">
           <div id="painting-frame">
             <div id="painting-canvas">
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="moon">&#9790;</span>
+              <img src="painting-art.png" alt="壁の絵" style="width:100%; height:100%; object-fit:cover; border-radius:1px;">
             </div>
           </div>
         </div>
@@ -117,7 +112,7 @@
       <!-- セリフ表示エリア -->
       <div id="dialog-box">
         <div id="dialog-portrait">
-          <div id="portrait-icon">&#128100;</div>
+          <img id="portrait-icon" src="protagonist.png" alt="主人公">
         </div>
         <div id="dialog-content">
           <div id="dialog-name">主人公</div>
@@ -160,12 +155,17 @@
   <div id="memo-modal" class="modal hidden">
     <div id="memo-modal-content">
       <div id="memo-paper">
-        <p class="memo-line">&#127775; の数を 1つ目に。</p>
-        <p class="memo-line">&#128336; が指す数を 2つ目に。</p>
-        <p class="memo-line">&#127775; と &#128336; を足した数を 3つ目に。</p>
-        <p class="memo-hint">── これが開く鍵となる ──</p>
+        <img src="memo-art.png" alt="メモ" style="width:100%; border-radius:4px;">
       </div>
       <button id="memo-close-btn">とじる</button>
+    </div>
+  </div>
+
+  <!-- 窓の外モーダル -->
+  <div id="window-modal" class="modal hidden">
+    <div id="window-modal-content">
+      <img src="window-view.png" alt="窓の外の景色" style="width:100%; border-radius:8px; max-width:500px;">
+      <button id="window-close-btn">とじる</button>
     </div>
   </div>
 

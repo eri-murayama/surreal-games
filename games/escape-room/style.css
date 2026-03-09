@@ -179,6 +179,15 @@ body {
   background: #5a3040;
 }
 
+#door.door-unlocked #door-frame {
+  animation: doorGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes doorGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 240, 200, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(255, 240, 200, 0.8), 0 0 40px rgba(255, 220, 150, 0.3); }
+}
+
 #door.door-open #door-panel {
   animation: doorOpen 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -499,7 +508,11 @@ body {
 }
 
 #portrait-icon {
-  font-size: 34px;
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #6a4a5e;
 }
 
 #dialog-content {
@@ -726,6 +739,32 @@ body {
 }
 
 #safe-close-btn:hover, #memo-close-btn:hover {
+  background: rgba(80, 80, 120, 0.3);
+  color: #c0c0e0;
+}
+
+/* ===== 窓モーダル ===== */
+#window-modal-content {
+  text-align: center;
+  max-width: 520px;
+}
+
+#window-close-btn {
+  padding: 8px 26px;
+  font-size: 14px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  background: transparent;
+  color: #a0a0c0;
+  border: 2px solid #5a5a7a;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 2px;
+  margin-top: 14px;
+}
+
+#window-close-btn:hover {
   background: rgba(80, 80, 120, 0.3);
   color: #c0c0e0;
 }
