@@ -1,3 +1,33 @@
+// ===== カスタムカーソル =====
+const customCursor = document.getElementById('custom-cursor');
+
+document.addEventListener('mousemove', (e) => {
+  customCursor.style.left = e.clientX + 'px';
+  customCursor.style.top = e.clientY + 'px';
+});
+
+document.addEventListener('pointerdown', () => {
+  customCursor.classList.add('swing');
+  setTimeout(() => customCursor.classList.remove('swing'), 100);
+});
+
+// ===== 痛みセリフ =====
+const painLines = [
+  'いたい…', 'なんで…？', 'ひどいよ…',
+  'やめて…', 'うう…', 'ぼくが何したの…',
+  'いたいよぉ…', 'もうやだ…', 'ごめんなさい…',
+];
+
+function spawnPainText(x, y) {
+  const el = document.createElement('div');
+  el.className = 'pain-text';
+  el.textContent = painLines[Math.floor(Math.random() * painLines.length)];
+  el.style.left = `${x}px`;
+  el.style.top = `${y - 30}px`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
 // ===== ゲーム設定 =====
 const GAME_DURATION = 30;
 const BASE_SHOW_TIME = 1200;
@@ -158,6 +188,7 @@ board.addEventListener('pointerdown', (e) => {
 
     // エフェクト
     spawnHitText(x, y, points, state.combo >= 3);
+    spawnPainText(x, y);
     shakeScreen();
 
     setTimeout(() => {

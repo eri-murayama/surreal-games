@@ -13,7 +13,7 @@ body {
   align-items: flex-start;
   padding: 8px;
   overflow-x: hidden;
-  cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">🔨</text></svg>') 16 16, pointer;
+  cursor: none;
 }
 
 #game-wrapper {
@@ -303,6 +303,82 @@ button:active {
 
 .hidden {
   display: none !important;
+}
+
+/* カスタムカーソル（釘バット） */
+#custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-20px, -8px);
+}
+
+#cursor-bat {
+  width: 48px;
+  height: 48px;
+  position: relative;
+  transition: transform 0.06s ease-out;
+}
+
+/* 釘バット SVG描画 */
+#cursor-bat::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 18px;
+  width: 10px;
+  height: 32px;
+  background: linear-gradient(90deg, #8B6914, #a07828, #8B6914);
+  border-radius: 2px;
+  transform: rotate(-15deg);
+  transform-origin: bottom center;
+}
+
+/* バットの頭（太い部分） */
+#cursor-bat::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 10px;
+  width: 26px;
+  height: 16px;
+  background: linear-gradient(180deg, #666, #444);
+  border-radius: 3px;
+  transform: rotate(-15deg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+/* 釘 */
+.nail {
+  position: absolute;
+  width: 3px;
+  height: 8px;
+  background: linear-gradient(180deg, #ccc, #888);
+  border-radius: 0 0 1px 1px;
+}
+
+#custom-cursor.swing #cursor-bat {
+  transform: rotate(-40deg);
+}
+
+/* 叩かれた時のセリフ */
+.pain-text {
+  position: fixed;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 100;
+  animation: painFloat 1s ease-out forwards;
+  white-space: nowrap;
+}
+
+@keyframes painFloat {
+  0% { opacity: 1; transform: translateY(0) translateX(-50%) scale(1); }
+  30% { opacity: 1; transform: translateY(-15px) translateX(-50%) scale(1.15); }
+  100% { opacity: 0; transform: translateY(-50px) translateX(-50%) scale(0.8); }
 }
 
 /* 画面揺れ */

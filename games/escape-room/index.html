@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>脱出ゲーム - ある部屋からの脱出</title>
+  <title>脱出ゲーム - かわいい部屋からの脱出</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
     </div>
 
     <div id="game-container">
-      <h1 class="game-title">ある部屋からの脱出</h1>
+      <h1 class="game-title">かわいい部屋からの脱出</h1>
 
       <!-- 部屋の描画エリア -->
       <div id="room">
@@ -63,6 +63,9 @@
           <div id="window-frame-v"></div>
           <div id="window-frame-h"></div>
         </div>
+
+        <!-- 窓の外からのセリフ吹き出し -->
+        <div id="window-speech"></div>
 
         <!-- 時計（ヒント：針の位置＝数字） -->
         <div id="clock" class="clickable" title="壁掛け時計">
@@ -103,9 +106,21 @@
           <div class="item-sparkle sparkle2">&#10022;</div>
         </div>
 
+        <!-- 床のアイテム：ほこり -->
+        <div id="dust-on-floor" class="clickable floor-item" title="何か積もっている...">
+          <div class="dust-shape">&#127787;</div>
+          <div class="item-sparkle sparkle3">&#10022;</div>
+        </div>
+
+        <!-- 床のアイテム：お弁当 -->
+        <div id="bento-on-floor" class="clickable floor-item" title="何かいい匂いがする...">
+          <div class="bento-shape">&#127857;</div>
+          <div class="item-sparkle sparkle4">&#10022;</div>
+        </div>
+
         <!-- 隠しメッセージ（懐中電灯で見える） -->
         <div id="hidden-message">
-          <span>&#9312; &#127775;  &#9313; &#128336;  &#9314; &#127775;+&#128336;</span>
+          <span>うんち</span>
         </div>
       </div>
 
@@ -116,7 +131,7 @@
         </div>
         <div id="dialog-content">
           <div id="dialog-name">主人公</div>
-          <div id="dialog-text">……ん、ここは？ 気がついたら知らない部屋にいた。<br>出口を探さないと……！</div>
+          <div id="dialog-text">……ん？ここは…？ あてもなく歩いていたら知らない部屋に入っちゃった。<br>さあて、どうしようかな♪</div>
         </div>
         <div id="dialog-indicator">&#9660;</div>
       </div>
@@ -147,6 +162,8 @@
         <button class="numpad-btn numpad-enter" data-num="enter">&#10004;</button>
       </div>
       <div id="safe-result"></div>
+      <div class="modal-dialog-text" id="safe-modal-dialog"></div>
+      <button id="safe-smash-btn" class="hidden">もういい、叩いて壊す</button>
       <button id="safe-close-btn">とじる</button>
     </div>
   </div>
@@ -161,11 +178,32 @@
     </div>
   </div>
 
+  <!-- 絵画拡大モーダル -->
+  <div id="painting-modal" class="modal hidden">
+    <div id="painting-modal-content">
+      <img src="painting-art.png" alt="壁の絵" style="width:100%; border-radius:8px; max-width:500px;">
+      <button id="painting-close-btn">とじる</button>
+    </div>
+  </div>
+
   <!-- 窓の外モーダル -->
   <div id="window-modal" class="modal hidden">
     <div id="window-modal-content">
-      <img src="window-view.png" alt="窓の外の景色" style="width:100%; border-radius:8px; max-width:500px;">
+      <div id="window-peek-frame">
+        <div id="window-peek-vignette"></div>
+        <img src="window-view.png" alt="窓の外の景色" id="window-peek-img">
+      </div>
+      <p id="window-peek-text">窓の外を覗いている……</p>
       <button id="window-close-btn">とじる</button>
+    </div>
+  </div>
+
+  <!-- アイテム調査モーダル -->
+  <div id="item-inspect-modal" class="modal hidden">
+    <div id="item-inspect-content">
+      <div id="item-inspect-icon"></div>
+      <div id="item-inspect-name"></div>
+      <button id="item-inspect-close-btn">とじる</button>
     </div>
   </div>
 
