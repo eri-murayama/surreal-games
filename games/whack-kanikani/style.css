@@ -301,6 +301,12 @@ button:active {
   transform: translateY(1px);
 }
 
+button.btn-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+  cursor: default;
+}
+
 .hidden {
   display: none !important;
 }

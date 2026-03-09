@@ -268,4 +268,12 @@ function endGame() {
   startScreen.classList.add('hidden');
   resultScreen.classList.remove('hidden');
   overlay.classList.remove('hidden');
+
+  // リトライボタンを一定時間無効化（誤クリック防止）
+  retryBtn.disabled = true;
+  retryBtn.classList.add('btn-disabled');
+  setTimeout(() => {
+    retryBtn.disabled = false;
+    retryBtn.classList.remove('btn-disabled');
+  }, 2000);
 }

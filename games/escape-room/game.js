@@ -20,7 +20,6 @@ const state = {
     painting: false,
     window: false,
     clock: false,
-    table: false,
     safe: false,
     memo: false,
     flashlight: false,
@@ -347,16 +346,7 @@ document.getElementById('window-close-btn').addEventListener('click', () => {
   showDialog('外にかわいらしい女の子がいる。<br>おっひょ～～げきまぶ～～！');
 });
 
-// ===== テーブル =====
-table.addEventListener('click', (e) => {
-  e.stopPropagation();
-  checkItem('table');
-  if (state.windowPeeked) {
-    showDialog('テーブルの上に手作りのお弁当箱がある……。<br>まさか、さっきの生き物のごはん？<br>……意外とちゃんとした暮らししてるんだな。');
-  } else {
-    showDialog('テーブルだ！ その上に何か箱っぽいのがある……<br>金庫かな？ 気になる〜！');
-  }
-});
+// ===== テーブル（調べられない） =====
 
 // ===== 金庫 =====
 let safeCode = '';
@@ -451,7 +441,7 @@ door.addEventListener('click', (e) => {
     return;
   }
 
-  showDialog('がちゃがちゃ……ダメだ、鍵かかってる〜。<br>部屋の中を全部調べたら何かわかるかも……！');
+  showDialog('がちゃがちゃ……ダメだ、なんでか開かない。<br>仕方がないから部屋の中を全部舐めまわすように物色しよう……！不可抗力だ！');
 });
 
 // ===== ゲームクリア =====
@@ -463,11 +453,31 @@ function gameClear() {
   const sec = elapsed % 60;
   const timeStr = `${min}分${sec}秒`;
 
+  let rank, rankComment;
+  if (elapsed <= 60) {
+    rank = '👑 変態プロフェッショナル';
+    rankComment = '手慣れすぎている。常習犯の疑いあり。';
+  } else if (elapsed <= 120) {
+    rank = '🦹 侵入のエキスパート';
+    rankComment = 'この速さ……プロの犯行だ。';
+  } else if (elapsed <= 180) {
+    rank = '🔍 物色マニア';
+    rankComment = 'まあまあの手際。次はもっと早くできるはず。';
+  } else if (elapsed <= 300) {
+    rank = '🐌 のんびり不法侵入';
+    rankComment = 'ゆっくり堪能しすぎ。通報されるよ。';
+  } else {
+    rank = '😴 居座り犯';
+    rankComment = 'もはや住んでる。';
+  }
+
   const overlay = document.createElement('div');
   overlay.id = 'clear-overlay';
   overlay.innerHTML = `
     <div class="clear-title">脱出成功！</div>
     <div class="clear-time">クリアタイム: ${timeStr}</div>
+    <div class="clear-rank">${rank}</div>
+    <div class="clear-rank-comment">${rankComment}</div>
   `;
   document.body.appendChild(overlay);
 
