@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ぱーてぃーげーむ - 連打バトル</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1 class="game-title">🎉 ぱーてぃーげーむ 🎉</h1>
+    <p class="game-subtitle">キーボードを叩きまくれ！連打バトル！</p>
+
+    <!-- モード選択画面 -->
+    <div id="mode-screen">
+      <div class="setup-box">
+        <h2>あそびかた</h2>
+        <div class="mode-select">
+          <button class="mode-btn" id="mode-local-btn">
+            <span class="mode-icon">🎮</span>
+            <span class="mode-label">ローカル対戦</span>
+            <span class="mode-desc">1台のPCでわいわい</span>
+          </button>
+          <button class="mode-btn" id="mode-online-btn">
+            <span class="mode-icon">🌐</span>
+            <span class="mode-label">オンライン対戦</span>
+            <span class="mode-desc">離れた友達と対戦</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ローカル人数選択画面 -->
+    <div id="local-setup-screen" class="hidden">
+      <div class="setup-box">
+        <h2>何人で遊ぶ？</h2>
+        <div class="player-select">
+          <button class="player-btn" data-count="1">1人</button>
+          <button class="player-btn" data-count="2">2人</button>
+          <button class="player-btn" data-count="3">3人</button>
+          <button class="player-btn" data-count="4">4人</button>
+        </div>
+        <div class="key-info">
+          <p>P1: <kbd>F</kbd></p>
+          <p>P2: <kbd>J</kbd></p>
+          <p>P3: <kbd>V</kbd></p>
+          <p>P4: <kbd>N</kbd></p>
+        </div>
+        <p class="setup-hint">10秒間でキーを連打しまくれ！<br>一番多く押した人の勝ち！</p>
+        <button id="local-back-btn" class="back-link">← 戻る</button>
+      </div>
+    </div>
+
+    <!-- オンラインロビー画面 -->
+    <div id="online-lobby-screen" class="hidden">
+      <div class="setup-box">
+        <h2>🌐 オンライン対戦</h2>
+        <div class="online-choice">
+          <button id="create-room-btn" class="mode-btn mode-btn--small">
+            <span class="mode-icon">🏠</span>
+            <span class="mode-label">部屋をつくる</span>
+          </button>
+          <button id="join-room-btn" class="mode-btn mode-btn--small">
+            <span class="mode-icon">🚪</span>
+            <span class="mode-label">部屋に入る</span>
+          </button>
+        </div>
+
+        <!-- ホスト：部屋作成後 -->
+        <div id="host-panel" class="hidden">
+          <div class="room-code-box">
+            <p class="room-code-label">あいことば</p>
+            <div id="room-code" class="room-code">---</div>
+            <button id="copy-code-btn" class="copy-btn">コピー</button>
+          </div>
+          <div id="host-members" class="member-list"></div>
+          <p class="lobby-hint">友達にあいことばを教えてね！<br>みんな揃ったらスタート！</p>
+          <button id="online-start-btn" class="hidden">ゲームスタート！</button>
+        </div>
+
+        <!-- ゲスト：コード入力 -->
+        <div id="join-panel" class="hidden">
+          <p class="join-label">あいことばを入力</p>
+          <input type="text" id="join-code-input" class="code-input" placeholder="あいことば" maxlength="20" autocomplete="off">
+          <button id="join-submit-btn">参加する</button>
+          <div id="join-status" class="status-text"></div>
+        </div>
+
+        <div id="online-status" class="status-text"></div>
+        <button id="online-back-btn" class="back-link">← 戻る</button>
+      </div>
+    </div>
+
+    <!-- オンライン待機画面（ゲスト用） -->
+    <div id="online-wait-screen" class="hidden">
+      <div class="setup-box">
+        <h2>🌐 部屋に参加中！</h2>
+        <div id="guest-members" class="member-list"></div>
+        <p class="lobby-hint">ホストがゲームを開始するのを待ってるよ！</p>
+        <p class="lobby-hint">あなたのキー: <kbd>スペース</kbd> を連打！</p>
+        <div id="guest-status" class="status-text"></div>
+      </div>
+    </div>
+
+    <!-- カウントダウン画面 -->
+    <div id="countdown-screen" class="hidden">
+      <div id="countdown-number">3</div>
+    </div>
+
+    <!-- バトル画面 -->
+    <div id="battle-screen" class="hidden">
+      <div id="battle-timer">10</div>
+      <div id="battle-label">連打せよ！！！</div>
+      <div id="player-lanes"></div>
+    </div>
+
+    <!-- リザルト画面 -->
+    <div id="result-screen" class="hidden">
+      <div class="result-box">
+        <h2 id="result-title">結果発表！</h2>
+        <div id="result-list"></div>
+        <div id="result-comment"></div>
+        <button id="retry-btn">もう一回！</button>
+        <button id="back-btn" class="back-link">モード選択に戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

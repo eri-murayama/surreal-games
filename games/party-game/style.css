@@ -1,0 +1,546 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic Pro', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  overflow: hidden;
+}
+
+#game-wrapper {
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+/* ===== タイトル ===== */
+.game-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 28px;
+  color: #fff;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+  margin-bottom: 4px;
+}
+
+.game-subtitle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 20px;
+}
+
+/* ===== 共通ボックス ===== */
+.setup-box {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 24px;
+  padding: 32px;
+}
+
+.setup-box h2 {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 22px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+/* ===== モード選択 ===== */
+.mode-select, .online-choice {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  width: 200px;
+  padding: 24px 16px;
+  border-radius: 20px;
+  border: 2px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.mode-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.mode-btn--small {
+  width: 170px;
+  padding: 18px 14px;
+}
+
+.mode-icon { font-size: 36px; }
+.mode-label {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.mode-desc {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* ===== ローカル人数選択 ===== */
+.player-select {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.player-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.player-btn:hover {
+  background: rgba(255,255,255,0.35);
+  transform: scale(1.1);
+  border-color: #fff;
+}
+
+.player-btn:active { transform: scale(0.95); }
+
+.key-info {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.key-info p {
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+}
+
+kbd {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  color: #fff;
+}
+
+.setup-hint, .lobby-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  line-height: 1.8;
+  margin-top: 8px;
+}
+
+/* ===== オンラインロビー ===== */
+.room-code-box {
+  margin: 20px 0;
+}
+
+.room-code-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.room-code {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 36px;
+  color: #ffd700;
+  letter-spacing: 6px;
+  text-shadow: 0 0 12px rgba(255,215,0,0.4);
+  margin-bottom: 8px;
+  user-select: all;
+}
+
+.copy-btn {
+  padding: 4px 16px;
+  font-size: 12px;
+  border-radius: 12px;
+  opacity: 0.8;
+}
+
+.member-list {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 16px 0;
+  min-height: 50px;
+}
+
+.member-tag {
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.member-tag .member-chara { font-size: 20px; }
+
+.join-label {
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.code-input {
+  display: block;
+  margin: 0 auto 12px;
+  width: 220px;
+  padding: 10px 16px;
+  font-size: 20px;
+  font-family: 'Hachi Maru Pop', cursive;
+  text-align: center;
+  background: rgba(0,0,0,0.2);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 12px;
+  color: #ffd700;
+  letter-spacing: 4px;
+  outline: none;
+}
+
+.code-input::placeholder {
+  color: rgba(255,255,255,0.3);
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.code-input:focus {
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255,215,0,0.3);
+}
+
+.status-text {
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  margin-top: 10px;
+  min-height: 20px;
+}
+
+.status-text.error { color: #ff8a8a; }
+.status-text.success { color: #8aff8a; }
+
+.back-link {
+  font-size: 12px !important;
+  padding: 6px 16px !important;
+  opacity: 0.6;
+  margin-top: 16px !important;
+  display: inline-block;
+}
+
+/* ===== カウントダウン ===== */
+#countdown-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+#countdown-number {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 140px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(255,255,255,0.5);
+  animation: countPulse 1s ease-in-out infinite;
+}
+
+@keyframes countPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+/* ===== バトル画面 ===== */
+#battle-timer {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 48px;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255,255,255,0.4);
+  margin-bottom: 4px;
+}
+
+#battle-timer.urgent {
+  color: #ff4;
+  animation: timerPulse 0.4s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+#battle-label {
+  font-size: 16px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 20px;
+  letter-spacing: 4px;
+}
+
+#player-lanes {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ===== プレイヤーレーン ===== */
+.player-lane {
+  width: 160px;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.25);
+  border-radius: 16px;
+  padding: 16px 12px;
+  transition: all 0.1s;
+}
+
+.player-lane.flash {
+  background: rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.6);
+}
+
+.player-lane.me {
+  border-color: rgba(255,215,0,0.6);
+  box-shadow: 0 0 12px rgba(255,215,0,0.2);
+}
+
+.lane-name {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 4px;
+  letter-spacing: 2px;
+}
+
+.lane-key {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 12px;
+}
+
+.lane-bar-container {
+  width: 100%;
+  height: 200px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.lane-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  border-radius: 10px;
+  transition: height 0.15s ease-out;
+}
+
+.lane-bar--p1 { background: linear-gradient(180deg, #ff6b8a, #ff3366); }
+.lane-bar--p2 { background: linear-gradient(180deg, #4ecdc4, #2ab7a9); }
+.lane-bar--p3 { background: linear-gradient(180deg, #ffd166, #ffaa00); }
+.lane-bar--p4 { background: linear-gradient(180deg, #a78bfa, #7c3aed); }
+
+.lane-count {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+.lane-chara {
+  font-size: 36px;
+  margin-bottom: 6px;
+}
+
+/* ===== リザルト画面 ===== */
+.result-box {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 24px;
+  padding: 32px;
+}
+
+.result-box h2 {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 28px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+#result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 10px 20px;
+  opacity: 0;
+  animation: resultIn 0.5s ease-out forwards;
+}
+
+.result-row:nth-child(1) { animation-delay: 0.3s; }
+.result-row:nth-child(2) { animation-delay: 0.6s; }
+.result-row:nth-child(3) { animation-delay: 0.9s; }
+.result-row:nth-child(4) { animation-delay: 1.2s; }
+
+.result-row.winner {
+  background: rgba(255,215,0,0.25);
+  border: 2px solid rgba(255,215,0,0.5);
+}
+
+@keyframes resultIn {
+  0% { opacity: 0; transform: translateX(-20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.result-rank-num {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffd700;
+  min-width: 36px;
+}
+
+.result-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  flex: 1;
+  text-align: left;
+}
+
+.result-score {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 22px;
+  color: #fff;
+}
+
+#result-comment {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 20px;
+  font-style: italic;
+  min-height: 20px;
+  opacity: 0;
+  animation: fadeIn 0.5s 1.5s forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ===== ボタン共通 ===== */
+button {
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 2px;
+  margin: 4px;
+}
+
+button:hover {
+  background: rgba(255,255,255,0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+button:active { transform: translateY(1px); }
+
+/* ===== 連打エフェクト ===== */
+.tap-effect {
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  animation: tapPop 0.4s ease-out forwards;
+}
+
+@keyframes tapPop {
+  0% { opacity: 1; transform: scale(0.5) translateY(0); }
+  50% { opacity: 1; transform: scale(1.2) translateY(-10px); }
+  100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+}
+
+/* ===== 画面揺れ ===== */
+.screen-shake { animation: shake 0.08s ease-out; }
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
+.hidden { display: none !important; }
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 700px) {
+  .player-lane { width: 120px; }
+  .lane-bar-container { height: 150px; }
+  .lane-count { font-size: 22px; }
+  .lane-chara { font-size: 28px; }
+  .mode-btn { width: 160px; padding: 18px 12px; }
+}
+
+@media (max-width: 520px) {
+  #player-lanes { flex-wrap: wrap; }
+  .player-lane { width: 140px; }
+}
