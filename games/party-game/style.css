@@ -577,3 +577,19 @@ button:active { transform: translateY(1px); }
 }
 
 #mobile-tap-btn.hidden { display: none !important; }
+
+/* ===== トップに戻るリンク ===== */
+.back-to-top-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  z-index: 300;
+  transition: color 0.2s;
+}
+.back-to-top-link:hover {
+  color: #fff;
+}

@@ -418,3 +418,19 @@ body {
   #dpad { width: 110px; height: 110px; }
   #action-btn { width: 54px; height: 54px; font-size: 18px; }
 }
+
+/* ===== トップに戻るリンク ===== */
+.back-to-top-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  z-index: 300;
+  transition: color 0.2s;
+}
+.back-to-top-link:hover {
+  color: #8c8;
+}
