@@ -1366,6 +1366,35 @@ body {
     height: 51.3%;
   }
 
+  #door-frame {
+    border-width: 3px;
+    padding: 4px;
+  }
+
+  #doorknob {
+    right: 10%;
+    top: 44%;
+    width: 18%;
+    height: 9%;
+  }
+
+  #keyhole {
+    right: 12%;
+    top: 54%;
+    width: 10%;
+    height: 8%;
+  }
+
+  #keyhole::before {
+    width: 5px;
+    height: 5px;
+  }
+
+  #keyhole::after {
+    width: 2px;
+    height: 5px;
+  }
+
   #painting {
     left: 30%;
     top: 3%;

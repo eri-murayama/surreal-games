@@ -542,7 +542,11 @@ button:active { transform: translateY(1px); }
 
 @media (max-width: 520px) {
   #game-wrapper {
-    padding-top: 28px;
+    padding-top: 36px;
+  }
+
+  .game-title {
+    font-size: 22px;
   }
 
   #player-lanes { flex-wrap: wrap; }
