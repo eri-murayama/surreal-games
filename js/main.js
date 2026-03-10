@@ -56,10 +56,15 @@ document.querySelectorAll('.about-bg-chara').forEach((el) => observer.observe(el
   }
 
   function doJumpscare() {
+    // 背景オーバーレイを追加
+    const overlay = document.createElement('div');
+    overlay.className = 'jumpscare-overlay';
+    document.body.appendChild(overlay);
     chara.classList.add('jumpscare');
     // 0.6秒で元に戻す
     setTimeout(() => {
       chara.classList.remove('jumpscare');
+      overlay.remove();
       // 次のジャンプスケアをスケジュール
       if (isInView) scheduleJumpscare();
     }, 600);
