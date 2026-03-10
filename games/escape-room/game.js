@@ -478,6 +478,7 @@ function gameClear() {
     <div class="clear-time">クリアタイム: ${timeStr}</div>
     <div class="clear-rank">${rank}</div>
     <div class="clear-rank-comment">${rankComment}</div>
+    <a href="../../index.html" class="clear-back-link">トップに戻る</a>
   `;
   document.body.appendChild(overlay);
 

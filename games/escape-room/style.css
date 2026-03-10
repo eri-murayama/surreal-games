@@ -156,7 +156,7 @@ body {
 
 #keyhole {
   position: absolute;
-  right: 13px; top: 55%;
+  right: 8px; top: 55%;
   width: 8px; height: 13px;
 }
 
@@ -295,7 +295,7 @@ body {
 #clock-hand-hour {
   position: absolute;
   top: 50%; left: 50%;
-  width: 16px; height: 3px;
+  width: 13px; height: 3px;
   background: #a06878;
   transform-origin: 0% 50%;
   transform: rotate(0deg);
@@ -306,25 +306,13 @@ body {
 #clock-hand-minute {
   position: absolute;
   top: 50%; left: 50%;
-  width: 22px; height: 2px;
+  width: 18px; height: 2px;
   background: #c088a0;
   transform-origin: 0% 50%;
   transform: rotate(-90deg);
   border-radius: 2px;
   z-index: 2;
 }
-
-.clock-number {
-  position: absolute;
-  font-size: 8px;
-  font-weight: 700;
-  color: #a08090;
-}
-
-.n12 { top: 3px; left: 50%; transform: translateX(-50%); }
-.n3 { right: 5px; top: 50%; transform: translateY(-50%); }
-.n6 { bottom: 3px; left: 50%; transform: translateX(-50%); }
-.n9 { left: 5px; top: 50%; transform: translateY(-50%); }
 
 /* ===== 窓 ===== */
 #window {
@@ -1078,7 +1066,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 60px;
+  padding: 60px 16px 40px;
   overflow-y: auto;
   z-index: 500;
   animation: clearBg 3s forwards;
@@ -1148,6 +1136,10 @@ body {
   opacity: 0;
   animation: fadeUp 1s 3.2s forwards;
   text-shadow: 0 0 20px rgba(255, 160, 200, 0.6);
+  text-align: center;
+  max-width: 90%;
+  word-break: keep-all;
+  line-height: 1.5;
 }
 
 .clear-rank-comment {
@@ -1157,6 +1149,9 @@ body {
   opacity: 0;
   animation: fadeUp 1s 3.8s forwards;
   font-style: italic;
+  text-align: center;
+  max-width: 90%;
+  line-height: 1.6;
 }
 
 .clear-dialog {
@@ -1315,9 +1310,23 @@ body {
   }
 
   #selected-item-name {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
     margin-top: 0;
     white-space: nowrap;
-    font-size: 10px;
+    font-size: 12px;
+    background: rgba(40, 20, 35, 0.92);
+    border: 1px solid #b0789a;
+    border-radius: 16px;
+    padding: 4px 16px;
+    z-index: 100;
+    min-height: auto;
+  }
+
+  #selected-item-name:empty {
+    display: none;
   }
 
   /* セリフボックス */
@@ -1386,12 +1395,12 @@ body {
   }
 
   #clock-hand-hour {
-    width: 10px;
+    width: 7px;
     height: 2px;
   }
 
   #clock-hand-minute {
-    width: 14px;
+    width: 10px;
     height: 1px;
   }
 
@@ -1482,8 +1491,6 @@ body {
   .bento-shape { font-size: 20px; }
   .item-sparkle { font-size: 11px; }
 
-  .clock-number { font-size: 6px; }
-
   /* モーダル調整 */
   #safe-modal-content {
     min-width: auto;
@@ -1502,8 +1509,11 @@ body {
   }
 
   /* クリア画面 */
-  .clear-title { font-size: 36px; letter-spacing: 8px; }
+  .clear-title { font-size: 32px; letter-spacing: 6px; }
+  .clear-rank { font-size: 22px; letter-spacing: 2px; }
+  .clear-rank-comment { font-size: 13px; line-height: 1.6; }
   .clear-dialog { width: 95%; }
+  .clear-back-link { font-size: 14px; padding: 10px 24px; }
 }
 
 /* スマホ横向き時の微調整 */
@@ -1556,5 +1566,30 @@ body {
   transition: color 0.2s;
 }
 .back-to-top-link:hover {
+  color: #fff;
+}
+
+/* ===== クリア画面のトップに戻るリンク ===== */
+.clear-back-link {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 12px 32px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0a0c0;
+  background: linear-gradient(180deg, rgba(60, 30, 50, 0.96) 0%, rgba(40, 20, 35, 0.98) 100%);
+  border: 2px solid #b0789a;
+  border-radius: 24px;
+  text-decoration: none;
+  letter-spacing: 3px;
+  opacity: 0;
+  animation: fadeUp 1s 10.5s forwards;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.clear-back-link:hover {
+  background: rgba(80, 40, 60, 0.9);
   color: #fff;
 }
