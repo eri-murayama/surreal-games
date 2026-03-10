@@ -208,6 +208,44 @@ body {
   100% { clip-path: inset(15% 0 55% 0); transform: translateX(3px); }
 }
 
+/* ヒーローキャラクター */
+.hero-chara {
+  position: absolute;
+  width: clamp(120px, 18vw, 220px);
+  bottom: 8%;
+  z-index: 2;
+  filter: drop-shadow(0 0 20px rgba(255, 110, 199, 0.3));
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.hero-chara--left {
+  left: 5%;
+  transform: rotate(-8deg);
+  animation: charaLeftBounce 4s ease-in-out infinite;
+}
+
+.hero-chara--right {
+  right: 5%;
+  transform: scaleX(-1) rotate(-8deg);
+  animation: charaRightBounce 4s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+@keyframes charaLeftBounce {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  30% { transform: rotate(-2deg) translateY(-25px); }
+  50% { transform: rotate(-12deg) translateY(-10px); }
+  80% { transform: rotate(-5deg) translateY(-18px); }
+}
+
+@keyframes charaRightBounce {
+  0%, 100% { transform: scaleX(-1) rotate(-8deg) translateY(0); }
+  30% { transform: scaleX(-1) rotate(-2deg) translateY(-25px); }
+  50% { transform: scaleX(-1) rotate(-12deg) translateY(-10px); }
+  80% { transform: scaleX(-1) rotate(-5deg) translateY(-18px); }
+}
+
 .tagline {
   margin-top: 1.5rem;
   font-size: clamp(1rem, 2.5vw, 1.4rem);
@@ -717,6 +755,15 @@ footer {
   .game-grid {
     grid-template-columns: 1fr;
   }
+
+  .hero-chara {
+    width: 90px;
+    bottom: 4%;
+    opacity: 0.6;
+  }
+
+  .hero-chara--left { left: 2%; }
+  .hero-chara--right { right: 2%; }
 
   .hero-nav {
     flex-direction: column;
