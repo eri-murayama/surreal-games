@@ -316,6 +316,11 @@ section {
   margin-top: 2rem;
 }
 
+.prototypes-link {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
 .game-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -794,4 +799,24 @@ footer {
   .store-btn {
     justify-content: center;
   }
+}
+
+/* ========================================
+   トップに戻るリンク（試作品ページ等）
+   ======================================== */
+
+.back-to-top-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  z-index: 300;
+  transition: color 0.2s;
+}
+
+.back-to-top-link:hover {
+  color: #fff;
 }
