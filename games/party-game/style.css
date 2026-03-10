@@ -541,6 +541,10 @@ button:active { transform: translateY(1px); }
 }
 
 @media (max-width: 520px) {
+  #game-wrapper {
+    padding-top: 28px;
+  }
+
   #player-lanes { flex-wrap: wrap; }
   .player-lane { width: 140px; }
 
