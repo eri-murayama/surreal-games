@@ -726,6 +726,17 @@ footer {
   section {
     padding: 3rem 1rem;
   }
+
+  .about-content {
+    font-size: 0.95rem;
+    line-height: 2;
+    padding: 0 0.5rem;
+    text-align: center;
+  }
+
+  .about-content p {
+    margin-bottom: 1.2rem;
+  }
 }
 
 @media (max-width: 480px) {
