@@ -34,12 +34,12 @@ body {
 
 .game-title {
   text-align: center;
-  color: #f8d0e0;
+  color: #e0d0f8;
   font-size: 22px;
   font-weight: 900;
   margin-bottom: 8px;
   letter-spacing: 6px;
-  text-shadow: 0 0 15px rgba(248, 180, 210, 0.5);
+  text-shadow: 0 0 15px rgba(210, 180, 248, 0.5);
 }
 
 /* ===== 部屋 ===== */
@@ -48,18 +48,18 @@ body {
   height: 380px;
   position: relative;
   overflow: hidden;
-  border: 3px solid #8a5a78;
+  border: 3px solid #7a5a8a;
   border-radius: 12px;
   cursor: default;
-  background: linear-gradient(180deg, #e8b8cc 0%, #d4a0b8 55%, #c89a80 55%, #b88870 100%);
-  box-shadow: 0 0 30px rgba(200, 120, 160, 0.3), inset 0 0 40px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(180deg, #ccb8e8 0%, #b8a0d4 55%, #c89a80 55%, #b88870 100%);
+  box-shadow: 0 0 30px rgba(160, 120, 200, 0.3), inset 0 0 40px rgba(0, 0, 0, 0.15);
 }
 
 #wall-back {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 55%;
-  background: linear-gradient(180deg, #f0c8d8 0%, #e0b0c4 40%, #d8a0b8 100%);
+  background: linear-gradient(180deg, #d8c8f0 0%, #c4b0e0 40%, #b8a0d8 100%);
 }
 
 /* 壁紙の模様 */
@@ -86,8 +86,8 @@ body {
     90deg,
     transparent 0px,
     transparent 78px,
-    rgba(255,200,220,0.2) 78px,
-    rgba(255,200,220,0.2) 80px
+    rgba(200,200,255,0.2) 78px,
+    rgba(200,200,255,0.2) 80px
   );
 }
 
@@ -121,16 +121,16 @@ body {
 
 #door-frame {
   width: 100%; height: 100%;
-  background: #e8c0d0;
-  border: 5px solid #c090a8;
+  background: #d0c0e8;
+  border: 5px solid #a890c0;
   border-radius: 6px 6px 0 0;
   padding: 7px;
 }
 
 #door-panel {
   width: 100%; height: 100%;
-  background: linear-gradient(135deg, #f0d0e0 0%, #e8c0d4 50%, #ddb0c8 100%);
-  border: 2px solid #c8a0b8;
+  background: linear-gradient(135deg, #e0d0f0 0%, #d4c0e8 50%, #c8b0dd 100%);
+  border: 2px solid #b8a0c8;
   position: relative;
   border-radius: 4px 4px 0 0;
 }
@@ -138,7 +138,7 @@ body {
 #door-detail-top, #door-detail-bottom {
   position: absolute;
   left: 12%; width: 76%; height: 26%;
-  border: 2px solid rgba(180,140,160,0.5);
+  border: 2px solid rgba(160,140,180,0.5);
   border-radius: 3px;
 }
 #door-detail-top { top: 8%; }
@@ -166,7 +166,7 @@ body {
   top: 0; left: 50%;
   transform: translateX(-50%);
   width: 7px; height: 7px;
-  background: #5a3040;
+  background: #40305a;
   border-radius: 50%;
 }
 
@@ -176,7 +176,7 @@ body {
   bottom: 0; left: 50%;
   transform: translateX(-50%);
   width: 3px; height: 7px;
-  background: #5a3040;
+  background: #40305a;
 }
 
 #door.door-unlocked #door-frame {
@@ -277,7 +277,7 @@ body {
   width: 100%; height: 100%;
   background: radial-gradient(circle, #fff8f0 60%, #f0e0d0 100%);
   border-radius: 50%;
-  border: 4px solid #d8a8b8;
+  border: 4px solid #b8a8d8;
   position: relative;
   box-shadow: 2px 3px 8px rgba(0,0,0,0.2);
 }
@@ -286,7 +286,7 @@ body {
   position: absolute;
   top: 50%; left: 50%;
   width: 5px; height: 5px;
-  background: #a06878;
+  background: #7868a0;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
@@ -296,7 +296,7 @@ body {
   position: absolute;
   top: 50%; left: 50%;
   width: 13px; height: 3px;
-  background: #a06878;
+  background: #7868a0;
   transform-origin: 0% 50%;
   transform: rotate(0deg);
   border-radius: 2px;
@@ -307,7 +307,7 @@ body {
   position: absolute;
   top: 50%; left: 50%;
   width: 18px; height: 2px;
-  background: #c088a0;
+  background: #a088c0;
   transform-origin: 0% 50%;
   transform: rotate(-90deg);
   border-radius: 2px;
@@ -320,7 +320,7 @@ body {
   left: 420px; top: 25px;
   width: 110px; height: 80px;
   background: #2a3a5a;
-  border: 6px solid #d8a8b8;
+  border: 6px solid #b8a8d8;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -332,14 +332,14 @@ body {
 
 .window-pane {
   background: linear-gradient(135deg, #4060a0 0%, #305088 50%, #283870 100%);
-  border: 2px solid #d8a8b8;
+  border: 2px solid #b8a8d8;
 }
 
 #window-frame-v {
   position: absolute;
   left: 50%; top: 0;
   width: 4px; height: 100%;
-  background: #d8a8b8;
+  background: #b8a8d8;
   transform: translateX(-50%);
 }
 
@@ -347,7 +347,7 @@ body {
   position: absolute;
   top: 50%; left: 0;
   width: 100%; height: 4px;
-  background: #d8a8b8;
+  background: #b8a8d8;
   transform: translateY(-50%);
 }
 
@@ -607,7 +607,7 @@ body {
 #dialog-portrait {
   width: 72px;
   min-height: 88px;
-  background: linear-gradient(135deg, #4a2a3e 0%, #3a1a30 100%);
+  background: linear-gradient(135deg, #3e2a4a 0%, #301a3a 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -888,7 +888,7 @@ body {
   height: 360px;
   overflow: hidden;
   margin: 0 auto;
-  border: 8px solid #d8a8b8;
+  border: 8px solid #b8a8d8;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 0, 0, 0.3);
   animation: peekZoom 1.5s ease-out forwards;
 }
@@ -951,7 +951,7 @@ body {
 
 /* ===== モーダル内セリフ ===== */
 .modal-dialog-text {
-  color: #f0d0e0;
+  color: #e0d0f0;
   font-size: 13px;
   min-height: 18px;
   margin-top: 10px;
@@ -1001,7 +1001,7 @@ body {
 }
 
 #item-inspect-name {
-  color: #f0d0e0;
+  color: #e0d0f0;
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 3px;
@@ -1130,7 +1130,7 @@ body {
 .clear-rank {
   font-size: 28px;
   font-weight: 900;
-  color: #f8d0e0;
+  color: #e0d0f8;
   margin-top: 20px;
   letter-spacing: 4px;
   opacity: 0;

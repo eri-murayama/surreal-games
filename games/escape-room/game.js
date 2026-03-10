@@ -323,7 +323,7 @@ room.addEventListener('click', (e) => {
     } else if (state.hiddenRevealed) {
       showDialog('「うんち」……うふふ。趣味が合いそうだね。');
     } else {
-      showDialog('ピンクっぽいかわいいお部屋だな〜。<br>なんかいい匂いもする。誰かの生活の香り……。');
+      showDialog('女の子っぽいかわいいお部屋だな～。<br>なんかいい匂いもする。誰かの生活の香り……。');
     }
   }
 });
