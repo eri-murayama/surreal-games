@@ -1,0 +1,893 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(180deg, #e8d5f5 0%, #d4b8e8 30%, #c9a5e0 100%);
+  font-family: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic Pro', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 8px;
+  overflow-x: hidden;
+}
+
+#game-wrapper {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  position: relative;
+  padding-top: 36px;
+}
+
+/* タイトル */
+.game-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 22px;
+  color: #fff;
+  text-shadow: 3px 3px 0 #9b59b6, -1px -1px 0 #9b59b6, 1px -1px 0 #9b59b6, -1px 1px 0 #9b59b6;
+  margin-bottom: 2px;
+}
+
+.game-subtitle {
+  font-size: 11px;
+  color: #f0e6f6;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+/* ステージインジケーター */
+#stage-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.stage-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s;
+}
+
+.stage-dot.active {
+  background: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.stage-dot.done {
+  background: #a8e6cf;
+  border-color: #a8e6cf;
+}
+
+/* キャラクターエリア */
+#character-area {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+  border-radius: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* キャラクター */
+#character {
+  position: relative;
+  width: 140px;
+  height: 280px;
+  transition: all 0.5s;
+}
+
+/* 髪（後ろ） */
+.hair-back {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 120px;
+  height: 130px;
+  border-radius: 60px 60px 30px 30px;
+  z-index: 0;
+  transition: all 0.5s;
+}
+
+.hair-back.dirty {
+  background: #5a4a3a;
+  opacity: 0.6;
+}
+
+/* 顔 */
+.face {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100px;
+  height: 105px;
+  border-radius: 50px 50px 45px 45px;
+  background: #ffe0cc;
+  z-index: 2;
+  transition: all 0.5s;
+  overflow: hidden;
+}
+
+.face.dirty {
+  background: #d4b896;
+}
+
+.face.clean {
+  background: #ffe8d6;
+}
+
+/* 汚れ */
+.dirt-marks {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  transition: opacity 0.5s;
+}
+
+.dirt {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(100, 70, 40, 0.4);
+}
+
+.dirt-1 {
+  width: 18px;
+  height: 14px;
+  top: 25px;
+  left: 12px;
+}
+
+.dirt-2 {
+  width: 22px;
+  height: 12px;
+  top: 55px;
+  right: 15px;
+}
+
+.dirt-3 {
+  width: 15px;
+  height: 18px;
+  bottom: 15px;
+  left: 35px;
+}
+
+.face.clean .dirt-marks {
+  opacity: 0;
+}
+
+/* 目 */
+.eyes {
+  position: absolute;
+  top: 35px;
+  left: 15px;
+  width: 70px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 4;
+}
+
+.eye {
+  display: block;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  position: relative;
+  border: 2px solid #333;
+}
+
+.pupil {
+  display: block;
+  width: 12px;
+  height: 12px;
+  background: #333;
+  border-radius: 50%;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: all 0.3s;
+}
+
+.pupil::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  top: 1px;
+  right: 1px;
+}
+
+.eye.sparkle .pupil {
+  background: radial-gradient(circle at 40% 40%, #6a4c93, #333);
+}
+
+.eye.sparkle::after {
+  content: '✦';
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  font-size: 10px;
+  color: #ffdd57;
+  animation: twinkle 1s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* 口 */
+.mouth {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  transition: all 0.3s;
+}
+
+.mouth.sad {
+  width: 16px;
+  height: 8px;
+  border-bottom: 3px solid #c0392b;
+  border-radius: 0 0 50% 50%;
+  transform: translateX(-50%) rotate(180deg);
+}
+
+.mouth.neutral {
+  width: 12px;
+  height: 3px;
+  background: #c0392b;
+  border-radius: 2px;
+}
+
+.mouth.smile {
+  width: 20px;
+  height: 10px;
+  border-bottom: 3px solid #e74c8c;
+  border-radius: 0 0 50% 50%;
+}
+
+.mouth.big-smile {
+  width: 24px;
+  height: 14px;
+  background: #e74c8c;
+  border-radius: 0 0 50% 50%;
+}
+
+.mouth.big-smile::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 5px;
+  background: #ff9cb8;
+  border-radius: 0 0 50% 50%;
+}
+
+/* チーク */
+.blush {
+  position: absolute;
+  top: 52px;
+  left: 5px;
+  width: 90px;
+  height: 20px;
+  z-index: 3;
+}
+
+.blush::before,
+.blush::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 12px;
+  background: rgba(255, 130, 150, 0.35);
+  border-radius: 50%;
+  top: 0;
+}
+
+.blush::before { left: 0; }
+.blush::after { right: 0; }
+
+/* メイク */
+.makeup {
+  position: absolute;
+  top: 28px;
+  left: 10px;
+  width: 80px;
+  height: 30px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* 髪（前） */
+.hair-front {
+  position: absolute;
+  top: 6px;
+  left: 15px;
+  width: 110px;
+  height: 60px;
+  z-index: 6;
+  transition: all 0.5s;
+}
+
+.hair-front.dirty {
+  background: #5a4a3a;
+  border-radius: 55px 55px 20px 20px;
+  opacity: 0.8;
+}
+
+/* 体 */
+.body-area {
+  position: absolute;
+  top: 120px;
+  left: 15px;
+  width: 110px;
+  height: 160px;
+  z-index: 1;
+}
+
+.outfit {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px 20px 10px 10px;
+  transition: all 0.5s;
+  position: relative;
+}
+
+.outfit.dirty {
+  background: #8a7a6a;
+  border: 2px dashed rgba(0,0,0,0.15);
+}
+
+.outfit.dirty::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 15px;
+  width: 30px;
+  height: 20px;
+  background: rgba(80, 60, 40, 0.3);
+  border-radius: 50%;
+}
+
+/* アクセサリー */
+.accessory {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  z-index: 10;
+}
+
+/* 吹き出し */
+.speech-bubble {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6a3060;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 130px;
+  line-height: 1.5;
+  z-index: 20;
+  transition: all 0.3s;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(255, 255, 255, 0.9);
+}
+
+/* キラキラ */
+.sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.sparkle-particle {
+  position: absolute;
+  font-size: 16px;
+  animation: sparkleFloat 1.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes sparkleFloat {
+  0% { opacity: 1; transform: translateY(0) scale(0.5); }
+  50% { opacity: 1; transform: translateY(-20px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-40px) scale(0.3); }
+}
+
+/* 選択肢エリア */
+#choices-area {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.stage-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 14px;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+  margin-bottom: 10px;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.choice-btn {
+  background: rgba(255, 255, 255, 0.85);
+  border: 3px solid rgba(155, 89, 182, 0.3);
+  border-radius: 14px;
+  padding: 10px 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.choice-btn:hover {
+  transform: translateY(-3px);
+  border-color: #9b59b6;
+  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+}
+
+.choice-btn:active {
+  transform: translateY(0);
+}
+
+.choice-btn .choice-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.choice-btn .choice-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6a3060;
+  line-height: 1.2;
+}
+
+.choice-btn.selected {
+  border-color: #9b59b6;
+  background: linear-gradient(180deg, #f3e5f5 0%, #e1bee7 100%);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.4);
+}
+
+/* オーバーレイ */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay-content {
+  background: linear-gradient(180deg, #faf5ff 0%, #f0e0fa 100%);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border: 3px solid #d8b4fe;
+  max-width: 340px;
+  width: 90%;
+}
+
+.overlay-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.overlay-content h2 {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 24px;
+  color: #7c3aed;
+  margin-bottom: 8px;
+}
+
+.overlay-content p {
+  color: #6a3050;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 6px;
+}
+
+/* Before / After */
+#before-after {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.ba-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9b59b6;
+  letter-spacing: 1px;
+}
+
+.ba-face {
+  font-size: 48px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  border: 2px solid rgba(155, 89, 182, 0.3);
+}
+
+.ba-arrow {
+  font-size: 24px;
+  color: #9b59b6;
+  font-weight: 900;
+}
+
+#result-rank {
+  font-size: 18px !important;
+  font-weight: 700;
+  color: #7c3aed !important;
+}
+
+#result-comment {
+  font-size: 12px !important;
+  color: #999 !important;
+  font-style: italic;
+}
+
+button {
+  margin-top: 12px;
+  padding: 10px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  background: linear-gradient(180deg, #a855f7 0%, #7c3aed 100%);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+  letter-spacing: 2px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* 変身アニメーション */
+@keyframes transformFlash {
+  0% { filter: brightness(1); }
+  30% { filter: brightness(2); }
+  60% { filter: brightness(1.5); }
+  100% { filter: brightness(1); }
+}
+
+.transforming {
+  animation: transformFlash 0.6s ease-out;
+}
+
+/* 洗うアニメーション */
+@keyframes washEffect {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px) rotate(-2deg); }
+  50% { transform: translateX(5px) rotate(2deg); }
+  75% { transform: translateX(-3px) rotate(-1deg); }
+  100% { transform: translateX(0); }
+}
+
+.washing {
+  animation: washEffect 0.4s ease-in-out;
+}
+
+/* 背景パーティクル */
+body::before,
+body::after {
+  content: '✨ 💄 👗 ✦ 💅 ✧ 👠 ❀ ♪';
+  position: fixed;
+  font-size: 14px;
+  opacity: 0.08;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: 20px;
+}
+
+body::before {
+  top: 10%;
+  left: -20px;
+  transform: rotate(-15deg);
+}
+
+body::after {
+  bottom: 10%;
+  right: -20px;
+  transform: rotate(10deg);
+}
+
+/* ===== 髪型スタイル ===== */
+
+/* ロングヘア */
+.hair-back.long {
+  top: 6px;
+  left: 5px;
+  width: 130px;
+  height: 170px;
+  border-radius: 65px 65px 40px 40px;
+}
+
+.hair-front.long {
+  border-radius: 55px 55px 0 0;
+  height: 55px;
+}
+
+/* ショートカット */
+.hair-back.short {
+  top: 8px;
+  left: 15px;
+  width: 110px;
+  height: 95px;
+  border-radius: 55px 55px 20px 20px;
+}
+
+.hair-front.short {
+  width: 100px;
+  left: 20px;
+  height: 45px;
+  border-radius: 50px 50px 10px 10px;
+}
+
+/* ツインテール */
+.hair-back.twin {
+  top: 8px;
+  left: 10px;
+  width: 120px;
+  height: 110px;
+  border-radius: 60px 60px 30px 30px;
+}
+
+.hair-front.twin {
+  border-radius: 55px 55px 15px 15px;
+  height: 50px;
+}
+
+.hair-back.twin::before,
+.hair-back.twin::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  width: 28px;
+  height: 70px;
+  border-radius: 14px;
+  background: inherit;
+}
+
+.hair-back.twin::before { left: -5px; transform: rotate(8deg); }
+.hair-back.twin::after { right: -5px; transform: rotate(-8deg); }
+
+/* おだんご */
+.hair-back.bun {
+  top: 8px;
+  left: 12px;
+  width: 116px;
+  height: 100px;
+  border-radius: 58px 58px 30px 30px;
+}
+
+.hair-front.bun {
+  border-radius: 52px 52px 15px 15px;
+  height: 48px;
+}
+
+.hair-back.bun::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+/* 髪色 */
+.hair-color-brown {
+  background: #8B6914 !important;
+  opacity: 1 !important;
+}
+.hair-color-black {
+  background: #2c2c2c !important;
+  opacity: 1 !important;
+}
+.hair-color-pink {
+  background: #e88ca5 !important;
+  opacity: 1 !important;
+}
+.hair-color-blonde {
+  background: #e8c547 !important;
+  opacity: 1 !important;
+}
+
+/* ===== 服スタイル ===== */
+
+.outfit.dress-pink {
+  background: linear-gradient(180deg, #f8a4c8 0%, #f472b6 50%, #ec4899 100%);
+  border: none;
+  border-radius: 20px 20px 40px 40px;
+}
+
+.outfit.dress-pink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0 0 20px 20px;
+}
+
+.outfit.dress-pink::after {
+  content: none;
+}
+
+.outfit.dress-blue {
+  background: linear-gradient(180deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
+  border: none;
+  border-radius: 18px 18px 8px 8px;
+}
+
+.outfit.dress-blue::before {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 0;
+  width: 100%;
+  height: 55%;
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+  border-radius: 0 0 16px 16px;
+  border-top: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.outfit.dress-blue::after {
+  content: none;
+}
+
+.outfit.dress-gothic {
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #4a1942;
+  border-radius: 18px 18px 35px 35px;
+}
+
+.outfit.dress-gothic::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #9b59b6;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.outfit.dress-gothic::after {
+  content: none;
+}
+
+.outfit.dress-kimono {
+  background: linear-gradient(180deg, #c0392b 0%, #a93226 100%);
+  border: none;
+  border-radius: 15px 15px 5px 5px;
+}
+
+.outfit.dress-kimono::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 100%;
+  background: #f39c12;
+}
+
+.outfit.dress-kimono::after {
+  content: none;
+}
+
+/* ===== トップに戻るリンク ===== */
+.back-to-top-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  z-index: 300;
+  transition: color 0.2s;
+}
+
+.back-to-top-link:hover {
+  color: #fff;
+}
+
+/* レスポンシブ */
+@media (max-width: 420px) {
+  #game-wrapper { padding-top: 32px; }
+  .game-title { font-size: 18px; }
+  #character-area { height: 300px; }
+  #character { transform: scale(0.85); }
+  .choices { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .choice-btn { padding: 8px 2px; }
+  .choice-btn .choice-icon { font-size: 24px; }
+  .overlay-content { padding: 20px 16px; }
+}

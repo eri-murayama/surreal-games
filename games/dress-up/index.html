@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>びじんメーカー - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="../../index.html" class="back-to-top-link">&larr; トップに戻る</a>
+
+  <div id="game-wrapper">
+    <h1 class="game-title">びじんメーカー</h1>
+    <p class="game-subtitle">よごれた女の子をキレイにしてあげよう！</p>
+
+    <!-- ステージ表示 -->
+    <div id="stage-indicator">
+      <span class="stage-dot active" data-stage="0"></span>
+      <span class="stage-dot" data-stage="1"></span>
+      <span class="stage-dot" data-stage="2"></span>
+      <span class="stage-dot" data-stage="3"></span>
+      <span class="stage-dot" data-stage="4"></span>
+    </div>
+
+    <!-- キャラクター表示エリア -->
+    <div id="character-area">
+      <div id="character">
+        <!-- 髪（後ろ） -->
+        <div id="hair-back" class="hair-back dirty"></div>
+        <!-- 顔 -->
+        <div id="face" class="face dirty">
+          <div class="dirt-marks">
+            <span class="dirt dirt-1"></span>
+            <span class="dirt dirt-2"></span>
+            <span class="dirt dirt-3"></span>
+          </div>
+          <div class="eyes">
+            <span class="eye eye-left">
+              <span class="pupil"></span>
+            </span>
+            <span class="eye eye-right">
+              <span class="pupil"></span>
+            </span>
+          </div>
+          <div id="mouth" class="mouth sad"></div>
+          <div id="blush" class="blush hidden"></div>
+          <div id="makeup" class="makeup hidden"></div>
+        </div>
+        <!-- 髪（前） -->
+        <div id="hair-front" class="hair-front dirty"></div>
+        <!-- 体 -->
+        <div id="body-area" class="body-area">
+          <div id="outfit" class="outfit dirty"></div>
+          <div id="accessory" class="accessory hidden"></div>
+        </div>
+      </div>
+      <!-- 吹き出し -->
+      <div id="speech-bubble" class="speech-bubble">
+        <span id="speech-text">...きたない...</span>
+      </div>
+      <!-- キラキラエフェクト -->
+      <div id="sparkles" class="sparkles hidden"></div>
+    </div>
+
+    <!-- 選択肢エリア -->
+    <div id="choices-area">
+      <h3 id="stage-title" class="stage-title">まずはキレイにしよう！</h3>
+      <div id="choices" class="choices"></div>
+    </div>
+
+    <!-- スタート画面 -->
+    <div id="overlay" class="overlay">
+      <div id="start-screen" class="overlay-content">
+        <div class="overlay-icon">👗</div>
+        <h2>びじんメーカー</h2>
+        <p>道端で倒れていた女の子を発見！<br>キレイにしてあげよう！</p>
+        <p style="font-size:11px; color:#999;">（本人の許可は得ています）</p>
+        <button id="start-btn">はじめる</button>
+      </div>
+      <div id="result-screen" class="overlay-content hidden">
+        <div class="overlay-icon">✨</div>
+        <h2>変身完了！</h2>
+        <div id="before-after">
+          <div class="ba-label">Before</div>
+          <div id="before-face" class="ba-face">😵</div>
+          <div class="ba-arrow">→</div>
+          <div id="after-face" class="ba-face">???</div>
+          <div class="ba-label">After</div>
+        </div>
+        <p id="result-rank"></p>
+        <p id="result-comment"></p>
+        <button id="retry-btn">もう一回</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
