@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>マジックみやぶり - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="../../index.html" class="back-to-top-link">&larr; トップに戻る</a>
+
+  <div id="game-wrapper">
+    <h1 class="game-title">マジックみやぶり</h1>
+    <p class="game-subtitle">あやしいマジシャンのタネを見抜け！</p>
+
+    <!-- ステージ表示 -->
+    <div id="stage-indicator">
+      <span class="stage-dot active" data-stage="0"></span>
+      <span class="stage-dot" data-stage="1"></span>
+      <span class="stage-dot" data-stage="2"></span>
+      <span class="stage-dot" data-stage="3"></span>
+      <span class="stage-dot" data-stage="4"></span>
+    </div>
+
+    <!-- ステージエリア -->
+    <div id="stage-area">
+      <!-- マジシャン表示 -->
+      <div id="magician">
+        <div class="magician-hat">
+          <div class="hat-brim"></div>
+          <div class="hat-top"></div>
+        </div>
+        <div class="magician-face">
+          <div class="magician-eyes">
+            <span class="m-eye">👁</span>
+            <span class="m-eye">👁</span>
+          </div>
+          <div class="magician-mustache">🥸</div>
+        </div>
+        <div class="magician-body">
+          <div class="cape"></div>
+          <div class="magician-hands">
+            <span id="hand-left" class="hand">🤚</span>
+            <span id="hand-right" class="hand">✋</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- マジック演出エリア -->
+      <div id="trick-area">
+        <div id="trick-visual"></div>
+        <div id="speech-bubble" class="speech-bubble">
+          <span id="speech-text">さぁ、ショーの始まりだ！</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 選択肢エリア -->
+    <div id="choices-area">
+      <h3 id="question-text" class="question-text">タネを見抜けるかな？</h3>
+      <div id="choices" class="choices"></div>
+    </div>
+
+    <!-- 結果フィードバック -->
+    <div id="feedback" class="feedback hidden">
+      <div id="feedback-icon"></div>
+      <p id="feedback-text"></p>
+      <button id="next-btn">次のマジックへ →</button>
+    </div>
+
+    <!-- スタート画面 -->
+    <div id="overlay" class="overlay">
+      <div id="start-screen" class="overlay-content">
+        <div class="overlay-icon">🎩</div>
+        <h2>マジックみやぶり</h2>
+        <p>あやしいマジシャン「ミスター・シュール」が<br>5つのマジックを披露するよ。</p>
+        <p>タネを見抜いてインチキを暴こう！</p>
+        <button id="start-btn">ショーを見る</button>
+      </div>
+      <div id="result-screen" class="overlay-content hidden">
+        <div class="overlay-icon" id="result-icon">🔍</div>
+        <h2 id="result-title">鑑定結果</h2>
+        <div id="result-score"></div>
+        <p id="result-rank"></p>
+        <p id="result-comment"></p>
+        <button id="retry-btn">もう一回見る</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

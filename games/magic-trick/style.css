@@ -1,0 +1,538 @@
+/* ===== 共通リセット・基本 ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  background: linear-gradient(135deg, #1a0a2e, #2d1b69, #1a0a2e);
+  min-height: 100vh;
+  color: #f0e6ff;
+  overflow-x: hidden;
+}
+
+.back-to-top-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  color: #c9a5e0;
+  text-decoration: none;
+  font-size: 14px;
+  z-index: 999;
+  background: rgba(26, 10, 46, 0.8);
+  padding: 6px 14px;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s;
+}
+.back-to-top-link:hover {
+  background: rgba(45, 27, 105, 0.9);
+}
+
+/* ===== ゲームラッパー ===== */
+#game-wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 50px 16px 30px;
+  text-align: center;
+  position: relative;
+}
+
+.game-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 28px;
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  margin-bottom: 4px;
+}
+.game-subtitle {
+  font-size: 14px;
+  color: #c9a5e0;
+  margin-bottom: 16px;
+}
+
+/* ===== ステージドット ===== */
+#stage-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.stage-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  transition: all 0.3s;
+}
+.stage-dot.active {
+  background: #ffd700;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+.stage-dot.correct {
+  background: #4caf50;
+  border-color: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+}
+.stage-dot.wrong {
+  background: #e74c3c;
+  border-color: #e74c3c;
+  box-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
+}
+
+/* ===== マジシャン ===== */
+#stage-area {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+#magician {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.magician-hat {
+  position: relative;
+  z-index: 2;
+}
+.hat-top {
+  width: 60px; height: 50px;
+  background: linear-gradient(to bottom, #1a1a2e, #2d2d5e);
+  border-radius: 6px 6px 0 0;
+  margin: 0 auto;
+  border: 2px solid #ffd700;
+  border-bottom: none;
+}
+.hat-brim {
+  width: 90px; height: 12px;
+  background: linear-gradient(to bottom, #2d2d5e, #1a1a2e);
+  border-radius: 6px;
+  margin: 0 auto;
+  border: 2px solid #ffd700;
+  position: relative;
+  top: 50px;
+  z-index: 3;
+}
+
+.magician-face {
+  width: 70px; height: 60px;
+  background: #fce4b8;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: -8px;
+}
+.magician-eyes {
+  display: flex;
+  gap: 12px;
+  font-size: 16px;
+  margin-top: -4px;
+}
+.m-eye {
+  animation: blink 4s infinite;
+}
+@keyframes blink {
+  0%, 95%, 100% { opacity: 1; }
+  97% { opacity: 0; }
+}
+.magician-mustache {
+  font-size: 28px;
+  margin-top: -10px;
+  filter: grayscale(0.5);
+}
+
+.magician-body {
+  position: relative;
+  width: 100px;
+  height: 60px;
+}
+.cape {
+  width: 100px; height: 60px;
+  background: linear-gradient(to bottom, #4a0e8f, #2d1b69);
+  border-radius: 0 0 50% 50%;
+  border: 2px solid #7b4fc7;
+}
+.magician-hands {
+  position: absolute;
+  top: 10px;
+  left: -20px;
+  right: -20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 28px;
+}
+.hand {
+  transition: transform 0.3s;
+}
+.hand.wave {
+  animation: wave 0.5s ease-in-out 3;
+}
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(20deg); }
+}
+
+/* ===== マジック演出 ===== */
+#trick-area {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#trick-visual {
+  font-size: 60px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.5s;
+}
+
+.speech-bubble {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  padding: 10px 18px;
+  border-radius: 16px;
+  font-size: 14px;
+  position: relative;
+  margin-top: 10px;
+  max-width: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(255, 255, 255, 0.95);
+}
+
+/* ===== トリックアニメーション ===== */
+.trick-card {
+  font-size: 50px;
+  display: inline-block;
+  transition: transform 0.6s;
+  cursor: default;
+}
+.trick-card.flip {
+  animation: cardFlip 0.6s ease-in-out;
+}
+@keyframes cardFlip {
+  0% { transform: rotateY(0deg); }
+  50% { transform: rotateY(90deg); }
+  100% { transform: rotateY(0deg); }
+}
+
+.vanish {
+  animation: vanish 0.8s ease-in forwards;
+}
+@keyframes vanish {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+.appear {
+  animation: appear 0.6s ease-out;
+}
+@keyframes appear {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.sparkle-effect {
+  position: absolute;
+  font-size: 20px;
+  animation: sparkleFloat 1s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes sparkleFloat {
+  0% { transform: translateY(0) scale(0); opacity: 1; }
+  100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+}
+
+/* ===== 質問・選択肢 ===== */
+#choices-area {
+  margin-top: 10px;
+}
+.question-text {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 18px;
+  color: #ffd700;
+  margin-bottom: 14px;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  color: #f0e6ff;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.choice-btn:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.6);
+  transform: translateX(4px);
+}
+.choice-btn:active {
+  transform: scale(0.98);
+}
+
+.choice-btn.correct {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4caf50;
+  color: #fff;
+}
+.choice-btn.wrong {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: #e74c3c;
+  color: #f0a0a0;
+  opacity: 0.6;
+}
+.choice-btn.disabled {
+  pointer-events: none;
+}
+
+.choice-label {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  text-align: center;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 13px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+/* ===== フィードバック ===== */
+.feedback {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s;
+}
+.feedback.hidden { display: none; }
+.feedback.correct-fb {
+  background: rgba(76, 175, 80, 0.15);
+  border: 2px solid rgba(76, 175, 80, 0.4);
+}
+.feedback.wrong-fb {
+  background: rgba(231, 76, 60, 0.15);
+  border: 2px solid rgba(231, 76, 60, 0.4);
+}
+
+#feedback-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+#feedback-text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+#next-btn {
+  background: linear-gradient(135deg, #ffd700, #ff9900);
+  color: #1a0a2e;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: bold;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#next-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* ===== オーバーレイ ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 5, 30, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  transition: opacity 0.4s;
+}
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlay-content {
+  text-align: center;
+  padding: 30px;
+  max-width: 380px;
+}
+.overlay-content.hidden { display: none; }
+
+.overlay-icon {
+  font-size: 64px;
+  margin-bottom: 12px;
+}
+.overlay-content h2 {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 26px;
+  color: #ffd700;
+  margin-bottom: 12px;
+}
+.overlay-content p {
+  color: #c9a5e0;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+#start-btn, #retry-btn {
+  background: linear-gradient(135deg, #ffd700, #ff9900);
+  color: #1a0a2e;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 30px;
+  font-size: 17px;
+  font-weight: bold;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#start-btn:hover, #retry-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 25px rgba(255, 215, 0, 0.5);
+}
+
+/* ===== 結果画面 ===== */
+#result-score {
+  font-size: 48px;
+  font-family: 'Hachi Maru Pop', cursive;
+  color: #ffd700;
+  margin: 10px 0;
+}
+#result-rank {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+#result-comment {
+  font-size: 14px;
+  color: #c9a5e0;
+}
+
+/* ===== ヒントボタン ===== */
+.hint-area {
+  margin-top: 12px;
+}
+.hint-btn {
+  background: none;
+  border: 1px dashed rgba(255, 215, 0, 0.4);
+  color: #ffd700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.hint-btn:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+.hint-text {
+  font-size: 13px;
+  color: #c9a5e0;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ===== トリック固有の演出 ===== */
+.cards-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  font-size: 40px;
+}
+.cards-row span {
+  transition: transform 0.3s;
+}
+
+.cup-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  font-size: 50px;
+}
+.cup-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s;
+}
+.cup-item .ball {
+  font-size: 24px;
+  height: 28px;
+}
+
+.rope-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.rope-piece {
+  width: 8px;
+  height: 40px;
+  background: linear-gradient(to bottom, #d4a574, #b8865c);
+  border-radius: 4px;
+  transition: all 0.5s;
+}
+.rope-cut {
+  font-size: 30px;
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 400px) {
+  .game-title { font-size: 24px; }
+  .choice-btn { font-size: 14px; padding: 12px 14px; }
+  #trick-visual { font-size: 50px; }
+}
