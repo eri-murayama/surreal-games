@@ -541,8 +541,12 @@ button:active { transform: translateY(1px); }
 }
 
 @media (max-width: 520px) {
+  body {
+    align-items: flex-start;
+  }
+
   #game-wrapper {
-    padding-top: 36px;
+    padding-top: 32px;
   }
 
   .game-title {
