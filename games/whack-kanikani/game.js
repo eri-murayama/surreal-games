@@ -249,7 +249,7 @@ function endGame() {
     comment = '腹筋の換気が完璧すぎる……！';
   } else if (score >= 2000) {
     rank = '🦀 かにかに番長';
-    comment = '夢の国でもトップクラスのヤクザ退治能力。';
+    comment = '夢の外でもトップクラスのヤクザ退治能力。';
   } else if (score >= 1000) {
     rank = '🔨 叩き屋見習い';
     comment = 'まあまあやるじゃん。かにかにも少しビビってた。';
