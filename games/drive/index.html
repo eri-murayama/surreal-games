@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>黄金ドライバー - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1 class="game-title">黄金ドライバー</h1>
+    <p class="game-subtitle">～博士のせなかでGO！～</p>
+
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+      <div id="title-boy"></div>
+      <div id="title-catchphrase">「俺は黄金の金色ドライバーになりゃ！」</div>
+      <button id="start-btn">スタート</button>
+      <p id="title-hint">← → キーか画面タップで操作 / スペースか画面中央タップでアイテム</p>
+    </div>
+
+    <!-- スロット画面（パーツ選択） -->
+    <div id="slot-screen" class="hidden">
+      <div id="slot-title">博士「マシンを組み立ててやろう！」</div>
+      <div id="hakase-speech"></div>
+
+      <div id="slot-container">
+        <div class="slot-reel" id="reel1">
+          <div class="slot-label">ボディ</div>
+          <div class="slot-window"><div class="slot-strip"></div></div>
+        </div>
+        <div class="slot-reel" id="reel2">
+          <div class="slot-label">エンジン</div>
+          <div class="slot-window"><div class="slot-strip"></div></div>
+        </div>
+        <div class="slot-reel" id="reel3">
+          <div class="slot-label">タイヤ</div>
+          <div class="slot-window"><div class="slot-strip"></div></div>
+        </div>
+      </div>
+
+      <button id="slot-btn">ストップ！</button>
+      <div id="slot-result" class="hidden"></div>
+      <button id="race-btn" class="hidden">レースへ出発！</button>
+    </div>
+
+    <!-- レース画面 -->
+    <div id="race-screen" class="hidden">
+      <div id="race-hud">
+        <div id="hud-position">順位: 1st</div>
+        <div id="hud-lap">LAP: 1/3</div>
+        <div id="hud-item"></div>
+      </div>
+      <canvas id="race-canvas" width="400" height="500"></canvas>
+      <div id="race-message" class="hidden"></div>
+    </div>
+
+    <!-- リザルト画面 -->
+    <div id="result-screen" class="hidden">
+      <div id="result-title"></div>
+      <div id="result-comment"></div>
+      <div id="result-time"></div>
+      <button id="retry-btn">もう一回遊ぶ</button>
+    </div>
+    <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+/* === 黄金ドライバー - 昭和レトロ風レースゲーム === */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: #f5e6c8;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255,200,100,0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,150,50,0.2) 0%, transparent 50%);
+  font-family: 'DotGothic16', 'Zen Maru Gothic', sans-serif;
+  color: #3a2a1a;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#game-wrapper {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 8px;
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.game-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #cc6600;
+  text-shadow: 3px 3px 0 #ffd700, -1px -1px 0 #8b4513;
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.game-subtitle {
+  font-size: 0.8rem;
+  color: #996633;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+/* === タイトル画面 === */
+#title-screen, #slot-screen, #result-screen {
+  flex: 1;
+  overflow-y: auto;
+}
+
+#title-screen {
+  background: linear-gradient(180deg, #ffe4b5 0%, #ffdab9 50%, #f4a460 100%);
+  border: 4px solid #8b4513;
+  border-radius: 12px;
+  padding: 20px 16px;
+  box-shadow: 4px 4px 0 #5c3317;
+}
+
+#title-boy {
+  width: 120px;
+  height: 150px;
+  margin: 0 auto 16px;
+  position: relative;
+}
+
+/* 主人公をCSSで描画 */
+#title-boy::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 60px;
+  background: #ffcc88;
+  border-radius: 50%;
+  margin: 0 auto;
+  position: relative;
+  border: 3px solid #3a2a1a;
+}
+
+/* 帽子（後ろ向きのつば） */
+#title-boy::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65px;
+  height: 30px;
+  background: #cc3333;
+  border-radius: 50% 50% 0 0;
+  border: 3px solid #3a2a1a;
+  z-index: 1;
+}
+
+#title-catchphrase {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #cc3300;
+  margin: 20px 0;
+  padding: 10px;
+  background: #fff8dc;
+  border: 3px solid #cc6600;
+  border-radius: 8px;
+  line-height: 1.6;
+  text-shadow: 1px 1px 0 #ffd700;
+}
+
+#start-btn, #slot-btn, #race-btn, #retry-btn {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  padding: 14px 40px;
+  border: 4px solid #3a2a1a;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-block;
+  margin: 10px 5px;
+}
+
+#start-btn {
+  background: linear-gradient(180deg, #ff6633, #cc3300);
+  color: #fff;
+  text-shadow: 2px 2px 0 #8b0000;
+  box-shadow: 4px 4px 0 #3a2a1a;
+}
+
+#start-btn:hover, #race-btn:hover, #retry-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #3a2a1a;
+}
+
+#start-btn:active, #race-btn:active, #retry-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+#title-hint {
+  font-size: 0.75rem;
+  color: #996633;
+  margin-top: 12px;
+}
+
+/* === スロット画面 === */
+#slot-screen {
+  background: linear-gradient(180deg, #fff8dc, #ffe4b5);
+  border: 4px solid #8b4513;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 4px 4px 0 #5c3317;
+}
+
+#slot-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+#hakase-speech {
+  font-size: 0.9rem;
+  color: #666;
+  min-height: 1.5em;
+  margin-bottom: 12px;
+}
+
+#slot-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.slot-reel {
+  text-align: center;
+}
+
+.slot-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8b4513;
+  margin-bottom: 6px;
+}
+
+.slot-window {
+  width: 100px;
+  height: 80px;
+  background: #fff;
+  border: 3px solid #8b4513;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.slot-strip {
+  position: absolute;
+  width: 100%;
+  transition: top 0.1s;
+  text-align: center;
+}
+
+.slot-strip .slot-item {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+#slot-btn {
+  background: linear-gradient(180deg, #ffd700, #ff9900);
+  color: #3a2a1a;
+  box-shadow: 4px 4px 0 #3a2a1a;
+}
+
+#slot-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #3a2a1a;
+}
+
+#slot-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#slot-result {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #cc3300;
+  margin: 12px 0;
+  padding: 12px;
+  background: #fff;
+  border: 3px dashed #cc6600;
+  border-radius: 8px;
+  line-height: 1.8;
+}
+
+#race-btn {
+  background: linear-gradient(180deg, #33cc33, #228b22);
+  color: #fff;
+  text-shadow: 2px 2px 0 #006400;
+  box-shadow: 4px 4px 0 #3a2a1a;
+}
+
+/* === レース画面 === */
+#race-screen {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#race-hud {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #3a2a1a;
+  color: #ffd700;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px 8px 0 0;
+  border: 3px solid #8b4513;
+  border-bottom: none;
+}
+
+#race-canvas {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  flex: 1;
+  min-height: 0;
+  background: #7cac5c;
+  border: 3px solid #8b4513;
+  border-radius: 0 0 8px 8px;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
+#race-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 4px 4px 0 #cc3300, -2px -2px 0 #8b0000;
+  animation: pulse 0.5s ease-in-out infinite alternate;
+  z-index: 10;
+}
+
+@keyframes pulse {
+  from { transform: translate(-50%, -50%) scale(1); }
+  to { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* === リザルト画面 === */
+#result-screen {
+  background: linear-gradient(180deg, #fff8dc, #ffe4b5);
+  border: 4px solid #8b4513;
+  border-radius: 12px;
+  padding: 20px 16px;
+  box-shadow: 4px 4px 0 #5c3317;
+}
+
+#result-title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+#result-comment {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+#result-time {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #8b4513;
+  margin-bottom: 16px;
+}
+
+#retry-btn {
+  background: linear-gradient(180deg, #ff6633, #cc3300);
+  color: #fff;
+  text-shadow: 2px 2px 0 #8b0000;
+  box-shadow: 4px 4px 0 #3a2a1a;
+}
+
+/* === 戻るリンク === */
+.back-to-top-link {
+  display: inline-block;
+  padding: 6px 0;
+  color: #8b4513;
+  text-decoration: none;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.back-to-top-link:hover {
+  text-decoration: underline;
+}
+
+.hidden { display: none !important; }
+
+/* === レスポンシブ === */
+@media (max-width: 480px) {
+  .game-title { font-size: 1.5rem; }
+  .slot-window { width: 80px; height: 65px; }
+  .slot-strip .slot-item { height: 65px; font-size: 2rem; }
+  #slot-container { gap: 6px; }
+  #race-canvas { height: auto; }
+}
