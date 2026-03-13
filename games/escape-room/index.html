@@ -31,6 +31,10 @@
         <div class="item-slot" data-slot="5"></div>
       </div>
       <div id="selected-item-name"></div>
+      <div id="lang-switch">
+        <button class="lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
     </div>
 
     <div id="game-container">
@@ -176,7 +180,10 @@
   <div id="memo-modal" class="modal hidden">
     <div id="memo-modal-content">
       <div id="memo-paper">
-        <img src="memo-art.png" alt="メモ" style="width:100%; border-radius:4px;">
+        <div class="img-overlay-wrap">
+          <img src="memo-art.png" alt="メモ">
+          <div id="memo-en-overlay" class="riddle-overlay" style="display:none;"></div>
+        </div>
       </div>
       <button id="memo-close-btn">とじる</button>
     </div>
@@ -185,7 +192,10 @@
   <!-- 絵画拡大モーダル -->
   <div id="painting-modal" class="modal hidden">
     <div id="painting-modal-content">
-      <img src="painting-art.png" alt="壁の絵" style="width:100%; border-radius:8px; max-width:500px;">
+      <div class="img-overlay-wrap">
+        <img src="painting-art.png" alt="壁の絵">
+        <div id="painting-en-overlay" class="riddle-overlay" style="display:none;"></div>
+      </div>
       <button id="painting-close-btn">とじる</button>
     </div>
   </div>
@@ -212,6 +222,7 @@
   </div>
 
   <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  <script src="i18n.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

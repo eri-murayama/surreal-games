@@ -49,14 +49,10 @@ const windowSpeech = document.getElementById('window-speech');
 const safeModal = document.getElementById('safe-modal');
 const itemInspectModal = document.getElementById('item-inspect-modal');
 
+// ===== 初期化時に言語を適用 =====
+setLang(currentLang);
+
 // ===== 窓の外からのセリフ =====
-const windowLines = [
-  'ヴぅおおおお',
-  'ぎょごおおお',
-  '出て行っていただけますか～',
-  '私の家なんですが～',
-  '聞いてますか～',
-];
 let windowLineIndex = 0;
 let windowSpeechTimer = null;
 
@@ -72,7 +68,8 @@ function showWindowLine() {
     windowSpeech.classList.remove('visible');
     return;
   }
-  windowSpeech.textContent = windowLines[windowLineIndex % windowLines.length];
+  const lines = t('windowLines');
+  windowSpeech.textContent = lines[windowLineIndex % lines.length];
   windowSpeech.classList.remove('visible');
   void windowSpeech.offsetHeight;
   windowSpeech.classList.add('visible');
@@ -84,9 +81,9 @@ setTimeout(startWindowSpeech, 5000);
 // ===== セリフ表示 =====
 let currentInterval = null;
 
-function showDialog(text, speaker = '主人公') {
+function showDialog(text, speaker) {
   if (currentInterval) clearInterval(currentInterval);
-  dialogName.textContent = speaker;
+  dialogName.textContent = speaker || t('protagonist');
   dialogText.innerHTML = '';
 
   let i = 0;
@@ -183,34 +180,34 @@ document.querySelectorAll('.item-slot').forEach(slot => {
 
     if (state.selectedItem === item.id) {
       state.selectedItem = null;
-      showDialog(`${item.name}をしまった〜。`);
+      showDialog(t('itemPutAway', item.name));
     } else {
       state.selectedItem = item.id;
 
       if (item.id === 'memo') {
         memoModal.classList.remove('hidden');
-        showDialog('どれどれ、メモを読んでみよ〜……');
+        showDialog(t('memoRead'));
         renderInventory();
         return;
       } else if (item.id === 'flashlight') {
-        showItemInspect('\u{1F526}', '懐中電灯');
-        showDialog('懐中電灯スイッチオン！あられもないところを照らしちゃおう！');
+        showItemInspect('\u{1F526}', t('flashlightItemName'));
+        showDialog(t('flashlightUse'));
       } else if (item.id === 'dust') {
-        showItemInspect('\u{1F4A8}', 'ほこり');
-        showDialog('彼女のほこり……じっくり味わおう。');
+        showItemInspect('\u{1F4A8}', t('dustItemName'));
+        showDialog(t('dustUse'));
         renderInventory();
         return;
       } else if (item.id === 'bento') {
-        showItemInspect('\u{1F371}', 'お弁当');
-        showDialog('れろれろ…お弁当箱を舐めて彼女の塩味を感じて…。');
+        showItemInspect('\u{1F371}', t('bentoItemName'));
+        showDialog(t('bentoUse'));
         renderInventory();
         return;
       } else if (item.id === 'bento-empty') {
-        showItemInspect('\u{1F4E6}', '空のお弁当箱');
-        showDialog('空っぽのお弁当箱。ごちそうさまでした〜。');
+        showItemInspect('\u{1F4E6}', t('bentoEmptyName'));
+        showDialog(t('bentoEmptyUse'));
       } else if (item.id === 'cash') {
-        showItemInspect('\u{1F4B0}', '現金');
-        showDialog('おっかね〜おっかね〜♪ いっぱいある〜♪');
+        showItemInspect('\u{1F4B0}', t('cashItemName'));
+        showDialog(t('cashUse'));
       }
     }
     renderInventory();
@@ -221,21 +218,20 @@ document.querySelectorAll('.item-slot').forEach(slot => {
 document.getElementById('item-inspect-close-btn').addEventListener('click', () => {
   if (state.selectedItem === 'dust') {
     removeItem('dust');
-    showDialog('もぐもぐ……、芳醇なダニの香りと混ざった髪の毛の不快感…、<br>うーん美味美味。');
+    showDialog(t('dustConsume'));
   } else if (state.selectedItem === 'bento') {
-    // お弁当を空のお弁当箱に変える
     const bentoItem = state.inventory.find(i => i.id === 'bento');
     if (bentoItem) {
       bentoItem.id = 'bento-empty';
       bentoItem.icon = '\u{1F4E6}';
-      bentoItem.name = '空のお弁当箱';
+      bentoItem.name = t('bentoEmptyName');
       state.selectedItem = null;
       renderInventory();
-      showDialog('れろれろ…お弁当箱を舐めて彼女の塩味を感じて…。<br>残ったおかずはポケットに詰めておこう。');
+      showDialog(t('bentoConsume'));
     }
   } else if (state.selectedItem === 'cash') {
     removeItem('cash');
-    showDialog('ポケットにしまっちゃお♪<br>えへへ、これはぼくのもの〜♪');
+    showDialog(t('cashConsume'));
   }
 });
 
@@ -246,8 +242,8 @@ memoOnFloor.addEventListener('click', (e) => {
 
   state.memoPickedUp = true;
   memoOnFloor.classList.add('hidden');
-  addItem('memo', '\u{1F4C4}', 'ナゾのメモ');
-  showDialog('あっ、なんか紙が落ちてる！ なになに……？<br>アイテムからチェックしてみよっと！');
+  addItem('memo', '\u{1F4C4}', t('memoItemName'));
+  showDialog(t('memoPick'));
   checkItem('memo');
 });
 
@@ -258,8 +254,8 @@ flashlightOnFloor.addEventListener('click', (e) => {
 
   state.flashlightPickedUp = true;
   flashlightOnFloor.classList.add('hidden');
-  addItem('flashlight', '\u{1F526}', '懐中電灯');
-  showDialog('懐中電灯だ！どうしてこんなところに？何かのプレイで使ったのかな…');
+  addItem('flashlight', '\u{1F526}', t('flashlightItemName'));
+  showDialog(t('flashlightPick'));
   checkItem('flashlight');
 });
 
@@ -270,8 +266,8 @@ dustOnFloor.addEventListener('click', (e) => {
 
   state.dustPickedUp = true;
   dustOnFloor.classList.add('hidden');
-  addItem('dust', '\u{1F4A8}', 'ほこり');
-  showDialog('あっ、ほこりだ。この部屋の子はだらしないんだなあ。うふふ。');
+  addItem('dust', '\u{1F4A8}', t('dustItemName'));
+  showDialog(t('dustPick'));
 });
 
 // ===== お弁当 =====
@@ -281,8 +277,8 @@ bentoOnFloor.addEventListener('click', (e) => {
 
   state.bentoPickedUp = true;
   bentoOnFloor.classList.add('hidden');
-  addItem('bento', '\u{1F371}', 'お弁当');
-  showDialog('おっ、お弁当だ！あとでゆっくり味わおう。');
+  addItem('bento', '\u{1F371}', t('bentoItemName'));
+  showDialog(t('bentoPick'));
 });
 
 // ===== 絵画 =====
@@ -290,18 +286,18 @@ painting.addEventListener('click', (e) => {
   e.stopPropagation();
   checkItem('painting');
   if (state.paintingDestroyed) {
-    showDialog('もう絵はびりびりだ。まあいっか♪');
+    showDialog(t('paintingAlready'));
     return;
   }
   paintingModal.classList.remove('hidden');
-  showDialog('壁に絵が飾ってある〜。近くで見てみよっと！');
+  showDialog(t('paintingClick'));
 });
 
 document.getElementById('painting-close-btn').addEventListener('click', () => {
   paintingModal.classList.add('hidden');
   if (!state.paintingDestroyed) {
     state.paintingDestroyed = true;
-    showDialog('つまらない絵だ。貧乏ゆすりが止まらないや。破っておこう。<br>ビリビリ〜！');
+    showDialog(t('paintingDestroy'));
     painting.classList.add('painting-destroyed');
   }
 });
@@ -310,7 +306,7 @@ document.getElementById('painting-close-btn').addEventListener('click', () => {
 clock.addEventListener('click', (e) => {
   e.stopPropagation();
   checkItem('clock');
-  showDialog('壁に時計がかかっている。3時だ。<br>僕、3って数字見るとどきどきするんだよね、お尻に見えて。');
+  showDialog(t('clockClick'));
 });
 
 // ===== 壁（懐中電灯で隠しメッセージ） =====
@@ -319,11 +315,11 @@ room.addEventListener('click', (e) => {
     if (state.selectedItem === 'flashlight' && !state.hiddenRevealed) {
       state.hiddenRevealed = true;
       hiddenMessage.classList.add('revealed');
-      showDialog('わっ！ 壁に何か文字が浮かんできた！！<br>「うんち」って書いてある。うふふ、アブノーマルもいけるくち？');
+      showDialog(t('wallFlashlight'));
     } else if (state.hiddenRevealed) {
-      showDialog('「うんち」……うふふ。趣味が合いそうだね。');
+      showDialog(t('wallRevealed'));
     } else {
-      showDialog('女の子っぽいかわいいお部屋だな～。<br>なんかいい匂いもする。誰かの生活の香り……。');
+      showDialog(t('wallDefault'));
     }
   }
 });
@@ -338,12 +334,12 @@ windowEl.addEventListener('click', (e) => {
   frame.offsetHeight;
   frame.style.animation = '';
   windowModal.classList.remove('hidden');
-  showDialog('窓の外を覗いてみよう……！ そ〜っと……');
+  showDialog(t('windowPeek'));
 });
 
 document.getElementById('window-close-btn').addEventListener('click', () => {
   windowModal.classList.add('hidden');
-  showDialog('外にかわいらしい女の子がいる。<br>おっひょ～～げきまぶ～～！');
+  showDialog(t('windowClose'));
 });
 
 // ===== テーブル（調べられない） =====
@@ -355,11 +351,11 @@ safe.addEventListener('click', (e) => {
   e.stopPropagation();
   checkItem('safe');
   if (state.safeBroken) {
-    showDialog('もう壊れた金庫だ。やりすぎたかな〜。<br>……まあいっか！');
+    showDialog(t('safeBrokenClick'));
     return;
   }
   safeModal.classList.remove('hidden');
-  showDialog('金庫だ！ 番号を入れてみよ〜！');
+  showDialog(t('safeClick'));
 });
 
 // 金庫テンキー入力
@@ -377,19 +373,16 @@ document.querySelectorAll('.numpad-btn').forEach(btn => {
       if (safeCode.length < 3) return;
       // 正解なし、必ず失敗する
       state.safeWrongCount++;
-      safeResult.textContent = 'ブッブー！ ハズレ～！';
+      safeResult.textContent = t('safeWrong');
       safeResult.style.color = '#ff6080';
       safeCode = '';
       digits.forEach(d => d.textContent = '_');
 
       if (state.safeWrongCount >= 3) {
         document.getElementById('safe-smash-btn').classList.remove('hidden');
-        showDialog('舐めてんな');
+        showDialog(t('safeAngry'));
       } else {
-        const wrongLines = [
-          'は？だる……。一応もう一回やってみるか',
-          'もういいだろおい…まじでだるいわ…。次開けよおい。',
-        ];
+        const wrongLines = t('safeWrongLines');
         showDialog(wrongLines[state.safeWrongCount - 1]);
       }
     } else {
@@ -405,8 +398,8 @@ document.getElementById('safe-smash-btn').addEventListener('click', () => {
   state.safeBroken = true;
   safeModal.classList.add('hidden');
   safe.classList.add('safe-broken');
-  addItem('cash', '\u{1F4B0}', '現金');
-  showDialog('うぇーい、金庫をぶっ壊して現金ゲット！僕を舐めるなよ。');
+  addItem('cash', '\u{1F4B0}', t('cashItemName'));
+  showDialog(t('safeSmashed'));
 });
 
 document.getElementById('safe-close-btn').addEventListener('click', () => {
@@ -418,10 +411,10 @@ document.getElementById('memo-close-btn').addEventListener('click', () => {
   memoModal.classList.add('hidden');
   if (!state.memoRead) {
     state.memoRead = true;
-    showDialog('ふーん、なにこれ。興味ないや。びりびりに破ろう。');
+    showDialog(t('memoClose'));
     removeItem('memo');
   } else {
-    showDialog('もう破いちゃったんだった。');
+    showDialog(t('memoAlready'));
   }
 });
 
@@ -433,7 +426,7 @@ door.addEventListener('click', (e) => {
 
   if (state.doorUnlocked) {
     door.classList.add('door-open');
-    showDialog('アッ、引き戸かと思ってたけど押し戸だった！');
+    showDialog(t('doorOpen'));
 
     setTimeout(() => {
       gameClear();
@@ -441,7 +434,7 @@ door.addEventListener('click', (e) => {
     return;
   }
 
-  showDialog('がちゃがちゃ……ダメだ、なんでか開かない。<br>仕方がないから部屋の中を全部舐めまわすように物色しよう……！不可抗力だ！');
+  showDialog(t('doorLocked'));
 });
 
 // ===== ゲームクリア =====
@@ -451,34 +444,19 @@ function gameClear() {
   const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
   const min = Math.floor(elapsed / 60);
   const sec = elapsed % 60;
-  const timeStr = `${min}分${sec}秒`;
+  const timeStr = t('clearTime', min, sec);
 
-  let rank, rankComment;
-  if (elapsed <= 60) {
-    rank = '👑 変態プロフェッショナル';
-    rankComment = '手慣れすぎている。常習犯の疑いあり。';
-  } else if (elapsed <= 120) {
-    rank = '🦹 侵入のエキスパート';
-    rankComment = 'この速さ……プロの犯行だ。';
-  } else if (elapsed <= 180) {
-    rank = '🔍 物色マニア';
-    rankComment = 'まあまあの手際。次はもっと早くできるはず。';
-  } else if (elapsed <= 300) {
-    rank = '🐌 のんびり不法侵入';
-    rankComment = 'ゆっくり堪能しすぎ。通報されるよ。';
-  } else {
-    rank = '😴 居座り犯';
-    rankComment = 'もはや住んでる。';
-  }
+  const ranks = t('ranks');
+  const rankData = ranks.find(r => elapsed <= r.max) || ranks[ranks.length - 1];
 
   const overlay = document.createElement('div');
   overlay.id = 'clear-overlay';
   overlay.innerHTML = `
-    <div class="clear-title">脱出成功！</div>
-    <div class="clear-time">クリアタイム: ${timeStr}</div>
-    <div class="clear-rank">${rank}</div>
-    <div class="clear-rank-comment">${rankComment}</div>
-    <a href="../../index.html" class="clear-back-link">トップに戻る</a>
+    <div class="clear-title">${t('clearTitle')}</div>
+    <div class="clear-time">${timeStr}</div>
+    <div class="clear-rank">${rankData.icon} ${rankData.name}</div>
+    <div class="clear-rank-comment">${rankData.comment}</div>
+    <a href="../../index.html" class="clear-back-link">${t('clearBackLink')}</a>
   `;
   document.body.appendChild(overlay);
 

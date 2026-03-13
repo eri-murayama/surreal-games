@@ -728,6 +728,39 @@ body {
   letter-spacing: 1px;
 }
 
+/* ===== 言語切替ボタン ===== */
+#lang-switch {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  background: rgba(80, 40, 60, 0.4);
+  color: #a08090;
+  border: 1px solid #6a4a5e;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.lang-btn:hover {
+  background: rgba(100, 50, 70, 0.5);
+  color: #d0b0c0;
+}
+
+.lang-btn.active {
+  background: rgba(160, 80, 120, 0.5);
+  color: #f0d0e0;
+  border-color: #b0789a;
+}
+
 /* ===== モーダル共通 ===== */
 .modal {
   position: fixed;
@@ -1025,6 +1058,58 @@ body {
 #item-inspect-close-btn:hover {
   background: rgba(80, 80, 120, 0.3);
   color: #c0c0e0;
+}
+
+/* ===== 画像＋英語テキストオーバーレイ ===== */
+.img-overlay-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 500px;
+  width: 100%;
+}
+
+.img-overlay-wrap img {
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+}
+
+.riddle-overlay {
+  position: relative;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* 英語翻訳パネル（画像の下に表示） */
+.riddle-translation {
+  background: linear-gradient(180deg, #fffef8 0%, #f8f0e0 100%);
+  border: 2px solid #e0d0b8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 8px;
+  text-align: center;
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.riddle-q {
+  color: #3a3020;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.riddle-flavor {
+  color: #c88030;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.riddle-a {
+  color: #3a3020;
+  font-size: 20px;
+  font-weight: 900;
 }
 
 /* ===== メモモーダル ===== */
