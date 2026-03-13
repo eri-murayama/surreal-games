@@ -456,7 +456,10 @@ function gameClear() {
     <div class="clear-time">${timeStr}</div>
     <div class="clear-rank">${rankData.icon} ${rankData.name}</div>
     <div class="clear-rank-comment">${rankData.comment}</div>
-    <a href="../../index.html" class="clear-back-link">${t('clearBackLink')}</a>
+    <div class="clear-buttons">
+      <button class="clear-back-link clear-play-again" onclick="location.reload()">${t('clearPlayAgain')}</button>
+      <a href="../../index.html" class="clear-back-link clear-go-home">${t('clearGoHome')}</a>
+    </div>
   `;
   document.body.appendChild(overlay);
 

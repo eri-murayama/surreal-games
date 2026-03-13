@@ -106,7 +106,8 @@ const LANG = {
     // クリア
     clearTitle: '脱出成功！',
     clearTime: (m, s) => `クリアタイム: ${m}分${s}秒`,
-    clearBackLink: 'トップに戻る',
+    clearPlayAgain: 'もう一度プレイ',
+    clearGoHome: 'ホームに戻る',
     ranks: [
       { max: 60,  icon: '👑', name: '変態プロフェッショナル', comment: '手慣れすぎている。常習犯の疑いあり。' },
       { max: 120, icon: '🦹', name: '侵入のエキスパート', comment: 'この速さ……プロの犯行だ。' },
@@ -209,7 +210,8 @@ const LANG = {
 
     clearTitle: 'Escape Complete!',
     clearTime: (m, s) => `Clear Time: ${m}m ${s}s`,
-    clearBackLink: 'Back to Top',
+    clearPlayAgain: 'Play Again',
+    clearGoHome: 'Back to Home',
     ranks: [
       { max: 60,  icon: '👑', name: 'Perverted Professional', comment: 'Way too experienced. Suspected repeat offender.' },
       { max: 120, icon: '🦹', name: 'Infiltration Expert', comment: 'This speed... the work of a pro.' },
