@@ -1367,11 +1367,12 @@ body {
   #item-box {
     width: 100%;
     margin-top: 0;
-    margin-bottom: 6px;
-    padding: 8px;
+    margin-bottom: 2px;
+    padding: 8px 8px 2px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 4px 8px;
   }
 
   #item-box-label {
@@ -1393,29 +1394,38 @@ body {
   }
 
   #selected-item-name {
+    position: static;
+    transform: none;
+    margin-top: 4px;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 12px;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    z-index: auto;
+    min-height: 18px;
+    color: #f5c6d0;
+  }
+
+  #selected-item-name:empty {
+    visibility: hidden;
+  }
+
+  #lang-switch {
     position: fixed;
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    margin-top: 0;
-    white-space: nowrap;
-    font-size: 12px;
-    background: rgba(40, 20, 35, 0.92);
-    border: 1px solid #b0789a;
-    border-radius: 16px;
-    padding: 4px 16px;
     z-index: 100;
-    min-height: auto;
-  }
-
-  #selected-item-name:empty {
-    display: none;
   }
 
   /* セリフボックス */
   #dialog-box {
-    margin-top: 6px;
-    height: 95px;
+    margin-top: 4px;
+    height: 75px;
   }
 
   #dialog-portrait {
