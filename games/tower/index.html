@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>シュールの塔 - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1 class="game-title">シュールの塔</h1>
+    <p class="game-subtitle">～終わりなき階段の先へ～</p>
+
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+      <div id="title-tower">🗼</div>
+      <div id="title-catchphrase">「この塔の頂上を見た者はいない...」</div>
+      <div id="highscore-display"></div>
+      <button id="start-btn">塔に挑む</button>
+      <button id="continue-btn" class="hidden">続きから</button>
+      <p id="title-hint">矢印キー / WASD / スワイプで移動<br>敵にぶつかって攻撃</p>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-screen" class="hidden">
+      <div id="game-hud">
+        <div id="hud-floor">🗼 1F</div>
+        <div id="hud-hp">❤️ 30/30</div>
+        <div id="hud-atk">⚔️ 5</div>
+        <div id="hud-def">🛡️ 2</div>
+        <div id="hud-exp">✨ Lv1</div>
+        <div id="hud-coin">🪙 0</div>
+      </div>
+      <div id="hud-popup"></div>
+      <canvas id="game-canvas"></canvas>
+      <div id="game-log"></div>
+      <div id="mobile-controls">
+        <button class="ctrl-btn" data-dir="up">▲</button>
+        <div class="ctrl-row">
+          <button class="ctrl-btn" data-dir="left">◀</button>
+          <button class="ctrl-btn" data-dir="wait">●</button>
+          <button class="ctrl-btn" data-dir="right">▶</button>
+        </div>
+        <button class="ctrl-btn" data-dir="down">▼</button>
+      </div>
+    </div>
+
+    <!-- レベルアップ画面 -->
+    <div id="levelup-screen" class="hidden">
+      <div id="levelup-title">レベルアップ！</div>
+      <div id="levelup-choices"></div>
+    </div>
+
+    <!-- ガチャ画面 -->
+    <div id="gacha-screen" class="hidden">
+      <div id="gacha-title">シュールガチャ</div>
+      <div id="gacha-coins">🪙 0</div>
+      <div id="gacha-machine">
+        <div id="gacha-capsule">❓</div>
+      </div>
+      <div id="gacha-result" class="hidden">
+        <div id="gacha-result-rarity"></div>
+        <div id="gacha-result-emoji"></div>
+        <div id="gacha-result-name"></div>
+        <div id="gacha-result-desc"></div>
+      </div>
+      <div id="gacha-buttons">
+        <button id="gacha-pull-btn" class="gacha-btn">10コインで回す</button>
+        <button id="gacha-close-btn" class="gacha-btn gacha-btn--sub">閉じる</button>
+      </div>
+    </div>
+
+    <!-- ゲームオーバー画面 -->
+    <div id="gameover-screen" class="hidden">
+      <div id="gameover-title">塔は崩れた...</div>
+      <div id="gameover-stats"></div>
+      <div id="gameover-epitaph"></div>
+      <div id="revive-section">
+        <div id="revive-label">復活のチャンス！</div>
+        <button id="revive-btn">
+          <span class="revive-x-icon">𝕏</span> フォローして復活する
+        </button>
+        <p id="revive-hint">絵梨のXをフォローすると復活できるよ（1冒険1回）</p>
+      </div>
+      <button id="retry-btn">もう一度挑む</button>
+    </div>
+
+    <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
