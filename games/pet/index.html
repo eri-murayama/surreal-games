@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>シュールペット～ナゾの生きもの育成記～ - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+      <div id="title-egg"></div>
+      <h1 id="game-title">シュールペット<br><span class="subtitle">～ナゾの生きもの育成記～</span></h1>
+      <button id="start-btn">はじめる</button>
+      <button id="continue-btn" class="hidden">つづきから</button>
+    </div>
+
+    <!-- メイン育成画面 -->
+    <div id="main-screen" class="hidden">
+      <div id="top-bar">
+        <div id="pet-name-display"></div>
+        <div id="coin-display">💰 <span id="coins">0</span></div>
+        <div id="day-display">Day <span id="day-count">1</span></div>
+      </div>
+
+      <div id="pet-area">
+        <div id="environment"></div>
+        <div id="pet-container">
+          <div id="pet-sprite"></div>
+          <div id="pet-emotion" class="hidden"></div>
+        </div>
+        <div id="poop-container"></div>
+      </div>
+
+      <div id="stats-panel">
+        <div class="stat-row">
+          <span class="stat-label">おなか</span>
+          <div class="stat-bar"><div class="stat-fill" id="hunger-bar"></div></div>
+          <span class="stat-value" id="hunger-value"></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">きげん</span>
+          <div class="stat-bar"><div class="stat-fill happy" id="happy-bar"></div></div>
+          <span class="stat-value" id="happy-value"></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">きれい</span>
+          <div class="stat-bar"><div class="stat-fill clean" id="clean-bar"></div></div>
+          <span class="stat-value" id="clean-value"></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">けいけん</span>
+          <div class="stat-bar"><div class="stat-fill exp" id="exp-bar"></div></div>
+          <span class="stat-value" id="exp-value"></span>
+        </div>
+      </div>
+
+      <div id="action-buttons">
+        <button class="action-btn" id="btn-feed" data-action="feed">🍖<br>ごはん</button>
+        <button class="action-btn" id="btn-play" data-action="play">🎾<br>あそぶ</button>
+        <button class="action-btn" id="btn-clean" data-action="clean">🧹<br>そうじ</button>
+        <button class="action-btn" id="btn-shop" data-action="shop">🛒<br>おみせ</button>
+        <button class="action-btn" id="btn-status" data-action="status">📋<br>ずかん</button>
+        <button class="action-btn" id="btn-sleep" data-action="sleep">💤<br>ねかす</button>
+      </div>
+
+      <div id="message-box" class="hidden">
+        <p id="message-text"></p>
+      </div>
+    </div>
+
+    <!-- ごはん選択画面 -->
+    <div id="feed-screen" class="hidden">
+      <h2 class="screen-title">ごはんをえらぶ</h2>
+      <div id="food-list"></div>
+      <button class="back-btn" id="feed-back">もどる</button>
+    </div>
+
+    <!-- ミニゲーム画面 -->
+    <div id="minigame-screen" class="hidden">
+      <h2 class="screen-title" id="minigame-title"></h2>
+      <div id="minigame-area"></div>
+      <div id="minigame-score">スコア: <span id="mg-score">0</span></div>
+      <button class="back-btn hidden" id="minigame-back">おわる</button>
+    </div>
+
+    <!-- ショップ画面 -->
+    <div id="shop-screen" class="hidden">
+      <h2 class="screen-title">シュールショップ</h2>
+      <div id="shop-coins">💰 <span id="shop-coin-display">0</span></div>
+      <div id="shop-list"></div>
+      <button class="back-btn" id="shop-back">もどる</button>
+    </div>
+
+    <!-- 図鑑画面 -->
+    <div id="zukan-screen" class="hidden">
+      <h2 class="screen-title">シュール図鑑</h2>
+      <div id="zukan-list"></div>
+      <button class="back-btn" id="zukan-back">もどる</button>
+    </div>
+
+    <!-- 進化画面 -->
+    <div id="evolve-screen" class="hidden">
+      <div id="evolve-animation">
+        <div id="evolve-old"></div>
+        <div id="evolve-flash"></div>
+        <div id="evolve-new"></div>
+      </div>
+      <p id="evolve-text"></p>
+      <button id="evolve-ok" class="hidden">やったー！</button>
+    </div>
+
+    <!-- 名前入力画面 -->
+    <div id="naming-screen" class="hidden">
+      <div id="naming-pet-preview"></div>
+      <h2>なまえをつけてあげよう！</h2>
+      <input type="text" id="name-input" maxlength="8" placeholder="なまえ（8文字まで）">
+      <button id="name-ok">けってい</button>
+    </div>
+
+  </div>
+
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  <script src="game.js"></script>
+</body>
+</html>

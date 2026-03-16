@@ -1,0 +1,716 @@
+/* ===== 基本リセット ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: #0a0a1a;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.hidden { display: none !important; }
+
+#game-wrapper {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== タイトル画面 ===== */
+#title-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 40%, #4a2c8a 100%);
+  text-align: center;
+  padding: 20px;
+}
+
+#title-egg {
+  width: 120px;
+  height: 150px;
+  background: radial-gradient(ellipse at 40% 30%, #fff 0%, #e0c3ff 30%, #b388ff 60%, #7c4dff 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  margin-bottom: 30px;
+  animation: egg-float 3s ease-in-out infinite;
+  box-shadow: 0 10px 40px rgba(179, 136, 255, 0.5);
+  position: relative;
+}
+
+#title-egg::after {
+  content: '?';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.7);
+  animation: egg-pulse 2s ease-in-out infinite;
+}
+
+@keyframes egg-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes egg-pulse {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+#game-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #e0c3ff;
+  text-shadow: 0 0 20px rgba(179, 136, 255, 0.8);
+  margin-bottom: 40px;
+  line-height: 1.5;
+}
+
+#game-title .subtitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #b388ff;
+}
+
+#start-btn, #continue-btn {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 14px 50px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin: 8px;
+  transition: all 0.3s;
+}
+
+#start-btn {
+  background: linear-gradient(135deg, #7c4dff, #b388ff);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(124, 77, 255, 0.5);
+}
+
+#continue-btn {
+  background: linear-gradient(135deg, #4a2c8a, #7c4dff);
+  color: #e0c3ff;
+  box-shadow: 0 4px 20px rgba(74, 44, 138, 0.5);
+}
+
+#start-btn:hover, #continue-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(124, 77, 255, 0.7);
+}
+
+/* ===== メイン画面 ===== */
+#main-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1a1a3e 0%, #2d2d6b 100%);
+}
+
+#top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: rgba(0,0,0,0.3);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#pet-name-display {
+  color: #e0c3ff;
+  font-size: 16px;
+}
+
+#coin-display {
+  color: #ffd700;
+}
+
+#day-display {
+  color: #88ccff;
+}
+
+/* ===== ペットエリア ===== */
+#pet-area {
+  flex: 1;
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+#environment {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #87CEEB 0%, #98FB98 70%, #228B22 100%);
+  transition: background 2s;
+}
+
+#environment.night {
+  background: linear-gradient(180deg, #0a0a2e 0%, #1a1a4e 70%, #0d3b0d 100%);
+}
+
+#pet-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+#pet-sprite {
+  font-size: 80px;
+  line-height: 1;
+  text-align: center;
+  animation: pet-idle 2s ease-in-out infinite;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+  transition: font-size 0.5s;
+}
+
+@keyframes pet-idle {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.02); }
+}
+
+#pet-sprite.happy {
+  animation: pet-happy 0.5s ease-in-out 3;
+}
+
+@keyframes pet-happy {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+#pet-sprite.eating {
+  animation: pet-eat 0.3s ease-in-out 4;
+}
+
+@keyframes pet-eat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+#pet-sprite.sleeping {
+  animation: pet-sleep 3s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes pet-sleep {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+#pet-emotion {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  animation: emotion-pop 1.5s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes emotion-pop {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.5); }
+  20% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.2); }
+  80% { opacity: 1; transform: translateX(-50%) translateY(-20px) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(0.8); }
+}
+
+#poop-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  z-index: 1;
+}
+
+.poop {
+  font-size: 24px;
+  animation: poop-appear 0.3s ease-out;
+}
+
+@keyframes poop-appear {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+/* ===== ステータスパネル ===== */
+#stats-panel {
+  padding: 10px 15px;
+  background: rgba(0,0,0,0.4);
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  width: 50px;
+  text-align: right;
+  color: #ccc;
+}
+
+.stat-bar {
+  flex: 1;
+  height: 12px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.stat-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  background: linear-gradient(90deg, #ff6b6b, #ff9f43);
+}
+
+.stat-fill.happy {
+  background: linear-gradient(90deg, #ffd93d, #ff6b6b);
+}
+
+.stat-fill.clean {
+  background: linear-gradient(90deg, #6bcbff, #4ecdc4);
+}
+
+.stat-fill.exp {
+  background: linear-gradient(90deg, #a18cd1, #fbc2eb);
+}
+
+.stat-value {
+  font-size: 11px;
+  width: 30px;
+  text-align: left;
+  color: #aaa;
+}
+
+/* ===== アクションボタン ===== */
+#action-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px 15px;
+  background: rgba(0,0,0,0.5);
+}
+
+.action-btn {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 5px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+.action-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.4);
+  transform: scale(1.05);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== メッセージボックス ===== */
+#message-box {
+  position: fixed;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 100;
+  max-width: 400px;
+  text-align: center;
+  animation: msg-fade 2.5s ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes msg-fade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ===== ごはん画面 ===== */
+#feed-screen, #shop-screen, #zukan-screen {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 100%);
+  padding: 20px 15px;
+}
+
+.screen-title {
+  font-size: 22px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #e0c3ff;
+}
+
+#food-list, #shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.food-item, .shop-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.food-item:hover, .shop-item:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.food-item.locked, .shop-item.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.food-icon, .shop-icon {
+  font-size: 36px;
+}
+
+.food-info, .shop-info {
+  flex: 1;
+}
+
+.food-name, .shop-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.food-desc, .shop-desc {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+.food-count, .shop-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* ===== 図鑑画面 ===== */
+#zukan-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.zukan-entry {
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 16px 8px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.zukan-entry.discovered {
+  border-color: rgba(179, 136, 255, 0.5);
+  background: rgba(179, 136, 255, 0.1);
+}
+
+.zukan-entry.undiscovered {
+  opacity: 0.5;
+}
+
+.zukan-sprite {
+  font-size: 40px;
+  margin-bottom: 6px;
+}
+
+.zukan-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ccc;
+}
+
+/* ===== ミニゲーム画面 ===== */
+#minigame-screen {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a2a1a 0%, #1a4a3a 100%);
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#minigame-area {
+  width: 100%;
+  max-width: 400px;
+  min-height: 350px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+#minigame-score {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffd700;
+  margin: 10px 0;
+}
+
+.mg-target {
+  position: absolute;
+  font-size: 40px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  animation: mg-target-pop 0.3s ease-out;
+}
+
+@keyframes mg-target-pop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.mg-target:active {
+  transform: scale(0.8);
+}
+
+/* ===== 進化画面 ===== */
+#evolve-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0a2e 0%, #1a1a5e 100%);
+  text-align: center;
+  padding: 20px;
+}
+
+#evolve-animation {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 30px;
+}
+
+#evolve-old, #evolve-new {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+}
+
+#evolve-flash {
+  position: absolute;
+  inset: -50px;
+  background: radial-gradient(circle, rgba(255,255,255,0.9), transparent);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+#evolve-text {
+  font-size: 22px;
+  font-weight: 900;
+  color: #e0c3ff;
+  margin-bottom: 20px;
+  text-shadow: 0 0 20px rgba(179, 136, 255, 0.8);
+}
+
+#evolve-ok {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 40px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #7c4dff, #b388ff);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(124, 77, 255, 0.5);
+}
+
+/* ===== 名前入力画面 ===== */
+#naming-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 100%);
+  text-align: center;
+  padding: 20px;
+}
+
+#naming-pet-preview {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: pet-idle 2s ease-in-out infinite;
+}
+
+#naming-screen h2 {
+  font-size: 20px;
+  color: #e0c3ff;
+  margin-bottom: 20px;
+}
+
+#name-input {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  padding: 12px 20px;
+  border: 3px solid #7c4dff;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  outline: none;
+  width: 250px;
+  margin-bottom: 20px;
+}
+
+#name-input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+#name-input:focus {
+  border-color: #b388ff;
+  box-shadow: 0 0 20px rgba(179, 136, 255, 0.3);
+}
+
+#name-ok {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 40px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #7c4dff, #b388ff);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(124, 77, 255, 0.5);
+}
+
+/* ===== 戻るボタン ===== */
+.back-btn {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  display: block;
+  margin: 20px auto;
+  padding: 12px 40px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 30px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ===== トップリンク ===== */
+.back-to-top-link {
+  display: block;
+  text-align: center;
+  padding: 15px;
+  color: #b388ff;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: #0a0a1a;
+}
+
+.back-to-top-link:hover {
+  color: #e0c3ff;
+}
+
+/* ===== ショップ追加スタイル ===== */
+#shop-coins {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 15px;
+}
+
+.shop-item.purchased {
+  border-color: #4ecdc4;
+}
+
+.shop-item.purchased .shop-price {
+  color: #4ecdc4;
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 360px) {
+  #pet-sprite { font-size: 60px; }
+  .action-btn { font-size: 12px; padding: 8px 4px; }
+  #game-title { font-size: 24px; }
+}
+
+@media (min-width: 481px) {
+  #game-wrapper {
+    margin-top: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 60px rgba(124, 77, 255, 0.3);
+    min-height: auto;
+    max-height: 90vh;
+  }
+  #main-screen { min-height: 700px; }
+  #title-screen, #naming-screen, #evolve-screen { min-height: 700px; }
+  #feed-screen, #shop-screen, #zukan-screen, #minigame-screen { min-height: 700px; }
+}
