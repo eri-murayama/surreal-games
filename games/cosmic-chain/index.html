@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>コズミック・チェイン ～星々の連鎖反応～ - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Title Screen -->
+    <div id="title-screen">
+      <div id="title-particles"></div>
+      <div id="title-content">
+        <div id="title-orb"></div>
+        <h1 id="game-title">
+          <span class="title-en">COSMIC CHAIN</span>
+          <span class="title-ja">～星々の連鎖反応～</span>
+        </h1>
+        <p id="title-desc">タップで爆発、連鎖で大爆発！<br>宇宙のすべてを輝かせろ！</p>
+        <button id="start-btn">
+          <span class="btn-glow"></span>
+          スタート
+        </button>
+        <div id="best-score-display" class="hidden">BEST: <span id="best-score-value">0</span></div>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div id="hud-left">
+        <div id="level-display">LEVEL <span id="level-num">1</span></div>
+        <div id="orbs-remaining">残り: <span id="orbs-count">0</span></div>
+      </div>
+      <div id="hud-center">
+        <div id="score-display">
+          <span id="score-label">SCORE</span>
+          <span id="score-value">0</span>
+        </div>
+        <div id="chain-display" class="hidden">
+          <span id="chain-count">0</span>
+          <span id="chain-label">CHAIN!</span>
+        </div>
+      </div>
+      <div id="hud-right">
+        <div id="clicks-left">CLICK: <span id="clicks-value">1</span></div>
+        <div id="target-display">TARGET: <span id="target-value">0</span></div>
+      </div>
+    </div>
+
+    <!-- Level Intro -->
+    <div id="level-intro" class="hidden">
+      <div id="level-intro-content">
+        <span id="level-intro-sub">LEVEL</span>
+        <span id="level-intro-num">1</span>
+        <span id="level-intro-name"></span>
+      </div>
+    </div>
+
+    <!-- Combo Popup -->
+    <div id="combo-popup" class="hidden">
+      <span id="combo-text"></span>
+    </div>
+
+    <!-- Level Clear -->
+    <div id="level-clear" class="hidden">
+      <div id="clear-content">
+        <h2 id="clear-title">LEVEL CLEAR!</h2>
+        <div id="clear-stats">
+          <div class="clear-stat">
+            <span class="clear-stat-label">チェイン</span>
+            <span class="clear-stat-value" id="clear-chain">0</span>
+          </div>
+          <div class="clear-stat">
+            <span class="clear-stat-label">スコア</span>
+            <span class="clear-stat-value" id="clear-score">0</span>
+          </div>
+          <div class="clear-stat" id="clear-bonus-row">
+            <span class="clear-stat-label">ボーナス</span>
+            <span class="clear-stat-value" id="clear-bonus">+0</span>
+          </div>
+        </div>
+        <div id="clear-rank"></div>
+        <button id="next-level-btn">次のレベルへ</button>
+      </div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="game-over" class="hidden">
+      <div id="gameover-content">
+        <h2 id="gameover-title">GAME OVER</h2>
+        <div id="gameover-stats">
+          <div class="clear-stat">
+            <span class="clear-stat-label">最終スコア</span>
+            <span class="clear-stat-value" id="final-score">0</span>
+          </div>
+          <div class="clear-stat">
+            <span class="clear-stat-label">到達レベル</span>
+            <span class="clear-stat-value" id="final-level">1</span>
+          </div>
+          <div class="clear-stat">
+            <span class="clear-stat-label">最大チェイン</span>
+            <span class="clear-stat-value" id="final-chain">0</span>
+          </div>
+        </div>
+        <div id="new-record" class="hidden">NEW RECORD!</div>
+        <button id="retry-btn">もう一度</button>
+        <button id="home-btn">タイトルへ</button>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  <script src="game.js"></script>
+</body>
+</html>
