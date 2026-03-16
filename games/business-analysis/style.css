@@ -1,0 +1,824 @@
+/* ===== 経営分析ゲーム スタイル ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0d0221;
+  color: #f0e6ff;
+  font-family: 'Zen Maru Gothic', 'Shippori Mincho', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#game-wrapper {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== タイトル画面 ===== */
+
+#title-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 40%, #4a2c8a 70%, #f5c6ec 100%);
+  padding: 20px;
+}
+
+#title-sparkle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  animation: sparkle-float 3s ease-in-out infinite;
+  box-shadow: 0 0 6px 2px rgba(255, 215, 0, 0.8), 0 0 12px 4px rgba(255, 180, 255, 0.4);
+}
+
+@keyframes sparkle-float {
+  0%, 100% { opacity: 0; transform: scale(0) translateY(0); }
+  50% { opacity: 1; transform: scale(1) translateY(-20px); }
+}
+
+#title-character {
+  margin-bottom: 30px;
+}
+
+#atsushi-title {
+  width: 180px;
+  height: 260px;
+  margin: 0 auto;
+  position: relative;
+  /* 篤のシルエット - 少女漫画風 */
+  background: linear-gradient(180deg, #2a1a4a 0%, #3d2a6e 100%);
+  border-radius: 50% 50% 45% 45%;
+  overflow: hidden;
+}
+
+/* 篤の髪 */
+#atsushi-title::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -15px;
+  width: 120%;
+  height: 55%;
+  background: linear-gradient(180deg, #1a0a2e 0%, #2d1854 80%);
+  border-radius: 50% 60% 40% 30%;
+  z-index: 2;
+}
+
+/* 篤の顔（前髪で片目隠れ） */
+#atsushi-title::after {
+  content: '✦';
+  position: absolute;
+  top: 38%;
+  right: 30%;
+  font-size: 18px;
+  color: #c4a0ff;
+  z-index: 3;
+  text-shadow: 0 0 10px #c4a0ff;
+  animation: eye-blink 4s ease-in-out infinite;
+}
+
+@keyframes eye-blink {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0; }
+}
+
+#game-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(255, 215, 0, 0.8),
+    0 0 40px rgba(255, 180, 255, 0.6),
+    0 0 60px rgba(200, 150, 255, 0.4);
+  line-height: 1.6;
+  margin-bottom: 40px;
+  animation: title-glow 2s ease-in-out infinite alternate;
+  z-index: 5;
+}
+
+@keyframes title-glow {
+  0% {
+    text-shadow:
+      0 0 20px rgba(255, 215, 0, 0.6),
+      0 0 40px rgba(255, 180, 255, 0.4),
+      0 0 60px rgba(200, 150, 255, 0.2);
+  }
+  100% {
+    text-shadow:
+      0 0 30px rgba(255, 215, 0, 1),
+      0 0 60px rgba(255, 180, 255, 0.8),
+      0 0 90px rgba(200, 150, 255, 0.6),
+      0 0 120px rgba(255, 255, 200, 0.3);
+  }
+}
+
+#game-title ruby {
+  ruby-position: over;
+}
+
+#game-title rt {
+  font-size: 12px;
+  color: #ffd700;
+  letter-spacing: 1px;
+}
+
+#start-btn {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2ff7, #c471ed);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 30px;
+  padding: 14px 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(123, 47, 247, 0.4);
+  z-index: 5;
+}
+
+#start-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(196, 113, 237, 0.6);
+}
+
+/* ===== オープニング画面 ===== */
+
+#opening-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #0d0221 0%, #1a0a3e 50%, #2d1b69 100%);
+  padding: 20px;
+}
+
+#opening-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(196, 160, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 180, 255, 0.08) 0%, transparent 50%);
+}
+
+#atsushi-opening {
+  width: 150px;
+  height: 200px;
+  position: relative;
+  margin-bottom: 30px;
+  z-index: 2;
+}
+
+/* 篤立ち絵（少女漫画風・上半身） */
+#atsushi-opening::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1a0a2e 0%, #3d2a6e 60%, #5a3d8a 100%);
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 0 0 30px rgba(196, 160, 255, 0.3);
+}
+
+#atsushi-opening::after {
+  content: '✦';
+  position: absolute;
+  top: 35%;
+  right: 28%;
+  font-size: 16px;
+  color: #c4a0ff;
+  z-index: 3;
+  text-shadow: 0 0 10px #c4a0ff;
+}
+
+#opening-text-box {
+  background: rgba(13, 2, 33, 0.85);
+  border: 1px solid rgba(196, 160, 255, 0.3);
+  border-radius: 12px;
+  padding: 20px 24px;
+  max-width: 400px;
+  width: 100%;
+  min-height: 100px;
+  position: relative;
+  z-index: 2;
+}
+
+#opening-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #f0e6ff;
+  white-space: pre-wrap;
+}
+
+#opening-next-btn, #register-next-btn, #dialogue-close-btn {
+  font-size: 20px;
+  color: #c4a0ff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  animation: bounce-down 1s ease-in-out infinite;
+  margin-top: 10px;
+  z-index: 5;
+}
+
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* ===== ラーメン屋シーン ===== */
+
+#ramen-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #1a1209;
+}
+
+#ramen-shop {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+#shop-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      #3d2b1a 0%,
+      #2a1f12 30%,
+      #1a1209 60%,
+      #0d0a05 100%
+    );
+}
+
+/* 汚れエフェクト */
+#shop-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(80, 60, 30, 0.5) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 50%, rgba(60, 40, 20, 0.4) 0%, transparent 35%),
+    radial-gradient(ellipse at 50% 80%, rgba(40, 30, 15, 0.6) 0%, transparent 45%);
+}
+
+/* 暗い照明エフェクト */
+#shop-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 200, 100, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* クリッカブルオブジェクト共通 */
+.clickable-obj {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+
+.clickable-obj:hover {
+  transform: scale(1.08);
+}
+
+.clickable-obj:active {
+  transform: scale(0.95);
+}
+
+.obj-label {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 4px;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.clickable-obj.found {
+  pointer-events: none;
+}
+
+.clickable-obj.found .obj-visual {
+  box-shadow: 0 0 15px rgba(0, 255, 100, 0.6);
+}
+
+.clickable-obj.wrong {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* 店主（おやじ） */
+#obj-oyaji {
+  bottom: 25%;
+  left: 10%;
+}
+
+#visual-oyaji {
+  width: 80px;
+  height: 100px;
+  background: linear-gradient(180deg, #5a4a30 0%, #3a2a15 100%);
+  border-radius: 40% 40% 30% 30%;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* おやじの顔 */
+#visual-oyaji::before {
+  content: '😤';
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 30px;
+}
+
+/* おやじのエプロン（汚い） */
+#visual-oyaji::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 40%;
+  background: linear-gradient(180deg, #8a7a5a, #6a5a3a);
+  border-radius: 0 0 30% 30%;
+  opacity: 0.8;
+}
+
+/* ラーメン */
+#obj-ramen {
+  bottom: 15%;
+  left: 40%;
+}
+
+#visual-ramen {
+  width: 70px;
+  height: 50px;
+  background: radial-gradient(ellipse, #8a7a50 0%, #5a4a2a 100%);
+  border-radius: 5px 5px 50% 50%;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* 湯気（くさそう） */
+#visual-ramen::before {
+  content: '🍜';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 40px;
+}
+
+/* 臭い演出 */
+#visual-ramen::after {
+  content: '💀';
+  position: absolute;
+  top: -30px;
+  right: -10px;
+  font-size: 16px;
+  animation: stink-float 2s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes stink-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+  50% { transform: translateY(-10px) rotate(10deg); opacity: 0.8; }
+}
+
+/* レジ */
+#obj-register {
+  bottom: 30%;
+  right: 10%;
+}
+
+#visual-register {
+  width: 60px;
+  height: 55px;
+  background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 100%);
+  border-radius: 5px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#visual-register::before {
+  content: '💰';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+}
+
+/* 看板 */
+#obj-sign {
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#visual-sign {
+  width: 120px;
+  height: 40px;
+  background: linear-gradient(180deg, #5a3a1a, #3a2a0a);
+  border-radius: 5px;
+  position: relative;
+  border: 2px solid #2a1a05;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#visual-sign::before {
+  content: 'ラーメン';
+  font-size: 16px;
+  color: #c8a860;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* テーブル */
+#obj-table {
+  bottom: 8%;
+  right: 30%;
+}
+
+#visual-table {
+  width: 70px;
+  height: 35px;
+  background: linear-gradient(180deg, #5a4020 0%, #3a2810 100%);
+  border-radius: 3px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#visual-table::before {
+  content: '🪑';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+}
+
+/* 篤（ラーメン屋シーン） */
+#atsushi-ramen {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 60px;
+  height: 80px;
+  z-index: 15;
+}
+
+#atsushi-ramen::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1a0a2e, #3d2a6e);
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 0 0 15px rgba(196, 160, 255, 0.3);
+}
+
+#atsushi-ramen::after {
+  content: '✦';
+  position: absolute;
+  top: 30%;
+  right: 25%;
+  font-size: 10px;
+  color: #c4a0ff;
+  text-shadow: 0 0 8px #c4a0ff;
+}
+
+/* セリフ欄 */
+#dialogue-box {
+  position: absolute;
+  bottom: 100px;
+  left: 10px;
+  right: 10px;
+  background: rgba(13, 2, 33, 0.92);
+  border: 1px solid rgba(196, 160, 255, 0.4);
+  border-radius: 12px;
+  padding: 16px 20px 12px;
+  z-index: 20;
+}
+
+#dialogue-name {
+  font-size: 13px;
+  color: #c4a0ff;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+#dialogue-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #f0e6ff;
+  white-space: pre-wrap;
+}
+
+#dialogue-close-btn {
+  display: block;
+  margin: 8px auto 0;
+}
+
+#ramen-hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(123, 47, 247, 0.8);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  z-index: 20;
+  white-space: nowrap;
+  animation: hint-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hint-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(123, 47, 247, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(123, 47, 247, 0.8); }
+}
+
+/* ===== レジ演出画面 ===== */
+
+#register-scene {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #0d0221, #1a0a3e);
+  padding: 20px;
+}
+
+#register-animation {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+/* お金が飛び散るアニメーション */
+.money-particle {
+  position: absolute;
+  font-size: 30px;
+  animation: money-fly 2s ease-out forwards;
+}
+
+@keyframes money-fly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1.2);
+  }
+}
+
+#register-text-box {
+  background: rgba(13, 2, 33, 0.85);
+  border: 1px solid rgba(196, 160, 255, 0.3);
+  border-radius: 12px;
+  padding: 20px 24px;
+  max-width: 400px;
+  width: 100%;
+  min-height: 80px;
+  z-index: 2;
+}
+
+#register-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #f0e6ff;
+  white-space: pre-wrap;
+}
+
+/* ===== エンディング画面 ===== */
+
+#ending-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 40%, #f5c6ec 100%);
+  padding: 20px;
+}
+
+#ending-sparkle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#atsushi-ending {
+  width: 160px;
+  height: 220px;
+  position: relative;
+  margin-bottom: 30px;
+  z-index: 2;
+}
+
+#atsushi-ending::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1a0a2e 0%, #3d2a6e 60%, #5a3d8a 100%);
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 0 0 40px rgba(196, 160, 255, 0.5), 0 0 80px rgba(255, 215, 0, 0.3);
+}
+
+#atsushi-ending::after {
+  content: '✦';
+  position: absolute;
+  top: 35%;
+  right: 28%;
+  font-size: 16px;
+  color: #ffd700;
+  z-index: 3;
+  text-shadow: 0 0 15px #ffd700;
+  animation: eye-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes eye-glow {
+  0% { text-shadow: 0 0 10px #c4a0ff; color: #c4a0ff; }
+  100% { text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700; color: #ffd700; }
+}
+
+#ending-text-box {
+  background: rgba(13, 2, 33, 0.85);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 12px;
+  padding: 20px 24px;
+  max-width: 400px;
+  width: 100%;
+  min-height: 80px;
+  z-index: 2;
+}
+
+#ending-text {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #ffd700;
+  text-align: center;
+  white-space: pre-wrap;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+#ending-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  z-index: 5;
+}
+
+#replay-btn, .ending-home-btn {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2ff7, #c471ed);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 25px;
+  padding: 12px 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+#replay-btn:hover, .ending-home-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(196, 113, 237, 0.5);
+}
+
+/* ===== トップに戻るリンク ===== */
+
+.back-to-top-link {
+  display: block;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  padding: 15px;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.back-to-top-link:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ===== テキスト送り演出 ===== */
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #c4a0ff;
+  animation: cursor-blink 0.6s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ===== レスポンシブ ===== */
+
+@media (max-width: 480px) {
+  #game-title {
+    font-size: 22px;
+  }
+
+  #atsushi-title {
+    width: 140px;
+    height: 200px;
+  }
+
+  #dialogue-box {
+    bottom: 80px;
+    left: 5px;
+    right: 5px;
+    padding: 12px 16px 8px;
+  }
+
+  #dialogue-text {
+    font-size: 14px;
+  }
+
+  #ramen-hint {
+    font-size: 11px;
+    padding: 6px 14px;
+  }
+
+  .obj-label {
+    font-size: 10px;
+  }
+}
