@@ -23,31 +23,38 @@
     <!-- タイトル画面 -->
     <div id="title-screen">
       <div id="title-sparkle-container"></div>
+      <div class="deco-frame"></div>
+      <div class="deco-corner deco-corner--tl"></div>
+      <div class="deco-corner deco-corner--tr"></div>
+      <div class="deco-corner deco-corner--bl"></div>
+      <div class="deco-corner deco-corner--br"></div>
       <div id="title-character">
-        <div id="atsushi-title"></div>
+        <div id="atsushi-title"><img src="atsushi.png" alt="篤"></div>
       </div>
       <h1 id="game-title">
         経営分析ゲーム<br>
         ～天才たちの<ruby>戯れ<rp>(</rp><rt>シーソーゲーム</rt><rp>)</rp></ruby>～
       </h1>
-      <button id="start-btn">始める</button>
+      <button id="start-btn">レディー★ゴー</button>
     </div>
 
     <!-- オープニング画面 -->
     <div id="opening-screen" class="hidden">
       <div id="opening-bg"></div>
-      <div id="atsushi-opening"></div>
+      <div class="deco-frame"></div>
+      <div id="opening-speed-lines"></div>
+      <div id="atsushi-opening" class="chara-entrance"><img src="atsushi.png" alt="篤"></div>
+      <div id="opening-name">篤</div>
       <div id="opening-text-box">
         <p id="opening-text"></p>
       </div>
-      <button id="opening-next-btn" class="hidden">▼</button>
+      <div class="next-indicator hidden" id="opening-indicator">▽</div>
     </div>
 
     <!-- ラーメン屋シーン -->
     <div id="ramen-screen" class="hidden">
       <div id="ramen-shop">
         <div id="shop-bg"></div>
-        <!-- クリッカブルオブジェクト -->
         <div class="clickable-obj" id="obj-oyaji" data-name="oyaji">
           <div class="obj-visual" id="visual-oyaji"></div>
           <div class="obj-label">店主</div>
@@ -70,39 +77,44 @@
         </div>
       </div>
 
-      <!-- 篤のキャラクター表示 -->
-      <div id="atsushi-ramen"></div>
+      <div id="atsushi-ramen"><img src="atsushi.png" alt="篤"></div>
 
-      <!-- セリフ欄 -->
       <div id="dialogue-box" class="hidden">
         <div id="dialogue-name">篤</div>
         <p id="dialogue-text"></p>
-        <button id="dialogue-close-btn">▼</button>
+        <div id="dialogue-indicator" class="next-indicator hidden">▽</div>
       </div>
 
-      <!-- ヒント -->
       <div id="ramen-hint">経営的にまずい箇所をクリックしろ</div>
     </div>
 
     <!-- レジ演出画面 -->
     <div id="register-scene" class="hidden">
+      <div class="deco-frame"></div>
+      <div id="atsushi-register"><img src="atsushi-pose.png" alt="篤"></div>
       <div id="register-animation"></div>
+      <div id="register-name">篤</div>
       <div id="register-text-box">
         <p id="register-text"></p>
       </div>
-      <button id="register-next-btn" class="hidden">▼</button>
+      <div class="next-indicator hidden" id="register-indicator">▽</div>
     </div>
 
     <!-- エンディング画面 -->
     <div id="ending-screen" class="hidden">
       <div id="ending-sparkle-container"></div>
-      <div id="atsushi-ending"></div>
+      <div class="deco-frame"></div>
+      <div class="deco-corner deco-corner--tl"></div>
+      <div class="deco-corner deco-corner--tr"></div>
+      <div class="deco-corner deco-corner--bl"></div>
+      <div class="deco-corner deco-corner--br"></div>
+      <div id="atsushi-ending"><img src="atsushi.png" alt="篤"></div>
       <div id="ending-text-box">
         <p id="ending-text"></p>
       </div>
       <div id="ending-buttons" class="hidden">
-        <button id="replay-btn">もう一度プレイ</button>
-        <a href="../../index.html" class="ending-home-btn">トップに戻る</a>
+        <button class="game-end-btn" id="replay-btn">もう一回やる</button>
+        <a href="../../index.html" class="game-end-btn">← トップに戻る</a>
       </div>
     </div>
 

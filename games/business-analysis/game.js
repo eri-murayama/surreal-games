@@ -3,22 +3,28 @@
 
   // ===== ゲーム状態 =====
   const state = {
-    phase: 'title', // title, opening, ramen, register, ending
+    phase: 'title',
     openingStep: 0,
     registerStep: 0,
-    endingStep: 0,
     clickedObjects: new Set(),
     dialogueOpen: false,
-    typing: false
+    dialogueReady: false,
+    typing: false,
+    pendingDialogueClose: null,
+    _skipTyping: null
   };
 
   // ===== セリフデータ =====
   const openingLines = [
+    '俺の名は篤。天才経営アナリスト。\n数字が俺に恋をする…そういう男だ。',
     '今日も迷える子羊ちゃんたちの\n救いを求める声がする。',
     '俺を待ってろ、世界…！！',
     '……依頼が来たな。\nさびれたラーメン屋の経営分析か。',
     'どれ、この天才アナリストの\n目で見抜いてやるとしよう。'
   ];
+
+  // 衝撃演出を入れるセリフindex
+  const impactLines = [2]; // 「俺を待ってろ、世界…！！」
 
   const objectDialogues = {
     oyaji: {
@@ -57,6 +63,11 @@
 
   const endingLine = 'ふ…\nまた才能をきらめかせちまったぜ…';
 
+  // テキスト速度
+  const TEXT_SPEED = 22;
+  const TEXT_SPEED_FAST = 25;
+  const ENDING_SPEED = 35;
+
   // ===== DOM要素 =====
   const $ = (id) => document.getElementById(id);
 
@@ -71,21 +82,39 @@
   // ===== ユーティリティ =====
   function showScreen(name) {
     Object.values(screens).forEach(s => s.classList.add('hidden'));
-    screens[name].classList.remove('hidden');
+    const screen = screens[name];
+    screen.classList.remove('hidden');
+    screen.classList.remove('screen-fade-in');
+    void screen.offsetWidth; // reflow
+    screen.classList.add('screen-fade-in');
     state.phase = name;
   }
 
   function typeText(element, text, speed, callback) {
     if (state.typing) return;
     state.typing = true;
+    state.dialogueReady = false;
     element.textContent = '';
     let i = 0;
+    let skipRequested = false;
 
-    // カーソル追加
     const cursor = document.createElement('span');
     cursor.className = 'typing-cursor';
 
+    state._skipTyping = function() {
+      skipRequested = true;
+    };
+
     function tick() {
+      if (skipRequested) {
+        element.textContent = text;
+        if (cursor.parentNode) cursor.remove();
+        state.typing = false;
+        state.dialogueReady = true;
+        state._skipTyping = null;
+        if (callback) callback();
+        return;
+      }
       if (i < text.length) {
         element.textContent = text.substring(0, i + 1);
         element.appendChild(cursor);
@@ -94,29 +123,37 @@
       } else {
         if (cursor.parentNode) cursor.remove();
         state.typing = false;
+        state.dialogueReady = true;
+        state._skipTyping = null;
         if (callback) callback();
       }
     }
     tick();
   }
 
-  // ===== キラキラエフェクト =====
+  // ===== エフェクト =====
+
   function createSparkles(container, count) {
     for (let i = 0; i < count; i++) {
       const sparkle = document.createElement('div');
-      sparkle.className = 'sparkle';
+      const isStar = Math.random() > 0.6;
+      sparkle.className = isStar ? 'sparkle sparkle--star' : 'sparkle';
+      if (isStar) {
+        sparkle.textContent = ['✦', '✧', '⋆', '★'][Math.floor(Math.random() * 4)];
+      }
       sparkle.style.left = Math.random() * 100 + '%';
       sparkle.style.top = Math.random() * 100 + '%';
       sparkle.style.animationDelay = Math.random() * 3 + 's';
-      sparkle.style.animationDuration = (2 + Math.random() * 2) + 's';
-      const size = 3 + Math.random() * 6;
-      sparkle.style.width = size + 'px';
-      sparkle.style.height = size + 'px';
+      sparkle.style.animationDuration = (2 + Math.random() * 3) + 's';
+      if (!isStar) {
+        const size = 3 + Math.random() * 6;
+        sparkle.style.width = size + 'px';
+        sparkle.style.height = size + 'px';
+      }
       container.appendChild(sparkle);
     }
   }
 
-  // ===== お金パーティクル =====
   function spawnMoneyParticles() {
     const container = $('register-animation');
     container.innerHTML = '';
@@ -137,37 +174,139 @@
     }
   }
 
+  function screenFlash(parent) {
+    const flash = document.createElement('div');
+    flash.className = 'screen-flash';
+    parent.appendChild(flash);
+    setTimeout(() => flash.remove(), 500);
+  }
+
+  function showMangaExclaim(parent, text, x, y) {
+    const el = document.createElement('div');
+    el.className = 'manga-exclaim';
+    el.textContent = text;
+    el.style.left = x;
+    el.style.top = y;
+    parent.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  }
+
+  function showWrongMark(parent) {
+    const el = document.createElement('div');
+    el.className = 'wrong-mark';
+    el.textContent = '✕';
+    parent.appendChild(el);
+    setTimeout(() => el.remove(), 700);
+  }
+
+  function showCorrectMark(parent) {
+    const el = document.createElement('div');
+    el.className = 'correct-mark';
+    el.textContent = '◎';
+    parent.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+  }
+
+  function addFlies() {
+    const shop = $('ramen-shop');
+    const positions = [
+      { left: '60%', top: '20%', delay: '0s' },
+      { left: '25%', top: '35%', delay: '1s' },
+      { left: '75%', top: '45%', delay: '0.5s' }
+    ];
+    positions.forEach(pos => {
+      const fly = document.createElement('div');
+      fly.className = 'fly-particle';
+      fly.textContent = '🪰';
+      fly.style.left = pos.left;
+      fly.style.top = pos.top;
+      fly.style.animationDelay = pos.delay;
+      fly.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+      shop.appendChild(fly);
+    });
+  }
+
+  function createSpeedLines() {
+    const container = $('opening-speed-lines');
+    container.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
+      const line = document.createElement('div');
+      line.className = 'speed-line';
+      line.style.transform = 'rotate(' + (i * 18) + 'deg)';
+      line.style.opacity = 0.3 + Math.random() * 0.5;
+      container.appendChild(line);
+    }
+  }
+
+  // ===== 画面タップで進行 =====
+  function handleScreenTap(e) {
+    if (e.target.closest('button, a, .clickable-obj')) return;
+
+    if (state.typing && state._skipTyping) {
+      state._skipTyping();
+      return;
+    }
+
+    if (state.phase === 'opening' && state.dialogueReady) {
+      state.dialogueReady = false;
+      $('opening-indicator').classList.add('hidden');
+      state.openingStep++;
+      playOpening();
+    } else if (state.phase === 'register' && state.dialogueReady) {
+      state.dialogueReady = false;
+      $('register-indicator').classList.add('hidden');
+      state.registerStep++;
+      if (state.registerStep < registerLines.length) {
+        spawnMoneyParticles();
+      }
+      playRegister();
+    } else if (state.phase === 'ramen' && state.dialogueOpen && state.dialogueReady) {
+      if (state.pendingDialogueClose) {
+        state.pendingDialogueClose();
+      }
+    }
+  }
+
   // ===== タイトル画面 =====
   function initTitle() {
-    createSparkles($('title-sparkle-container'), 30);
+    createSparkles($('title-sparkle-container'), 40);
 
     $('start-btn').addEventListener('click', () => {
       state.openingStep = 0;
       showScreen('opening');
+      createSpeedLines();
       playOpening();
     });
   }
 
   // ===== オープニング =====
   function playOpening() {
-    const nextBtn = $('opening-next-btn');
-    nextBtn.classList.add('hidden');
+    $('opening-indicator').classList.add('hidden');
 
     if (state.openingStep >= openingLines.length) {
       showScreen('ramen');
+      addFlies();
       return;
     }
 
-    typeText($('opening-text'), openingLines[state.openingStep], 50, () => {
-      nextBtn.classList.remove('hidden');
-    });
-  }
+    // 衝撃演出
+    if (impactLines.includes(state.openingStep)) {
+      const atsushi = $('atsushi-opening');
+      atsushi.classList.remove('chara-impact');
+      void atsushi.offsetWidth;
+      atsushi.classList.add('chara-impact');
 
-  function initOpening() {
-    $('opening-next-btn').addEventListener('click', () => {
-      if (state.typing) return;
-      state.openingStep++;
-      playOpening();
+      const container = $('opening-speed-lines');
+      container.classList.remove('active');
+      void container.offsetWidth;
+      container.classList.add('active');
+
+      screenFlash(screens.opening);
+      showMangaExclaim(screens.opening, '！！', '70%', '25%');
+    }
+
+    typeText($('opening-text'), openingLines[state.openingStep], TEXT_SPEED, () => {
+      $('opening-indicator').classList.remove('hidden');
     });
   }
 
@@ -177,9 +316,11 @@
     const dialogueBox = $('dialogue-box');
     const dialogueText = $('dialogue-text');
     const dialogueName = $('dialogue-name');
+    const dialogueIndicator = $('dialogue-indicator');
 
     objects.forEach(obj => {
-      obj.addEventListener('click', () => {
+      obj.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (state.dialogueOpen || state.typing) return;
 
         const name = obj.dataset.name;
@@ -189,85 +330,108 @@
         state.dialogueOpen = true;
         dialogueName.textContent = data.name;
         dialogueBox.classList.remove('hidden');
+        dialogueIndicator.classList.add('hidden');
 
-        typeText(dialogueText, data.text, 40, () => {
+        typeText(dialogueText, data.text, TEXT_SPEED_FAST, () => {
+          dialogueIndicator.classList.remove('hidden');
+
           if (data.correct) {
-            // 正解！レジシーンへ
-            $('dialogue-close-btn').onclick = () => {
+            showCorrectMark(obj);
+            screenFlash(screens.ramen);
+            showMangaExclaim(screens.ramen, '正解！', '50%', '30%');
+
+            state.pendingDialogueClose = () => {
               dialogueBox.classList.add('hidden');
+              dialogueIndicator.classList.add('hidden');
               state.dialogueOpen = false;
+              state.dialogueReady = false;
+              state.pendingDialogueClose = null;
               state.registerStep = 0;
               showScreen('register');
               spawnMoneyParticles();
               playRegister();
             };
           } else {
-            // 不正解
+            showWrongMark(obj);
             obj.classList.add('wrong');
             setTimeout(() => obj.classList.remove('wrong'), 400);
             state.clickedObjects.add(name);
 
-            $('dialogue-close-btn').onclick = () => {
+            state.pendingDialogueClose = () => {
               dialogueBox.classList.add('hidden');
+              dialogueIndicator.classList.add('hidden');
               state.dialogueOpen = false;
+              state.dialogueReady = false;
+              state.pendingDialogueClose = null;
             };
           }
         });
       });
     });
+
+    dialogueBox.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (state.typing && state._skipTyping) {
+        state._skipTyping();
+        return;
+      }
+      if (state.dialogueReady && state.pendingDialogueClose) {
+        state.pendingDialogueClose();
+      }
+    });
   }
 
   // ===== レジ演出 =====
   function playRegister() {
-    const nextBtn = $('register-next-btn');
-    nextBtn.classList.add('hidden');
+    $('register-indicator').classList.add('hidden');
 
     if (state.registerStep >= registerLines.length) {
-      // エンディングへ
       showScreen('ending');
-      createSparkles($('ending-sparkle-container'), 40);
+      createSparkles($('ending-sparkle-container'), 50);
       playEnding();
       return;
     }
 
-    typeText($('register-text'), registerLines[state.registerStep], 50, () => {
-      nextBtn.classList.remove('hidden');
-    });
-  }
+    // セリフ2番目でフラッシュ演出
+    if (state.registerStep === 1) {
+      screenFlash(screens.register);
+      showMangaExclaim(screens.register, '！？', '75%', '20%');
+    }
 
-  function initRegister() {
-    $('register-next-btn').addEventListener('click', () => {
-      if (state.typing) return;
-      state.registerStep++;
-      if (state.registerStep < registerLines.length) {
-        spawnMoneyParticles();
-      }
-      playRegister();
+    typeText($('register-text'), registerLines[state.registerStep], TEXT_SPEED, () => {
+      $('register-indicator').classList.remove('hidden');
     });
   }
 
   // ===== エンディング =====
   function playEnding() {
-    typeText($('ending-text'), endingLine, 80, () => {
+    typeText($('ending-text'), endingLine, ENDING_SPEED, () => {
       $('ending-buttons').classList.remove('hidden');
     });
   }
 
   function initEnding() {
     $('replay-btn').addEventListener('click', () => {
-      // リセット
       state.clickedObjects.clear();
       state.openingStep = 0;
       state.registerStep = 0;
       state.dialogueOpen = false;
+      state.dialogueReady = false;
       state.typing = false;
+      state.pendingDialogueClose = null;
+      state._skipTyping = null;
       $('ending-buttons').classList.add('hidden');
       $('dialogue-box').classList.add('hidden');
+      $('opening-indicator').classList.add('hidden');
+      $('register-indicator').classList.add('hidden');
+      $('dialogue-indicator').classList.add('hidden');
 
-      // キラキラをリセット
+      // ハエ削除
+      document.querySelectorAll('.fly-particle').forEach(f => f.remove());
+
       $('title-sparkle-container').innerHTML = '';
       $('ending-sparkle-container').innerHTML = '';
-      createSparkles($('title-sparkle-container'), 30);
+      createSparkles($('title-sparkle-container'), 40);
 
       showScreen('title');
     });
@@ -276,10 +440,9 @@
   // ===== 初期化 =====
   function init() {
     initTitle();
-    initOpening();
     initRamen();
-    initRegister();
     initEnding();
+    document.addEventListener('click', handleScreenTap);
   }
 
   if (document.readyState === 'loading') {
