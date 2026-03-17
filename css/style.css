@@ -465,7 +465,7 @@ section {
 
 .atsushi-speech {
   position: absolute;
-  bottom: -55px;
+  bottom: -15px;
   left: 50%;
   transform: translateX(-50%) translateY(20px) scale(0.8);
   background: #fff;

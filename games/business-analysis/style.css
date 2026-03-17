@@ -293,6 +293,7 @@ body {
   background: linear-gradient(180deg, #0d0221 0%, #1a0a3e 50%, #2d1b69 100%);
   padding: 15px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 #opening-bg {
@@ -378,10 +379,6 @@ body {
   margin-bottom: 6px;
 }
 
-#opening-name::before {
-  content: '◆ ';
-  font-size: 8px;
-}
 
 #opening-text-box {
   background: rgba(13, 2, 33, 0.9);
@@ -796,10 +793,6 @@ body {
   letter-spacing: 3px;
 }
 
-#dialogue-name::before {
-  content: '◆ ';
-  font-size: 8px;
-}
 
 #dialogue-text {
   font-size: 13px;
@@ -851,6 +844,7 @@ body {
   background: linear-gradient(180deg, #0d0221, #1a0a3e);
   padding: 15px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 /* 篤 立ち絵（レジ演出） */
@@ -934,10 +928,6 @@ body {
   margin-bottom: 6px;
 }
 
-#register-name::before {
-  content: '◆ ';
-  font-size: 8px;
-}
 
 #register-text-box {
   background: rgba(13, 2, 33, 0.9);
@@ -991,6 +981,7 @@ body {
   background: linear-gradient(180deg, #1a0533 0%, #2d1b69 40%, #f5c6ec 100%);
   padding: 15px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 #ending-sparkle-container {
