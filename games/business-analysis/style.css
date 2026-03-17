@@ -73,7 +73,7 @@ body {
 }
 
 .deco-frame::before, .deco-frame::after {
-  content: '✦';
+  content: '';
   position: absolute;
   font-size: 10px;
   color: rgba(255, 215, 0, 0.4);
@@ -335,10 +335,10 @@ body {
 }
 
 #atsushi-opening {
-  width: 280px;
-  height: 280px;
+  width: 320px;
+  height: 320px;
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   z-index: 2;
 }
 
@@ -376,9 +376,6 @@ body {
   font-weight: 700;
   letter-spacing: 3px;
   margin-bottom: 6px;
-  z-index: 2;
-  max-width: 400px;
-  width: 100%;
 }
 
 #opening-name::before {
@@ -390,27 +387,16 @@ body {
   background: rgba(13, 2, 33, 0.9);
   border: 1px solid rgba(196, 160, 255, 0.4);
   border-radius: 12px;
-  padding: 16px 20px;
+  padding: 14px 20px;
   max-width: 400px;
   width: 100%;
-  height: 110px;
+  height: 130px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
   position: relative;
   z-index: 2;
   box-shadow: 0 0 20px rgba(123, 47, 247, 0.15), inset 0 0 30px rgba(196, 160, 255, 0.05);
-}
-
-/* テキストボックス装飾 */
-#opening-text-box::before {
-  content: '❖';
-  position: absolute;
-  top: -8px;
-  left: 20px;
-  font-size: 14px;
-  color: rgba(255, 215, 0, 0.5);
-  background: #0d0221;
-  padding: 0 6px;
 }
 
 #opening-text {
@@ -621,7 +607,7 @@ body {
 }
 
 /* 店主（おやじ） */
-#obj-oyaji { bottom: 25%; left: 10%; }
+#obj-oyaji { top: 20%; left: 10%; }
 
 #visual-oyaji {
   width: 80px;
@@ -654,7 +640,7 @@ body {
 }
 
 /* ラーメン */
-#obj-ramen { bottom: 15%; left: 40%; }
+#obj-ramen { top: 35%; left: 40%; }
 
 #visual-ramen {
   width: 70px;
@@ -690,7 +676,7 @@ body {
 }
 
 /* レジ */
-#obj-register { bottom: 30%; right: 10%; }
+#obj-register { top: 25%; right: 10%; }
 
 #visual-register {
   width: 60px;
@@ -734,7 +720,7 @@ body {
 }
 
 /* テーブル */
-#obj-table { bottom: 8%; right: 30%; }
+#obj-table { top: 45%; right: 25%; }
 
 #visual-table {
   width: 70px;
@@ -759,8 +745,8 @@ body {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 120px;
-  height: 140px;
+  width: 160px;
+  height: 180px;
   z-index: 15;
 }
 
@@ -775,15 +761,15 @@ body {
 #dialogue-box {
   position: absolute;
   bottom: 10px;
-  left: 125px;
+  left: 160px;
   right: 10px;
   background: rgba(13, 2, 33, 0.92);
   border: 1px solid rgba(196, 160, 255, 0.4);
   border-radius: 12px;
-  padding: 12px 16px 8px;
+  padding: 10px 14px 6px;
   z-index: 20;
   cursor: pointer;
-  height: 120px;
+  height: 130px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 15px rgba(123, 47, 247, 0.15), inset 0 0 20px rgba(196, 160, 255, 0.03);
@@ -869,8 +855,8 @@ body {
 
 /* 篤 立ち絵（レジ演出） */
 #atsushi-register {
-  width: 280px;
-  height: 280px;
+  width: 320px;
+  height: 320px;
   position: relative;
   z-index: 3;
   animation: register-chara-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -946,9 +932,6 @@ body {
   font-weight: 700;
   letter-spacing: 3px;
   margin-bottom: 6px;
-  z-index: 2;
-  max-width: 400px;
-  width: 100%;
 }
 
 #register-name::before {
@@ -960,24 +943,15 @@ body {
   background: rgba(13, 2, 33, 0.9);
   border: 1px solid rgba(196, 160, 255, 0.3);
   border-radius: 12px;
-  padding: 16px 20px;
+  padding: 14px 20px;
   max-width: 400px;
   width: 100%;
-  height: 120px;
+  height: 140px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
   z-index: 2;
   box-shadow: 0 0 20px rgba(123, 47, 247, 0.15), inset 0 0 30px rgba(196, 160, 255, 0.05);
-}
-
-#register-text-box::before {
-  content: '💎';
-  position: absolute;
-  top: -10px;
-  left: 20px;
-  font-size: 14px;
-  background: #0d0221;
-  padding: 0 6px;
 }
 
 #register-text {
@@ -1027,8 +1001,8 @@ body {
 }
 
 #atsushi-ending {
-  width: 280px;
-  height: 280px;
+  width: 350px;
+  height: 350px;
   position: relative;
   margin-bottom: 15px;
   z-index: 2;
@@ -1181,27 +1155,27 @@ body {
   }
 
   #atsushi-opening {
-    width: 220px;
-    height: 220px;
-    margin-bottom: 8px;
+    width: 250px;
+    height: 250px;
+    margin-bottom: 3px;
   }
 
   #opening-text-box {
-    height: 100px;
-    padding: 14px 16px;
+    height: 120px;
+    padding: 12px 14px;
   }
 
   #dialogue-box {
     bottom: 8px;
-    left: 105px;
+    left: 130px;
     right: 8px;
-    height: 110px;
-    padding: 10px 12px 6px;
+    height: 120px;
+    padding: 8px 10px 4px;
   }
 
   #atsushi-ramen {
-    width: 95px;
-    height: 115px;
+    width: 120px;
+    height: 140px;
   }
 
   #dialogue-text {
@@ -1218,13 +1192,13 @@ body {
   }
 
   #atsushi-ending {
-    width: 220px;
-    height: 220px;
+    width: 280px;
+    height: 280px;
   }
 
   #atsushi-register {
-    width: 220px;
-    height: 220px;
+    width: 260px;
+    height: 260px;
   }
 
   #register-animation {
@@ -1238,6 +1212,6 @@ body {
   }
 
   #register-text-box {
-    height: 110px;
+    height: 130px;
   }
 }
