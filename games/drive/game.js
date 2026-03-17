@@ -1,5 +1,5 @@
 // ========================================
-// 黄金ドライバー ～博士のせなかでGO！～
+// 黄金の金色ドライバー ～博士のせなかでGO！～
 // ========================================
 
 (function () {
@@ -206,7 +206,7 @@
         `エンジン: ${selectedParts.engine.emoji} ${selectedParts.engine.name}<br>` +
         `タイヤ: ${selectedParts.tire.emoji} ${selectedParts.tire.name}<br><br>` +
         `<small>博士「わ、ワシがマシンなのかい！？」</small><br>` +
-        `<small>少年「いくぜ博士！しっかりつかまれ…いや走れ！」</small>`;
+        `<small>ヨシノリ「いくぜ博士！しっかりつかまれ…いや走れ！」</small>`;
 
       raceBtn.classList.remove('hidden');
     }, 500);
@@ -404,8 +404,10 @@
     const newLap = Math.floor(p.distance / LAP_LENGTH) + 1;
     if (newLap > p.lap && p.lap < LAPS) {
       p.lap = Math.min(newLap, LAPS);
+      lapEffect = { active: true, lap: p.lap, timer: 70 };
     }
     if (p.distance >= LAPS * LAP_LENGTH && !rs.finished) {
+      if (!lapEffect.active) lapEffect = { active: true, lap: 0, timer: 70 }; // ゴール演出
       if (!rs.finishOrder.includes('player')) rs.finishOrder.push('player');
       if (rs.finishOrder.length >= 4 || rs.finishOrder.includes('player')) {
         endRace();
@@ -485,12 +487,29 @@
     const position = allRacers.findIndex(r => r.name === 'player') + 1;
     const posLabels = ['1st', '2nd', '3rd', '4th'];
     hudPosition.textContent = '順位: ' + posLabels[position - 1];
-    hudLap.textContent = `LAP: ${Math.min(p.lap, LAPS)}/${LAPS}`;
+    const currentLap = Math.min(p.lap, LAPS);
+    hudLap.textContent = `LAP ${currentLap}/${LAPS}`;
     hudItem.textContent = p.item ? p.item.emoji + ' ' + p.item.name : '';
+
+    // 演出タイマー
+    if (itemEffect.active) {
+      itemEffect.timer--;
+      if (itemEffect.timer <= 0) itemEffect.active = false;
+    }
+    if (lapEffect.active) {
+      lapEffect.timer--;
+      if (lapEffect.timer <= 0) lapEffect.active = false;
+    }
 
     drawRace();
     rafId = requestAnimationFrame(raceLoop);
   }
+
+  // アイテム使用演出
+  let itemEffect = { active: false, text: '', emoji: '', timer: 0, color: '' };
+
+  // ラップ演出
+  let lapEffect = { active: false, lap: 0, timer: 0 };
 
   function useItem(p) {
     const item = p.item;
@@ -498,15 +517,22 @@
     switch (item.effect) {
       case 'banana':
         raceState.bananas.push({ x: p.x, dist: p.distance - 50 });
+        showItemEffect('🍌 バナナ設置！', '🍌', '#ffee00');
         break;
       case 'boost':
         p.boostTimer = 60;
+        showItemEffect('🚀 ダッシュ！！', '🚀', '#ff4400');
         break;
       case 'shield':
         p.shielded = true;
         p.shieldTimer = 180;
+        showItemEffect('🍙 おにぎりバリア！', '🍙', '#66ccff');
         break;
     }
+  }
+
+  function showItemEffect(text, emoji, color) {
+    itemEffect = { active: true, text, emoji, timer: 50, color };
   }
 
   // --- 描画 ---
@@ -591,6 +617,87 @@
 
     // プレイヤー（博士に乗った少年）
     drawPlayerHakase(p.x, CANVAS_H - 80, p);
+
+    // ラッププログレスバー（キャンバス上部）
+    const lapProg = (p.distance % LAP_LENGTH) / LAP_LENGTH;
+    const barW = CANVAS_W - 20;
+    const barX = 10;
+    const barY = 6;
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(barX, barY, barW, 8);
+    const progColor = p.lap >= LAPS && lapProg > 0.8 ? '#ff3333' : '#ffd700';
+    ctx.fillStyle = progColor;
+    ctx.fillRect(barX, barY, barW * lapProg, 8);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(barX, barY, barW, 8);
+    // ラップ区切りマーク
+    for (let i = 1; i <= LAPS; i++) {
+      const dotX = barX + (barW / LAPS) * i;
+      ctx.fillStyle = i <= p.lap ? '#ffd700' : '#888';
+      ctx.beginPath();
+      ctx.arc(dotX, barY + 4, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold 7px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(i, dotX, barY + 7);
+    }
+
+    // ラップ更新演出
+    if (lapEffect.active) {
+      const alpha = Math.min(1, lapEffect.timer / 25);
+      const slide = (70 - lapEffect.timer) * 2;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+
+      // 横帯
+      ctx.fillStyle = lapEffect.lap === 0 ? 'rgba(255,50,50,0.7)' : 'rgba(0,0,0,0.6)';
+      ctx.fillRect(0, CANVAS_H * 0.25 - 25, CANVAS_W, 50);
+
+      // テキスト
+      ctx.font = 'bold 28px "Zen Maru Gothic", sans-serif';
+      ctx.textAlign = 'center';
+      const txt = lapEffect.lap === 0
+        ? 'GOAL!!'
+        : `LAP ${lapEffect.lap} / ${LAPS}`;
+      const subTxt = lapEffect.lap === 0
+        ? ''
+        : lapEffect.lap === LAPS ? 'ファイナルラップ！' : 'ナイスラン！';
+      ctx.fillStyle = '#fff';
+      ctx.fillText(txt, CANVAS_W / 2 + slide * 0.1, CANVAS_H * 0.25 + 5);
+      if (subTxt) {
+        ctx.font = 'bold 16px "Zen Maru Gothic", sans-serif';
+        ctx.fillStyle = lapEffect.lap === LAPS ? '#ff4444' : '#ffd700';
+        ctx.fillText(subTxt, CANVAS_W / 2, CANVAS_H * 0.25 + 28);
+      }
+      ctx.restore();
+    }
+
+    // アイテム使用演出
+    if (itemEffect.active) {
+      const alpha = Math.min(1, itemEffect.timer / 20);
+      const scale = 1 + (50 - itemEffect.timer) * 0.02;
+
+      // 背景フラッシュ
+      ctx.fillStyle = itemEffect.color + Math.floor(alpha * 40).toString(16).padStart(2, '0');
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+      // テキスト表示
+      ctx.save();
+      ctx.translate(CANVAS_W / 2, CANVAS_H * 0.35);
+      ctx.scale(scale, scale);
+      ctx.font = 'bold 22px "Zen Maru Gothic", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#000';
+      ctx.fillText(itemEffect.text, 2, 2);
+      ctx.fillStyle = itemEffect.color;
+      ctx.fillText(itemEffect.text, 0, 0);
+      ctx.restore();
+    }
   }
 
   function drawTree(x, y) {
@@ -788,7 +895,7 @@
     const comments = [
       '「俺は黄金の金色ドライバーになりゃ！」\n…なった！博士もヘトヘトだ！',
       '惜しい！博士「ワシの膝がもう少し若ければ…」',
-      '少年「くっ…次は負けねえぞ！」\n博士「ワシも次はやめたいんじゃが」',
+      'ヨシノリ「くっ…次は負けねえぞ！」\n博士「ワシも次はやめたいんじゃが」',
       '博士がゴール前で寝てしまった！\n博士「す、すまんのう…」',
     ];
 
