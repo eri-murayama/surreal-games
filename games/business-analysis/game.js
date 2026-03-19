@@ -54,6 +54,15 @@
     }
   };
 
+  // 篤クリック時のセリフ
+  const atsushiLines = [
+    'おいおい…俺ばっかり見るなよ…',
+    'いけない子猫ちゃんだぜ…',
+    '分析に集中するんだ…',
+    '罪な俺…',
+  ];
+  let atsushiLineIndex = 0;
+
   const registerLines = [
     '経営分析の結果、答えは明白だ。',
     'この店に足りないもの…\nそれは「客に金を配ること」だ。',
@@ -240,12 +249,22 @@
 
   // ===== 画面タップで進行 =====
   function handleScreenTap(e) {
-    if (e.target.closest('button, a, .clickable-obj')) return;
+    if (e.target.closest('button, a')) return;
 
     if (state.typing && state._skipTyping) {
       state._skipTyping();
       return;
     }
+
+    // ラーメン画面: セリフが開いている時はどこをクリックしても閉じる
+    if (state.phase === 'ramen' && state.dialogueOpen && state.dialogueReady) {
+      if (state.pendingDialogueClose) {
+        state.pendingDialogueClose();
+      }
+      return;
+    }
+
+    if (e.target.closest('.clickable-obj, #atsushi-ramen')) return;
 
     if (state.phase === 'opening' && state.dialogueReady) {
       state.dialogueReady = false;
@@ -260,10 +279,6 @@
         spawnMoneyParticles();
       }
       playRegister();
-    } else if (state.phase === 'ramen' && state.dialogueOpen && state.dialogueReady) {
-      if (state.pendingDialogueClose) {
-        state.pendingDialogueClose();
-      }
     }
   }
 
@@ -321,7 +336,16 @@
     objects.forEach(obj => {
       obj.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (state.dialogueOpen || state.typing) return;
+        // セリフ表示中はクリックでセリフを進める/閉じる
+        if (state.dialogueOpen) {
+          if (state.typing && state._skipTyping) {
+            state._skipTyping();
+          } else if (state.dialogueReady && state.pendingDialogueClose) {
+            state.pendingDialogueClose();
+          }
+          return;
+        }
+        if (state.typing) return;
 
         const name = obj.dataset.name;
         const data = objectDialogues[name];
@@ -369,15 +393,38 @@
       });
     });
 
-    dialogueBox.addEventListener('click', (e) => {
+    // 篤クリックでセリフ表示
+    const atsushiRamen = $('atsushi-ramen');
+    atsushiRamen.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (state.typing && state._skipTyping) {
-        state._skipTyping();
+      // セリフ表示中はクリックでセリフを進める/閉じる
+      if (state.dialogueOpen) {
+        if (state.typing && state._skipTyping) {
+          state._skipTyping();
+        } else if (state.dialogueReady && state.pendingDialogueClose) {
+          state.pendingDialogueClose();
+        }
         return;
       }
-      if (state.dialogueReady && state.pendingDialogueClose) {
-        state.pendingDialogueClose();
-      }
+      if (state.typing) return;
+
+      state.dialogueOpen = true;
+      const line = atsushiLines[atsushiLineIndex % atsushiLines.length];
+      atsushiLineIndex++;
+      dialogueName.textContent = '篤';
+      dialogueBox.classList.remove('hidden');
+      dialogueIndicator.classList.add('hidden');
+
+      typeText(dialogueText, line, TEXT_SPEED_FAST, () => {
+        dialogueIndicator.classList.remove('hidden');
+        state.pendingDialogueClose = () => {
+          dialogueBox.classList.add('hidden');
+          dialogueIndicator.classList.add('hidden');
+          state.dialogueOpen = false;
+          state.dialogueReady = false;
+          state.pendingDialogueClose = null;
+        };
+      });
     });
   }
 
@@ -415,6 +462,7 @@
       state.clickedObjects.clear();
       state.openingStep = 0;
       state.registerStep = 0;
+      atsushiLineIndex = 0;
       state.dialogueOpen = false;
       state.dialogueReady = false;
       state.typing = false;
