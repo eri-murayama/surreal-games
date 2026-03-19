@@ -1,7 +1,95 @@
 (function() {
   'use strict';
 
+  // ===== 多言語データ =====
+  const i18n = {
+    ja: {
+      title: '経営分析ゲーム<br>～天才たちの<ruby>戯れ<rp>(</rp><rt>シーソーゲーム</rt><rp>)</rp></ruby>～',
+      startBtn: 'レディー★ゴー',
+      backLink: '← トップに戻る',
+      openingName: '篤',
+      registerName: '篤',
+      replayBtn: 'もう一回やる',
+      hint: '経営的にまずい箇所をクリックしろ',
+      labels: { oyaji: '店主', ramen: 'ラーメン', register: 'レジ', sign: '看板', table: 'テーブル' },
+      correctExclaim: '正解！',
+      openingLines: [
+        '俺の名は篤。天才経営アナリスト。\n数字が俺に恋をする…そういう男だ。',
+        '今日も迷える子羊ちゃんたちの\n救いを求める声がする。',
+        '俺を待ってろ、世界…！！',
+        '……依頼が来たな。\nさびれたラーメン屋の経営分析か。',
+        'どれ、この天才アナリストの\n目で見抜いてやるとしよう。'
+      ],
+      objectDialogues: {
+        oyaji: { name: '篤', text: '汚いオヤジだ。\nでもそこが味がある。\nここは経営的にまずい箇所じゃないぞ。' },
+        ramen: { name: '篤', text: 'くさい、まずい、汚い。\n三拍子揃った最悪のラーメンだが…\nこれは料理の問題だ。経営じゃない。' },
+        sign: { name: '篤', text: '「ラーメン」としか書いていない看板。\nシンプルすぎるが…\nまあ、ラーメン屋だからな。問題ない。' },
+        table: { name: '篤', text: 'ベタベタするテーブル。\n不衛生だが、常連は気にしない。\n経営の本質はここじゃないな。' },
+        register: { name: '篤', text: '……！\nこれだ。レジだ。\n結局、経営の全ては金なんだよ。' }
+      },
+      atsushiLines: [
+        'おいおい…俺ばっかり見るなよ…',
+        'いけない子猫ちゃんだぜ…',
+        '分析に集中するんだ…',
+        '罪な俺…',
+      ],
+      registerLines: [
+        '経営分析の結果、答えは明白だ。',
+        'この店に足りないもの…\nそれは「客に金を配ること」だ。',
+        '来店した客全員に1000円を配れば\n客は喜び、口コミが広がり、\n店は繁盛する。完璧な理論だ。',
+        '…え？赤字？\n天才の理論に赤字などない。'
+      ],
+      endingLine: 'ふ…\nまた才能をきらめかせちまったぜ…'
+    },
+    en: {
+      title: 'Business Analysis Game<br>~A Genius at Play~',
+      startBtn: 'READY ★ GO',
+      backLink: '← Back',
+      openingName: 'Atsushi',
+      registerName: 'Atsushi',
+      replayBtn: 'Play Again',
+      hint: 'Click the bad business practice!',
+      labels: { oyaji: 'Owner', ramen: 'Ramen', register: 'Register', sign: 'Sign', table: 'Table' },
+      correctExclaim: 'Correct!',
+      openingLines: [
+        "I'm Atsushi. Genius business analyst.\nNumbers fall in love with me...\nThat's the kind of man I am.",
+        "Even today, the lost little lambs\ncry out for my help.",
+        "Wait for me, world...!!",
+        "...A new job.\nBusiness analysis for a run-down\nramen shop, huh.",
+        "Let this genius analyst's eyes\nsee through it all."
+      ],
+      objectDialogues: {
+        oyaji: { name: 'Atsushi', text: "A grimy old man.\nBut that's part of the charm.\nThis isn't a business problem." },
+        ramen: { name: 'Atsushi', text: "Stinky, gross, dirty.\nThe worst ramen trifecta...\nBut that's a cooking issue. Not business." },
+        sign: { name: 'Atsushi', text: 'A sign that just says "Ramen."\nToo simple, but...\nit IS a ramen shop. No problem.' },
+        table: { name: 'Atsushi', text: "A sticky table.\nUnsanitary, but regulars don't care.\nThe heart of business isn't here." },
+        register: { name: 'Atsushi', text: "...!\nThis is it. The register.\nIn the end, business is all about money." }
+      },
+      atsushiLines: [
+        "Hey hey... stop staring at me...",
+        "What a naughty kitten you are...",
+        "Focus on the analysis...",
+        "I'm such a heartthrob...",
+      ],
+      registerLines: [
+        "The result of my analysis is clear.",
+        "What this shop is missing...\nis \"giving money to every customer.\"",
+        "Hand out $10 to every customer.\nThey'll be happy, word spreads,\nand the shop thrives. A perfect theory.",
+        "...Huh? Losses?\nA genius's theory has no losses."
+      ],
+      endingLine: "Heh...\nOnce again, my brilliance\nshines through..."
+    }
+  };
+
   // ===== ゲーム状態 =====
+  let currentLang = 'ja';
+
+  function t() { return i18n[currentLang]; }
+
+  const objectCorrectMap = {
+    oyaji: false, ramen: false, sign: false, table: false, register: true
+  };
+
   const state = {
     phase: 'title',
     openingStep: 0,
@@ -11,66 +99,14 @@
     dialogueReady: false,
     typing: false,
     pendingDialogueClose: null,
-    _skipTyping: null
+    _skipTyping: null,
+    currentDialogueSource: null // 'oyaji','ramen','sign','table','register' or 'atsushi'
   };
-
-  // ===== セリフデータ =====
-  const openingLines = [
-    '俺の名は篤。天才経営アナリスト。\n数字が俺に恋をする…そういう男だ。',
-    '今日も迷える子羊ちゃんたちの\n救いを求める声がする。',
-    '俺を待ってろ、世界…！！',
-    '……依頼が来たな。\nさびれたラーメン屋の経営分析か。',
-    'どれ、この天才アナリストの\n目で見抜いてやるとしよう。'
-  ];
 
   // 衝撃演出を入れるセリフindex
   const impactLines = [2]; // 「俺を待ってろ、世界…！！」
 
-  const objectDialogues = {
-    oyaji: {
-      name: '篤',
-      text: '汚いオヤジだ。\nでもそこが味がある。\nここは経営的にまずい箇所じゃないぞ。',
-      correct: false
-    },
-    ramen: {
-      name: '篤',
-      text: 'くさい、まずい、汚い。\n三拍子揃った最悪のラーメンだが…\nこれは料理の問題だ。経営じゃない。',
-      correct: false
-    },
-    sign: {
-      name: '篤',
-      text: '「ラーメン」としか書いていない看板。\nシンプルすぎるが…\nまあ、ラーメン屋だからな。問題ない。',
-      correct: false
-    },
-    table: {
-      name: '篤',
-      text: 'ベタベタするテーブル。\n不衛生だが、常連は気にしない。\n経営の本質はここじゃないな。',
-      correct: false
-    },
-    register: {
-      name: '篤',
-      text: '……！\nこれだ。レジだ。\n結局、経営の全ては金なんだよ。',
-      correct: true
-    }
-  };
-
-  // 篤クリック時のセリフ
-  const atsushiLines = [
-    'おいおい…俺ばっかり見るなよ…',
-    'いけない子猫ちゃんだぜ…',
-    '分析に集中するんだ…',
-    '罪な俺…',
-  ];
   let atsushiLineIndex = 0;
-
-  const registerLines = [
-    '経営分析の結果、答えは明白だ。',
-    'この店に足りないもの…\nそれは「客に金を配ること」だ。',
-    '来店した客全員に1000円を配れば\n客は喜び、口コミが広がり、\n店は繁盛する。完璧な理論だ。',
-    '…え？赤字？\n天才の理論に赤字などない。'
-  ];
-
-  const endingLine = 'ふ…\nまた才能をきらめかせちまったぜ…';
 
   // テキスト速度
   const TEXT_SPEED = 22;
@@ -249,7 +285,7 @@
 
   // ===== 画面タップで進行 =====
   function handleScreenTap(e) {
-    if (e.target.closest('button, a')) return;
+    if (e.target.closest('button, a, #lang-switch')) return;
 
     if (state.typing && state._skipTyping) {
       state._skipTyping();
@@ -275,7 +311,7 @@
       state.dialogueReady = false;
       $('register-indicator').classList.add('hidden');
       state.registerStep++;
-      if (state.registerStep < registerLines.length) {
+      if (state.registerStep < t().registerLines.length) {
         spawnMoneyParticles();
       }
       playRegister();
@@ -298,7 +334,7 @@
   function playOpening() {
     $('opening-indicator').classList.add('hidden');
 
-    if (state.openingStep >= openingLines.length) {
+    if (state.openingStep >= t().openingLines.length) {
       showScreen('ramen');
       addFlies();
       return;
@@ -320,7 +356,7 @@
       showMangaExclaim(screens.opening, '！！', '70%', '25%');
     }
 
-    typeText($('opening-text'), openingLines[state.openingStep], TEXT_SPEED, () => {
+    typeText($('opening-text'), t().openingLines[state.openingStep], TEXT_SPEED, () => {
       $('opening-indicator').classList.remove('hidden');
     });
   }
@@ -348,10 +384,11 @@
         if (state.typing) return;
 
         const name = obj.dataset.name;
-        const data = objectDialogues[name];
+        const data = t().objectDialogues[name];
         if (!data) return;
 
         state.dialogueOpen = true;
+        state.currentDialogueSource = name;
         dialogueName.textContent = data.name;
         dialogueBox.classList.remove('hidden');
         dialogueIndicator.classList.add('hidden');
@@ -359,15 +396,16 @@
         typeText(dialogueText, data.text, TEXT_SPEED_FAST, () => {
           dialogueIndicator.classList.remove('hidden');
 
-          if (data.correct) {
+          if (objectCorrectMap[name]) {
             showCorrectMark(obj);
             screenFlash(screens.ramen);
-            showMangaExclaim(screens.ramen, '正解！', '50%', '30%');
+            showMangaExclaim(screens.ramen, t().correctExclaim, '50%', '30%');
 
             state.pendingDialogueClose = () => {
               dialogueBox.classList.add('hidden');
               dialogueIndicator.classList.add('hidden');
               state.dialogueOpen = false;
+              state.currentDialogueSource = null;
               state.dialogueReady = false;
               state.pendingDialogueClose = null;
               state.registerStep = 0;
@@ -385,6 +423,7 @@
               dialogueBox.classList.add('hidden');
               dialogueIndicator.classList.add('hidden');
               state.dialogueOpen = false;
+              state.currentDialogueSource = null;
               state.dialogueReady = false;
               state.pendingDialogueClose = null;
             };
@@ -409,9 +448,12 @@
       if (state.typing) return;
 
       state.dialogueOpen = true;
-      const line = atsushiLines[atsushiLineIndex % atsushiLines.length];
+      state.currentDialogueSource = 'atsushi';
+      const lines = t().atsushiLines;
+      const line = lines[atsushiLineIndex % lines.length];
+      state.currentAtsushiIndex = atsushiLineIndex % lines.length;
       atsushiLineIndex++;
-      dialogueName.textContent = '篤';
+      dialogueName.textContent = t().openingName;
       dialogueBox.classList.remove('hidden');
       dialogueIndicator.classList.add('hidden');
 
@@ -421,6 +463,7 @@
           dialogueBox.classList.add('hidden');
           dialogueIndicator.classList.add('hidden');
           state.dialogueOpen = false;
+          state.currentDialogueSource = null;
           state.dialogueReady = false;
           state.pendingDialogueClose = null;
         };
@@ -432,7 +475,7 @@
   function playRegister() {
     $('register-indicator').classList.add('hidden');
 
-    if (state.registerStep >= registerLines.length) {
+    if (state.registerStep >= t().registerLines.length) {
       showScreen('ending');
       createSparkles($('ending-sparkle-container'), 50);
       playEnding();
@@ -445,14 +488,14 @@
       showMangaExclaim(screens.register, '！？', '75%', '20%');
     }
 
-    typeText($('register-text'), registerLines[state.registerStep], TEXT_SPEED, () => {
+    typeText($('register-text'), t().registerLines[state.registerStep], TEXT_SPEED, () => {
       $('register-indicator').classList.remove('hidden');
     });
   }
 
   // ===== エンディング =====
   function playEnding() {
-    typeText($('ending-text'), endingLine, ENDING_SPEED, () => {
+    typeText($('ending-text'), t().endingLine, ENDING_SPEED, () => {
       $('ending-buttons').classList.remove('hidden');
     });
   }
@@ -464,6 +507,7 @@
       state.registerStep = 0;
       atsushiLineIndex = 0;
       state.dialogueOpen = false;
+      state.currentDialogueSource = null;
       state.dialogueReady = false;
       state.typing = false;
       state.pendingDialogueClose = null;
@@ -485,11 +529,79 @@
     });
   }
 
+  // ===== 言語切り替え =====
+  function applyLang() {
+    const lang = t();
+    $('game-title').innerHTML = lang.title;
+    $('start-btn').textContent = lang.startBtn;
+    $('back-link').textContent = lang.backLink;
+    $('opening-name').textContent = lang.openingName;
+    $('register-name').textContent = lang.registerName;
+    $('ramen-hint').textContent = lang.hint;
+    $('replay-btn').textContent = lang.replayBtn;
+
+    // ラベル更新
+    document.querySelectorAll('.clickable-obj').forEach(obj => {
+      const name = obj.dataset.name;
+      if (lang.labels[name]) {
+        obj.querySelector('.obj-label').textContent = lang.labels[name];
+      }
+    });
+
+    // 現在表示中のセリフテキストも更新
+    if (state.phase === 'opening' && state.openingStep < lang.openingLines.length) {
+      if (!state.typing) {
+        $('opening-text').textContent = lang.openingLines[state.openingStep];
+      }
+    } else if (state.phase === 'register' && state.registerStep < lang.registerLines.length) {
+      if (!state.typing) {
+        $('register-text').textContent = lang.registerLines[state.registerStep];
+      }
+    } else if (state.phase === 'ending') {
+      if (!state.typing) {
+        $('ending-text').textContent = lang.endingLine;
+      }
+    }
+
+    // ラーメン画面のセリフ（篤・オブジェクト）
+    if (state.phase === 'ramen' && state.dialogueOpen && !state.typing && state.currentDialogueSource) {
+      if (state.currentDialogueSource === 'atsushi') {
+        $('dialogue-name').textContent = lang.openingName;
+        const lines = lang.atsushiLines;
+        $('dialogue-text').textContent = lines[state.currentAtsushiIndex % lines.length];
+      } else {
+        const data = lang.objectDialogues[state.currentDialogueSource];
+        if (data) {
+          $('dialogue-name').textContent = data.name;
+          $('dialogue-text').textContent = data.text;
+        }
+      }
+    }
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    applyLang();
+  }
+
+  function initLangSwitch() {
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setLang(btn.dataset.lang);
+      });
+    });
+  }
+
   // ===== 初期化 =====
   function init() {
     initTitle();
     initRamen();
     initEnding();
+    initLangSwitch();
     document.addEventListener('click', handleScreenTap);
   }
 
