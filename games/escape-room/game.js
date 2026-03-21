@@ -459,6 +459,7 @@ function gameClear() {
     <div class="clear-buttons">
       <button class="clear-back-link clear-play-again" onclick="location.reload()">${t('clearPlayAgain')}</button>
       <a href="../../index.html" class="clear-back-link clear-go-home">${t('clearGoHome')}</a>
+      <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`\u{1F511} かわいい部屋からの脱出\nクリアタイム: ${timeStr}\nランク: ${rankData.icon} ${rankData.name}\n\n#シュールゲームス\n${window.location.href}`)}" target="_blank" rel="noopener noreferrer" class="clear-back-link clear-share-x">𝕏 でシェア</a>
     </div>
   `;
   document.body.appendChild(overlay);

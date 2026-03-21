@@ -802,6 +802,24 @@
       hide('new-record');
     }
 
+    // Share button
+    var shareBtn = document.getElementById('share-btn');
+    if (!shareBtn) {
+      shareBtn = document.createElement('button');
+      shareBtn.id = 'share-btn';
+      shareBtn.style.cssText = 'margin:8px;padding:14px 40px;font-family:"Orbitron",sans-serif;font-size:clamp(13px,3.2vw,17px);font-weight:700;border:2px solid rgba(255,255,255,0.15);border-radius:12px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1da1f2,#0d8bd9);letter-spacing:0.5px;transition:transform 0.2s,box-shadow 0.2s;';
+      shareBtn.textContent = '𝕏 でシェア';
+      shareBtn.addEventListener('mouseenter', function () { shareBtn.style.transform = 'scale(1.05)'; shareBtn.style.boxShadow = '0 0 30px rgba(29,161,242,0.6)'; });
+      shareBtn.addEventListener('mouseleave', function () { shareBtn.style.transform = 'scale(1)'; shareBtn.style.boxShadow = 'none'; });
+      var retryBtnEl = document.getElementById('retry-btn');
+      retryBtnEl.parentNode.insertBefore(shareBtn, retryBtnEl);
+    }
+    shareBtn.onclick = function () {
+      var text = '💫 コズミック・チェイン\nスコア: ' + score + '\nレベル: ' + level + '\n最大チェイン: ' + maxChain + '\n\n#シュールゲームス\n' + window.location.href;
+      var url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+      window.open(url, '_blank');
+    };
+
     show('game-over');
     hide('chain-display');
   }

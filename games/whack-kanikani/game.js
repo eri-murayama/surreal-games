@@ -13,6 +13,7 @@ const LANG = {
     startBtn: 'ゲームスタート',
     endTitle: '終了〜！',
     retryBtn: 'もう一回やる',
+    shareBtn: 'Xでシェアする',
     backToTop: '← トップに戻る',
     painLines: ['いたい…', 'なんで…？', 'ひどいよ…', 'やめて…', 'うう…', 'ぼくが何したの…', 'いたいよぉ…', 'もうやだ…', 'ごめんなさい…'],
     missTexts: ['スカッ', 'ハズレ〜', '空振り！', 'おしい？'],
@@ -38,6 +39,7 @@ const LANG = {
     startBtn: 'START',
     endTitle: "Time's Up!",
     retryBtn: 'Play Again',
+    shareBtn: 'Share on X',
     backToTop: '← Back to Top',
     painLines: ['Ouch…', 'Why…?', 'So mean…', 'Stop it…', 'Oww…', 'What did I do…', 'It hurts…', 'No more…', "I'm sorry…"],
     missTexts: ['Whiff!', 'Miss~', 'Swing!', 'So close?'],
@@ -339,6 +341,24 @@ function endGame() {
   document.getElementById('result-score').textContent = t('resultScore')(score, maxCombo);
   document.getElementById('result-rank').textContent = matched.rank;
   document.getElementById('result-comment').textContent = matched.comment;
+
+  // シェアボタンを追加（既存のものがあれば削除）
+  const existingShareBtn = document.getElementById('share-btn');
+  if (existingShareBtn) existingShareBtn.remove();
+
+  const shareBtn = document.createElement('button');
+  shareBtn.id = 'share-btn';
+  shareBtn.textContent = t('shareBtn');
+  shareBtn.style.cssText = 'display:block; margin:10px auto; padding:10px 24px; font-size:1rem; font-family:inherit; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-weight:700; transition:transform 0.1s;';
+  shareBtn.addEventListener('mouseenter', () => { shareBtn.style.transform = 'scale(1.05)'; });
+  shareBtn.addEventListener('mouseleave', () => { shareBtn.style.transform = 'scale(1)'; });
+  shareBtn.addEventListener('click', () => {
+    const gameURL = window.location.href;
+    const shareText = `🦀 かにかにパニック！\nスコア: ${score}点（最大コンボ: ${maxCombo}）\nランク: ${matched.rank}\n\n#シュールゲームス\n${gameURL}`;
+    const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    window.open(twitterURL, '_blank');
+  });
+  retryBtn.parentNode.insertBefore(shareBtn, retryBtn);
 
   startScreen.classList.add('hidden');
   resultScreen.classList.remove('hidden');
