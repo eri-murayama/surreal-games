@@ -354,7 +354,9 @@ function endGame() {
   shareBtn.addEventListener('mouseleave', () => { shareBtn.style.transform = 'scale(1)'; });
   shareBtn.addEventListener('click', () => {
     const gameURL = window.location.href;
-    const shareText = `🦀 かにかにパニック！\nスコア: ${score}点（最大コンボ: ${maxCombo}）\nランク: ${matched.rank}\n\n#シュールゲームス\n${gameURL}`;
+    const shareText = currentLang === 'ja'
+      ? `🦀 かにかにパニック！\nスコア: ${score}点（最大コンボ: ${maxCombo}）\nランク: ${matched.rank}\n\n#シュールゲームス\n${gameURL}`
+      : `🦀 Kani-Kani Panic!\nScore: ${score} pts (Max Combo: ${maxCombo})\nRank: ${matched.rank}\n\n#SurrealGames\n${gameURL}`;
     const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(twitterURL, '_blank');
   });

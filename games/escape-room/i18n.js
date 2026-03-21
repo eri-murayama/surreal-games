@@ -108,6 +108,8 @@ const LANG = {
     clearTime: (m, s) => `クリアタイム: ${m}分${s}秒`,
     clearPlayAgain: 'もう一度プレイ',
     clearGoHome: 'ホームに戻る',
+    clearShareX: '𝕏 でシェア',
+    clearShareText: (time, rank) => `🔑 かわいい部屋からの脱出\nクリアタイム: ${time}\nランク: ${rank}\n\n#シュールゲームス`,
     ranks: [
       { max: 60,  icon: '👑', name: '変態プロフェッショナル', comment: '手慣れすぎている。常習犯の疑いあり。' },
       { max: 120, icon: '🦹', name: '侵入のエキスパート', comment: 'この速さ……プロの犯行だ。' },
@@ -212,6 +214,8 @@ const LANG = {
     clearTime: (m, s) => `Clear Time: ${m}m ${s}s`,
     clearPlayAgain: 'Play Again',
     clearGoHome: 'Back to Home',
+    clearShareX: 'Share on 𝕏',
+    clearShareText: (time, rank) => `🔑 Escape from a Cute Room\nClear Time: ${time}\nRank: ${rank}\n\n#SurrealGames`,
     ranks: [
       { max: 60,  icon: '👑', name: 'Perverted Professional', comment: 'Way too experienced. Suspected repeat offender.' },
       { max: 120, icon: '🦹', name: 'Infiltration Expert', comment: 'This speed... the work of a pro.' },
