@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>食い尽くし系男、ひろと</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Title Screen -->
+        <div id="title-screen" class="screen active">
+            <div class="title-bg">
+                <img src="hiroto.png" alt="ひろと" class="title-hiroto-img">
+                <h1>食い尽くし系男<br>ひろと</h1>
+                <p class="subtitle">〜ひろとの飽くなき食欲〜</p>
+                <button id="start-btn" class="btn-main" onclick="startGame()">ゲームスタート</button>
+                <div class="instruction">
+                    🍖 食べ物をタップ → 食べる！<br>
+                    ✋ 伸びてくる手をタップ → 叩く！
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Intro (before Stage 1) -->
+        <div id="char-intro" class="screen">
+            <div class="char-intro-content">
+                <img src="hiroto.png" alt="ひろと" class="char-intro-img" id="char-intro-img">
+                <div class="char-intro-bubble" id="char-intro-bubble"></div>
+                <button class="btn-main" id="char-intro-btn"></button>
+            </div>
+        </div>
+
+        <!-- Stage Intro -->
+        <div id="stage-intro" class="screen">
+            <div class="stage-intro-content">
+                <h2 id="stage-title"></h2>
+                <p id="stage-description"></p>
+                <div id="stage-characters"></div>
+                <button class="btn-main" onclick="startStage()">いただきます！</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div id="game-header">
+                <div id="timer-bar"><div id="timer-fill"></div></div>
+                <div id="hud">
+                    <span id="stage-label">STAGE 1</span>
+                    <span id="score-display">0 kcal</span>
+                    <span id="weight-display">65.0 kg</span>
+                </div>
+            </div>
+            <div id="hiroto-status">
+                <div id="hiroto-body"></div>
+                <div id="hiroto-comment"></div>
+            </div>
+            <!-- Top-down table view with rivals around it -->
+            <div id="table-wrapper">
+                <div id="rival-seats"></div>
+                <div id="table-surface">
+                    <div id="food-container"></div>
+                    <!-- Reaching hands will be injected here -->
+                </div>
+            </div>
+            <div id="eat-effect"></div>
+        </div>
+
+        <!-- Kakutei (Pachinko Confirmation) Overlay -->
+        <div id="kakutei-overlay">
+            <div class="shoji-panel top"></div>
+            <div class="shoji-panel bottom"></div>
+            <div class="kakutei-rays" id="kakutei-rays"></div>
+            <div class="kakutei-rainbow"></div>
+            <div class="kakutei-grandma">👵</div>
+            <div class="kakutei-text">おばあちゃん降臨</div>
+        </div>
+
+        <!-- Stage Result -->
+        <div id="stage-result" class="screen">
+            <div class="result-content">
+                <h2 id="result-title"></h2>
+                <div id="result-hiroto"></div>
+                <div id="result-stats"></div>
+                <div id="result-reaction"></div>
+                <button class="btn-main" id="next-stage-btn"></button>
+            </div>
+        </div>
+
+        <!-- Final Result -->
+        <div id="final-result" class="screen">
+            <div class="final-content">
+                <h1>最終結果</h1>
+                <img src="hiroto-win.png" alt="太ったひろと" class="final-hiroto-img" id="final-hiroto-img">
+                <div id="final-hiroto"></div>
+                <div id="final-stats"></div>
+                <div id="final-rank"></div>
+                <button class="btn-main" onclick="resetGame()">もう一回食べる</button>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
