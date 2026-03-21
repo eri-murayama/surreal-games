@@ -1,3 +1,98 @@
+// ===== 多言語対応 =====
+let currentLang = 'ja';
+
+const LANG = {
+  ja: {
+    title: '🦀 かにかにパニック！ 🦀',
+    subtitle: '夢の中のヤクザ「かにかに」を叩け！腹筋は毎日換気するよ！',
+    score: 'スコア',
+    timeLeft: '残り時間',
+    combo: 'コンボ',
+    startTitle: 'かにかにパニック！',
+    startDesc: '穴から出てくる「かにかに」を<br>叩きまくれ！制限時間30秒！',
+    startBtn: 'ゲームスタート',
+    endTitle: '終了〜！',
+    retryBtn: 'もう一回やる',
+    backToTop: '← トップに戻る',
+    painLines: ['いたい…', 'なんで…？', 'ひどいよ…', 'やめて…', 'うう…', 'ぼくが何したの…', 'いたいよぉ…', 'もうやだ…', 'ごめんなさい…'],
+    missTexts: ['スカッ', 'ハズレ〜', '空振り！', 'おしい？'],
+    resultScore: (s, c) => `${s}点（最大コンボ: ${c}）`,
+    ranks: [
+      { min: 3000, rank: '👑 かにかにマスター', comment: '腹筋の換気が完璧すぎる……！' },
+      { min: 2000, rank: '🦀 かにかに番長', comment: '夢の中でもトップクラスのヤクザ退治能力。' },
+      { min: 1000, rank: '🔨 叩き屋見習い', comment: 'まあまあやるじゃん。かにかにも少しビビってた。' },
+      { min: 500, rank: '🌸 お散歩レベル', comment: 'かにかにに「もうちょっと頑張れば？」って言われてるよ。' },
+      { min: 0, rank: '😴 寝てた？', comment: 'かにかにが心配してこっち見てる。' },
+    ],
+    bubble1: '腹筋は<br>毎日換気！',
+    bubble2: '叩いても<br>また出るよ！',
+  },
+  en: {
+    title: '🦀 Kani-Kani Panic! 🦀',
+    subtitle: 'Whack the yakuza crab "Kani-Kani" from your dreams!',
+    score: 'Score',
+    timeLeft: 'Time',
+    combo: 'Combo',
+    startTitle: 'Kani-Kani Panic!',
+    startDesc: 'Whack the crabs popping out<br>of the holes! 30 seconds!',
+    startBtn: 'START',
+    endTitle: "Time's Up!",
+    retryBtn: 'Play Again',
+    backToTop: '← Back to Top',
+    painLines: ['Ouch…', 'Why…?', 'So mean…', 'Stop it…', 'Oww…', 'What did I do…', 'It hurts…', 'No more…', "I'm sorry…"],
+    missTexts: ['Whiff!', 'Miss~', 'Swing!', 'So close?'],
+    resultScore: (s, c) => `${s} pts (Max Combo: ${c})`,
+    ranks: [
+      { min: 3000, rank: '👑 Kani-Kani Master', comment: 'Your crab-whacking skills are legendary!' },
+      { min: 2000, rank: '🦀 Kani-Kani Boss', comment: 'Top-tier yakuza crab hunter!' },
+      { min: 1000, rank: '🔨 Apprentice Whacker', comment: 'Not bad! Even Kani-Kani was a bit scared.' },
+      { min: 500, rank: '🌸 Casual Stroll', comment: 'Kani-Kani says "Try a little harder?"' },
+      { min: 0, rank: '😴 Were you sleeping?', comment: 'Kani-Kani is worried about you.' },
+    ],
+    bubble1: 'Abs need<br>daily air!',
+    bubble2: 'Hit me and<br>I come back!',
+  },
+};
+
+function t(key) { return LANG[currentLang][key]; }
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.title = lang === 'ja' ? 'かにかにパニック！ - もぐらたたき' : 'Kani-Kani Panic! - Whack-a-Crab';
+
+  // タイトル
+  document.querySelector('.game-title').textContent = t('title');
+  document.querySelector('.game-subtitle').textContent = t('subtitle');
+
+  // HUD
+  const hudLabels = document.querySelectorAll('.hud-label');
+  hudLabels[0].textContent = t('score');
+  hudLabels[1].textContent = t('timeLeft');
+  hudLabels[2].textContent = t('combo');
+
+  // オーバーレイ
+  document.querySelector('#start-screen h2').textContent = t('startTitle');
+  document.querySelector('#start-screen p').innerHTML = t('startDesc');
+  document.getElementById('start-btn').textContent = t('startBtn');
+  document.querySelector('#result-screen h2').textContent = t('endTitle');
+  document.getElementById('retry-btn').textContent = t('retryBtn');
+
+  // 戻るリンク
+  document.querySelector('.back-to-top-link').textContent = t('backToTop');
+
+  // 吹き出し
+  const b1 = document.querySelector('.deco-bubble--1');
+  const b2 = document.querySelector('.deco-bubble--2');
+  if (b1) b1.innerHTML = t('bubble1');
+  if (b2) b2.innerHTML = t('bubble2');
+
+  // 言語ボタン
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+}
+
 // ===== カスタムカーソル =====
 const customCursor = document.getElementById('custom-cursor');
 
@@ -12,16 +107,11 @@ document.addEventListener('pointerdown', () => {
 });
 
 // ===== 痛みセリフ =====
-const painLines = [
-  'いたい…', 'なんで…？', 'ひどいよ…',
-  'やめて…', 'うう…', 'ぼくが何したの…',
-  'いたいよぉ…', 'もうやだ…', 'ごめんなさい…',
-];
-
 function spawnPainText(x, y) {
+  const lines = t('painLines');
   const el = document.createElement('div');
   el.className = 'pain-text';
-  el.textContent = painLines[Math.floor(Math.random() * painLines.length)];
+  el.textContent = lines[Math.floor(Math.random() * lines.length)];
   el.style.left = `${x}px`;
   el.style.top = `${y - 30}px`;
   document.body.appendChild(el);
@@ -213,7 +303,7 @@ function spawnHitText(x, y, points, isCombo) {
 }
 
 function spawnMissText(x, y) {
-  const texts = ['スカッ', 'ハズレ〜', '空振り！', 'おしい？'];
+  const texts = t('missTexts');
   const el = document.createElement('div');
   el.className = 'miss-text';
   el.textContent = texts[Math.floor(Math.random() * texts.length)];
@@ -243,27 +333,12 @@ function endGame() {
   const score = state.score;
   const maxCombo = state.maxCombo;
 
-  let rank, comment;
-  if (score >= 3000) {
-    rank = '👑 かにかにマスター';
-    comment = '腹筋の換気が完璧すぎる……！';
-  } else if (score >= 2000) {
-    rank = '🦀 かにかに番長';
-    comment = '夢の中でもトップクラスのヤクザ退治能力。';
-  } else if (score >= 1000) {
-    rank = '🔨 叩き屋見習い';
-    comment = 'まあまあやるじゃん。かにかにも少しビビってた。';
-  } else if (score >= 500) {
-    rank = '🌸 お散歩レベル';
-    comment = 'かにかにに「もうちょっと頑張れば？」って言われてるよ。';
-  } else {
-    rank = '😴 寝てた？';
-    comment = 'かにかにが心配してこっち見てる。';
-  }
+  const ranks = t('ranks');
+  const matched = ranks.find(r => score >= r.min);
 
-  document.getElementById('result-score').textContent = `${score}点（最大コンボ: ${maxCombo}）`;
-  document.getElementById('result-rank').textContent = rank;
-  document.getElementById('result-comment').textContent = comment;
+  document.getElementById('result-score').textContent = t('resultScore')(score, maxCombo);
+  document.getElementById('result-rank').textContent = matched.rank;
+  document.getElementById('result-comment').textContent = matched.comment;
 
   startScreen.classList.add('hidden');
   resultScreen.classList.remove('hidden');

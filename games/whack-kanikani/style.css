@@ -584,3 +584,38 @@ body::after {
 .back-to-top-link:hover {
   color: #fff;
 }
+
+/* ===== 言語切替ボタン ===== */
+#lang-switch {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+  z-index: 300;
+}
+
+.lang-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  background: rgba(180, 60, 100, 0.4);
+  color: #f0b0c0;
+  border: 1px solid rgba(200, 100, 140, 0.6);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.lang-btn:hover {
+  background: rgba(200, 80, 120, 0.5);
+  color: #ffe0eb;
+}
+
+.lang-btn.active {
+  background: rgba(214, 51, 132, 0.6);
+  color: #fff;
+  border-color: #ff69b4;
+}
