@@ -596,6 +596,7 @@ body::after {
 }
 
 .lang-btn {
+  margin-top: 0;
   padding: 4px 10px;
   font-size: 11px;
   font-family: 'Zen Maru Gothic', sans-serif;
@@ -607,6 +608,9 @@ body::after {
   cursor: pointer;
   transition: all 0.2s;
   letter-spacing: 1px;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .lang-btn:hover {
