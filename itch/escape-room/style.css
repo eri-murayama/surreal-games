@@ -1465,12 +1465,13 @@ body {
   /* セリフボックス */
   #dialog-box {
     margin-top: 6px;
-    height: 150px;
+    height: auto;
+    min-height: 150px;
+    overflow: visible;
   }
 
   #dialog-portrait {
     width: 56px;
-    min-height: 150px;
   }
 
   #dialog-content {
@@ -1690,13 +1691,14 @@ body {
   }
 
   #dialog-box {
+    height: auto;
     min-height: 150px;
     margin-top: 4px;
+    overflow: visible;
   }
 
   #dialog-portrait {
     width: 48px;
-    min-height: 150px;
   }
 
   #dialog-text {

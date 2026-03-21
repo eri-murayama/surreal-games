@@ -1429,7 +1429,9 @@ body {
   /* セリフボックス */
   #dialog-box {
     margin-top: 4px;
-    height: 150px;
+    height: auto;
+    min-height: 150px;
+    overflow: visible;
   }
 
   #dialog-portrait {
@@ -1653,8 +1655,10 @@ body {
   }
 
   #dialog-box {
-    height: 150px;
+    height: auto;
+    min-height: 150px;
     margin-top: 4px;
+    overflow: visible;
   }
 
   #dialog-portrait {
