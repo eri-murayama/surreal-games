@@ -4,30 +4,37 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   background: linear-gradient(135deg, #2e1a2e 0%, #1a1a2e 50%, #2e1a28 100%);
   font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 10px 0;
-  overflow-y: auto;
+  align-items: center;
+  padding: 4px 0;
 }
 
 /* ===== レイアウト ===== */
 #game-wrapper {
   display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  max-width: 980px;
+  flex-direction: column;
+  align-items: center;
+  max-width: 958px;
   width: 100%;
-  padding: 0 10px;
+  height: 100%;
+  max-height: 100vh;
+  padding: 0 4px;
 }
 
 #game-container {
-  width: 780px;
-  flex-shrink: 0;
+  width: 100%;
+  max-width: 780px;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -37,7 +44,7 @@ body {
   color: #e0d0f8;
   font-size: 22px;
   font-weight: 900;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   letter-spacing: 6px;
   text-shadow: 0 0 15px rgba(210, 180, 248, 0.5);
 }
@@ -45,7 +52,9 @@ body {
 /* ===== 部屋 ===== */
 #room {
   width: 100%;
-  height: 380px;
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: 780 / 380;
   position: relative;
   overflow: hidden;
   border: 3px solid #7a5a8a;
@@ -295,7 +304,7 @@ body {
 #clock-hand-hour {
   position: absolute;
   top: 50%; left: 50%;
-  width: 13px; height: 3px;
+  width: 10px; height: 2px;
   background: #7868a0;
   transform-origin: 0% 50%;
   transform: rotate(0deg);
@@ -306,7 +315,7 @@ body {
 #clock-hand-minute {
   position: absolute;
   top: 50%; left: 50%;
-  width: 18px; height: 2px;
+  width: 13px; height: 2px;
   background: #a088c0;
   transform-origin: 0% 50%;
   transform: rotate(-90deg);
@@ -404,12 +413,13 @@ body {
   right: 50px; bottom: 30px;
   width: 140px; height: 90px;
   z-index: 5;
+  overflow: hidden;
 }
 
 #table-top {
   position: absolute;
-  top: 0; left: -10px;
-  width: 160px; height: 12px;
+  top: 0; left: 0;
+  width: 100%; height: 12px;
   background: linear-gradient(180deg, #e8c0a8 0%, #d8b098 100%);
   border-radius: 4px;
   border: 2px solid #c8a088;
@@ -590,11 +600,11 @@ body {
 /* ===== セリフボックス ===== */
 #dialog-box {
   width: 100%;
-  height: 126px;
+  height: 88px;
   background: linear-gradient(180deg, rgba(60, 30, 50, 0.96) 0%, rgba(40, 20, 35, 0.98) 100%);
   border: 2px solid #b0789a;
   border-radius: 14px;
-  margin-top: 10px;
+  margin-top: 6px;
   padding: 0;
   display: flex;
   align-items: stretch;
@@ -606,6 +616,7 @@ body {
 
 #dialog-portrait {
   width: 72px;
+  min-height: 88px;
   background: linear-gradient(135deg, #3e2a4a 0%, #301a3a 100%);
   display: flex;
   align-items: center;
@@ -638,8 +649,8 @@ body {
 
 #dialog-text {
   color: #f8f0f4;
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 14px;
+  line-height: 1.6;
   overflow-y: auto;
   flex: 1;
 }
@@ -659,33 +670,40 @@ body {
 
 /* ===== アイテムボックス ===== */
 #item-box {
-  width: 150px;
+  width: 100%;
+  max-width: 780px;
   background: linear-gradient(180deg, rgba(60, 30, 50, 0.95) 0%, rgba(40, 20, 35, 0.97) 100%);
   border: 2px solid #b0789a;
   border-radius: 14px;
-  padding: 12px 8px;
+  padding: 6px 8px;
   flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(200, 150, 180, 0.2);
-  margin-top: 30px;
+  margin-top: 0;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  order: -1;
 }
 
 #item-box-label {
   color: #f0a0c0;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+  white-space: nowrap;
   letter-spacing: 4px;
 }
 
 #item-slots {
-  display: grid;
+  display: flex;
   grid-template-columns: 1fr 1fr;
   gap: 5px;
 }
 
 .item-slot {
-  width: 56px; height: 56px;
+  width: 48px; height: 48px;
   background: rgba(80, 40, 60, 0.5);
   border: 2px solid #6a4a5e;
   border-radius: 10px;
@@ -888,6 +906,18 @@ body {
 #painting-modal-content {
   text-align: center;
   max-width: 520px;
+  max-height: 90vh;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#painting-modal-content > img {
+  max-height: 60vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 #painting-close-btn {
@@ -1115,17 +1145,33 @@ body {
 }
 
 /* ===== メモモーダル ===== */
-#memo-modal-content { text-align: center; }
+#memo-modal-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 90vh;
+  max-width: 90vw;
+}
 
 #memo-paper {
   background: linear-gradient(180deg, #fff8f0 0%, #f0e8d8 100%);
   border-radius: 6px;
-  padding: 16px;
-  margin-bottom: 18px;
+  padding: 12px;
+  margin-bottom: 14px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   transform: rotate(-1deg);
   max-width: 500px;
+  max-height: calc(90vh - 60px);
+  overflow: auto;
   border: 1px solid #d8d0b8;
+}
+
+#memo-paper img {
+  max-height: 55vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .memo-line {
@@ -1344,7 +1390,7 @@ body {
   }
 
   #game-wrapper {
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: center;
     max-width: 100%;
     padding: 0 4px;
@@ -1371,12 +1417,11 @@ body {
   #item-box {
     width: 100%;
     margin-top: 0;
-    margin-bottom: 2px;
-    padding: 8px 8px 2px;
+    margin-bottom: 6px;
+    padding: 8px;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 4px 8px;
+    gap: 8px;
   }
 
   #item-box-label {
@@ -1398,42 +1443,34 @@ body {
   }
 
   #selected-item-name {
-    position: static;
-    transform: none;
-    margin-top: 4px;
-    width: 100%;
-    text-align: center;
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
     white-space: nowrap;
     font-size: 12px;
-    background: none;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    z-index: auto;
-    min-height: 18px;
-    color: #f5c6d0;
+    background: rgba(40, 20, 35, 0.95);
+    border: 1px solid #f8d060;
+    border-radius: 16px;
+    padding: 4px 16px;
+    z-index: 100;
+    min-height: auto;
   }
 
   #selected-item-name:empty {
-    visibility: hidden;
-  }
-
-  #lang-switch {
-    position: fixed;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
+    display: none;
   }
 
   /* セリフボックス */
   #dialog-box {
-    margin-top: 4px;
+    margin-top: 6px;
     height: 150px;
   }
 
   #dialog-portrait {
     width: 56px;
+    min-height: 150px;
   }
 
   #dialog-content {
@@ -1443,6 +1480,7 @@ body {
   #dialog-text {
     font-size: 13px;
     line-height: 1.6;
+    min-height: 34px;
   }
 
   #dialog-name {
@@ -1653,16 +1691,18 @@ body {
   }
 
   #dialog-box {
-    height: 150px;
+    min-height: 150px;
     margin-top: 4px;
   }
 
   #dialog-portrait {
     width: 48px;
+    min-height: 150px;
   }
 
   #dialog-text {
     font-size: 12px;
+    min-height: 28px;
   }
 
   #item-box {
@@ -1676,29 +1716,13 @@ body {
   }
 }
 
-/* ===== トップに戻るリンク ===== */
-.back-to-top-link {
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-  text-decoration: none;
-  z-index: 300;
-  transition: color 0.2s;
-}
-.back-to-top-link:hover {
-  color: #fff;
-}
-
 /* ===== クリア画面のボタン ===== */
 .clear-buttons {
   display: flex;
   gap: 16px;
   margin-top: 24px;
   opacity: 0;
-  animation: fadeUp 1s 2s forwards;
+  animation: fadeUp 1s 5s forwards;
 }
 
 .clear-back-link {
