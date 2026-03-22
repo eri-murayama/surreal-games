@@ -79,6 +79,9 @@ let grid, score, bestScore, maxLevel, prevState, moveCount;
 const SAVE_KEY = 'surreal_evo_save';
 const BEST_KEY = 'surreal_evo_best';
 
+/* ── 共通モジュール ── */
+const sg = SurrealGames.init('puzzle-2048');
+
 /* ── 初期化 ── */
 function init(){
   bestScore = parseInt(localStorage.getItem(BEST_KEY)) || 0;
@@ -121,6 +124,7 @@ function showScreen(name){
 
 /* ── ゲーム開始 ── */
 function startGame(cont){
+  sg.onGameStart();
   if(cont){
     const save = loadSave();
     if(save){
@@ -361,6 +365,7 @@ function showGameOver(){
   dom.retryBtn.parentNode.insertBefore(shareBtn, dom.retryBtn);
 
   localStorage.removeItem(SAVE_KEY);
+  sg.onGameEnd(score);
   showScreen('gameover');
 }
 

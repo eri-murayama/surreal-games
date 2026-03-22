@@ -112,11 +112,15 @@ const outfit = document.getElementById('outfit');
 const accessoryEl = document.getElementById('accessory');
 const sparklesEl = document.getElementById('sparkles');
 
+// ===== 共通モジュール =====
+const sg = SurrealGames.init('dress-up');
+
 // ===== ゲーム開始 =====
 startBtn.addEventListener('click', startGame);
 retryBtn.addEventListener('click', startGame);
 
 function startGame() {
+  sg.onGameStart();
   state.currentStage = 0;
   state.selections = {};
 
@@ -175,6 +179,7 @@ function renderStage() {
 
 // ===== 選択処理 =====
 function selectChoice(choice) {
+  SurrealGames.SoundSystem.play('tap');
   const stage = STAGES[state.currentStage];
   state.selections[stage.id] = choice.value;
 
@@ -385,5 +390,6 @@ function showResult() {
     startScreen.classList.add('hidden');
     resultScreen.classList.remove('hidden');
     overlay.classList.remove('hidden');
+    sg.onGameEnd();
   }, 500);
 }

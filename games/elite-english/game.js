@@ -2,6 +2,8 @@
 (function () {
   'use strict';
 
+  const sg = SurrealGames.init('elite-english');
+
   // ---------- Question Data ----------
   // Each question: jp phrase, correct English, and 2 elite (funny wrong) answers
   // eliteRank: 0 = best elite (3 stars), 1 = okay elite (2 stars), 2 = correct/boring (1 star)
@@ -159,6 +161,7 @@
     totalStars = 0;
     $('#current-score').textContent = '0';
     shuffledQuestions = shuffle(QUESTIONS);
+    sg.onGameStart();
     showScreen('quiz');
     loadQuestion();
   }
@@ -307,6 +310,7 @@
   function showResult() {
     const maxStars = QUESTIONS.length * 3;
     const pct = totalStars / maxStars;
+    const { isNewHigh } = sg.onGameEnd(totalStars, { score, maxStars });
 
     let title, rank, comment;
     if (pct >= 0.9) {
@@ -384,6 +388,17 @@
     const retryBtn = $('#retry-btn');
     retryBtn.parentNode.insertBefore(shareBtn, retryBtn);
 
+    // NEW RECORDバッジ
+    const oldRecord = document.querySelector('.sg-new-record');
+    if (oldRecord) oldRecord.remove();
+    if (isNewHigh) {
+      const newRecordEl = document.createElement('div');
+      newRecordEl.className = 'sg-new-record';
+      newRecordEl.textContent = '\uD83C\uDF89 NEW RECORD!';
+      const resultTitle = $('#result-title');
+      resultTitle.parentNode.insertBefore(newRecordEl, resultTitle.nextSibling);
+    }
+
     showScreen('result');
 
     // Confetti for good scores
@@ -411,6 +426,16 @@
 
     setTimeout(() => container.remove(), 4000);
   }
+
+  // ---------- High Score Display ----------
+  (function updateHighScoreDisplay() {
+    var highScore = sg.getHighScore();
+    var el = document.getElementById('sg-high-score-display');
+    if (highScore && el) {
+      el.textContent = '\u{1F3C6} HIGH SCORE: ' + highScore;
+      el.style.display = 'block';
+    }
+  })();
 
   // ---------- Event Listeners ----------
   $('#start-btn').addEventListener('click', startGame);

@@ -5,6 +5,9 @@
 (() => {
   'use strict';
 
+  // ===== 共通モジュール初期化 =====
+  const sg = SurrealGames.init('tower');
+
   // --- 定数 ---
   const TILE = 32;
   const MAP_W = 13;
@@ -316,6 +319,7 @@
 
   // --- ゲーム初期化 ---
   function initGame() {
+    sg.onGameStart();
     deleteSave();
 
     game = {
@@ -863,6 +867,7 @@
   function gameOver() {
     game.state = 'dead';
     deleteSave();
+    sg.onGameEnd(game.floor);
 
     const best = Number(localStorage.getItem(BEST_KEY) || 0);
     const isNew = game.floor > best;

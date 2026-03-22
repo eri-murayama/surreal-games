@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雑学キング決定戦 | シュールゲームス</title>
+  <meta name="description" content="無駄な知識で天下を取れ！早押し雑学クイズで雑学キングの座を勝ち取ろう。深夜バラエティ風のシュールなトリビアゲーム。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="雑学キング決定戦 | シュールゲームス">
+  <meta property="og:description" content="無駄な知識で天下を取れ！早押し雑学クイズで雑学キングの座を勝ち取ろう。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/trivia-king/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- Spotlight background effects -->
+  <div class="bg-spotlights" aria-hidden="true">
+    <div class="spotlight s1"></div>
+    <div class="spotlight s2"></div>
+    <div class="spotlight s3"></div>
+  </div>
+
+  <!-- Floating particles -->
+  <div class="bg-particles" aria-hidden="true">
+    <span class="particle" style="--x:8%;--y:15%;--delay:0s;--dur:5s">✦</span>
+    <span class="particle" style="--x:22%;--y:55%;--delay:1s;--dur:6s">★</span>
+    <span class="particle" style="--x:45%;--y:10%;--delay:0.5s;--dur:7s">✧</span>
+    <span class="particle" style="--x:68%;--y:40%;--delay:2s;--dur:4.5s">⚡</span>
+    <span class="particle" style="--x:82%;--y:70%;--delay:0.8s;--dur:6.5s">✦</span>
+    <span class="particle" style="--x:12%;--y:85%;--delay:3s;--dur:5.5s">★</span>
+    <span class="particle" style="--x:55%;--y:88%;--delay:1.5s;--dur:4s">✧</span>
+    <span class="particle" style="--x:92%;--y:25%;--delay:2.5s;--dur:7.5s">⚡</span>
+  </div>
+
+  <!-- Flash overlay for correct/wrong -->
+  <div id="flash-overlay" class="flash-overlay" aria-hidden="true"></div>
+
+  <!-- ===== TITLE SCREEN ===== -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="title-crown">👑</div>
+      <h1 class="title-main">雑学キング<br>決定戦</h1>
+      <p class="title-subtitle">無駄な知識で天下を取れ！</p>
+      <div class="title-rules">
+        <p>🎯 全15問の早押しトリビアクイズ</p>
+        <p>⏱️ 1問8秒の制限時間</p>
+        <p>🔥 連続正解でボーナス倍率UP！</p>
+      </div>
+      <button id="start-btn" class="btn-start">挑戦する</button>
+      <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
+    </div>
+    <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。にじさんじとは一切関係ありません。※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-left">
+        <div class="hud-label">SCORE</div>
+        <div id="score-display" class="hud-value">0</div>
+      </div>
+      <div class="hud-center">
+        <div id="question-number" class="question-number">Q.1 / 15</div>
+        <div id="category-label" class="category-label">カテゴリ</div>
+      </div>
+      <div class="hud-right">
+        <div class="hud-label">STREAK</div>
+        <div id="streak-display" class="hud-value">
+          <span id="streak-count">0</span>
+          <span id="streak-fire" class="streak-fire"></span>
+        </div>
+        <div id="multiplier-display" class="multiplier">x1</div>
+      </div>
+    </div>
+
+    <div class="timer-bar-container">
+      <div id="timer-bar" class="timer-bar"></div>
+    </div>
+
+    <div class="question-area">
+      <div id="question-text" class="question-text">ここに問題が表示されます</div>
+    </div>
+
+    <div id="answers-area" class="answers-area">
+      <button class="btn-answer" data-index="0"></button>
+      <button class="btn-answer" data-index="1"></button>
+      <button class="btn-answer" data-index="2"></button>
+      <button class="btn-answer" data-index="3"></button>
+    </div>
+
+    <div id="explanation-area" class="explanation-area hidden">
+      <div id="explanation-icon" class="explanation-icon"></div>
+      <div id="explanation-text" class="explanation-text"></div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT SCREEN ===== -->
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <div id="result-crown" class="result-crown"></div>
+      <h2 id="result-rank" class="result-rank">雑学キング</h2>
+      <div id="result-score" class="result-score">0</div>
+      <div class="result-label">ポイント</div>
+      <div class="result-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="result-correct">0</div>
+          <div class="stat-label">正解数</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="result-max-streak">0</div>
+          <div class="stat-label">最大連続</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="result-accuracy">0%</div>
+          <div class="stat-label">正解率</div>
+        </div>
+      </div>
+      <button id="retry-btn" class="btn-start">もう一度挑戦する</button>
+    </div>
+    <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。にじさんじとは一切関係ありません。※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -208,25 +208,25 @@ body {
   100% { clip-path: inset(15% 0 55% 0); transform: translateX(3px); }
 }
 
-/* ヒーローキャラクター */
+/* ヒーローキャラクター — ボタンと被らないよう上部に配置 */
 .hero-chara {
   position: absolute;
-  width: clamp(120px, 18vw, 220px);
-  bottom: 8%;
-  z-index: 2;
+  width: clamp(100px, 14vw, 180px);
+  top: 12%;
+  z-index: 1;
   filter: drop-shadow(0 0 20px rgba(255, 110, 199, 0.3));
   pointer-events: none;
-  opacity: 0.85;
+  opacity: 0.7;
 }
 
 .hero-chara--left {
-  left: 5%;
+  left: 3%;
   transform: rotate(-8deg);
   animation: charaLeftBounce 4s ease-in-out infinite;
 }
 
 .hero-chara--right {
-  right: 5%;
+  right: 3%;
   transform: scaleX(-1) rotate(-8deg);
   animation: charaRightBounce 4s ease-in-out infinite;
   animation-delay: -2s;
@@ -244,6 +244,11 @@ body {
   30% { transform: scaleX(-1) rotate(-2deg) translateY(-25px); }
   50% { transform: scaleX(-1) rotate(-12deg) translateY(-10px); }
   80% { transform: scaleX(-1) rotate(-5deg) translateY(-18px); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 5;
 }
 
 .tagline {
@@ -670,6 +675,58 @@ section {
 }
 
 /* ========================================
+   お知らせ
+   ======================================== */
+
+.news-list {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.news-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+.news-date {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 90px;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+}
+.news-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+.news-tag--new {
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: #1a0533;
+}
+.news-tag--update {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+.news-tag--game {
+  background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+  color: #fff;
+}
+.news-text {
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ========================================
    アバウト
    ======================================== */
 
@@ -915,9 +972,9 @@ footer {
   }
 
   .hero-chara {
-    width: 90px;
-    bottom: 4%;
-    opacity: 0.6;
+    width: 70px;
+    top: 10%;
+    opacity: 0.45;
   }
 
   .hero-chara--left { left: 2%; }

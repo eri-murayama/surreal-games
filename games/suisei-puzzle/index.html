@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>すいすいパズル～彗星のごとく～ | シュールゲームス</title>
+  <meta name="description" content="彗星のごとくブロックを消し去れ！星空テーマの落ちものパズルゲーム。※シュールゲームスの全キャラクターには鼻毛が生えています。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+  <meta property="og:title" content="すいすいパズル | シュールゲームス">
+  <meta property="og:description" content="彗星のごとくブロックを消せ！落ちものパズルゲーム。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/suisei-puzzle/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- Background stars -->
+  <div class="bg-stars" aria-hidden="true">
+    <span class="star" style="--x:5%;--y:10%;--delay:0s;--dur:4s">✦</span>
+    <span class="star" style="--x:15%;--y:70%;--delay:1.2s;--dur:5s">☆</span>
+    <span class="star" style="--x:25%;--y:25%;--delay:0.5s;--dur:6s">✧</span>
+    <span class="star" style="--x:40%;--y:85%;--delay:2s;--dur:4.5s">✦</span>
+    <span class="star" style="--x:55%;--y:15%;--delay:0.8s;--dur:5.5s">☆</span>
+    <span class="star" style="--x:70%;--y:55%;--delay:3s;--dur:4s">✧</span>
+    <span class="star" style="--x:80%;--y:30%;--delay:1.5s;--dur:6.5s">✦</span>
+    <span class="star" style="--x:90%;--y:80%;--delay:2.5s;--dur:5s">☆</span>
+    <span class="star" style="--x:35%;--y:50%;--delay:0.3s;--dur:7s">✧</span>
+    <span class="star" style="--x:65%;--y:40%;--delay:1.8s;--dur:4.2s">✦</span>
+    <span class="star" style="--x:48%;--y:65%;--delay:3.5s;--dur:5.8s">☆</span>
+    <span class="star" style="--x:12%;--y:45%;--delay:0.7s;--dur:6.2s">✧</span>
+  </div>
+
+  <!-- Comet streak decoration -->
+  <div class="comet-streak" aria-hidden="true"></div>
+  <div class="comet-streak c2" aria-hidden="true"></div>
+
+  <!-- Title Screen -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="comet-icon">☄️</div>
+      <h1 class="game-title">すいすいパズル</h1>
+      <p class="game-subtitle">彗星のごとく消し去れ！</p>
+      <div class="title-piece-deco" aria-hidden="true">
+        <div class="deco-block b1"></div>
+        <div class="deco-block b2"></div>
+        <div class="deco-block b3"></div>
+        <div class="deco-block b4"></div>
+      </div>
+      <button id="start-btn" class="btn-primary">ゲームスタート</button>
+      <div class="controls-help">
+        <p class="help-title">操作方法</p>
+        <p>← → ：移動　↓：落下加速</p>
+        <p>↑ / Z：回転　スペース：即落下</p>
+        <p>スマホ：画面下のボタンで操作</p>
+      </div>
+      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen">
+    <div class="game-layout">
+      <!-- Side info (left on desktop) -->
+      <div class="side-panel left-panel">
+        <div class="info-box">
+          <div class="info-label">SCORE</div>
+          <div id="score" class="info-value">0</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">LEVEL</div>
+          <div id="level" class="info-value">1</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">LINES</div>
+          <div id="lines" class="info-value">0</div>
+        </div>
+      </div>
+
+      <!-- Game board -->
+      <div class="board-wrapper">
+        <canvas id="game-canvas"></canvas>
+        <!-- Line clear flash overlay -->
+        <div id="line-flash" class="line-flash" aria-hidden="true"></div>
+        <!-- Comet mode text -->
+        <div id="comet-mode" class="comet-mode-text" aria-hidden="true">☄️ 彗星モード ☄️</div>
+      </div>
+
+      <!-- Side info (right on desktop) -->
+      <div class="side-panel right-panel">
+        <div class="info-box">
+          <div class="info-label">NEXT</div>
+          <canvas id="next-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile top bar -->
+    <div class="mobile-stats">
+      <span>SCORE: <span id="m-score">0</span></span>
+      <span>LV: <span id="m-level">1</span></span>
+      <span>LINES: <span id="m-lines">0</span></span>
+    </div>
+
+    <!-- Mobile controls -->
+    <div class="mobile-controls">
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="btn-left" aria-label="左移動">←</button>
+        <button class="ctrl-btn" id="btn-down" aria-label="落下加速">↓</button>
+        <button class="ctrl-btn" id="btn-right" aria-label="右移動">→</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn wide" id="btn-rotate" aria-label="回転">回転</button>
+        <button class="ctrl-btn wide" id="btn-drop" aria-label="即落下">即落下</button>
+      </div>
+    </div>
+
+    <button id="pause-btn" class="btn-small">一時停止</button>
+  </div>
+
+  <!-- Result Screen -->
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <div class="result-comet">☄️</div>
+      <h2 class="result-title">ゲームオーバー</h2>
+      <div class="result-stats">
+        <div class="result-row">
+          <span class="result-label">スコア</span>
+          <span id="final-score" class="result-value">0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">消したライン</span>
+          <span id="final-lines" class="result-value">0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">到達レベル</span>
+          <span id="final-level" class="result-value">1</span>
+        </div>
+      </div>
+      <div class="result-rank" id="result-rank"></div>
+      <button id="retry-btn" class="btn-primary">もう一度プレイ</button>
+      <button id="title-btn" class="btn-secondary">タイトルに戻る</button>
+      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+    </div>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

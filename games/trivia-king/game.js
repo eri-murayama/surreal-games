@@ -3,6 +3,8 @@
 (function () {
   'use strict';
 
+  const sg = SurrealGames.init('trivia-king');
+
   // ===== QUESTION POOL =====
   const QUESTIONS = [
     {
@@ -276,6 +278,7 @@
     multiplierDisplay.textContent = 'x1';
     multiplierDisplay.classList.remove('active');
 
+    sg.onGameStart();
     showScreen(gameScreen);
     loadQuestion();
   }
@@ -400,6 +403,7 @@
   }
 
   function handleCorrect() {
+    SurrealGames.SoundSystem.play('correct');
     streak++;
     correctCount++;
     if (streak > maxStreak) maxStreak = streak;
@@ -435,6 +439,7 @@
   }
 
   function handleWrong() {
+    SurrealGames.SoundSystem.play('wrong');
     streak = 0;
     streakCount.textContent = '0';
     streakFire.className = 'streak-fire';
@@ -478,6 +483,7 @@
 
   // ===== RESULTS =====
   function showResults() {
+    const { isNewHigh } = sg.onGameEnd(score, { correct: correctCount, maxStreak });
     showScreen(resultScreen);
 
     // Determine rank
@@ -531,7 +537,28 @@
 
     // Insert share button before retry button
     retryBtn.parentNode.insertBefore(shareBtn, retryBtn);
+
+    // NEW RECORDバッジ
+    const oldRecord = document.querySelector('.sg-new-record');
+    if (oldRecord) oldRecord.remove();
+    if (isNewHigh) {
+      const newRecordEl = document.createElement('div');
+      newRecordEl.className = 'sg-new-record';
+      newRecordEl.textContent = '\uD83C\uDF89 NEW RECORD!';
+      resultScore.parentNode.insertBefore(newRecordEl, resultScore);
+    }
   }
+
+  // ===== HIGH SCORE DISPLAY =====
+  function updateHighScoreDisplay() {
+    const highScore = sg.getHighScore();
+    const el = document.getElementById('sg-high-score-display');
+    if (highScore && el) {
+      el.textContent = '\uD83C\uDFC6 HIGH SCORE: ' + highScore;
+      el.style.display = 'block';
+    }
+  }
+  updateHighScoreDisplay();
 
   // ===== EVENT LISTENERS =====
   startBtn.addEventListener('click', startGame);

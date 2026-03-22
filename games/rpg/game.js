@@ -2,6 +2,9 @@
 //  ドットクエスト - ミニRPG
 // ============================================================
 
+// ===== 共通モジュール初期化 =====
+const sg = SurrealGames.init('rpg');
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const enemyCanvas = document.getElementById('enemy-canvas');
@@ -748,6 +751,7 @@ function battleDefeat() {
 // ===== 勝利画面 =====
 function showVictory() {
   state.phase = 'victory';
+  sg.onGameEnd(state.level);
   document.getElementById('victory-screen').classList.remove('hidden');
   document.getElementById('victory-sub').textContent =
     `Lv.${state.level}で クリア！\nこの世界に平和がおとずれた……\nたぶん。`;
@@ -844,6 +848,7 @@ function gameLoop() {
 
 // ===== タイトル画面 =====
 document.getElementById('start-btn').addEventListener('click', () => {
+  sg.onGameStart();
   document.getElementById('title-screen').classList.add('hidden');
   initState();
   state.phase = 'map';

@@ -3,6 +3,9 @@
 (function () {
   'use strict';
 
+  // ===== 共通モジュール初期化 =====
+  const sg = SurrealGames.init('pet');
+
   /* ---------- ペット定義 ---------- */
   const PETS = {
     egg:     { emoji: '🥚', name: 'ナゾのタマゴ', stage: 0, desc: 'なにかが中でうごいている…' },
@@ -805,6 +808,7 @@
     }
 
     $('start-btn').addEventListener('click', () => {
+      sg.onGameStart();
       // リセットして新規開始
       localStorage.removeItem('surreal_pet_save');
       state = {
@@ -831,6 +835,7 @@
     });
 
     $('continue-btn').addEventListener('click', () => {
+      sg.onGameStart();
       loadGame();
       processOfflineTime();
       showScreen('main-screen');

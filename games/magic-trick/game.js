@@ -112,12 +112,16 @@ const nextBtn = document.getElementById('next-btn');
 const handLeft = document.getElementById('hand-left');
 const handRight = document.getElementById('hand-right');
 
+// ===== 共通モジュール =====
+const sg = SurrealGames.init('magic-trick');
+
 // ===== 初期化 =====
 startBtn.addEventListener('click', startGame);
 retryBtn.addEventListener('click', startGame);
 nextBtn.addEventListener('click', nextTrick);
 
 function startGame() {
+  sg.onGameStart();
   currentTrick = 0;
   score = 0;
   startScreen.classList.add('hidden');
@@ -279,6 +283,7 @@ function handleAnswer(selectedBtn, isCorrect, trick) {
 
   if (isCorrect) {
     selectedBtn.classList.add('correct');
+    SurrealGames.SoundSystem.play('correct');
     if (!hintUsed) {
       score++;
     } else {
@@ -291,6 +296,7 @@ function handleAnswer(selectedBtn, isCorrect, trick) {
     updateDot(currentTrick, 'correct');
   } else {
     selectedBtn.classList.add('wrong');
+    SurrealGames.SoundSystem.play('wrong');
     feedbackIcon.textContent = '😵';
     feedbackText.textContent = trick.wrongExplain;
     feedback.classList.remove('correct-fb');
@@ -341,6 +347,8 @@ function showResult() {
   const iconEl = document.getElementById('result-icon');
 
   scoreDisplay.textContent = `${score} / ${total}`;
+
+  sg.onGameEnd(score);
 
   if (score >= total) {
     iconEl.textContent = '🕵️';

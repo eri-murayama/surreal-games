@@ -1,6 +1,9 @@
 (function() {
   'use strict';
 
+  // ===== 共通モジュール初期化 =====
+  const sg = SurrealGames.init('business-analysis');
+
   // ===== 多言語データ =====
   const i18n = {
     ja: {
@@ -323,6 +326,7 @@
     createSparkles($('title-sparkle-container'), 40);
 
     $('start-btn').addEventListener('click', () => {
+      sg.onGameStart();
       state.openingStep = 0;
       showScreen('opening');
       createSpeedLines();
@@ -495,6 +499,7 @@
 
   // ===== エンディング =====
   function playEnding() {
+    sg.onGameEnd();
     typeText($('ending-text'), t().endingLine, ENDING_SPEED, () => {
       $('ending-buttons').classList.remove('hidden');
     });

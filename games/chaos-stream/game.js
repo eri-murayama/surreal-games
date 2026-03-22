@@ -5,6 +5,8 @@
 (() => {
   'use strict';
 
+  const sg = SurrealGames.init('chaos-stream');
+
   // ---------- 状態 ----------
   let chaos = 0;
   let likability = 0;
@@ -615,6 +617,9 @@
       desc  = 'カオスも好感度も低め。\n配信は静かに終わり、誰の記憶にも残らなかった。\n鼻毛だけが虚しく揺れている。';
     }
 
+    const totalScore = c + l;
+    const { isNewHigh } = sg.onGameEnd(totalScore, { chaos: c, likability: l, viewers });
+
     $('result-emoji').textContent = emoji;
     $('result-rank').textContent = rank;
     $('result-rank').style.color =
@@ -622,6 +627,17 @@
       highChaos ? '#ff4444' :
       highLike  ? '#44ff88' : '#888888';
     $('result-description').textContent = desc;
+
+    // NEW RECORDバッジ
+    const oldRecord = document.querySelector('.sg-new-record');
+    if (oldRecord) oldRecord.remove();
+    if (isNewHigh) {
+      const newRecordEl = document.createElement('div');
+      newRecordEl.className = 'sg-new-record';
+      newRecordEl.textContent = '\uD83C\uDF89 NEW RECORD!';
+      const resultCard = $('result-card');
+      resultCard.parentNode.insertBefore(newRecordEl, resultCard);
+    }
 
     // シェアボタン（X/Twitter）
     const existingShareBtn = document.getElementById('share-btn');
@@ -663,10 +679,21 @@
     viewers = 12;
     updateStats();
     chatMessages.innerHTML = '';
+    sg.onGameStart();
     switchScreen(gameScreen);
     startIdleChat();
     showScene('intro');
   }
+
+  // ---------- ハイスコア表示 ----------
+  (function updateHighScoreDisplay() {
+    const highScore = sg.getHighScore();
+    const el = document.getElementById('sg-high-score-display');
+    if (highScore && el) {
+      el.textContent = '\uD83C\uDFC6 HIGH SCORE: ' + highScore;
+      el.style.display = 'block';
+    }
+  })();
 
   // ---------- イベント ----------
   startBtn.addEventListener('click', startGame);

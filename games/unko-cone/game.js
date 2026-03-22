@@ -6,6 +6,9 @@
 (() => {
   'use strict';
 
+  // ===== 共通モジュール初期化 =====
+  const sg = SurrealGames.init('unko-cone');
+
   // ---- DOM ----
   const $ = id => document.getElementById(id);
   const titleScreen  = $('title-screen');
@@ -405,6 +408,7 @@
 
   // ---- Game lifecycle ----
   function startGame() {
+    sg.onGameStart();
     playerX = GAME_W / 2;
     playerY = GAME_H - 30;
     poops = [];
@@ -432,6 +436,7 @@
     if (animationId) cancelAnimationFrame(animationId);
 
     maxStack = stackCount;
+    sg.onGameEnd(score);
 
     $('final-score').textContent = score;
     $('final-stack').textContent = maxStack;
@@ -572,7 +577,7 @@
   // ---- Button events ----
   $('start-btn').addEventListener('click', startGame);
   $('retry-btn').addEventListener('click', startGame);
-  $('title-btn').addEventListener('click', () => showScreen(titleScreen));
+  $('title-btn').addEventListener('click', () => { showScreen(titleScreen); showHighScore(); });
 
   // ---- Resize ----
   window.addEventListener('resize', () => {
@@ -588,5 +593,15 @@
       e.preventDefault();
     }
   }, { passive: false });
+
+  // ---- High score display ----
+  function showHighScore() {
+    const best = sg.getHighScore();
+    const el = $('highscore-display');
+    if (el) {
+      el.textContent = best ? `ハイスコア: ${best}点` : '';
+    }
+  }
+  showHighScore();
 
 })();

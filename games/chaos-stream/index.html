@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>カオス配信シミュレーター | シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta property="og:title" content="カオス配信シミュレーター | シュールゲームス">
+  <meta property="og:description" content="あなたの配信、カオスです。VTuberストリーミングシミュレーション。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/chaos-stream/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <div class="scanline-overlay"></div>
+      <div class="glitch-container">
+        <h1 class="glitch-text" data-text="カオス配信シミュレーター">カオス配信シミュレーター</h1>
+      </div>
+      <p class="subtitle">あなたの配信、カオスです。</p>
+      <p class="studio-name">シュールゲームス</p>
+      <button id="start-btn" class="cyber-btn">配信スタート</button>
+      <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
+      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。にじさんじとは一切関係ありません。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-screen" class="screen">
+      <div class="stream-layout">
+        <!-- 配信メイン画面 -->
+        <div class="stream-main">
+          <div class="stream-header">
+            <span class="live-badge">● LIVE</span>
+            <span class="stream-title" id="stream-title">【初配信】はじめまして！新人Vtuberです！</span>
+            <span class="viewer-count" id="viewer-count">👁 12人</span>
+          </div>
+          <div class="stream-content" id="stream-content">
+            <div class="character-area" id="character-area">
+              <div class="character-emoji" id="character-emoji">😊</div>
+              <div class="character-nose-hair">〰️</div>
+            </div>
+            <div class="narration-area" id="narration-area">
+              <p id="narration-text"></p>
+            </div>
+          </div>
+          <div class="stats-bar">
+            <div class="stat">
+              <span class="stat-label">カオス度</span>
+              <div class="stat-gauge"><div class="stat-fill chaos-fill" id="chaos-bar"></div></div>
+              <span class="stat-value" id="chaos-value">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">好感度</span>
+              <div class="stat-gauge"><div class="stat-fill likability-fill" id="likability-bar"></div></div>
+              <span class="stat-value" id="likability-value">0</span>
+            </div>
+          </div>
+          <div class="choices-area" id="choices-area"></div>
+        </div>
+        <!-- チャット欄 -->
+        <div class="chat-sidebar">
+          <div class="chat-header">チャット</div>
+          <div class="chat-messages" id="chat-messages"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- リザルト画面 -->
+    <div id="result-screen" class="screen">
+      <div class="scanline-overlay"></div>
+      <h2 class="result-title">配信評価</h2>
+      <div class="result-card" id="result-card">
+        <div class="result-emoji" id="result-emoji"></div>
+        <h3 class="result-rank" id="result-rank"></h3>
+        <p class="result-description" id="result-description"></p>
+        <div class="result-stats">
+          <div class="result-stat">
+            <span>カオス度</span>
+            <span id="final-chaos">0</span>
+          </div>
+          <div class="result-stat">
+            <span>好感度</span>
+            <span id="final-likability">0</span>
+          </div>
+          <div class="result-stat">
+            <span>最終視聴者数</span>
+            <span id="final-viewers">0人</span>
+          </div>
+        </div>
+      </div>
+      <button id="retry-btn" class="cyber-btn">もう一回配信する</button>
+      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。にじさんじとは一切関係ありません。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+    </div>
+
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -7,6 +7,8 @@
 (function () {
   'use strict';
 
+  const sg = SurrealGames.init('holo-memory');
+
   // ==============================
   // Character definitions
   // ==============================
@@ -335,6 +337,7 @@
   // ==============================
 
   function initGame() {
+    sg.onGameStart();
     // Create pairs
     const charPairs = [];
     CHARACTERS.forEach(function (char) {
@@ -381,6 +384,7 @@
     if (flippedCards.length >= 2) return;
 
     // Flip card
+    SurrealGames.SoundSystem.play('tap');
     cardEl.classList.add('flipped');
     flippedCards.push(cardEl);
 
@@ -399,6 +403,7 @@
 
     if (id1 === id2) {
       // Match!
+      SurrealGames.SoundSystem.play('correct');
       isLocked = true;
       setTimeout(function () {
         card1.classList.add('matched', 'match-bounce');
@@ -423,6 +428,7 @@
       }, 300);
     } else {
       // No match
+      SurrealGames.SoundSystem.play('wrong');
       isLocked = true;
       showMessage(randomFrom(WRONG_MESSAGES));
       card1.classList.add('wrong-shake');
@@ -440,6 +446,10 @@
   function endGame() {
     clearInterval(timerInterval);
     var elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+    // スコア: ターン数が少ないほど高得点（最大1000点、ターン8が理論最小）
+    var gameScore = Math.max(0, 1000 - (turns - 8) * 50);
+    var { isNewHigh } = sg.onGameEnd(gameScore, { turns: turns, time: elapsed });
 
     resultTurns.textContent = turns;
     resultTime.textContent = formatTime(elapsed);
@@ -473,6 +483,17 @@
       window.open(url, '_blank');
     };
 
+    // NEW RECORDバッジ
+    var oldRecord = document.querySelector('.sg-new-record');
+    if (oldRecord) oldRecord.remove();
+    if (isNewHigh) {
+      var newRecordEl = document.createElement('div');
+      newRecordEl.className = 'sg-new-record';
+      newRecordEl.textContent = '\uD83C\uDF89 NEW RECORD!';
+      var resultTitle = document.querySelector('.result-title');
+      resultTitle.parentNode.insertBefore(newRecordEl, resultTitle);
+    }
+
     // Big celebration star shower
     spawnCelebrationStars();
     triggerRainbowFlash();
@@ -493,5 +514,15 @@
     showScreen(gameScreen);
     initGame();
   });
+
+  // ハイスコア表示
+  (function updateHighScoreDisplay() {
+    var highScore = sg.getHighScore();
+    var el = document.getElementById('sg-high-score-display');
+    if (highScore && el) {
+      el.textContent = '\uD83C\uDFC6 HIGH SCORE: ' + highScore;
+      el.style.display = 'block';
+    }
+  })();
 
 })();

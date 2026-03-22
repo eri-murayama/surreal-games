@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>エリートイングリッシュ！ | シュールゲームス</title>
+  <meta name="description" content="えりーとな英語力を見せつけろ！正しい英語を選んだら負け！？一番おもしろい英語を選べ！">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hachi+Maru+Pop&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="エリートイングリッシュ！ | シュールゲームス">
+  <meta property="og:description" content="エリートな英語力を見せつけろ！シュールな英語学習ゲーム。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/elite-english/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">&larr; トップに戻る</a>
+
+  <!-- 桜の花びら背景 -->
+  <div class="sakura-bg" aria-hidden="true">
+    <span class="petal" style="--x:5%;--delay:0s;--dur:8s">&#127800;</span>
+    <span class="petal" style="--x:15%;--delay:1.5s;--dur:7s">&#127800;</span>
+    <span class="petal" style="--x:30%;--delay:0.8s;--dur:9s">&#127800;</span>
+    <span class="petal" style="--x:45%;--delay:2.2s;--dur:6s">&#127800;</span>
+    <span class="petal" style="--x:60%;--delay:0.3s;--dur:8.5s">&#127800;</span>
+    <span class="petal" style="--x:75%;--delay:1.8s;--dur:7.5s">&#127800;</span>
+    <span class="petal" style="--x:90%;--delay:3s;--dur:6.5s">&#127800;</span>
+    <span class="petal" style="--x:50%;--delay:2.5s;--dur:9.5s">&#127800;</span>
+  </div>
+
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <div class="title-deco">
+        <span class="sparkle-float" style="--x:10%;--y:20%;--delay:0s">&#10022;</span>
+        <span class="sparkle-float" style="--x:85%;--y:15%;--delay:0.5s">&#11088;</span>
+        <span class="sparkle-float" style="--x:20%;--y:70%;--delay:1s">&#10023;</span>
+        <span class="sparkle-float" style="--x:80%;--y:65%;--delay:1.5s">&#128171;</span>
+      </div>
+      <h1 id="game-title">
+        &#127800; エリート<br>イングリッシュ！ &#127800;
+      </h1>
+      <p class="subtitle">えりーとな英語力を見せつけろ</p>
+      <p class="studio-name">シュールゲームス</p>
+      <div class="rule-box">
+        <p class="rule-title">&#128161; ルール</p>
+        <p>正しい英語を選んだら<strong>負け</strong>！<br>一番エリート（おもしろい）な英語を選べ！</p>
+      </div>
+      <button id="start-btn">エリートスタート！</button>
+      <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
+      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+    </div>
+
+    <!-- クイズ画面 -->
+    <div id="quiz-screen" class="screen">
+      <div class="quiz-header">
+        <div id="round-indicator">Q<span id="round-num">1</span> / 10</div>
+        <div id="timer-bar-container">
+          <div id="timer-bar"></div>
+        </div>
+        <div id="score-display">&#11088; <span id="current-score">0</span></div>
+      </div>
+
+      <div id="question-card">
+        <p class="question-label">この日本語をエリート英語にせよ！</p>
+        <p id="question-text"></p>
+      </div>
+
+      <div id="choices-area">
+        <button class="choice-btn" data-index="0"></button>
+        <button class="choice-btn" data-index="1"></button>
+        <button class="choice-btn" data-index="2"></button>
+      </div>
+    </div>
+
+    <!-- リアクション画面 -->
+    <div id="reaction-screen" class="screen">
+      <div id="reaction-emoji"></div>
+      <p id="reaction-title"></p>
+      <p id="reaction-text"></p>
+      <div id="stars-earned"></div>
+      <button id="next-btn">次へ &rarr;</button>
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="result-screen" class="screen">
+      <h2 id="result-title"></h2>
+      <div id="result-stars"></div>
+      <p id="result-score-text"></p>
+      <p id="result-rank"></p>
+      <p id="result-comment"></p>
+      <button id="retry-btn">もう一度遊ぶ</button>
+      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+    </div>
+
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

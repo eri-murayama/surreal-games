@@ -1,3 +1,6 @@
+// ===== 共通モジュール初期化 =====
+const sg = SurrealGames.init('escape-room');
+
 // ===== ゲーム状態 =====
 const state = {
   inventory: [],
@@ -440,6 +443,7 @@ door.addEventListener('click', (e) => {
 // ===== ゲームクリア =====
 function gameClear() {
   state.cleared = true;
+  sg.onGameEnd();
 
   const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
   const min = Math.floor(elapsed / 60);

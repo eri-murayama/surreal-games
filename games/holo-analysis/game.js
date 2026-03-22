@@ -6,6 +6,8 @@
 (function () {
   'use strict';
 
+  const sg = SurrealGames.init('holo-analysis');
+
   // ---------- キャラクター定義 ----------
   const CHARACTERS = [
     {
@@ -382,12 +384,14 @@
     });
 
     if (isCorrect) {
+      SurrealGames.SoundSystem.play('correct');
       // Confetti + sparkles + rainbow flash
       spawnConfetti();
       const rect = $('#character-face').getBoundingClientRect();
       spawnSparkles(15, rect.left + rect.width / 2, rect.top + rect.height / 2);
       triggerRainbowFlash();
     } else {
+      SurrealGames.SoundSystem.play('wrong');
       // Screen shake on wrong answer
       triggerScreenShake();
     }
@@ -454,6 +458,19 @@
       comment =
         '全問正解！あなたの鼻毛は宇宙一輝いています！伝説の鼻毛プロデューサーとしてVTuber界に名を刻みましょう！';
       titleColor = '#e84080';
+    }
+
+    const { isNewHigh } = sg.onGameEnd(score, { total: 5 });
+
+    // NEW RECORDバッジ
+    const oldRecord = document.querySelector('.sg-new-record');
+    if (oldRecord) oldRecord.remove();
+    if (isNewHigh) {
+      const newRecordEl = document.createElement('div');
+      newRecordEl.className = 'sg-new-record';
+      newRecordEl.textContent = '\uD83C\uDF89 NEW RECORD!';
+      const resultTitle = $('#result-title');
+      resultTitle.parentNode.insertBefore(newRecordEl, resultTitle);
     }
 
     $('#result-title').textContent = '経営分析結果';
@@ -551,6 +568,7 @@
   // ---------- イベントリスナー ----------
   $('#start-btn').addEventListener('click', function () {
     resetGame();
+    sg.onGameStart();
     showQuiz();
   });
 
@@ -567,4 +585,14 @@
     resetGame();
     showScreen(titleScreen);
   });
+
+  // ハイスコア表示
+  (function updateHighScoreDisplay() {
+    var highScore = sg.getHighScore();
+    var el = document.getElementById('sg-high-score-display');
+    if (highScore && el) {
+      el.textContent = '\uD83C\uDFC6 HIGH SCORE: ' + highScore;
+      el.style.display = 'block';
+    }
+  })();
 })();

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ホロメンおぼえてますか？ | シュールゲームス</title>
+  <meta name="description" content="鼻毛だらけの神経衰弱！VTuber風キャラクターたちの顔を覚えてペアを見つけよう。全員鼻毛が生えているので見分けるのが大変です。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hachi+Maru+Pop&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="ホロメンおぼえてますか？ | シュールゲームス">
+  <meta property="og:description" content="神経衰弱でホロメンの顔を覚えろ！記憶力テストゲーム。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/holo-memory/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- Floating background sparkles -->
+  <div class="bg-sparkles" aria-hidden="true">
+    <span class="bg-star" style="--x:10%;--y:20%;--delay:0s;--dur:6s">✦</span>
+    <span class="bg-star" style="--x:25%;--y:60%;--delay:1.2s;--dur:5s">⭐</span>
+    <span class="bg-star" style="--x:50%;--y:15%;--delay:0.5s;--dur:7s">✧</span>
+    <span class="bg-star" style="--x:70%;--y:45%;--delay:2s;--dur:4.5s">💫</span>
+    <span class="bg-star" style="--x:85%;--y:75%;--delay:0.8s;--dur:6.5s">✦</span>
+    <span class="bg-star" style="--x:15%;--y:80%;--delay:3s;--dur:5.5s">⭐</span>
+    <span class="bg-star" style="--x:40%;--y:90%;--delay:1.5s;--dur:4s">✧</span>
+    <span class="bg-star" style="--x:60%;--y:30%;--delay:2.5s;--dur:7.5s">♥</span>
+    <span class="bg-star" style="--x:90%;--y:10%;--delay:0.3s;--dur:5s">✦</span>
+    <span class="bg-star" style="--x:5%;--y:50%;--delay:1.8s;--dur:6s">💫</span>
+    <span class="bg-star" style="--x:35%;--y:40%;--delay:3.5s;--dur:5.2s">♥</span>
+    <span class="bg-star" style="--x:75%;--y:85%;--delay:0.7s;--dur:4.8s">✧</span>
+  </div>
+
+  <!-- Holographic overlay -->
+  <div class="holo-overlay" aria-hidden="true"></div>
+
+  <!-- Rainbow flash overlay for correct matches -->
+  <div id="rainbow-flash" class="rainbow-flash" aria-hidden="true"></div>
+
+  <!-- Title Screen -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="title-sparkle-deco s1">✦</div>
+      <div class="title-sparkle-deco s2">⭐</div>
+      <div class="title-sparkle-deco s3">✧</div>
+      <div class="title-sparkle-deco s4">💫</div>
+      <div class="title-sparkle-deco s5">♥</div>
+      <div class="title-sparkle-deco s6">✦</div>
+      <div class="title-holo-frame"></div>
+      <div class="title-nose-hair-deco left">〰️</div>
+      <div class="title-nose-hair-deco right">〰️</div>
+      <h1 class="game-title">ホロメンおぼえてますか？</h1>
+      <p class="game-subtitle">鼻毛だらけの神経衰弱</p>
+      <p class="game-description">全員鼻毛が生えているので<br>見分けるのが大変です</p>
+      <div class="title-character-preview">
+        <div class="preview-face face-1">
+          <div class="preview-eye left"></div>
+          <div class="preview-eye right"></div>
+          <div class="preview-nose"></div>
+          <div class="preview-nose-hair left"></div>
+          <div class="preview-nose-hair right"></div>
+          <div class="preview-mouth"></div>
+        </div>
+        <div class="preview-face face-2">
+          <div class="preview-eye left"></div>
+          <div class="preview-eye right"></div>
+          <div class="preview-nose"></div>
+          <div class="preview-nose-hair left"></div>
+          <div class="preview-nose-hair right"></div>
+          <div class="preview-mouth"></div>
+        </div>
+        <div class="preview-face face-3">
+          <div class="preview-eye left"></div>
+          <div class="preview-eye right"></div>
+          <div class="preview-nose"></div>
+          <div class="preview-nose-hair left"></div>
+          <div class="preview-nose-hair right"></div>
+          <div class="preview-mouth"></div>
+        </div>
+      </div>
+      <button id="start-btn" class="btn-start">ゲームスタート！</button>
+      <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
+      <p class="studio-name">シュールゲームス</p>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen">
+    <div class="game-header">
+      <div class="game-info">
+        <span class="info-item">ターン: <span id="turn-count">0</span></span>
+        <span class="info-item timer-item">時間: <span id="timer">0:00</span></span>
+        <span class="info-item pairs-item">ペア: <span id="pairs-found">0</span>/8</span>
+      </div>
+    </div>
+    <div id="message-bubble" class="message-bubble hidden">
+      <span id="message-text"></span>
+    </div>
+    <div id="card-grid" class="card-grid">
+      <!-- Cards are generated by JS -->
+    </div>
+  </div>
+
+  <!-- Result Screen -->
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <div class="result-stars-shower" aria-hidden="true">
+        <span class="shower-star" style="--sx:10%;--sd:0.2s">⭐</span>
+        <span class="shower-star" style="--sx:25%;--sd:0.5s">✦</span>
+        <span class="shower-star" style="--sx:40%;--sd:0.1s">💫</span>
+        <span class="shower-star" style="--sx:55%;--sd:0.7s">⭐</span>
+        <span class="shower-star" style="--sx:70%;--sd:0.3s">✧</span>
+        <span class="shower-star" style="--sx:85%;--sd:0.6s">♥</span>
+        <span class="shower-star" style="--sx:15%;--sd:0.9s">✦</span>
+        <span class="shower-star" style="--sx:50%;--sd:0.4s">⭐</span>
+      </div>
+      <h2 class="result-title">ゲームクリア！</h2>
+      <div class="result-character">
+        <div class="result-face">
+          <div class="preview-eye left happy"></div>
+          <div class="preview-eye right happy"></div>
+          <div class="preview-nose"></div>
+          <div class="preview-nose-hair left"></div>
+          <div class="preview-nose-hair right"></div>
+          <div class="preview-mouth happy"></div>
+        </div>
+      </div>
+      <div class="result-stats">
+        <p class="result-stat">ターン数: <span id="result-turns">0</span></p>
+        <p class="result-stat">クリア時間: <span id="result-time">0:00</span></p>
+        <p class="result-rating" id="result-rating"></p>
+      </div>
+      <button id="replay-btn" class="btn-start">もう一回！</button>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <p>※本作はファンメイドの非公式ゲームです。カバー株式会社様とは一切関係ありません。※シュールゲームスの全キャラクターには鼻毛が生えています。これは当スタジオの仕様です。</p>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

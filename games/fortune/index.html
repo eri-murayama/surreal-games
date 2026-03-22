@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シュール前世占い | シュールゲームス</title>
+  <meta name="description" content="5つの質問に答えるだけで、あなたのシュールすぎる前世が判明！結果をSNSでシェアしよう。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+  <meta property="og:title" content="シュール前世占い | シュールゲームス">
+  <meta property="og:description" content="あなたの前世は何だったのか？シュールな前世占い。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/fortune/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- Mystical background -->
+  <div class="bg-stars" aria-hidden="true">
+    <span class="star" style="--x:5%;--y:10%;--delay:0s;--dur:3s">✦</span>
+    <span class="star" style="--x:15%;--y:60%;--delay:1.2s;--dur:4s">☆</span>
+    <span class="star" style="--x:30%;--y:25%;--delay:0.5s;--dur:5s">✧</span>
+    <span class="star" style="--x:50%;--y:80%;--delay:2s;--dur:3.5s">✦</span>
+    <span class="star" style="--x:70%;--y:15%;--delay:0.8s;--dur:4.5s">☆</span>
+    <span class="star" style="--x:85%;--y:50%;--delay:1.5s;--dur:3s">✧</span>
+    <span class="star" style="--x:92%;--y:85%;--delay:3s;--dur:5.5s">✦</span>
+    <span class="star" style="--x:40%;--y:45%;--delay:2.5s;--dur:6s">☆</span>
+    <span class="star" style="--x:60%;--y:65%;--delay:0.3s;--dur:4s">✧</span>
+    <span class="star" style="--x:25%;--y:90%;--delay:1.8s;--dur:3.5s">✦</span>
+  </div>
+
+  <!-- ===== TITLE SCREEN ===== -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="title-icon">🔮</div>
+      <h1 class="title-text">シュール前世占い</h1>
+      <p class="title-sub">～あなたの前世、たぶんこれ～</p>
+      <p class="title-desc">5つの質問に答えるだけで<br>あなたのシュールすぎる前世が判明！</p>
+      <button id="btn-start" class="btn-main" onclick="startGame()">占いを始める</button>
+    </div>
+  </div>
+
+  <!-- ===== QUESTION SCREEN ===== -->
+  <div id="question-screen" class="screen">
+    <div class="question-container">
+      <div class="progress-bar">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+      <p id="question-number" class="question-number">Q1 / 5</p>
+      <div id="crystal-ball" class="crystal-ball">🔮</div>
+      <p id="question-text" class="question-text"></p>
+      <div id="choices" class="choices"></div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT SCREEN ===== -->
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <p class="result-label">あなたの前世は…</p>
+      <div id="result-icon" class="result-icon"></div>
+      <h2 id="result-title" class="result-title"></h2>
+      <p id="result-desc" class="result-desc"></p>
+      <div id="result-stats" class="result-stats"></div>
+      <div class="result-actions">
+        <a id="share-btn" class="btn-share" target="_blank" rel="noopener noreferrer">
+          𝕏 でシェアする
+        </a>
+        <button class="btn-retry" onclick="resetGame()">もう一度占う</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script>
+  const sg = SurrealGames.init('fortune');
+
+  // ===== QUESTIONS =====
+  const questions = [
+    {
+      text: "朝起きたら体が透明になっていた。まず何をする？",
+      choices: [
+        { text: "とりあえず朝ごはんを食べる", scores: [2, 0, 1, 0, 3] },
+        { text: "鏡で確認して「まあいいか」", scores: [0, 3, 0, 2, 1] },
+        { text: "全力でSNSに投稿する", scores: [1, 1, 3, 0, 0] },
+        { text: "透明なまま外を散歩する", scores: [0, 0, 0, 3, 2] }
+      ]
+    },
+    {
+      text: "宇宙人に「地球で一番偉いもの」を教えろと言われた。何と答える？",
+      choices: [
+        { text: "Wi-Fiルーター", scores: [3, 1, 0, 0, 1] },
+        { text: "コンビニのおにぎり", scores: [1, 0, 0, 3, 2] },
+        { text: "推し", scores: [0, 0, 3, 1, 0] },
+        { text: "自分", scores: [0, 3, 2, 0, 0] }
+      ]
+    },
+    {
+      text: "無人島に一つだけ持っていけるなら？",
+      choices: [
+        { text: "無限に充電できるスマホ", scores: [3, 0, 2, 0, 0] },
+        { text: "話し相手になるカカシ", scores: [0, 2, 0, 1, 3] },
+        { text: "未来が見える水晶玉", scores: [0, 3, 1, 0, 2] },
+        { text: "特に何もいらない", scores: [0, 1, 0, 3, 0] }
+      ]
+    },
+    {
+      text: "突然タイムマシンが現れた。どこへ行く？",
+      choices: [
+        { text: "恐竜を見に行く", scores: [0, 0, 2, 3, 1] },
+        { text: "来週のロト番号を確認", scores: [3, 1, 0, 0, 0] },
+        { text: "自分が生まれる瞬間を見る", scores: [0, 3, 0, 0, 2] },
+        { text: "1000年後の未来", scores: [1, 0, 3, 0, 1] }
+      ]
+    },
+    {
+      text: "夢の中で神様に会った。何をお願いする？",
+      choices: [
+        { text: "全人類の鼻毛を統一してほしい", scores: [0, 0, 0, 2, 3] },
+        { text: "毎日が金曜日になってほしい", scores: [3, 0, 1, 0, 0] },
+        { text: "自分だけ空を飛べるようにして", scores: [0, 2, 3, 0, 0] },
+        { text: "特にない。お茶でも飲む", scores: [0, 3, 0, 1, 2] }
+      ]
+    }
+  ];
+
+  // ===== RESULTS =====
+  // scores index: [0:現実主義, 1:哲学者, 2:野心家, 3:自然体, 4:カオス]
+  const results = [
+    {
+      id: "realistic",
+      icon: "🧮",
+      title: "江戸時代のソロバン職人",
+      desc: "あなたの前世は、江戸時代にソロバンを極めた職人でした。「効率」と「実利」を重んじる姿勢は前世譲り。当時は「ソロバンの神」と呼ばれ、指の動きが速すぎて残像が見えたとか。現世でもExcelが得意なはず。",
+      stats: { "実利主義": 95, "指の速さ": 88, "石橋の叩き具合": 100 }
+    },
+    {
+      id: "philosopher",
+      icon: "🐢",
+      title: "古代ギリシャの哲学カメ",
+      desc: "あなたの前世は、古代ギリシャで哲学を語っていたカメでした。ソクラテスの足元でずっと考え事をしていたそうです。「我思う、ゆえに我カメ」が口癖。歩みは遅いが思考は深い。現世でも長風呂で考え事をするタイプでは？",
+      stats: { "思考の深さ": 100, "歩行速度": 3, "悟り度": 92 }
+    },
+    {
+      id: "ambitious",
+      icon: "🦑",
+      title: "中世ヨーロッパの野心イカ",
+      desc: "あなたの前世は、中世の海で世界征服を目論んでいた巨大イカでした。8本の腕で同時に計画書を書き、墨を吐いて敵を撹乱。しかし陸に上がれないという致命的な弱点により計画は頓挫。現世では夢だけはデカいタイプ。",
+      stats: { "野心": 100, "マルチタスク": 89, "陸での活動": 0 }
+    },
+    {
+      id: "natural",
+      icon: "🍙",
+      title: "平安時代の自由おにぎり",
+      desc: "あなたの前世は、平安時代に貴族の食卓から転がり落ちて自由を手にしたおにぎりでした。束縛を嫌い、風の向くまま転がり続けた伝説の米粒。「何もしないことが最高の贅沢」と悟った最初の食べ物。現世でも休日は寝て過ごすのでは？",
+      stats: { "自由度": 100, "やる気": 12, "転がり力": 88 }
+    },
+    {
+      id: "chaos",
+      icon: "🌀",
+      title: "未来から来た迷子の渦巻き",
+      desc: "あなたの前世は、3000年の未来から時空を超えてやってきた渦巻きでした。本人も何者かわかっていない。ただグルグル回っているだけで周囲を混乱させる天然カオス体質。「存在自体がバグ」と未来の科学者に言われたとか。現世でも不思議ちゃん扱いされがち。",
+      stats: { "カオス度": 100, "自己理解": 8, "周囲の混乱": 95 }
+    }
+  ];
+
+  // ===== GAME STATE =====
+  let currentQ = 0;
+  let totalScores = [0, 0, 0, 0, 0];
+
+  // ===== FUNCTIONS =====
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function startGame() {
+    currentQ = 0;
+    totalScores = [0, 0, 0, 0, 0];
+    sg.onGameStart();
+    showScreen('question-screen');
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = questions[currentQ];
+    document.getElementById('question-number').textContent = `Q${currentQ + 1} / ${questions.length}`;
+    document.getElementById('progress-fill').style.width = `${((currentQ) / questions.length) * 100}%`;
+    document.getElementById('question-text').textContent = q.text;
+
+    const crystal = document.getElementById('crystal-ball');
+    crystal.classList.remove('pulse');
+    void crystal.offsetWidth;
+    crystal.classList.add('pulse');
+
+    const choicesEl = document.getElementById('choices');
+    choicesEl.innerHTML = '';
+    q.choices.forEach((c, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = c.text;
+      btn.style.animationDelay = `${i * 0.1}s`;
+      btn.onclick = () => selectChoice(i);
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function selectChoice(index) {
+    const scores = questions[currentQ].choices[index].scores;
+    for (let i = 0; i < scores.length; i++) {
+      totalScores[i] += scores[i];
+    }
+
+    // Disable buttons
+    document.querySelectorAll('.choice-btn').forEach(btn => {
+      btn.disabled = true;
+    });
+
+    currentQ++;
+    if (currentQ < questions.length) {
+      setTimeout(() => showQuestion(), 400);
+    } else {
+      document.getElementById('progress-fill').style.width = '100%';
+      setTimeout(() => showResult(), 600);
+    }
+  }
+
+  function showResult() {
+    const maxIndex = totalScores.indexOf(Math.max(...totalScores));
+    const result = results[maxIndex];
+    sg.onGameEnd(Math.max(...totalScores), { resultType: result.id });
+
+    document.getElementById('result-icon').textContent = result.icon;
+    document.getElementById('result-title').textContent = result.title;
+    document.getElementById('result-desc').textContent = result.desc;
+
+    // Stats bars
+    const statsEl = document.getElementById('result-stats');
+    statsEl.innerHTML = '';
+    for (const [label, value] of Object.entries(result.stats)) {
+      const row = document.createElement('div');
+      row.className = 'stat-row';
+      row.innerHTML = `
+        <span class="stat-label">${label}</span>
+        <div class="stat-bar-bg">
+          <div class="stat-bar-fill" style="--target-width:${value}%"></div>
+        </div>
+        <span class="stat-value">${value}%</span>
+      `;
+      statsEl.appendChild(row);
+    }
+
+    // Animate stat bars
+    setTimeout(() => {
+      document.querySelectorAll('.stat-bar-fill').forEach(bar => {
+        bar.style.width = bar.style.getPropertyValue('--target-width');
+      });
+    }, 100);
+
+    // Share button
+    const shareText = `【シュール前世占い】\n私の前世は「${result.title}」でした${result.icon}\n\nあなたの前世も占ってみよう！`;
+    const shareUrl = window.location.href;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    document.getElementById('share-btn').href = twitterUrl;
+
+    showScreen('result-screen');
+  }
+
+  function resetGame() {
+    showScreen('title-screen');
+  }
+  </script>
+</body>
+</html>

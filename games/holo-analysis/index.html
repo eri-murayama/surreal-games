@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>ホロメン経営分析〜鼻毛たちの戯れ〜 - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hachi+Maru+Pop&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="ホロメン経営分析 | シュールゲームス">
+  <meta property="og:description" content="鼻毛たちの戯れ。ホロメンの経営分析に挑め。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/holo-analysis/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <div class="title-nose-hairs">
+        <div class="floating-nose-hair fnh-1"></div>
+        <div class="floating-nose-hair fnh-2"></div>
+        <div class="floating-nose-hair fnh-3"></div>
+        <div class="floating-nose-hair fnh-4"></div>
+        <div class="floating-nose-hair fnh-5"></div>
+      </div>
+      <div class="floating-decorations">
+        <span class="sparkle-float sf-1">✦</span>
+        <span class="sparkle-float sf-2">⭐</span>
+        <span class="sparkle-float sf-3">💫</span>
+        <span class="sparkle-float sf-4">✧</span>
+        <span class="sparkle-float sf-5">✦</span>
+        <span class="sparkle-float sf-6">⭐</span>
+        <span class="sparkle-float sf-7">✧</span>
+        <span class="sparkle-float sf-8">💫</span>
+      </div>
+      <div class="holo-shimmer-overlay"></div>
+      <h1 id="game-title">
+        ホロメン経営分析<br>
+        〜鼻毛たちの戯れ〜
+      </h1>
+      <p class="studio-name">シュールゲームス</p>
+      <div class="title-characters">
+        <div class="mini-face mini-sora"></div>
+        <div class="mini-face mini-fubuki"></div>
+        <div class="mini-face mini-peko"></div>
+        <div class="mini-face mini-mari"></div>
+        <div class="mini-face mini-sui"></div>
+      </div>
+      <button id="start-btn">鼻毛スタート！</button>
+      <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
+      <p class="disclaimer">※本作はファンメイドの非公式ゲームです。カバー株式会社様とは一切関係ありません。※シュールゲームスの全キャラクターには鼻毛が生えています。これは当スタジオの仕様です。</p>
+    </div>
+
+    <!-- クイズ画面 -->
+    <div id="quiz-screen" class="screen">
+      <div id="round-indicator">Round <span id="round-num">1</span> / 5</div>
+      <div id="score-display">スコア: <span id="current-score">0</span></div>
+
+      <div id="character-area">
+        <div id="character-face"></div>
+        <div id="character-name-plate"></div>
+      </div>
+
+      <div id="speech-bubble">
+        <p id="question-text"></p>
+      </div>
+
+      <div id="choices-area">
+        <button class="choice-btn" data-index="0"></button>
+        <button class="choice-btn" data-index="1"></button>
+        <button class="choice-btn" data-index="2"></button>
+      </div>
+    </div>
+
+    <!-- リアクション画面 -->
+    <div id="reaction-screen" class="screen">
+      <div id="reaction-character"></div>
+      <div id="reaction-bubble">
+        <p id="reaction-result"></p>
+        <p id="reaction-text"></p>
+      </div>
+      <button id="next-btn">次へ →</button>
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="result-screen" class="screen">
+      <h2 id="result-title"></h2>
+      <div id="result-rank"></div>
+      <p id="result-score-text"></p>
+      <p id="result-comment"></p>
+      <div id="result-characters"></div>
+      <button id="retry-btn">もう一度遊ぶ</button>
+      <p class="disclaimer">※本作はファンメイドの非公式ゲームです。カバー株式会社様とは一切関係ありません。※シュールゲームスの全キャラクターには鼻毛が生えています。これは当スタジオの仕様です。</p>
+    </div>
+
+  </div>
+
+  <!-- Rainbow flash overlay for correct answers -->
+  <div id="rainbow-flash-overlay"></div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

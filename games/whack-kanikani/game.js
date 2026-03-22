@@ -56,6 +56,8 @@ const LANG = {
   },
 };
 
+const sg = SurrealGames.init('whack-kanikani');
+
 function t(key) { return LANG[currentLang][key]; }
 
 function setLang(lang) {
@@ -172,10 +174,15 @@ function startGame() {
     h.classList.remove('active', 'hit');
   });
 
+  // 前回のNEW RECORDバッジを削除
+  const oldRecord = document.querySelector('.sg-new-record');
+  if (oldRecord) oldRecord.remove();
+
   startScreen.classList.add('hidden');
   resultScreen.classList.add('hidden');
   overlay.classList.add('hidden');
 
+  sg.onGameStart();
   startCountdown();
   scheduleNextMole();
 }
@@ -263,6 +270,7 @@ board.addEventListener('pointerdown', (e) => {
 
   if (state.activeHoles.has(index) && hole.classList.contains('active')) {
     // ヒット！
+    SurrealGames.SoundSystem.play('hit');
     hole.classList.remove('active');
     hole.classList.add('hit');
     state.activeHoles.delete(index);
@@ -338,9 +346,19 @@ function endGame() {
   const ranks = t('ranks');
   const matched = ranks.find(r => score >= r.min);
 
+  const { isNewHigh } = sg.onGameEnd(state.score, { maxCombo: state.maxCombo });
+
   document.getElementById('result-score').textContent = t('resultScore')(score, maxCombo);
   document.getElementById('result-rank').textContent = matched.rank;
   document.getElementById('result-comment').textContent = matched.comment;
+
+  if (isNewHigh) {
+    const newRecordEl = document.createElement('div');
+    newRecordEl.className = 'sg-new-record';
+    newRecordEl.textContent = '\uD83C\uDF89 NEW RECORD!';
+    const resultScoreEl = document.getElementById('result-score');
+    resultScoreEl.parentNode.insertBefore(newRecordEl, resultScoreEl);
+  }
 
   // シェアボタンを追加（既存のものがあれば削除）
   const existingShareBtn = document.getElementById('share-btn');
@@ -373,4 +391,19 @@ function endGame() {
     retryBtn.disabled = false;
     retryBtn.classList.remove('btn-disabled');
   }, 2000);
+
+  // ハイスコア表示を更新
+  updateHighScoreDisplay();
 }
+
+function updateHighScoreDisplay() {
+  const highScore = sg.getHighScore();
+  const el = document.getElementById('sg-high-score-display');
+  if (highScore && el) {
+    el.textContent = '\uD83C\uDFC6 HIGH SCORE: ' + highScore;
+    el.style.display = 'block';
+  }
+}
+
+// 初期表示時にハイスコアを表示
+updateHighScoreDisplay();

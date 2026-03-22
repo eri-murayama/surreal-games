@@ -84,6 +84,9 @@
   const hudItem = document.getElementById('hud-item');
   const raceMessage = document.getElementById('race-message');
 
+  // --- 共通モジュール ---
+  const sg = SurrealGames.init('drive');
+
   // --- 画面切り替え ---
   function showScreen(name) {
     [titleScreen, slotScreen, raceScreen, resultScreen].forEach(s => s.classList.add('hidden'));
@@ -904,11 +907,14 @@
     resultComment.textContent = comments[position - 1];
     resultTime.textContent = `タイム: ${sec}秒`;
 
+    sg.onGameEnd(position === 1 ? 100 : 4 - position);
+
     showScreen('result');
   }
 
   // --- イベント ---
   startBtn.addEventListener('click', () => {
+    sg.onGameStart();
     showScreen('slot');
     initSlots();
     spinAllReels();

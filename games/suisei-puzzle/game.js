@@ -445,8 +445,12 @@
     animationId = requestAnimationFrame(gameLoop);
   }
 
+  // ---- Common module ----
+  const sg = SurrealGames.init('suisei-puzzle');
+
   // ---- Game lifecycle ----
   function startGame() {
+    sg.onGameStart();
     grid = createGrid();
     score = 0;
     linesCleared = 0;
@@ -504,6 +508,8 @@
     // Insert before retry button
     const retryBtn = $('retry-btn');
     retryBtn.parentNode.insertBefore(shareBtn, retryBtn);
+
+    sg.onGameEnd(score);
 
     setTimeout(() => showScreen(resultScreen), 600);
   }
@@ -677,6 +683,15 @@
       if (!paused && !gameOver) rotatePiece(1);
     }
   }, { passive: true });
+
+  // ---- High score badge on title ----
+  const sgHigh = sg.getHighScore();
+  if (sgHigh !== null) {
+    const badge = document.createElement('div');
+    badge.className = 'sg-highscore-badge';
+    badge.textContent = 'ハイスコア: ' + sgHigh.toLocaleString();
+    document.querySelector('.title-container').appendChild(badge);
+  }
 
   // ---- Button events ----
   $('start-btn').addEventListener('click', startGame);

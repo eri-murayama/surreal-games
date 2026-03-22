@@ -220,9 +220,12 @@ body {
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 200;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 0;
 }
 
 .overlay.hidden {

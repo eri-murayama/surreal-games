@@ -820,6 +820,8 @@
       window.open(url, '_blank');
     };
 
+    sg.onGameEnd(score);
+
     show('game-over');
     hide('chain-display');
   }
@@ -935,6 +937,7 @@
   document.getElementById('start-btn').addEventListener('click', () => {
     ensureAudio();
     playClick();
+    sg.onGameStart();
     hide('title-screen');
     score = 0;
     level = 1;
@@ -972,9 +975,20 @@
   });
 
   // ---- Init ----
+  const sg = SurrealGames.init('cosmic-chain');
+
   if (bestScore > 0) {
     show('best-score-display');
     setText('best-score-value', bestScore);
+  }
+
+  // Show common high score on title
+  const sgHigh = sg.getHighScore();
+  if (sgHigh !== null) {
+    const badge = document.createElement('div');
+    badge.className = 'sg-highscore-badge';
+    badge.textContent = 'ハイスコア: ' + sgHigh;
+    document.getElementById('title-content').appendChild(badge);
   }
 
   requestAnimationFrame(gameLoop);

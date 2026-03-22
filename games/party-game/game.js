@@ -29,6 +29,9 @@ const COMMENTS_SOLO = [
   'キーボードとの真剣勝負！',
 ];
 
+// ===== 共通モジュール =====
+const sg = SurrealGames.init('party-game');
+
 // ===== 画面DOM =====
 const screens = {
   mode: document.getElementById('mode-screen'),
@@ -122,6 +125,7 @@ document.getElementById('back-btn').addEventListener('click', () => {
 //  カウントダウン → バトル
 // ============================================================
 function startCountdown() {
+  sg.onGameStart();
   showScreen('countdown');
   let count = 3;
   countdownNumber.textContent = count;
@@ -317,6 +321,11 @@ function showResults(results, total) {
 
   const pool = total === 1 ? COMMENTS_SOLO : COMMENTS_MULTI;
   resultComment.textContent = pool[Math.floor(Math.random() * pool.length)];
+
+  // Report winner's score to common module
+  if (results.length > 0) {
+    sg.onGameEnd(results[0].count);
+  }
 }
 
 // ============================================================
