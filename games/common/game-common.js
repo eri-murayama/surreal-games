@@ -18,7 +18,7 @@
     { id: 'chaos-stream', title: 'カオス配信シミュレーター', emoji: '📺', genre: 'シミュレーション', desc: 'あなたの配信、カオスです。' },
     { id: 'cosmic-chain', title: 'コズミック・チェイン', emoji: '🌟', genre: 'パズル', desc: '星々の連鎖反応を起こせ。' },
     { id: 'dress-up', title: 'びじんメーカー', emoji: '👗', genre: 'カスタマイズ', desc: 'あなただけのびじんを作ろう。' },
-    { id: 'drive', title: '黄金ドライバー', titleEn: 'Golden Driver', emoji: '🚗', genre: 'レース', genreEn: 'Racing', desc: '博士のせなかでGO！' },
+    { id: 'drive', title: '黄金ドライバー', titleEn: 'Golden Gold Driver', emoji: '🚗', genre: 'レース', genreEn: 'Racing', desc: '博士のせなかでGO！' },
     { id: 'elite-english', title: 'エリートイングリッシュ！', emoji: '🎓', genre: 'クイズ', desc: 'エリートな英語力を見せつけろ。' },
     { id: 'fortune', title: 'シュール前世占い', emoji: '🔮', genre: '占い', desc: 'あなたの前世は何だった？' },
     { id: 'holo-analysis', title: 'ホロメン経営分析', emoji: '📈', genre: 'クイズ', desc: '鼻毛たちの戯れ。' },

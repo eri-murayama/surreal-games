@@ -477,7 +477,7 @@
       goal: 'GOAL!!',
     },
     en: {
-      gameTitle: 'Golden Driver',
+      gameTitle: 'Golden Gold Driver',
       start: 'START',
       hint: '← → or tap sides to steer / Space or tap center for items',
       next: 'Next',
@@ -501,10 +501,10 @@
       highscoreLabel: '👑 Best Time',
       newRecord: '🎉 NEW RECORD!',
       posLabels: ['1st', '2nd', '3rd', '4th'],
-      shareText: (pos, sec) => `🏎️ Golden Driver\nResult: ${pos}\nTime: ${sec}s\n\n#GoldenDriver`,
+      shareText: (pos, sec) => `🏎️ Golden Gold Driver\nResult: ${pos}\nTime: ${sec}s\n\n#GoldenDriver`,
       intros: [
         'Yoshinori\n  I\'m Yoshinori.\n  Just came from the countryside.',
-        'Yoshinori\n  The Golden Driver...\n  That\'s my dream.',
+        'Yoshinori\n  The Golden Gold Driver...\n  That\'s my dream.',
         'Yoshinori\n  The Professor will help me.\n  Let\'s go!',
       ],
       conversation: [
