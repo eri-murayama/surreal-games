@@ -227,6 +227,7 @@
   function setLang(lang) {
     currentLang = lang;
     document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+    try { localStorage.setItem('sg_lang', lang); } catch(e) {}
     window.dispatchEvent(new Event('surreal-lang-change'));
     document.title = t('gameTitle') + ' - ' + (lang === 'ja' ? 'シュールゲームス' : 'Surreal Games');
     document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1394,6 +1395,9 @@
 
   // --- 初期化 ---
   showScreen('title');
-  setLang((navigator.language || '').startsWith('ja') ? 'ja' : 'en');
+  setLang((function() {
+    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+  })());
 
 })();

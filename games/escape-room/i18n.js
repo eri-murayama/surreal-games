@@ -238,8 +238,14 @@ const LANG = {
   },
 };
 
-// デフォルト言語
-let currentLang = (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+// デフォルト言語（他ゲームと共通のlocalStorage設定を優先）
+let currentLang = (function() {
+  try {
+    const saved = localStorage.getItem('sg_lang');
+    if (saved === 'ja' || saved === 'en') return saved;
+  } catch(e) {}
+  return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+})();
 
 function t(key, ...args) {
   const val = LANG[currentLang][key];
@@ -250,6 +256,7 @@ function t(key, ...args) {
 function setLang(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
+  try { localStorage.setItem('sg_lang', lang); } catch(e) {}
   window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
   // タイトル更新

@@ -42,7 +42,9 @@
         '来店した客全員に1000円を配れば\n客は喜び、口コミが広がり、\n店は繁盛する。完璧な理論だ。',
         '…え？赤字？\n天才の理論に赤字などない。'
       ],
-      endingLine: 'ふ…\nまた才能をきらめかせちまったぜ…'
+      endingLine: 'ふ…\nまた才能をきらめかせちまったぜ…',
+      shareBtn: '𝕏 でシェア',
+      shareText: '📊 経営分析ゲーム ～天才たちの戯れ～\n天才アナリスト篤の経営分析、結末は…！？\n\n#シュールゲームス',
     },
     en: {
       title: 'Business Analysis Game<br>~A Genius at Play~',
@@ -80,12 +82,17 @@
         "Hand out $10 to every customer.\nThey'll be happy, word spreads,\nand the shop thrives. A perfect theory.",
         "...Huh? Losses?\nA genius's theory has no losses."
       ],
-      endingLine: "Heh...\nOnce again, my brilliance\nshines through..."
+      endingLine: "Heh...\nOnce again, my brilliance\nshines through...",
+      shareBtn: 'Share on 𝕏',
+      shareText: '📊 Business Analysis Game ~A Genius at Play~\nGenius analyst Atsushi\'s business analysis... what\'s the verdict!?\n\n#SurrealGames',
     }
   };
 
   // ===== ゲーム状態 =====
-  let currentLang = 'ja';
+  let currentLang = (function() {
+    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+  })();
 
   function t() { return i18n[currentLang]; }
 
@@ -515,6 +522,13 @@
   }
 
   function initEnding() {
+    $('share-btn').addEventListener('click', () => {
+      const gameURL = window.location.href;
+      const shareText = t().shareText + '\n' + gameURL;
+      const tweetURL = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+      window.open(tweetURL, '_blank');
+    });
+
     $('replay-btn').addEventListener('click', () => {
       state.clickedObjects.clear();
       state.openingStep = 0;
@@ -553,6 +567,7 @@
     $('register-name').textContent = lang.registerName;
     $('ramen-hint').textContent = lang.hint;
     $('replay-btn').textContent = lang.replayBtn;
+    $('share-btn').textContent = lang.shareBtn;
 
     // ラベル更新
     document.querySelectorAll('.clickable-obj').forEach(obj => {
@@ -596,6 +611,7 @@
   function setLang(lang) {
     currentLang = lang;
     document.documentElement.lang = lang;
+    try { localStorage.setItem('sg_lang', lang); } catch(e) {}
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
@@ -619,6 +635,8 @@
     initEnding();
     initLangSwitch();
     document.addEventListener('click', handleScreenTap);
+    // 保存された言語設定を適用
+    setLang(currentLang);
   }
 
   if (document.readyState === 'loading') {

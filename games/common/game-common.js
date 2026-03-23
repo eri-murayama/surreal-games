@@ -36,16 +36,16 @@
 
   // ===== 実績定義 =====
   const ACHIEVEMENT_DEFS = [
-    { id: 'first_play', title: 'はじめの一歩', desc: '初めてゲームをプレイした', emoji: '👣', condition: (stats) => stats.totalPlays >= 1 },
-    { id: 'play_5', title: 'ゲーム好き', desc: '5回ゲームをプレイした', emoji: '🎮', condition: (stats) => stats.totalPlays >= 5 },
-    { id: 'play_20', title: 'ゲーマー', desc: '20回ゲームをプレイした', emoji: '🏆', condition: (stats) => stats.totalPlays >= 20 },
-    { id: 'play_50', title: 'シュールマスター', desc: '50回ゲームをプレイした', emoji: '👑', condition: (stats) => stats.totalPlays >= 50 },
-    { id: 'explorer_3', title: '冒険者', desc: '3種類のゲームをプレイした', emoji: '🗺️', condition: (stats) => stats.uniqueGames >= 3 },
-    { id: 'explorer_10', title: '大冒険者', desc: '10種類のゲームをプレイした', emoji: '🌍', condition: (stats) => stats.uniqueGames >= 10 },
-    { id: 'explorer_all', title: 'コンプリート！', desc: '全ゲームをプレイした', emoji: '✨', condition: (stats) => stats.uniqueGames >= GAME_CATALOG.length },
-    { id: 'high_scorer', title: 'ハイスコアラー', desc: 'ハイスコアを10回更新した', emoji: '📈', condition: (stats) => stats.highScoreUpdates >= 10 },
-    { id: 'night_owl', title: '夜更かしゲーマー', desc: '深夜0時〜4時にプレイした', emoji: '🦉', condition: () => { const h = new Date().getHours(); return h >= 0 && h < 4; } },
-    { id: 'early_bird', title: '早起きゲーマー', desc: '朝5時〜7時にプレイした', emoji: '🐔', condition: () => { const h = new Date().getHours(); return h >= 5 && h < 7; } },
+    { id: 'first_play', title: 'はじめの一歩', titleEn: 'First Step', desc: '初めてゲームをプレイした', descEn: 'Played a game for the first time', emoji: '👣', condition: (stats) => stats.totalPlays >= 1 },
+    { id: 'play_5', title: 'ゲーム好き', titleEn: 'Game Lover', desc: '5回ゲームをプレイした', descEn: 'Played games 5 times', emoji: '🎮', condition: (stats) => stats.totalPlays >= 5 },
+    { id: 'play_20', title: 'ゲーマー', titleEn: 'Gamer', desc: '20回ゲームをプレイした', descEn: 'Played games 20 times', emoji: '🏆', condition: (stats) => stats.totalPlays >= 20 },
+    { id: 'play_50', title: 'シュールマスター', titleEn: 'Surreal Master', desc: '50回ゲームをプレイした', descEn: 'Played games 50 times', emoji: '👑', condition: (stats) => stats.totalPlays >= 50 },
+    { id: 'explorer_3', title: '冒険者', titleEn: 'Adventurer', desc: '3種類のゲームをプレイした', descEn: 'Played 3 different games', emoji: '🗺️', condition: (stats) => stats.uniqueGames >= 3 },
+    { id: 'explorer_10', title: '大冒険者', titleEn: 'Great Adventurer', desc: '10種類のゲームをプレイした', descEn: 'Played 10 different games', emoji: '🌍', condition: (stats) => stats.uniqueGames >= 10 },
+    { id: 'explorer_all', title: 'コンプリート！', titleEn: 'Complete!', desc: '全ゲームをプレイした', descEn: 'Played every game', emoji: '✨', condition: (stats) => stats.uniqueGames >= GAME_CATALOG.length },
+    { id: 'high_scorer', title: 'ハイスコアラー', titleEn: 'High Scorer', desc: 'ハイスコアを10回更新した', descEn: 'Beat your high score 10 times', emoji: '📈', condition: (stats) => stats.highScoreUpdates >= 10 },
+    { id: 'night_owl', title: '夜更かしゲーマー', titleEn: 'Night Owl', desc: '深夜0時〜4時にプレイした', descEn: 'Played between 12 AM and 4 AM', emoji: '🦉', condition: () => { const h = new Date().getHours(); return h >= 0 && h < 4; } },
+    { id: 'early_bird', title: '早起きゲーマー', titleEn: 'Early Bird', desc: '朝5時〜7時にプレイした', descEn: 'Played between 5 AM and 7 AM', emoji: '🐔', condition: () => { const h = new Date().getHours(); return h >= 5 && h < 7; } },
   ];
 
   // ===== BGMシステム =====
@@ -1061,8 +1061,11 @@
 
     getAll() {
       const unlocked = this._get();
+      const isEn = (document.documentElement.lang || '').startsWith('en');
       return ACHIEVEMENT_DEFS.map(def => ({
         ...def,
+        displayTitle: (isEn && def.titleEn) ? def.titleEn : def.title,
+        displayDesc: (isEn && def.descEn) ? def.descEn : def.desc,
         unlocked: !!unlocked[def.id],
         date: unlocked[def.id]?.date || null,
       }));
@@ -1071,14 +1074,19 @@
     _showNotification(achievement) {
       SoundSystem.play('achievement');
 
+      const isEn = (document.documentElement.lang || '').startsWith('en');
+      const label = isEn ? 'Achievement Unlocked!' : '実績解除！';
+      const title = (isEn && achievement.titleEn) ? achievement.titleEn : achievement.title;
+      const desc = (isEn && achievement.descEn) ? achievement.descEn : achievement.desc;
+
       const el = document.createElement('div');
       el.className = 'sg-achievement-notification';
       el.innerHTML = `
         <div class="sg-achievement-icon">${achievement.emoji}</div>
         <div class="sg-achievement-info">
-          <div class="sg-achievement-label">実績解除！</div>
-          <div class="sg-achievement-title">${achievement.title}</div>
-          <div class="sg-achievement-desc">${achievement.desc}</div>
+          <div class="sg-achievement-label">${label}</div>
+          <div class="sg-achievement-title">${title}</div>
+          <div class="sg-achievement-desc">${desc}</div>
         </div>
       `;
       document.body.appendChild(el);

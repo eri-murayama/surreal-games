@@ -1,5 +1,8 @@
 // ===== 多言語対応 =====
-let currentLang = 'ja';
+let currentLang = (function() {
+  try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+  return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+})();
 
 const LANG = {
   ja: {
@@ -63,6 +66,7 @@ function t(key) { return LANG[currentLang][key]; }
 function setLang(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
+  try { localStorage.setItem('sg_lang', lang); } catch(e) {}
   document.title = lang === 'ja' ? 'かにかにパニック！ - もぐらたたき' : 'Kani-Kani Panic! - Whack-a-Crab';
   window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
@@ -96,6 +100,9 @@ function setLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
+
+  // ハイスコア表示更新
+  updateHighScoreDisplay();
 }
 
 // ===== カスタムカーソル =====
@@ -405,10 +412,13 @@ function updateHighScoreDisplay() {
   const highScore = sg.getHighScore();
   const el = document.getElementById('sg-high-score-display');
   if (highScore && el) {
-    el.textContent = '\uD83C\uDFC6 HIGH SCORE: ' + highScore;
+    const label = currentLang === 'en' ? '🏆 HIGH SCORE: ' : '🏆 ハイスコア: ';
+    el.textContent = label + highScore;
     el.style.display = 'block';
   }
 }
 
-// 初期表示時にハイスコアを表示
+// 初期表示時に保存された言語設定を適用
+setLang(currentLang);
+// ハイスコアを表示
 updateHighScoreDisplay();
