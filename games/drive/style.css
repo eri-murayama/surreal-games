@@ -43,109 +43,141 @@ body {
   flex-shrink: 0;
 }
 
-.game-subtitle {
-  font-size: 0.8rem;
-  color: #996633;
-  margin-bottom: 6px;
-  flex-shrink: 0;
-}
-
 /* === タイトル画面 === */
 #title-screen, #slot-screen, #result-screen {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 #title-screen {
   background: linear-gradient(180deg, #ffe4b5 0%, #ffdab9 50%, #f4a460 100%);
   border: 4px solid #8b4513;
   border-radius: 12px;
-  padding: 20px 16px;
   box-shadow: 4px 4px 0 #5c3317;
-}
-
-#title-boy {
-  width: 120px;
-  height: 150px;
-  margin: 0 auto 16px;
   position: relative;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-/* 主人公をCSSで描画 */
-#title-boy::before {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 60px;
-  background: #ffcc88;
-  border-radius: 50%;
-  margin: 0 auto;
-  position: relative;
-  border: 3px solid #3a2a1a;
-}
-
-/* 帽子（後ろ向きのつば） */
-#title-boy::after {
-  content: '';
+#title-yoshinori {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
   position: absolute;
-  top: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 65px;
-  height: 30px;
-  background: #cc3333;
-  border-radius: 50% 50% 0 0;
-  border: 3px solid #3a2a1a;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+#title-screen > *:not(#title-yoshinori) {
+  position: relative;
   z-index: 1;
 }
 
-#title-catchphrase {
-  font-size: 1.1rem;
+/* === 紹介画面 === */
+#intro-screen {
+  flex: 1;
+  background: linear-gradient(180deg, #ffe4b5 0%, #ffdab9 50%, #f4a460 100%);
+  border: 4px solid #8b4513;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 4px 4px 0 #5c3317;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#intro-yoshinori {
+  flex: 1;
+  min-height: 0;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin: 0 auto 8px;
+  display: block;
+  border-radius: 12px;
+  border: 3px solid #8b4513;
+  box-shadow: 2px 2px 0 #5c3317;
+}
+
+#intro-text {
+  font-size: 1rem;
   font-weight: 700;
-  color: #cc3300;
-  margin: 20px 0;
-  padding: 10px;
+  color: #3a2a1a;
+  padding: 10px 12px;
   background: #fff8dc;
   border: 3px solid #cc6600;
   border-radius: 8px;
   line-height: 1.6;
-  text-shadow: 1px 1px 0 #ffd700;
+  text-align: center;
+  flex-shrink: 0;
 }
 
-#start-btn, #slot-btn, #race-btn, #retry-btn {
+#intro-next-btn {
   font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 900;
-  padding: 14px 40px;
-  border: 4px solid #3a2a1a;
+  padding: 8px 24px;
+  border: 3px solid #3a2a1a;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.15s;
   display: inline-block;
-  margin: 10px 5px;
+  margin: 8px 0 0;
+  background: linear-gradient(180deg, #ff6633, #cc3300);
+  color: #fff;
+  text-shadow: 2px 2px 0 #8b0000;
+  box-shadow: 3px 3px 0 #3a2a1a;
+  flex-shrink: 0;
+}
+
+#intro-next-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #3a2a1a;
+}
+
+#start-btn, #slot-btn, #race-btn, #retry-btn {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  padding: 8px 24px;
+  border: 3px solid #3a2a1a;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-block;
+  margin: 6px 4px;
 }
 
 #start-btn {
   background: linear-gradient(180deg, #ff6633, #cc3300);
   color: #fff;
   text-shadow: 2px 2px 0 #8b0000;
-  box-shadow: 4px 4px 0 #3a2a1a;
+  box-shadow: 3px 3px 0 #3a2a1a;
 }
 
 #start-btn:hover, #race-btn:hover, #retry-btn:hover {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 #3a2a1a;
+  box-shadow: 1px 1px 0 #3a2a1a;
 }
 
 #start-btn:active, #race-btn:active, #retry-btn:active {
-  transform: translate(4px, 4px);
+  transform: translate(3px, 3px);
   box-shadow: none;
 }
 
 #title-hint {
   font-size: 0.75rem;
   color: #996633;
-  margin-top: 12px;
+  margin: 8px 12px 12px;
+  padding: 4px 8px;
+  background: rgba(255, 248, 220, 0.8);
+  border-radius: 6px;
 }
 
 /* === スロット画面 === */
@@ -153,29 +185,35 @@ body {
   background: linear-gradient(180deg, #fff8dc, #ffe4b5);
   border: 4px solid #8b4513;
   border-radius: 12px;
-  padding: 20px;
+  padding: 12px;
   box-shadow: 4px 4px 0 #5c3317;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 #slot-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #555;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
 }
 
 #hakase-speech {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #666;
-  min-height: 1.5em;
-  margin-bottom: 12px;
+  min-height: 1.3em;
+  margin-bottom: 4px;
+  flex-shrink: 0;
 }
 
 #slot-container {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin: 16px 0;
+  gap: 10px;
+  margin: 8px 0;
+  flex-shrink: 0;
 }
 
 .slot-reel {
@@ -218,12 +256,13 @@ body {
 #slot-btn {
   background: linear-gradient(180deg, #ffd700, #ff9900);
   color: #3a2a1a;
-  box-shadow: 4px 4px 0 #3a2a1a;
+  box-shadow: 3px 3px 0 #3a2a1a;
+  flex-shrink: 0;
 }
 
 #slot-btn:hover {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 #3a2a1a;
+  box-shadow: 1px 1px 0 #3a2a1a;
 }
 
 #slot-btn:disabled {
@@ -232,22 +271,24 @@ body {
 }
 
 #slot-result {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #cc3300;
-  margin: 12px 0;
-  padding: 12px;
+  margin: 6px 0;
+  padding: 10px;
   background: #fff;
   border: 3px dashed #cc6600;
   border-radius: 8px;
-  line-height: 1.8;
+  line-height: 1.6;
+  flex-shrink: 0;
 }
 
 #race-btn {
   background: linear-gradient(180deg, #33cc33, #228b22);
   color: #fff;
   text-shadow: 2px 2px 0 #006400;
-  box-shadow: 4px 4px 0 #3a2a1a;
+  box-shadow: 3px 3px 0 #3a2a1a;
+  flex-shrink: 0;
 }
 
 /* === レース画面 === */
@@ -308,8 +349,13 @@ body {
   background: linear-gradient(180deg, #fff8dc, #ffe4b5);
   border: 4px solid #8b4513;
   border-radius: 12px;
-  padding: 20px 16px;
+  padding: 16px 12px;
   box-shadow: 4px 4px 0 #5c3317;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 #result-title {
@@ -336,7 +382,7 @@ body {
   background: linear-gradient(180deg, #ff6633, #cc3300);
   color: #fff;
   text-shadow: 2px 2px 0 #8b0000;
-  box-shadow: 4px 4px 0 #3a2a1a;
+  box-shadow: 3px 3px 0 #3a2a1a;
 }
 
 /* === 戻るリンク === */
@@ -351,6 +397,145 @@ body {
 
 .back-to-top-link:hover {
   text-decoration: underline;
+}
+
+/* === 会話シーン === */
+#conversation-screen {
+  flex: 1;
+  background: linear-gradient(180deg, #fff8dc, #ffe4b5);
+  border: 4px solid #8b4513;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 4px 4px 0 #5c3317;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#mount-screen {
+  flex: 1;
+  background: linear-gradient(180deg, #fff8dc, #ffe4b5);
+  border: 4px solid #8b4513;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 4px 4px 0 #5c3317;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#conv-image {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  border: 3px solid #8b4513;
+  margin-bottom: 8px;
+}
+
+#conv-dialogue {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #3a2a1a;
+  line-height: 1.6;
+  padding: 10px 12px;
+  background: #fff;
+  border: 3px solid #cc6600;
+  border-radius: 8px;
+  text-align: center;
+  white-space: pre-line;
+  flex-shrink: 0;
+}
+
+#conv-next-btn {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  padding: 8px 24px;
+  border: 3px solid #3a2a1a;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-block;
+  margin: 8px 0 0;
+  background: linear-gradient(180deg, #ffd700, #ff9900);
+  color: #3a2a1a;
+  box-shadow: 3px 3px 0 #3a2a1a;
+  flex-shrink: 0;
+}
+
+#conv-next-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #3a2a1a;
+}
+
+#yoshinori-screen {
+  flex: 1;
+  background: #000;
+  border: 4px solid #8b4513;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 #5c3317;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#yoshinori-closeup {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#yoshinori-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #fff;
+  padding: 20px 16px;
+  background: rgba(0, 0, 0, 0.7);
+  text-shadow: 2px 2px 0 #cc0000;
+  z-index: 1;
+}
+
+#mount-hakase {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  border: 3px solid #8b4513;
+  margin-bottom: 12px;
+}
+
+#mount-instruction {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #cc6600;
+  padding: 10px;
+  background: #fff8dc;
+  border: 3px dashed #cc6600;
+  border-radius: 8px;
+  flex-shrink: 0;
+  animation: tap-pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes tap-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
 }
 
 .hidden { display: none !important; }

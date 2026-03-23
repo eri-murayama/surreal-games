@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../common/game-common.css">
   <link rel="stylesheet" href="style.css">
   <meta property="og:title" content="黄金ドライバー | シュールゲームス">
-  <meta property="og:description" content="博士のせなかでGO！黄金のレースゲーム。">
+  <meta property="og:description" content="田舎者ヨシノリが挑む黄金のレースゲーム。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/drive/index.html">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
@@ -27,14 +27,19 @@
 <body>
   <div id="game-wrapper">
     <h1 class="game-title">黄金の金色ドライバー</h1>
-    <p class="game-subtitle">～博士のせなかでGO！～</p>
 
     <!-- タイトル画面 -->
     <div id="title-screen">
-      <div id="title-boy"></div>
-      <div id="title-catchphrase">「俺は黄金の金色ドライバーになりゃ！」</div>
+      <img id="title-yoshinori" src="yoshinori.png" alt="ヨシノリ">
       <button id="start-btn">スタート</button>
       <p id="title-hint">← → キーか画面タップで操作 / スペースか画面中央タップでアイテム</p>
+    </div>
+
+    <!-- ヨシノリ紹介画面 -->
+    <div id="intro-screen" class="hidden">
+      <img id="intro-yoshinori" src="yoshinori.png" alt="ヨシノリ">
+      <div id="intro-text"></div>
+      <button id="intro-next-btn">つぎへ</button>
     </div>
 
     <!-- スロット画面（パーツ選択） -->
@@ -60,6 +65,25 @@
       <button id="slot-btn">ストップ！</button>
       <div id="slot-result" class="hidden"></div>
       <button id="race-btn" class="hidden">レースへ出発！</button>
+    </div>
+
+    <!-- 会話シーン -->
+    <div id="conversation-screen" class="hidden">
+      <img id="conv-image" src="yoshinori-conv.png" alt="博士とヨシノリ">
+      <div id="conv-dialogue"></div>
+      <button id="conv-next-btn">つぎへ</button>
+    </div>
+
+    <!-- ヨシノリアップシーン（顔面ドアップ） -->
+    <div id="yoshinori-screen" class="hidden">
+      <img id="yoshinori-closeup" src="yoshinori.png" alt="ヨシノリ">
+      <div id="yoshinori-line"></div>
+    </div>
+
+    <!-- 博士に乗るシーン -->
+    <div id="mount-screen" class="hidden">
+      <img id="mount-hakase" src="hakase-mount.png" alt="四つん這いの博士">
+      <div id="mount-instruction">タップして博士に乗ろう！</div>
     </div>
 
     <!-- レース画面 -->

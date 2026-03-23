@@ -1,5 +1,5 @@
 // ========================================
-// 黄金の金色ドライバー ～博士のせなかでGO！～
+// 黄金の金色ドライバー ～田舎者の挑戦～
 // ========================================
 
 (function () {
@@ -68,11 +68,17 @@
   const slotScreen = document.getElementById('slot-screen');
   const raceScreen = document.getElementById('race-screen');
   const resultScreen = document.getElementById('result-screen');
+  const conversationScreen = document.getElementById('conversation-screen');
+  const yoshinoriScreen = document.getElementById('yoshinori-screen');
+  const mountScreen = document.getElementById('mount-screen');
+  const introScreen = document.getElementById('intro-screen');
 
   const startBtn = document.getElementById('start-btn');
   const slotBtn = document.getElementById('slot-btn');
   const raceBtn = document.getElementById('race-btn');
   const retryBtn = document.getElementById('retry-btn');
+  const convNextBtn = document.getElementById('conv-next-btn');
+  const introNextBtn = document.getElementById('intro-next-btn');
 
   const hakaseSpeech = document.getElementById('hakase-speech');
   const slotResult = document.getElementById('slot-result');
@@ -87,15 +93,46 @@
   // --- 共通モジュール ---
   const sg = SurrealGames.init('drive');
 
+  // --- ヨシノリ紹介台詞 ---
+  const YOSHINORI_INTROS = [
+    'ヨシノリ「俺はヨシノリ。田舎から出てきたばかりだ」',
+    'ヨシノリ「黄金の金色ドライバー…それが俺の夢だ」',
+    'ヨシノリ「博士が協力してくれるらしい。頼むぜ！」',
+  ];
+  let introStep = 0;
+
+  function showIntroScreen() {
+    introStep = 0;
+    showScreen('intro');
+    document.getElementById('intro-text').textContent = YOSHINORI_INTROS[introStep];
+  }
+
+  function advanceIntro() {
+    introStep++;
+    if (introStep < YOSHINORI_INTROS.length) {
+      document.getElementById('intro-text').textContent = YOSHINORI_INTROS[introStep];
+    } else {
+      // 紹介終了→スロットへ
+      showScreen('slot');
+      initSlots();
+      spinAllReels();
+    }
+  }
+
   // --- 画面切り替え ---
   function showScreen(name) {
-    [titleScreen, slotScreen, raceScreen, resultScreen].forEach(s => s.classList.add('hidden'));
+    [titleScreen, slotScreen, raceScreen, resultScreen,
+     conversationScreen, yoshinoriScreen, mountScreen, introScreen].forEach(s => s.classList.add('hidden'));
     phase = name;
     switch (name) {
       case 'title': titleScreen.classList.remove('hidden'); break;
+      case 'intro': introScreen.classList.remove('hidden'); break;
       case 'slot': slotScreen.classList.remove('hidden'); break;
       case 'race': raceScreen.classList.remove('hidden'); break;
       case 'result': resultScreen.classList.remove('hidden'); break;
+      case 'conversation': conversationScreen.classList.remove('hidden'); break;
+      case 'yoshinori': yoshinoriScreen.classList.remove('hidden'); break;
+      case 'mount': mountScreen.classList.remove('hidden'); break;
     }
   }
 
@@ -196,23 +233,53 @@
     playerStats.accel = 5 + selectedParts.engine.value;
     playerStats.handling = 5 + selectedParts.tire.value;
 
-    // オチ: できあがるのは車じゃなくて四つん這いの博士
-    hakaseSpeech.textContent = '「完成じゃ！……あれ？」';
+    // 説明文を差し替え
+    hakaseSpeech.textContent = '';
 
     setTimeout(() => {
-      hakaseSpeech.textContent = '';
       slotResult.classList.remove('hidden');
       slotResult.innerHTML =
-        `<div style="font-size:2rem;margin-bottom:8px;">🧓💦</div>` +
-        `<strong>できあがったのは…四つん這いの博士！</strong><br><br>` +
-        `ボディ: ${selectedParts.body.emoji} ${selectedParts.body.name}<br>` +
-        `エンジン: ${selectedParts.engine.emoji} ${selectedParts.engine.name}<br>` +
-        `タイヤ: ${selectedParts.tire.emoji} ${selectedParts.tire.name}<br><br>` +
-        `<small>博士「わ、ワシがマシンなのかい！？」</small><br>` +
-        `<small>ヨシノリ「いくぜ博士！しっかりつかまれ…いや走れ！」</small>`;
+        `ボディ: 🛻 トラック<br>` +
+        `エンジン: 🔥 ターボエンジン<br>` +
+        `タイヤ: 👞 博士のくつ<br>` +
+        `<div style="margin-top:6px;">博士「なかなか良いマシンが<br>できたのう！」</div>` +
+        `<div>ヨシノリ「……」</div>`;
 
+      raceBtn.textContent = 'つぎへ';
       raceBtn.classList.remove('hidden');
     }, 500);
+  }
+
+  // --- 会話シーン ---
+  const CONVERSATION = [
+    { speaker: 'ヨシノリ', text: '博士はこれがいいマシンだと思うの？' },
+    { speaker: '博士', text: 'お？…おお、いい色じゃし、\nエンジンもいいと思うがのお…' },
+    { speaker: 'ヨシノリ', text: '愚かだね' },
+    { speaker: '博士', text: 'ヨシノリ…？どうしたんじゃ…？' },
+  ];
+
+  let convStep = 0;
+
+  function showConversation() {
+    convStep = 0;
+    showScreen('conversation');
+    updateConversation();
+  }
+
+  function updateConversation() {
+    const dialogueEl = document.getElementById('conv-dialogue');
+    const line = CONVERSATION[convStep];
+    dialogueEl.textContent = `${line.speaker}「${line.text}」`;
+  }
+
+  function showYoshinoriCloseup() {
+    showScreen('yoshinori');
+    document.getElementById('yoshinori-line').textContent =
+      'ヨシノリ「お前がマシンになるんだよ」';
+  }
+
+  function showMountScene() {
+    showScreen('mount');
   }
 
   // --- レース ---
@@ -915,19 +982,47 @@
   // --- イベント ---
   startBtn.addEventListener('click', () => {
     sg.onGameStart();
-    showScreen('slot');
-    initSlots();
-    spinAllReels();
+    showIntroScreen();
   });
+
+  introNextBtn.addEventListener('click', advanceIntro);
 
   slotBtn.addEventListener('click', stopNextSlot);
 
-  raceBtn.addEventListener('click', startRace);
+  // スロット結果→会話シーンへ
+  raceBtn.addEventListener('click', () => {
+    showConversation();
+  });
+
+  // 会話シーン進行
+  convNextBtn.addEventListener('click', () => {
+    convStep++;
+    if (convStep < CONVERSATION.length) {
+      updateConversation();
+    } else {
+      showYoshinoriCloseup();
+    }
+  });
+
+  // ヨシノリアップ画面タップ→博士に乗るシーン
+  yoshinoriScreen.addEventListener('click', () => {
+    if (phase === 'yoshinori') {
+      showMountScene();
+    }
+  });
+
+  // 博士に乗る→レース開始
+  mountScreen.addEventListener('click', () => {
+    if (phase === 'mount') {
+      startRace();
+    }
+  });
 
   retryBtn.addEventListener('click', () => {
     showScreen('title');
     slotBtn.classList.remove('hidden');
     slotBtn.textContent = 'まわす！';
+    raceBtn.textContent = 'レースへ出発！';
   });
 
   // --- 初期化 ---
