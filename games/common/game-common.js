@@ -67,7 +67,7 @@
         220, 220, 262, 262, 220, 220, 220, 220,
       ]
     },
-    // アクション・テンション系（かにかに、うんコーン）
+    // アクション・テンション系（うんコーン）
     action: {
       tempo: 150, key: 'Am', wave: 'square', volume: 0.08,
       melody: [
@@ -81,6 +81,29 @@
         220, 220, 220, 220, 294, 294, 262, 262,
         175, 175, 175, 175, 220, 220, 220, 220,
         175, 175, 175, 175, 196, 196, 220, 220,
+      ]
+    },
+    // ポップ・元気系（かにかに）— オルゴール風、テンポ揺れあり
+    pop: {
+      tempo: 160, key: 'C', wave: 'triangle', volume: 0.08,
+      melody: [
+        1047, 1175, 1319, 1568, 1319, 1175, 1047, 1175,
+        1319, 1568, 1760, 1568, 1319, 1175, 1047, 1319,
+        880, 1047, 1175, 1319, 1175, 1047, 880, 1047,
+        1175, 1319, 1568, 1319, 1175, 1047, 1175, 1047,
+      ],
+      bass: [
+        523, 523, 659, 659, 784, 784, 659, 659,
+        523, 523, 659, 659, 784, 784, 523, 523,
+        440, 440, 523, 523, 587, 587, 523, 523,
+        440, 440, 523, 523, 440, 440, 523, 523,
+      ],
+      // 各ノートのテンポ倍率（<1で速く、>1で遅く）
+      swing: [
+        0.8, 0.7, 0.6, 1.2, 0.8, 0.7, 0.6, 1.3,
+        0.7, 0.6, 0.6, 1.2, 0.8, 0.7, 0.6, 1.4,
+        0.9, 0.8, 0.7, 1.3, 0.8, 0.7, 0.9, 1.2,
+        0.7, 0.6, 0.6, 1.3, 0.8, 0.7, 0.8, 1.5,
       ]
     },
     // ミステリー・サスペンス系（経営分析、マジック）
@@ -147,6 +170,54 @@
         131, 131, 165, 165, 131, 131, 165, 165,
       ]
     },
+    // きらきら・PV風（経営分析ゲーム通常BGM）
+    // PV紹介動画のピアノ+スパークルアルペジオ風
+    sparkle: {
+      tempo: 115, key: 'C', wave: 'triangle', volume: 0.10,
+      melody: [
+        330, 392, 440, 523, 494, 440, 392, 440,
+        523, 659, 784, 659, 523, 440, 392, 523,
+        349, 440, 523, 659, 523, 440, 349, 392,
+        440, 523, 659, 784, 659, 523, 440, 392,
+      ],
+      bass: [
+        131, 165, 131, 165, 175, 196, 175, 196,
+        131, 165, 131, 165, 175, 196, 131, 165,
+        110, 131, 110, 131, 147, 175, 147, 175,
+        131, 165, 131, 165, 131, 165, 131, 131,
+      ],
+      // スパークルアルペジオ層（0=なし、数値=ベース周波数でしゃらららーん）
+      sparkle: [
+        523, 0, 0, 0, 659, 0, 0, 0,
+        784, 0, 0, 0, 0, 0, 523, 0,
+        0, 0, 659, 0, 0, 0, 0, 0,
+        784, 0, 0, 0, 1047, 0, 0, 0,
+      ]
+    },
+    // 正解後ゴージャス（経営分析ゲーム・レジシーン）
+    // PV S5-S6の盛り上がりセクション風
+    triumph: {
+      tempo: 130, key: 'C', wave: 'triangle', volume: 0.12,
+      melody: [
+        523, 659, 784, 880, 784, 880, 1047, 880,
+        784, 659, 523, 659, 784, 880, 1047, 1319,
+        440, 523, 659, 784, 659, 784, 880, 784,
+        659, 523, 440, 523, 659, 784, 880, 1047,
+      ],
+      bass: [
+        131, 165, 196, 196, 175, 196, 262, 262,
+        131, 165, 196, 196, 175, 196, 131, 131,
+        110, 131, 165, 196, 175, 196, 220, 220,
+        131, 165, 196, 196, 131, 165, 196, 262,
+      ],
+      // 正解後はスパークル多めでゴージャスに
+      sparkle: [
+        784, 0, 1047, 0, 1319, 0, 1568, 0,
+        784, 0, 0, 1047, 0, 0, 1568, 2093,
+        659, 0, 784, 0, 1047, 0, 0, 0,
+        1319, 0, 1568, 0, 2093, 0, 1568, 0,
+      ]
+    },
     // メモリーゲーム・落ち着き系（神経衰弱、ペット）
     calm: {
       tempo: 85, key: 'Eb', wave: 'sine', volume: 0.10,
@@ -184,8 +255,8 @@
   // ゲームID→BGMプリセットのマッピング
   const GAME_BGM_MAP = {
     'escape-room': 'cute',
-    'whack-kanikani': 'action',
-    'business-analysis': 'mystery',
+    'whack-kanikani': 'pop',
+    'business-analysis': 'sparkle',
     'chaos-stream': 'cyber',
     'cosmic-chain': 'cosmic',
     'dress-up': 'cute',
@@ -214,11 +285,16 @@
     bgmNodes: [],
     bgmTimers: [],
     currentBgmPreset: null,
+    bgmGain: null,       // BGM専用GainNode（ダッキング用）
+    _duckTimer: null,
 
     init() {
       const initAudio = () => {
         if (!this.ctx) {
           this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
         }
         document.removeEventListener('click', initAudio);
         document.removeEventListener('touchstart', initAudio);
@@ -244,7 +320,24 @@
       if (!this.ctx) {
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
       }
+      if (!this.bgmGain && this.ctx) {
+        this.bgmGain = this.ctx.createGain();
+        this.bgmGain.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
       return this.ctx;
+    },
+
+    // BGM音量を一瞬下げてSEを目立たせる（ダッキング）
+    _duckBgm(duration) {
+      if (!this.bgmGain || !this.bgmPlaying) return;
+      const now = this.ctx.currentTime;
+      this.bgmGain.gain.cancelScheduledValues(now);
+      this.bgmGain.gain.setValueAtTime(0.15, now);           // 一気に15%へ
+      this.bgmGain.gain.linearRampToValueAtTime(0.5, now + 0.08);  // 少し戻す
+      this.bgmGain.gain.linearRampToValueAtTime(1.0, now + duration); // ゆっくり全復帰
     },
 
     // BGMを再生
@@ -257,53 +350,110 @@
       this.stopBgm();
       this.currentBgmPreset = presetName;
       this.bgmPlaying = true;
-      this._loopBgm(preset);
+      // contextがsuspendedの場合、resume完了を待ってから再生開始
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume().then(() => {
+          if (this.bgmPlaying) this._loopBgm(preset);
+        });
+      } else {
+        this._loopBgm(preset);
+      }
     },
 
     _loopBgm(preset) {
       if (!this.bgmPlaying || !this.enabled || !this.ctx) return;
       const ctx = this.ctx;
+      const bgmDest = this.bgmGain || ctx.destination; // ダッキング用GainNode経由
       const now = ctx.currentTime;
-      const beatDur = 60 / preset.tempo;
+      const baseBeat = 60 / preset.tempo;
       const vol = preset.volume;
+      const swing = preset.swing;
+
+      // ノートごとの開始時刻を計算（swing対応）
+      const offsets = [];
+      let t = 0;
+      for (let i = 0; i < preset.melody.length; i++) {
+        offsets.push(t);
+        t += baseBeat * (swing ? swing[i] : 1);
+      }
+      const totalDur = t;
 
       // メロディ
       preset.melody.forEach((freq, i) => {
         if (!freq) return;
+        const noteDur = baseBeat * (swing ? swing[i] : 1);
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
         osc.type = preset.wave;
         osc.frequency.value = freq;
-        g.gain.setValueAtTime(vol, now + beatDur * i);
-        g.gain.exponentialRampToValueAtTime(0.001, now + beatDur * (i + 0.9));
+        g.gain.setValueAtTime(vol, now + offsets[i]);
+        g.gain.exponentialRampToValueAtTime(0.001, now + offsets[i] + noteDur * 0.9);
         osc.connect(g);
-        g.connect(ctx.destination);
-        osc.start(now + beatDur * i);
-        osc.stop(now + beatDur * (i + 0.95));
+        g.connect(bgmDest);
+        osc.start(now + offsets[i]);
+        osc.stop(now + offsets[i] + noteDur * 0.95);
         this.bgmNodes.push(osc);
       });
 
       // ベースライン
       preset.bass.forEach((freq, i) => {
         if (!freq) return;
+        const noteDur = baseBeat * (swing ? swing[i] : 1);
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.value = freq;
-        g.gain.setValueAtTime(vol * 0.5, now + beatDur * i);
-        g.gain.exponentialRampToValueAtTime(0.001, now + beatDur * (i + 0.9));
+        g.gain.setValueAtTime(vol * 0.5, now + offsets[i]);
+        g.gain.exponentialRampToValueAtTime(0.001, now + offsets[i] + noteDur * 0.9);
         osc.connect(g);
-        g.connect(ctx.destination);
-        osc.start(now + beatDur * i);
-        osc.stop(now + beatDur * (i + 0.95));
+        g.connect(bgmDest);
+        osc.start(now + offsets[i]);
+        osc.stop(now + offsets[i] + noteDur * 0.95);
         this.bgmNodes.push(osc);
       });
 
+      // スパークルアルペジオ層（PV playSparkleArp準拠）
+      // 倍音比 [1, 1.25, 1.5, 1.875, 2, 2.5, 3]
+      if (preset.sparkle) {
+        const sparkleRatios = [1, 1.25, 1.5, 1.875, 2, 2.5, 3];
+        preset.sparkle.forEach((baseFreq, i) => {
+          if (!baseFreq) return;
+          const arpCount = 4;
+          for (let j = 0; j < arpCount; j++) {
+            const freq = baseFreq * sparkleRatios[j % sparkleRatios.length];
+            const startTime = now + offsets[i] + j * 0.08;
+            // メイン音（sine）
+            const osc1 = ctx.createOscillator();
+            const g1 = ctx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.value = freq;
+            g1.gain.setValueAtTime(vol * 0.6, startTime);
+            g1.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+            osc1.connect(g1);
+            g1.connect(bgmDest);
+            osc1.start(startTime);
+            osc1.stop(startTime + 0.45);
+            this.bgmNodes.push(osc1);
+            // 倍音（triangle、1オクターブ上）
+            const osc2 = ctx.createOscillator();
+            const g2 = ctx.createGain();
+            osc2.type = 'triangle';
+            osc2.frequency.value = freq * 2;
+            g2.gain.setValueAtTime(vol * 0.2, startTime);
+            g2.gain.exponentialRampToValueAtTime(0.001, startTime + 0.25);
+            osc2.connect(g2);
+            g2.connect(bgmDest);
+            osc2.start(startTime);
+            osc2.stop(startTime + 0.3);
+            this.bgmNodes.push(osc2);
+          }
+        });
+      }
+
       // ループ
-      const loopDur = beatDur * preset.melody.length;
       const timer = setTimeout(() => {
         if (this.bgmPlaying) this._loopBgm(preset);
-      }, loopDur * 1000);
+      }, totalDur * 1000);
       this.bgmTimers.push(timer);
     },
 
@@ -320,6 +470,15 @@
       if (!this.enabled) return;
       this._ensureCtx();
       if (!this.ctx) return;
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume().then(() => this._playSound(type));
+        return;
+      }
+      this._playSound(type);
+    },
+
+    _playSound(type) {
+      if (!this.ctx || this.ctx.state !== 'running') return;
       const ctx = this.ctx;
       const now = ctx.currentTime;
       const gain = ctx.createGain();
@@ -363,15 +522,43 @@
           break;
         }
         case 'hit': {
-          const osc = ctx.createOscillator();
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(300, now);
-          osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
-          gain.gain.value = this.volume * 0.4;
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-          osc.connect(gain);
-          osc.start(now);
-          osc.stop(now + 0.12);
+          // ガンッ！金属ハンマーの打撃音
+          // 1) アタック — 瞬間的な高音の衝撃
+          const hitAtk = ctx.createOscillator();
+          const hitAtkG = ctx.createGain();
+          hitAtk.type = 'square';
+          hitAtk.frequency.setValueAtTime(1200, now);
+          hitAtk.frequency.exponentialRampToValueAtTime(300, now + 0.03);
+          hitAtkG.gain.setValueAtTime(this.volume * 0.7, now);
+          hitAtkG.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          hitAtk.connect(hitAtkG);
+          hitAtkG.connect(ctx.destination);
+          hitAtk.start(now);
+          hitAtk.stop(now + 0.06);
+          // 2) ボディ — 重い低音の「ドン」
+          const hitBody = ctx.createOscillator();
+          const hitBodyG = ctx.createGain();
+          hitBody.type = 'sine';
+          hitBody.frequency.setValueAtTime(120, now);
+          hitBody.frequency.exponentialRampToValueAtTime(50, now + 0.12);
+          hitBodyG.gain.setValueAtTime(this.volume * 0.6, now);
+          hitBodyG.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          hitBody.connect(hitBodyG);
+          hitBodyG.connect(ctx.destination);
+          hitBody.start(now);
+          hitBody.stop(now + 0.16);
+          // 3) 金属の残響 — キーンという余韻
+          const hitRing = ctx.createOscillator();
+          const hitRingG = ctx.createGain();
+          hitRing.type = 'sine';
+          hitRing.frequency.setValueAtTime(2400, now + 0.02);
+          hitRing.frequency.exponentialRampToValueAtTime(1800, now + 0.25);
+          hitRingG.gain.setValueAtTime(this.volume * 0.15, now + 0.02);
+          hitRingG.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          hitRing.connect(hitRingG);
+          hitRingG.connect(ctx.destination);
+          hitRing.start(now + 0.02);
+          hitRing.stop(now + 0.26);
           break;
         }
         case 'combo': {
@@ -417,6 +604,99 @@
           osc.stop(now + 0.5);
           break;
         }
+        case 'modal_open': {
+          const osc2 = ctx.createOscillator();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(500, now);
+          osc2.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+          gain.gain.value = this.volume * 0.2;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc2.connect(gain);
+          osc2.start(now);
+          osc2.stop(now + 0.15);
+          break;
+        }
+        case 'modal_close': {
+          const osc3 = ctx.createOscillator();
+          osc3.type = 'sine';
+          osc3.frequency.setValueAtTime(700, now);
+          osc3.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+          gain.gain.value = this.volume * 0.15;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc3.connect(gain);
+          osc3.start(now);
+          osc3.stop(now + 0.15);
+          break;
+        }
+        case 'door_open': {
+          [330, 440, 523, 659, 784].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            g.gain.value = this.volume * 0.3;
+            g.gain.exponentialRampToValueAtTime(0.01, now + 0.12 * (i + 1) + 0.1);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.12 * i);
+            osc.stop(now + 0.12 * (i + 1) + 0.1);
+          });
+          break;
+        }
+        case 'pickup': {
+          [880, 1100, 1320].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            g.gain.value = this.volume * 0.35;
+            g.gain.exponentialRampToValueAtTime(0.01, now + 0.08 * (i + 1) + 0.08);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.08 * i);
+            osc.stop(now + 0.08 * (i + 1) + 0.08);
+          });
+          break;
+        }
+        case 'examine': {
+          const osc = ctx.createOscillator();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(800, now + 0.12);
+          gain.gain.value = this.volume * 0.25;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.2);
+          break;
+        }
+        case 'unlock': {
+          [440, 660, 880].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            g.gain.value = this.volume * 0.3;
+            g.gain.exponentialRampToValueAtTime(0.01, now + 0.1 * (i + 1) + 0.15);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.1 * i);
+            osc.stop(now + 0.1 * (i + 1) + 0.15);
+          });
+          break;
+        }
+        case 'smash': {
+          const osc = ctx.createOscillator();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+          gain.gain.value = this.volume * 0.5;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.4);
+          break;
+        }
         case 'achievement': {
           const melody = [784, 988, 1175, 1319, 1175, 1319, 1568];
           melody.forEach((freq, i) => {
@@ -430,6 +710,120 @@
             g.connect(ctx.destination);
             osc.start(now + 0.12 * i);
             osc.stop(now + 0.12 * (i + 1) + 0.15);
+          });
+          break;
+        }
+        case 'door_open': {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.linearRampToValueAtTime(500, now + 0.3);
+          osc.frequency.linearRampToValueAtTime(400, now + 0.5);
+          gain.gain.value = this.volume * 0.2;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.6);
+          break;
+        }
+        case 'modal_open': {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(660, now + 0.08);
+          gain.gain.value = this.volume * 0.2;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.12);
+          break;
+        }
+        case 'modal_close': {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(660, now);
+          osc.frequency.exponentialRampToValueAtTime(440, now + 0.08);
+          gain.gain.value = this.volume * 0.15;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.1);
+          break;
+        }
+        case 'sparkle_click': {
+          // PV風スパークルアルペジオ（BGMより高い音域でしゃらららーん）
+          // BGMメロディ帯域(330-784Hz)を避けて高音域(1047Hz〜)で鳴らす
+          this._duckBgm(0.5);
+          const baseFreq = 1047; // C6（BGMの1オクターブ上から開始）
+          const ratios = [1, 1.25, 1.5, 1.875, 2];
+          for (let i = 0; i < 5; i++) {
+            const freq = baseFreq * ratios[i];
+            // メイン音（sine）
+            const osc1 = ctx.createOscillator();
+            const g1 = ctx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.value = freq;
+            g1.gain.setValueAtTime(this.volume * 0.35, now + i * 0.07);
+            g1.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.4);
+            osc1.connect(g1);
+            g1.connect(ctx.destination);
+            osc1.start(now + i * 0.07);
+            osc1.stop(now + i * 0.07 + 0.45);
+            // 倍音（triangle、1オクターブ上）
+            const osc2 = ctx.createOscillator();
+            const g2 = ctx.createGain();
+            osc2.type = 'triangle';
+            osc2.frequency.value = freq * 2;
+            g2.gain.setValueAtTime(this.volume * 0.12, now + i * 0.07);
+            g2.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.25);
+            osc2.connect(g2);
+            g2.connect(ctx.destination);
+            osc2.start(now + i * 0.07);
+            osc2.stop(now + i * 0.07 + 0.3);
+          }
+          break;
+        }
+        case 'correct_gorgeous': {
+          // PV風 正解ファンファーレ（高音域アルペジオ + ピアノ和音）
+          // BGMを大きくダッキングして正解感を強調
+          this._duckBgm(0.8);
+          const baseFreq2 = 1568; // G6（さらに高い音域）
+          const ratios2 = [1, 1.25, 1.5, 1.875, 2, 2.5];
+          for (let i = 0; i < 6; i++) {
+            const freq = baseFreq2 * ratios2[i];
+            const osc1 = ctx.createOscillator();
+            const g1 = ctx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.value = freq;
+            g1.gain.setValueAtTime(this.volume * 0.4, now + i * 0.05);
+            g1.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.5);
+            osc1.connect(g1);
+            g1.connect(ctx.destination);
+            osc1.start(now + i * 0.05);
+            osc1.stop(now + i * 0.05 + 0.55);
+            const osc2 = ctx.createOscillator();
+            const g2 = ctx.createGain();
+            osc2.type = 'triangle';
+            osc2.frequency.value = freq * 2;
+            g2.gain.setValueAtTime(this.volume * 0.12, now + i * 0.05);
+            g2.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.3);
+            osc2.connect(g2);
+            g2.connect(ctx.destination);
+            osc2.start(now + i * 0.05);
+            osc2.stop(now + i * 0.05 + 0.35);
+          }
+          // ピアノ風和音（高音域 C6+E6+G6）
+          [1047, 1319, 1568].forEach((freq) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            g.gain.setValueAtTime(this.volume * 0.25, now + 0.1);
+            g.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.1);
+            osc.stop(now + 0.85);
           });
           break;
         }
@@ -447,9 +841,9 @@
       } catch { return null; }
     },
 
-    set(gameId, score, extra) {
+    set(gameId, score, extra, lowerIsBetter) {
       const prev = this.get(gameId);
-      const isNew = !prev || score > prev.score;
+      const isNew = !prev || (lowerIsBetter ? score < prev.score : score > prev.score);
       if (isNew) {
         localStorage.setItem(this._key(gameId), JSON.stringify({
           score, date: new Date().toISOString(), ...extra
@@ -681,15 +1075,15 @@
         }
       },
 
-      // ゲーム終了時に呼ぶ（スコアは任意）
-      onGameEnd(score, extra) {
+      // ゲーム終了時に呼ぶ（スコアは任意、lowerIsBetter: タイム系で低い方が良い場合true）
+      onGameEnd(score, extra, lowerIsBetter) {
         Stats.recordPlay(gameId);
         SoundSystem.stopBgm();
         SoundSystem.play('result');
 
         let isNewHigh = false;
         if (score !== undefined && score !== null) {
-          isNewHigh = HighScore.set(gameId, score, extra);
+          isNewHigh = HighScore.set(gameId, score, extra, lowerIsBetter);
         }
 
         // 実績チェック（少し遅らせて演出と被らないように）

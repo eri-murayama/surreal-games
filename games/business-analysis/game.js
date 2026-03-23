@@ -391,6 +391,13 @@
         const data = t().objectDialogues[name];
         if (!data) return;
 
+        // オブジェクトクリック時のSE
+        if (objectCorrectMap[name]) {
+          sg.sound.play('correct_gorgeous');
+        } else {
+          sg.sound.play('sparkle_click');
+        }
+
         state.dialogueOpen = true;
         state.currentDialogueSource = name;
         dialogueName.textContent = data.name;
@@ -413,6 +420,8 @@
               state.dialogueReady = false;
               state.pendingDialogueClose = null;
               state.registerStep = 0;
+              // 正解後はゴージャスなBGMに切り替え
+              sg.sound.playBgm('triumph');
               showScreen('register');
               spawnMoneyParticles();
               playRegister();
