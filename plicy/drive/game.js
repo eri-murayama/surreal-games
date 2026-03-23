@@ -503,9 +503,9 @@
       posLabels: ['1st', '2nd', '3rd', '4th'],
       shareText: (pos, sec) => `🏎️ Golden Gold Driver\nResult: ${pos}\nTime: ${sec}s\n\n#GoldenDriver`,
       intros: [
-        'Yoshinori\n  I\'m Yoshinori.\n  Just came from the countryside.',
-        'Yoshinori\n  The Golden Gold Driver...\n  That\'s my dream.',
-        'Yoshinori\n  The Professor will help me.\n  Let\'s go!',
+        'Yoshinori\n　I\'m Yoshinori.\n　Just came from the countryside.',
+        'Yoshinori\n　The Golden Gold Driver...\n　That\'s my dream.',
+        'Yoshinori\n　The Professor will help me.\n　Let\'s go!',
       ],
       conversation: [
         { speaker: 'Yoshinori', text: 'You think this is\na good machine, Prof?' },
