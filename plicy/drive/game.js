@@ -1,9 +1,338 @@
 // ========================================
 // 黄金の金色ドライバー ～田舎者の挑戦～
+// Plicy版（スタンドアロン）
 // ========================================
 
 (function () {
   'use strict';
+
+  // ===== 内蔵サウンドシステム =====
+  const BGM_PRESETS = {
+    race: {
+      tempo: 200, key: 'Em', wave: 'sawtooth', volume: 0.07,
+      melody: [
+        659, 784, 880, 988, 880, 784, 659, 784,
+        880, 988, 1175, 988, 880, 784, 659, 784,
+        587, 659, 784, 880, 784, 659, 587, 659,
+        784, 880, 988, 1175, 988, 880, 784, 659,
+      ],
+      bass: [
+        165, 165, 196, 196, 220, 220, 247, 247,
+        165, 165, 196, 196, 247, 247, 220, 220,
+        147, 147, 165, 165, 196, 196, 220, 220,
+        165, 165, 196, 196, 165, 165, 247, 247,
+      ],
+    },
+    sad: {
+      tempo: 65, key: 'Am', wave: 'sine', volume: 0.10,
+      melody: [
+        440, 392, 349, 330, 349, 392, 349, 330,
+        294, 330, 349, 392, 349, 330, 294, 262,
+        220, 262, 294, 330, 294, 262, 220, 196,
+        220, 262, 294, 349, 330, 294, 262, 220,
+      ],
+      bass: [
+        110, 110, 131, 131, 147, 147, 131, 131,
+        110, 110, 131, 131, 147, 147, 110, 110,
+        88, 88, 110, 110, 131, 131, 110, 110,
+        88, 88, 110, 110, 88, 88, 110, 110,
+      ],
+    },
+    ominous: {
+      tempo: 75, key: 'Dm', wave: 'triangle', volume: 0.09,
+      melody: [
+        294, 277, 262, 277, 294, 262, 247, 233,
+        262, 247, 233, 220, 233, 247, 220, 208,
+        294, 311, 330, 311, 294, 277, 262, 247,
+        233, 220, 208, 196, 208, 220, 233, 220,
+      ],
+      bass: [
+        147, 139, 131, 139, 147, 131, 123, 117,
+        131, 123, 117, 110, 117, 123, 110, 104,
+        147, 156, 165, 156, 147, 139, 131, 123,
+        117, 110, 104, 98, 104, 110, 117, 110,
+      ],
+    },
+  };
+
+  const SoundSystem = {
+    ctx: null,
+    enabled: true,
+    volume: 0.5,
+    bgmPlaying: false,
+    bgmNodes: [],
+    bgmTimers: [],
+    bgmGain: null,
+
+    init() {
+      const initAudio = () => {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        document.removeEventListener('click', initAudio);
+        document.removeEventListener('touchstart', initAudio);
+      };
+      document.addEventListener('click', initAudio);
+      document.addEventListener('touchstart', initAudio);
+    },
+
+    _ensureCtx() {
+      if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!this.bgmGain && this.ctx) {
+        this.bgmGain = this.ctx.createGain();
+        this.bgmGain.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+      return this.ctx;
+    },
+
+    _duckBgm(duration) {
+      if (!this.bgmGain || !this.bgmPlaying) return;
+      const now = this.ctx.currentTime;
+      this.bgmGain.gain.cancelScheduledValues(now);
+      this.bgmGain.gain.setValueAtTime(0.15, now);
+      this.bgmGain.gain.linearRampToValueAtTime(0.5, now + 0.08);
+      this.bgmGain.gain.linearRampToValueAtTime(1.0, now + duration);
+    },
+
+    playBgm(presetName) {
+      if (!this.enabled) return;
+      this._ensureCtx();
+      if (!this.ctx) return;
+      const preset = BGM_PRESETS[presetName];
+      if (!preset) return;
+      this.stopBgm();
+      this.bgmPlaying = true;
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume().then(() => { if (this.bgmPlaying) this._loopBgm(preset); });
+      } else {
+        this._loopBgm(preset);
+      }
+    },
+
+    _loopBgm(preset) {
+      if (!this.bgmPlaying || !this.enabled || !this.ctx) return;
+      const ctx = this.ctx;
+      const bgmDest = this.bgmGain || ctx.destination;
+      const now = ctx.currentTime;
+      const baseBeat = 60 / preset.tempo;
+      const vol = preset.volume;
+
+      const totalDur = baseBeat * preset.melody.length;
+
+      preset.melody.forEach((freq, i) => {
+        if (!freq) return;
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = preset.wave;
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(vol, now + i * baseBeat);
+        g.gain.exponentialRampToValueAtTime(0.001, now + (i + 1) * baseBeat * 0.9);
+        osc.connect(g);
+        g.connect(bgmDest);
+        osc.start(now + i * baseBeat);
+        osc.stop(now + (i + 1) * baseBeat * 0.95);
+        this.bgmNodes.push(osc);
+      });
+
+      preset.bass.forEach((freq, i) => {
+        if (!freq) return;
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(vol * 0.5, now + i * baseBeat);
+        g.gain.exponentialRampToValueAtTime(0.001, now + (i + 1) * baseBeat * 0.9);
+        osc.connect(g);
+        g.connect(bgmDest);
+        osc.start(now + i * baseBeat);
+        osc.stop(now + (i + 1) * baseBeat * 0.95);
+        this.bgmNodes.push(osc);
+      });
+
+      const timer = setTimeout(() => {
+        if (this.bgmPlaying) this._loopBgm(preset);
+      }, totalDur * 1000);
+      this.bgmTimers.push(timer);
+    },
+
+    stopBgm() {
+      this.bgmPlaying = false;
+      this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+      this.bgmNodes = [];
+      this.bgmTimers.forEach(t => clearTimeout(t));
+      this.bgmTimers = [];
+    },
+
+    play(type) {
+      if (!this.enabled) return;
+      this._ensureCtx();
+      if (!this.ctx) return;
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume().then(() => this._playSound(type));
+        return;
+      }
+      this._playSound(type);
+    },
+
+    _playSound(type) {
+      if (!this.ctx || this.ctx.state !== 'running') return;
+      const ctx = this.ctx;
+      const now = ctx.currentTime;
+      const gain = ctx.createGain();
+      gain.connect(ctx.destination);
+      gain.gain.value = this.volume;
+
+      switch (type) {
+        case 'tap': {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(1200, now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.1);
+          break;
+        }
+        case 'hit': {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.exponentialRampToValueAtTime(40, now + 0.12);
+          gain.gain.value = this.volume * 0.7;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.16);
+          break;
+        }
+        case 'pickup': {
+          [880, 1100, 1320].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            g.gain.value = this.volume * 0.35;
+            g.gain.exponentialRampToValueAtTime(0.01, now + 0.08 * (i + 1) + 0.08);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.08 * i);
+            osc.stop(now + 0.08 * (i + 1) + 0.08);
+          });
+          break;
+        }
+        case 'dramatic': {
+          this._duckBgm(1.5);
+          const oscLow = ctx.createOscillator();
+          const gLow = ctx.createGain();
+          oscLow.type = 'sawtooth';
+          oscLow.frequency.setValueAtTime(80, now);
+          oscLow.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+          gLow.gain.setValueAtTime(this.volume * 0.8, now);
+          gLow.gain.exponentialRampToValueAtTime(0.01, now + 1.0);
+          oscLow.connect(gLow);
+          gLow.connect(ctx.destination);
+          oscLow.start(now);
+          oscLow.stop(now + 1.0);
+          [147, 156, 208, 220].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.value = freq;
+            g.gain.setValueAtTime(this.volume * 0.4, now + 0.02 * i);
+            g.gain.exponentialRampToValueAtTime(0.01, now + 0.6 + 0.1 * i);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.02 * i);
+            osc.stop(now + 0.7 + 0.1 * i);
+          });
+          const oscHigh = ctx.createOscillator();
+          const gHigh = ctx.createGain();
+          oscHigh.type = 'sawtooth';
+          oscHigh.frequency.setValueAtTime(2000, now);
+          oscHigh.frequency.exponentialRampToValueAtTime(200, now + 0.3);
+          gHigh.gain.setValueAtTime(this.volume * 0.5, now);
+          gHigh.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          oscHigh.connect(gHigh);
+          gHigh.connect(ctx.destination);
+          oscHigh.start(now);
+          oscHigh.stop(now + 0.4);
+          break;
+        }
+        case 'slot_stop': {
+          const oscSlot = ctx.createOscillator();
+          const gSlot = ctx.createGain();
+          oscSlot.type = 'square';
+          oscSlot.frequency.setValueAtTime(600, now);
+          oscSlot.frequency.exponentialRampToValueAtTime(400, now + 0.06);
+          gSlot.gain.setValueAtTime(this.volume * 0.4, now);
+          gSlot.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          oscSlot.connect(gSlot);
+          gSlot.connect(ctx.destination);
+          oscSlot.start(now);
+          oscSlot.stop(now + 0.12);
+          break;
+        }
+        case 'boost': {
+          const oscBoost = ctx.createOscillator();
+          const gBoost = ctx.createGain();
+          oscBoost.type = 'sawtooth';
+          oscBoost.frequency.setValueAtTime(200, now);
+          oscBoost.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
+          oscBoost.frequency.exponentialRampToValueAtTime(800, now + 0.4);
+          gBoost.gain.setValueAtTime(this.volume * 0.4, now);
+          gBoost.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+          oscBoost.connect(gBoost);
+          gBoost.connect(ctx.destination);
+          oscBoost.start(now);
+          oscBoost.stop(now + 0.5);
+          break;
+        }
+        case 'banana_set': {
+          const oscBan = ctx.createOscillator();
+          const gBan = ctx.createGain();
+          oscBan.type = 'sine';
+          oscBan.frequency.setValueAtTime(500, now);
+          oscBan.frequency.exponentialRampToValueAtTime(150, now + 0.15);
+          gBan.gain.setValueAtTime(this.volume * 0.4, now);
+          gBan.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          oscBan.connect(gBan);
+          gBan.connect(ctx.destination);
+          oscBan.start(now);
+          oscBan.stop(now + 0.2);
+          break;
+        }
+        case 'shield': {
+          [880, 1100, 1320, 1760].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            g.gain.setValueAtTime(this.volume * 0.3, now + i * 0.06);
+            g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.06 + 0.3);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + i * 0.06);
+            osc.stop(now + i * 0.06 + 0.35);
+          });
+          break;
+        }
+      }
+    },
+  };
+
+  SoundSystem.init();
+
+  // ===== 簡易ハイスコア管理 =====
+  const HS_KEY = 'plicy_drive_highscore';
+  function getHighScore() {
+    try { return JSON.parse(localStorage.getItem(HS_KEY)); } catch { return null; }
+  }
+  function setHighScore(score) {
+    localStorage.setItem(HS_KEY, JSON.stringify(score));
+  }
 
   // --- 定数 ---
   const CANVAS_W = 400;
@@ -13,42 +342,39 @@
   const LANE_W = ROAD_W / LANE_COUNT;
   const ROAD_LEFT = (CANVAS_W - ROAD_W) / 2;
   const LAPS = 3;
-  const LAP_LENGTH = 1500; // 1ラップのスクロール距離
-  const SCROLL_SCALE = 2.5; // 画面スクロール倍率
+  const LAP_LENGTH = 1500;
+  const SCROLL_SCALE = 2.5;
 
   // スロットの選択肢
   const SLOT_ITEMS = {
     body: [
-      { emoji: '🏎️', ja: 'スポーツカー', en: 'Sports Car', stat: 'speed', value: 2 },
-      { emoji: '🚗', ja: 'セダン', en: 'Sedan', stat: 'speed', value: 1 },
-      { emoji: '🛻', ja: 'トラック', en: 'Truck', stat: 'speed', value: 0 },
-      { emoji: '🚜', ja: 'トラクター', en: 'Tractor', stat: 'speed', value: -1 },
-      { emoji: '🛒', ja: 'ショッピングカート', en: 'Shopping Cart', stat: 'speed', value: -2 },
+      { emoji: '🏎️', name: 'スポーツカー', stat: 'speed', value: 2 },
+      { emoji: '🚗', name: 'セダン', stat: 'speed', value: 1 },
+      { emoji: '🛻', name: 'トラック', stat: 'speed', value: 0 },
+      { emoji: '🚜', name: 'トラクター', stat: 'speed', value: -1 },
+      { emoji: '🛒', name: 'ショッピングカート', stat: 'speed', value: -2 },
     ],
     engine: [
-      { emoji: '🔥', ja: 'ターボエンジン', en: 'Turbo Engine', stat: 'accel', value: 2 },
-      { emoji: '⚡', ja: '電気モーター', en: 'Electric Motor', stat: 'accel', value: 1 },
-      { emoji: '💨', ja: 'ガスエンジン', en: 'Gas Engine', stat: 'accel', value: 0 },
-      { emoji: '🐹', ja: 'ハムスター動力', en: 'Hamster Power', stat: 'accel', value: -1 },
-      { emoji: '🧠', ja: '念力エンジン', en: 'Telekinesis Engine', stat: 'accel', value: -2 },
+      { emoji: '🔥', name: 'ターボエンジン', stat: 'accel', value: 2 },
+      { emoji: '⚡', name: '電気モーター', stat: 'accel', value: 1 },
+      { emoji: '💨', name: 'ガスエンジン', stat: 'accel', value: 0 },
+      { emoji: '🐹', name: 'ハムスター動力', stat: 'accel', value: -1 },
+      { emoji: '🧠', name: '念力エンジン', stat: 'accel', value: -2 },
     ],
     tire: [
-      { emoji: '⭕', ja: 'レーシングタイヤ', en: 'Racing Tire', stat: 'handling', value: 2 },
-      { emoji: '🟤', ja: 'ノーマルタイヤ', en: 'Normal Tire', stat: 'handling', value: 1 },
-      { emoji: '🍩', ja: 'ドーナツ', en: 'Donut', stat: 'handling', value: 0 },
-      { emoji: '🍊', ja: 'みかん', en: 'Orange', stat: 'handling', value: -1 },
-      { emoji: '👞', ja: '博士のくつ', en: "Prof's Shoes", stat: 'handling', value: -2 },
+      { emoji: '⭕', name: 'レーシングタイヤ', stat: 'handling', value: 2 },
+      { emoji: '🟤', name: 'ノーマルタイヤ', stat: 'handling', value: 1 },
+      { emoji: '🍩', name: 'ドーナツ', stat: 'handling', value: 0 },
+      { emoji: '🍊', name: 'みかん', stat: 'handling', value: -1 },
+      { emoji: '👞', name: '博士のくつ', stat: 'handling', value: -2 },
     ],
   };
 
-  /** Get translated name of a slot/race item */
-  function itemName(item) { return item[currentLang] || item.ja; }
-
   // アイテム
   const RACE_ITEMS = [
-    { ja: 'バナナ', en: 'Banana', emoji: '🍌', effect: 'banana' },
-    { ja: 'ダッシュ', en: 'Dash', emoji: '🚀', effect: 'boost' },
-    { ja: 'おにぎり', en: 'Onigiri', emoji: '🍙', effect: 'shield' },
+    { name: 'バナナ', emoji: '🍌', effect: 'banana' },
+    { name: 'ダッシュ', emoji: '🚀', effect: 'boost' },
+    { name: 'おにぎり', emoji: '🍙', effect: 'shield' },
   ];
 
   // ライバル名
@@ -56,14 +382,13 @@
   const RIVAL_COLORS = ['#cc3333', '#3333cc', '#33cc33'];
 
   // --- 状態 ---
-  let phase = 'title'; // title, slot, race, result
-  let slotStep = 0; // 0=body, 1=engine, 2=tire
+  let phase = 'title';
+  let slotStep = 0;
   let slotSpinning = false;
   let selectedParts = { body: null, engine: null, tire: null };
 
   let playerStats = { speed: 5, accel: 5, handling: 5 };
 
-  // レース状態
   let raceState = null;
 
   // --- DOM ---
@@ -97,9 +422,6 @@
   const resultHighscore = document.getElementById('result-highscore');
   const titleHighscore = document.getElementById('title-highscore');
 
-  // --- 共通モジュール ---
-  const sg = SurrealGames.init('drive');
-
   // --- 多言語対応 ---
   let currentLang = 'ja';
 
@@ -129,7 +451,7 @@
       highscoreLabel: '👑 ベストタイム',
       newRecord: '🎉 NEW RECORD!',
       posLabels: ['1位', '2位', '3位', '4位'],
-      shareText: (pos, sec) => `🏎️ 黄金の金色ドライバー\n結果: ${pos}\nタイム: ${sec}秒\n\n#シュールゲームス`,
+      shareText: (pos, sec) => `🏎️ 黄金の金色ドライバー\n結果: ${pos}\nタイム: ${sec}秒\n\n#黄金ドライバー`,
       intros: [
         'ヨシノリ\n　俺はヨシノリ。\n　田舎から出てきたばかりだ',
         'ヨシノリ\n　黄金の金色ドライバー…\n　それが俺の夢だ',
@@ -148,17 +470,11 @@
         'ヨシノリ\n「くっ…博士、\n　お前もっと速く走れねえのか！」\n博士「ワシは人間じゃぞ…？」',
         'ヨシノリ\n「博士ッ！！\n　ゴール前で寝るなッ！！」\n博士はもう動かない。\n救急車を呼ぼう。',
       ],
-      itemBanana: '🍌 バナナ設置！',
-      itemBoost: '🚀 ダッシュ！！',
-      itemShield: '🍙 おにぎりバリア！',
-      hudPosition: (pos) => `順位: ${pos}`,
-      backToTop: '← トップに戻る',
       seconds: '秒',
       rivalNames: ['ガンテツ', 'ヒロシ', 'マサオ'],
       niceRun: 'ナイスラン！',
       finalLap: 'ファイナルラップ！',
       goal: 'GOAL!!',
-      otherGames: '🎮 他のゲームも遊ぶ',
     },
     en: {
       gameTitle: 'Golden Driver',
@@ -185,7 +501,7 @@
       highscoreLabel: '👑 Best Time',
       newRecord: '🎉 NEW RECORD!',
       posLabels: ['1st', '2nd', '3rd', '4th'],
-      shareText: (pos, sec) => `🏎️ Golden Driver\nResult: ${pos}\nTime: ${sec}s\n\n#SurrealGames`,
+      shareText: (pos, sec) => `🏎️ Golden Driver\nResult: ${pos}\nTime: ${sec}s\n\n#GoldenDriver`,
       intros: [
         'Yoshinori\n  I\'m Yoshinori.\n  Just came from the countryside.',
         'Yoshinori\n  The Golden Driver...\n  That\'s my dream.',
@@ -204,17 +520,11 @@
         'Yoshinori\n"Tch... Prof,\n  can\'t you run faster?!"\nProf: "I\'m a human, you know...?"',
         'Yoshinori\n"PROFESSOR!!\n  Don\'t sleep before the goal!!"\nThe Professor isn\'t moving.\nCall an ambulance.',
       ],
-      itemBanana: '🍌 Banana Drop!',
-      itemBoost: '🚀 BOOST!!',
-      itemShield: '🍙 Onigiri Shield!',
-      hudPosition: (pos) => `Position: ${pos}`,
-      backToTop: '← Back to Top',
       seconds: 's',
       rivalNames: ['Gantetsu', 'Hiroshi', 'Masao'],
       niceRun: 'Nice Run!',
       finalLap: 'Final Lap!',
       goal: 'GOAL!!',
-      otherGames: '🎮 Play Other Games',
     },
   };
 
@@ -228,107 +538,32 @@
     currentLang = lang;
     document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
     window.dispatchEvent(new Event('surreal-lang-change'));
-    document.title = t('gameTitle') + ' - ' + (lang === 'ja' ? 'シュールゲームス' : 'Surreal Games');
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
-    window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
-
-    // --- 全画面共通のテキスト更新 ---
     document.querySelector('.game-title').textContent = t('gameTitle');
     startBtn.textContent = t('start');
     document.getElementById('title-hint').textContent = t('hint');
     retryBtn.textContent = t('retry');
     shareBtn.textContent = t('share');
     document.getElementById('mount-instruction').textContent = t('mountTap');
-    document.getElementById('mount-text').textContent = t('mountComplete');
-    const subEl = document.getElementById('mount-subtext');
-    if (subEl) subEl.textContent = t('mountSub');
     document.getElementById('slot-title').textContent = t('slotTitle');
-    document.querySelector('.back-to-top-link').textContent = t('backToTop');
-
-    // スロットラベル
-    const slotLabels = document.querySelectorAll('.slot-label');
-    if (slotLabels.length >= 3) {
-      slotLabels[0].textContent = t('bodyLabel');
-      slotLabels[1].textContent = t('engineLabel');
-      slotLabels[2].textContent = t('tireLabel');
+    const labels = document.querySelectorAll('.slot-label');
+    if (labels.length >= 3) {
+      labels[0].textContent = t('bodyLabel');
+      labels[1].textContent = t('engineLabel');
+      labels[2].textContent = t('tireLabel');
     }
-
-    // --- 現在表示中の画面のテキストを更新 ---
-    // イントロ画面
-    if (phase === 'intro') {
-      const intros = t('intros');
-      if (introStep < intros.length) {
-        document.getElementById('intro-text').textContent = intros[introStep];
-      }
-      introNextBtn.textContent = t('next');
-    }
-
-    // スロット画面
-    if (phase === 'slot') {
-      if (slotSpinning) {
-        slotBtn.textContent = t('stop');
-      } else {
-        slotBtn.textContent = t('spin');
-      }
-      // スロット結果が表示中なら更新
-      if (selectedParts.body && selectedParts.engine && selectedParts.tire) {
-        const b = `${selectedParts.body.emoji} ${itemName(selectedParts.body)}`;
-        const e = `${selectedParts.engine.emoji} ${itemName(selectedParts.engine)}`;
-        const ti = `${selectedParts.tire.emoji} ${itemName(selectedParts.tire)}`;
-        slotResult.innerHTML = t('slotAssemble', b, e, ti) + t('slotComment');
-        raceBtn.textContent = t('next');
-      }
-    }
-
-    // 会話画面
-    if (phase === 'conversation') {
-      const conv = t('conversation');
-      if (convStep < conv.length) {
-        const line = conv[convStep];
-        const indented = line.text.split('\n').map(l => `　${l}`).join('\n');
-        document.getElementById('conv-dialogue').textContent = `${line.speaker}\n${indented}`;
-      }
-      convNextBtn.textContent = t('next');
-    }
-
-    // ヨシノリアップ画面
-    if (phase === 'yoshinori') {
-      document.getElementById('yoshinori-line').innerHTML = t('yoshinoriLine');
-    }
-
-    // リザルト画面
-    if (phase === 'result') {
-      const posLabels = t('posLabels');
-      if (typeof lastResultPosIdx === 'number') {
-        document.getElementById('result-title').textContent =
-          `${t('resultLabel')}: ${posLabels[lastResultPosIdx]}！`;
-        document.getElementById('result-comment').textContent =
-          t('comments')[lastResultPosIdx];
-        document.getElementById('result-time').textContent =
-          `${t('timeLabel')}: ${lastResultSec}${t('seconds')}`;
-        const hs = sg.getHighScore();
-        if (hs !== null && hs < 9999) {
-          resultHighscore.textContent = `${t('highscoreLabel')}: ${hs}${t('seconds')}`;
-        }
-      }
-      // おすすめゲームセクションの言語更新
-      const recTitle = resultScreen.querySelector('.sg-recommend-title');
-      if (recTitle) recTitle.textContent = t('otherGames');
-    }
-
     updateHighScoreDisplay();
   }
 
-  // Init lang from browser
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => setLang(btn.dataset.lang));
   });
 
   // --- ハイスコア表示 ---
   function updateHighScoreDisplay() {
-    const hs = sg.getHighScore();
+    const hs = getHighScore();
     if (hs !== null) {
       titleHighscore.textContent = `${t('highscoreLabel')}: ${hs}${t('seconds')}`;
       titleHighscore.style.display = 'inline-block';
@@ -350,12 +585,11 @@
 
   function advanceIntro() {
     introStep++;
-    sg.sound.play('tap');
+    SoundSystem.play('tap');
     const intros = t('intros');
     if (introStep < intros.length) {
       document.getElementById('intro-text').textContent = intros[introStep];
     } else {
-      // 紹介終了→スロットへ
       showScreen('slot');
       initSlots();
       spinAllReels();
@@ -399,7 +633,6 @@
 
     reelEls.forEach((el, i) => {
       el.innerHTML = '';
-      // 複数回繰り返してスクロール感を出す
       const items = SLOT_ITEMS[reelKeys[i]];
       for (let r = 0; r < 6; r++) {
         items.forEach(item => {
@@ -413,7 +646,6 @@
     });
   }
 
-  // 全リールを同時に回し始める
   let reelIntervals = [null, null, null];
 
   function spinAllReels() {
@@ -432,7 +664,7 @@
         if (Math.abs(parseFloat(reelEl.style.top)) > maxScroll) {
           reelEl.style.top = '0px';
         }
-      }, 50 + i * 15); // 微妙にずらして見た目を良く
+      }, 50 + i * 15);
     });
 
     slotSpinning = true;
@@ -450,14 +682,13 @@
     const items = SLOT_ITEMS[key];
     const itemH = reelEl.parentElement.offsetHeight;
 
-    // このリールを止める
     clearInterval(reelIntervals[slotStep]);
     reelIntervals[slotStep] = null;
 
     const finalIdx = Math.floor(Math.random() * items.length);
     reelEl.style.top = -(finalIdx * itemH) + 'px';
     selectedParts[key] = items[finalIdx];
-    sg.sound.play('slot_stop');
+    SoundSystem.play('slot_stop');
 
     slotStep++;
     if (slotStep < 3) {
@@ -472,19 +703,17 @@
   function onAllSlotsComplete() {
     slotBtn.classList.add('hidden');
 
-    // ステータス計算
     playerStats.speed = 5 + selectedParts.body.value;
     playerStats.accel = 5 + selectedParts.engine.value;
     playerStats.handling = 5 + selectedParts.tire.value;
 
-    // 説明文を差し替え
     hakaseSpeech.textContent = '';
 
     setTimeout(() => {
       slotResult.classList.remove('hidden');
-      const b = `${selectedParts.body.emoji} ${itemName(selectedParts.body)}`;
-      const e = `${selectedParts.engine.emoji} ${itemName(selectedParts.engine)}`;
-      const ti = `${selectedParts.tire.emoji} ${itemName(selectedParts.tire)}`;
+      const b = `${selectedParts.body.emoji} ${selectedParts.body.name}`;
+      const e = `${selectedParts.engine.emoji} ${selectedParts.engine.name}`;
+      const ti = `${selectedParts.tire.emoji} ${selectedParts.tire.name}`;
       slotResult.innerHTML = t('slotAssemble', b, e, ti) + t('slotComment');
 
       raceBtn.textContent = t('next');
@@ -499,7 +728,7 @@
     convStep = 0;
     showScreen('conversation');
     convNextBtn.textContent = t('next');
-    sg.sound.playBgm('ominous');
+    SoundSystem.playBgm('ominous');
     updateConversation();
   }
 
@@ -513,8 +742,8 @@
 
   function showYoshinoriCloseup() {
     showScreen('yoshinori');
-    sg.sound.stopBgm();
-    sg.sound.play('dramatic');
+    SoundSystem.stopBgm();
+    SoundSystem.play('dramatic');
     const lineEl = document.getElementById('yoshinori-line');
     lineEl.innerHTML = t('yoshinoriLine');
   }
@@ -522,58 +751,31 @@
   function showMountScene() {
     showScreen('mount');
     document.getElementById('mount-instruction').textContent = t('mountTap');
-    sg.sound.playBgm('sad');
+    SoundSystem.playBgm('sad');
   }
 
-  function createMountEffects() {
-    const overlay = document.getElementById('mount-overlay');
-
-    // 古い動的要素を削除
-    overlay.querySelectorAll('.mount-cinema-top, .mount-cinema-bottom, .mount-gold-line').forEach(el => el.remove());
-
-    // シネマティック黒帯
-    const barTop = document.createElement('div');
-    barTop.className = 'mount-cinema-top';
-    overlay.appendChild(barTop);
-    const barBottom = document.createElement('div');
-    barBottom.className = 'mount-cinema-bottom';
-    overlay.appendChild(barBottom);
-
-    // ゴールドライン（中央を横切る）
-    for (let i = 0; i < 3; i++) {
-      const line = document.createElement('div');
-      line.className = 'mount-gold-line';
-      line.style.top = `${45 + i * 5}%`;
-      line.style.left = '0';
-      line.style.animationDelay = `${0.5 + i * 0.15}s`;
-      overlay.appendChild(line);
-    }
-
-    // スパーク
-    const sparks = document.getElementById('mount-sparks');
-    sparks.innerHTML = '';
-    for (let i = 0; i < 16; i++) {
+  function createMountSparks() {
+    const container = document.getElementById('mount-sparks');
+    container.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
       const spark = document.createElement('div');
       spark.className = 'mount-spark';
-      const angle = (Math.PI * 2 * i) / 16;
-      const dist = 60 + Math.random() * 100;
+      const angle = (Math.PI * 2 * i) / 20;
+      const dist = 80 + Math.random() * 120;
       spark.style.setProperty('--sx', `${Math.cos(angle) * dist}px`);
       spark.style.setProperty('--sy', `${Math.sin(angle) * dist}px`);
       spark.style.left = '50%';
       spark.style.top = '50%';
-      spark.style.animationDelay = `${0.5 + Math.random() * 0.3}s`;
-      sparks.appendChild(spark);
+      spark.style.animationDelay = `${Math.random() * 0.3}s`;
+      spark.style.animationDuration = `${1 + Math.random() * 0.8}s`;
+      container.appendChild(spark);
     }
-
-    // 画面振動
-    mountScreen.classList.add('shaking');
-    setTimeout(() => mountScreen.classList.remove('shaking'), 600);
   }
 
   // --- レース ---
   function startRace() {
     showScreen('race');
-    sg.sound.playBgm('race');
+    SoundSystem.playBgm('race');
 
     const baseSpeed = 2.5 + playerStats.speed * 0.3;
 
@@ -607,14 +809,13 @@
       bananas: [],
       itemBoxes: [],
       scrollY: 0,
-      countdown: 120, // 2秒
+      countdown: 120,
       finished: false,
       finishOrder: [],
       startTime: 0,
       elapsed: 0,
     };
 
-    // 障害物・アイテムボックス生成
     generateTrackObjects();
 
     raceMessage.classList.remove('hidden');
@@ -625,7 +826,6 @@
   function generateTrackObjects() {
     const totalDist = LAPS * LAP_LENGTH;
 
-    // 障害物（岩） - 間隔を広くし、全レーン塞がないようにする
     for (let d = 300; d < totalDist; d += 250 + Math.random() * 300) {
       const lane = Math.floor(Math.random() * LANE_COUNT);
       raceState.obstacles.push({
@@ -636,7 +836,6 @@
       });
     }
 
-    // アイテムボックス - 間隔を狭くして取りやすく
     for (let d = 150; d < totalDist; d += 200 + Math.random() * 150) {
       const lane = Math.floor(Math.random() * LANE_COUNT);
       raceState.itemBoxes.push({
@@ -653,12 +852,10 @@
   document.addEventListener('keydown', e => {
     keys[e.key] = true;
     if (GAME_KEYS.has(e.key)) e.preventDefault();
-    // スロット中はスペース/Enterで停止
     if (phase === 'slot' && (e.key === ' ' || e.key === 'Enter')) stopNextSlot();
   });
   document.addEventListener('keyup', e => { keys[e.key] = false; });
 
-  // キャンバスクリック/タッチでレース操作
   canvas.addEventListener('mousedown', e => {
     if (phase !== 'race') return;
     const rect = canvas.getBoundingClientRect();
@@ -727,18 +924,10 @@
     if (p.spinTimer > 0) {
       p.spinTimer--;
     } else {
-      // 左右移動
-      if (keys['ArrowLeft'] || keys['a']) {
-        p.x -= p.steerSpeed;
-      }
-      if (keys['ArrowRight'] || keys['d']) {
-        p.x += p.steerSpeed;
-      }
-
-      // 道路の範囲制限
+      if (keys['ArrowLeft'] || keys['a']) p.x -= p.steerSpeed;
+      if (keys['ArrowRight'] || keys['d']) p.x += p.steerSpeed;
       p.x = Math.max(ROAD_LEFT + 15, Math.min(ROAD_LEFT + ROAD_W - 15, p.x));
 
-      // アイテム使用
       if ((keys[' '] || keys['z']) && p.item) {
         useItem(p);
         keys[' '] = false;
@@ -746,7 +935,6 @@
       }
     }
 
-    // ブースト
     let currentSpeed = p.speed;
     if (p.boostTimer > 0) {
       currentSpeed = p.maxSpeed + 3;
@@ -755,18 +943,16 @@
 
     p.distance += currentSpeed;
 
-    // シールド
     if (p.shieldTimer > 0) p.shieldTimer--;
     else p.shielded = false;
 
-    // ラップ管理
     const newLap = Math.floor(p.distance / LAP_LENGTH) + 1;
     if (newLap > p.lap && p.lap < LAPS) {
       p.lap = Math.min(newLap, LAPS);
       lapEffect = { active: true, lap: p.lap, timer: 70 };
     }
     if (p.distance >= LAPS * LAP_LENGTH && !rs.finished) {
-      if (!lapEffect.active) lapEffect = { active: true, lap: 0, timer: 70 }; // ゴール演出
+      if (!lapEffect.active) lapEffect = { active: true, lap: 0, timer: 70 };
       if (!rs.finishOrder.includes('player')) rs.finishOrder.push('player');
       if (rs.finishOrder.length >= 4 || rs.finishOrder.includes('player')) {
         endRace();
@@ -780,7 +966,6 @@
 
       r.distance += r.speed + Math.sin(rs.elapsed / 1000 + i) * 0.5;
 
-      // たまに車線変更
       r.changeLaneTimer--;
       if (r.changeLaneTimer <= 0) {
         r.lane = Math.floor(Math.random() * LANE_COUNT);
@@ -790,19 +975,16 @@
       const targetX = ROAD_LEFT + LANE_W * r.lane + LANE_W / 2;
       r.x += (targetX - r.x) * 0.05;
 
-      // ゴール判定
       if (r.distance >= LAPS * LAP_LENGTH && !rs.finishOrder.includes(r.name)) {
         rs.finishOrder.push(r.name);
       }
 
-      // ラップ
       r.lap = Math.min(Math.floor(r.distance / LAP_LENGTH) + 1, LAPS);
     });
 
     // --- 当たり判定 ---
     const viewDist = p.distance;
 
-    // 障害物（hitフラグで同じ岩に連続ヒットしない）
     rs.obstacles.forEach(ob => {
       if (ob.hit) return;
       const relY = ob.dist - viewDist;
@@ -810,14 +992,12 @@
         ob.hit = true;
         if (!p.shielded) {
           p.spinTimer = 25;
-          sg.sound.play('hit');
+          SoundSystem.play('hit');
         }
       }
     });
 
-    // バナナ
     rs.bananas = rs.bananas.filter(b => {
-      // ライバルとの当たり判定
       for (const r of rs.rivals) {
         const relY = b.dist - r.distance;
         if (Math.abs(relY) < 20 && Math.abs(b.x - r.x) < 22) {
@@ -828,14 +1008,13 @@
       return true;
     });
 
-    // アイテムボックス（判定を広めに）
     rs.itemBoxes.forEach(box => {
       if (!box.active) return;
       const relY = box.dist - viewDist;
       if (Math.abs(relY) < 30 && Math.abs(box.x - p.x) < 30 && !p.item) {
         p.item = RACE_ITEMS[Math.floor(Math.random() * RACE_ITEMS.length)];
         box.active = false;
-        sg.sound.play('pickup');
+        SoundSystem.play('pickup');
       }
     });
 
@@ -847,12 +1026,11 @@
 
     const position = allRacers.findIndex(r => r.name === 'player') + 1;
     const posLabels = ['1st', '2nd', '3rd', '4th'];
-    hudPosition.textContent = t('hudPosition', posLabels[position - 1]);
+    hudPosition.textContent = '順位: ' + posLabels[position - 1];
     const currentLap = Math.min(p.lap, LAPS);
     hudLap.textContent = `LAP ${currentLap}/${LAPS}`;
-    hudItem.textContent = p.item ? p.item.emoji + ' ' + itemName(p.item) : '';
+    hudItem.textContent = p.item ? p.item.emoji + ' ' + p.item.name : '';
 
-    // 演出タイマー
     if (itemEffect.active) {
       itemEffect.timer--;
       if (itemEffect.timer <= 0) itemEffect.active = false;
@@ -868,8 +1046,6 @@
 
   // アイテム使用演出
   let itemEffect = { active: false, text: '', emoji: '', timer: 0, color: '' };
-
-  // ラップ演出
   let lapEffect = { active: false, lap: 0, timer: 0 };
 
   function useItem(p) {
@@ -878,19 +1054,19 @@
     switch (item.effect) {
       case 'banana':
         raceState.bananas.push({ x: p.x, dist: p.distance - 50 });
-        showItemEffect(t('itemBanana'), '🍌', '#ffee00');
-        sg.sound.play('banana_set');
+        showItemEffect('🍌 バナナ設置！', '🍌', '#ffee00');
+        SoundSystem.play('banana_set');
         break;
       case 'boost':
         p.boostTimer = 60;
-        showItemEffect(t('itemBoost'), '🚀', '#ff4400');
-        sg.sound.play('boost');
+        showItemEffect('🚀 ダッシュ！！', '🚀', '#ff4400');
+        SoundSystem.play('boost');
         break;
       case 'shield':
         p.shielded = true;
         p.shieldTimer = 180;
-        showItemEffect(t('itemShield'), '🍙', '#66ccff');
-        sg.sound.play('shield');
+        showItemEffect('🍙 おにぎりバリア！', '🍙', '#66ccff');
+        SoundSystem.play('shield');
         break;
     }
   }
@@ -905,20 +1081,16 @@
     const p = rs.player;
     const viewDist = p.distance;
 
-    // 背景
     ctx.fillStyle = '#7cac5c';
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-    // 道路
     ctx.fillStyle = '#888';
     ctx.fillRect(ROAD_LEFT, 0, ROAD_W, CANVAS_H);
 
-    // 道路端線
     ctx.fillStyle = '#fff';
     ctx.fillRect(ROAD_LEFT - 3, 0, 6, CANVAS_H);
     ctx.fillRect(ROAD_LEFT + ROAD_W - 3, 0, 6, CANVAS_H);
 
-    // 車線（破線）
     ctx.strokeStyle = '#ccc';
     ctx.lineWidth = 2;
     ctx.setLineDash([20, 20]);
@@ -932,7 +1104,6 @@
     }
     ctx.setLineDash([]);
 
-    // 道路脇の木
     const treeSpacing = 120;
     for (let i = 0; i < 10; i++) {
       const treeY = ((i * treeSpacing - (viewDist * SCROLL_SCALE) % treeSpacing) + CANVAS_H) % (CANVAS_H + treeSpacing) - 40;
@@ -940,26 +1111,19 @@
       drawTree(ROAD_LEFT + ROAD_W + 15, treeY);
     }
 
-    // 障害物
     rs.obstacles.forEach(ob => {
       const relY = ob.dist - viewDist;
       const screenY = CANVAS_H - 80 - relY * SCROLL_SCALE;
-      if (screenY > -30 && screenY < CANVAS_H + 30) {
-        drawRock(ob.x, screenY);
-      }
+      if (screenY > -30 && screenY < CANVAS_H + 30) drawRock(ob.x, screenY);
     });
 
-    // アイテムボックス
     rs.itemBoxes.forEach(box => {
       if (!box.active) return;
       const relY = box.dist - viewDist;
       const screenY = CANVAS_H - 80 - relY * SCROLL_SCALE;
-      if (screenY > -30 && screenY < CANVAS_H + 30) {
-        drawItemBox(box.x, screenY);
-      }
+      if (screenY > -30 && screenY < CANVAS_H + 30) drawItemBox(box.x, screenY);
     });
 
-    // バナナ
     rs.bananas.forEach(b => {
       const relY = b.dist - viewDist;
       const screenY = CANVAS_H - 80 - relY * SCROLL_SCALE;
@@ -970,19 +1134,15 @@
       }
     });
 
-    // ライバル
     rs.rivals.forEach(r => {
       const relY = r.distance - viewDist;
       const screenY = CANVAS_H - 80 - relY * SCROLL_SCALE;
-      if (screenY > -60 && screenY < CANVAS_H + 60) {
-        drawRivalCar(r.x, screenY, r.color, r.name, r.spinTimer > 0);
-      }
+      if (screenY > -60 && screenY < CANVAS_H + 60) drawRivalHakase(r.x, screenY, r.color, r.name, r.spinTimer > 0);
     });
 
-    // プレイヤー（博士に乗った少年）
     drawPlayerHakase(p.x, CANVAS_H - 80, p);
 
-    // ラッププログレスバー（キャンバス上部）
+    // ラッププログレスバー
     const lapProg = (p.distance % LAP_LENGTH) / LAP_LENGTH;
     const barW = CANVAS_W - 20;
     const barX = 10;
@@ -995,7 +1155,6 @@
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 1;
     ctx.strokeRect(barX, barY, barW, 8);
-    // ラップ区切りマーク
     for (let i = 1; i <= LAPS; i++) {
       const dotX = barX + (barW / LAPS) * i;
       ctx.fillStyle = i <= p.lap ? '#ffd700' : '#888';
@@ -1016,12 +1175,8 @@
       const slide = (70 - lapEffect.timer) * 2;
       ctx.save();
       ctx.globalAlpha = alpha;
-
-      // 横帯
       ctx.fillStyle = lapEffect.lap === 0 ? 'rgba(255,50,50,0.7)' : 'rgba(0,0,0,0.6)';
       ctx.fillRect(0, CANVAS_H * 0.25 - 25, CANVAS_W, 50);
-
-      // テキスト
       ctx.font = 'bold 28px "Zen Maru Gothic", sans-serif';
       ctx.textAlign = 'center';
       const txt = lapEffect.lap === 0
@@ -1044,12 +1199,8 @@
     if (itemEffect.active) {
       const alpha = Math.min(1, itemEffect.timer / 20);
       const scale = 1 + (50 - itemEffect.timer) * 0.02;
-
-      // 背景フラッシュ
       ctx.fillStyle = itemEffect.color + Math.floor(alpha * 40).toString(16).padStart(2, '0');
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-
-      // テキスト表示
       ctx.save();
       ctx.translate(CANVAS_W / 2, CANVAS_H * 0.35);
       ctx.scale(scale, scale);
@@ -1065,10 +1216,8 @@
   }
 
   function drawTree(x, y) {
-    // 幹
     ctx.fillStyle = '#8B6914';
     ctx.fillRect(x - 4, y + 10, 8, 15);
-    // 葉
     ctx.fillStyle = '#2d6b1e';
     ctx.beginPath();
     ctx.arc(x, y + 5, 15, 0, Math.PI * 2);
@@ -1112,73 +1261,58 @@
     if (spin) ctx.rotate(Math.sin(performance.now() / 50) * 0.5);
 
     // 博士（四つん這い）
-    // 体
     ctx.fillStyle = '#e8d5b0';
     ctx.fillRect(-18, 5 + wobble, 36, 14);
-    // 白衣
     ctx.fillStyle = '#f0f0f0';
     ctx.fillRect(-20, 3 + wobble, 40, 16);
-    // 頭
     ctx.fillStyle = '#e8d5b0';
     ctx.beginPath();
     ctx.arc(22, 6 + wobble, 10, 0, Math.PI * 2);
     ctx.fill();
-    // メガネ
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(24, 5 + wobble, 4, 0, Math.PI * 2);
     ctx.stroke();
-    // ヒゲ
     ctx.fillStyle = '#999';
     ctx.fillRect(26, 9 + wobble, 6, 3);
-    // 手足（四つん這い）
     ctx.fillStyle = '#e8d5b0';
     ctx.fillRect(-22, 17 + wobble, 6, 10);
     ctx.fillRect(-8, 17 + wobble, 6, 10);
     ctx.fillRect(10, 17 + wobble, 6, 10);
     ctx.fillRect(22, 17 + wobble, 6, 10);
 
-    // 少年（博士の上に乗っている）
-    // 体（タンクトップ）
+    // 少年（博士の上）
     ctx.fillStyle = '#ff6633';
     ctx.fillRect(-8, -18 + wobble, 16, 16);
-    // 腕
     ctx.fillStyle = '#ffcc88';
     ctx.fillRect(-14, -14 + wobble, 6, 12);
     ctx.fillRect(8, -14 + wobble, 6, 12);
-    // 顔
     ctx.fillStyle = '#ffcc88';
     ctx.beginPath();
     ctx.arc(0, -26 + wobble, 10, 0, Math.PI * 2);
     ctx.fill();
-    // 帽子（つばが後ろ）
     ctx.fillStyle = '#cc3333';
     ctx.beginPath();
     ctx.arc(0, -31 + wobble, 11, Math.PI, 0);
     ctx.fill();
-    // つば（後ろ向き）
     ctx.fillStyle = '#aa2222';
     ctx.fillRect(-14, -31 + wobble, 8, 4);
-    // 絆創膏
     ctx.fillStyle = '#f5deb3';
     ctx.save();
     ctx.translate(3, -25 + wobble);
     ctx.rotate(0.3);
     ctx.fillRect(-4, -1.5, 8, 3);
     ctx.restore();
-    // 目（熱血）
     ctx.fillStyle = '#000';
     ctx.fillRect(-4, -28 + wobble, 3, 3);
     ctx.fillRect(2, -28 + wobble, 3, 3);
-    // 口（にやり）
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(0, -22 + wobble, 4, 0.1, Math.PI - 0.1);
     ctx.stroke();
 
-    // シールドエフェクト
     if (p.shielded) {
       ctx.strokeStyle = 'rgba(100, 200, 255, 0.6)';
       ctx.lineWidth = 3;
@@ -1187,7 +1321,6 @@
       ctx.stroke();
     }
 
-    // ブーストエフェクト
     if (p.boostTimer > 0) {
       ctx.fillStyle = '#ff4400';
       for (let i = 0; i < 3; i++) {
@@ -1202,47 +1335,37 @@
     ctx.restore();
   }
 
-  function drawRivalCar(x, y, color, name, spinning) {
+  function drawRivalHakase(x, y, color, name, spinning) {
+    const wobble = Math.sin(performance.now() / 120) * 2;
+
     ctx.save();
     ctx.translate(x, y);
     if (spinning) ctx.rotate(Math.sin(performance.now() / 50) * 0.5);
 
-    // タイヤ（4つ）
-    ctx.fillStyle = '#333';
-    ctx.fillRect(-16, -2, 5, 6);
-    ctx.fillRect(11, -2, 5, 6);
-    ctx.fillRect(-16, 10, 5, 6);
-    ctx.fillRect(11, 10, 5, 6);
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(-15, 3 + wobble, 30, 12);
+    ctx.fillStyle = '#e8d5b0';
+    ctx.beginPath();
+    ctx.arc(18, 5 + wobble, 8, 0, Math.PI * 2);
+    ctx.fill();
 
-    // 車体（メインボディ）
     ctx.fillStyle = color;
-    ctx.fillRect(-14, -4, 28, 18);
+    ctx.fillRect(-6, -12 + wobble, 12, 12);
+    ctx.fillStyle = '#ffcc88';
+    ctx.beginPath();
+    ctx.arc(0, -18 + wobble, 7, 0, Math.PI * 2);
+    ctx.fill();
 
-    // 屋根（キャビン）
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.7;
-    ctx.fillRect(-10, -14, 20, 12);
-    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#e8d5b0';
+    ctx.fillRect(-18, 13 + wobble, 5, 8);
+    ctx.fillRect(-6, 13 + wobble, 5, 8);
+    ctx.fillRect(8, 13 + wobble, 5, 8);
+    ctx.fillRect(18, 13 + wobble, 5, 8);
 
-    // フロントガラス
-    ctx.fillStyle = '#aaddff';
-    ctx.fillRect(-8, -12, 16, 5);
-
-    // ヘッドライト
-    ctx.fillStyle = '#ffee44';
-    ctx.fillRect(-10, -5, 4, 3);
-    ctx.fillRect(6, -5, 4, 3);
-
-    // テールランプ
-    ctx.fillStyle = '#ff3333';
-    ctx.fillRect(-10, 11, 4, 3);
-    ctx.fillRect(6, 11, 4, 3);
-
-    // 名前
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 9px sans-serif';
+    ctx.font = 'bold 10px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(name, 0, -20);
+    ctx.fillText(name, 0, -28 + wobble);
 
     ctx.restore();
   }
@@ -1251,6 +1374,7 @@
   function endRace() {
     raceState.finished = true;
     if (rafId) cancelAnimationFrame(rafId);
+    SoundSystem.stopBgm();
 
     const pos = raceState.finishOrder.indexOf('player');
     const position = pos === -1 ? 4 : pos + 1;
@@ -1267,37 +1391,36 @@
 
     lastResultPos = posLabels[position - 1];
     lastResultSec = sec;
-    lastResultPosIdx = position - 1;
     resultTitleEl.textContent = `${t('resultLabel')}: ${posLabels[position - 1]}！`;
     resultTitleEl.style.color = position === 1 ? '#ffd700' : '#cc6600';
     resultComment.textContent = comments[position - 1];
-    resultTime.textContent = `${t('timeLabel')}: ${sec}${t('seconds')}`;
+    resultTime.textContent = `${t('timeLabel')}: ${sec}秒`;
 
-    // ハイスコア (タイム系: lower is better, 1位のみ記録)
-    const { isNewHigh } = sg.onGameEnd(
-      position === 1 ? secNum : 9999,
-      { position },
-      true
-    );
+    // ハイスコア (1位のみ記録、タイム系: lower is better)
+    let isNewHigh = false;
+    if (position === 1) {
+      const prev = getHighScore();
+      if (prev === null || secNum < prev) {
+        setHighScore(secNum);
+        isNewHigh = true;
+      }
+    }
 
-    // ハイスコア表示
-    const hs = sg.getHighScore();
-    if (hs !== null && hs < 9999) {
+    const hs = getHighScore();
+    if (hs !== null) {
       resultHighscore.textContent = `${t('highscoreLabel')}: ${hs}${t('seconds')}`;
       resultHighscore.style.display = 'block';
     } else {
       resultHighscore.style.display = 'none';
     }
 
-    // NEW RECORD表示
-    if (isNewHigh && position === 1) {
+    if (isNewHigh) {
       const newRec = document.createElement('div');
-      newRec.className = 'sg-new-record';
+      newRec.className = 'new-record';
       newRec.textContent = t('newRecord');
       resultTitleEl.after(newRec);
     }
 
-    // シェアボタン表示
     shareBtn.classList.remove('hidden');
     shareBtn.textContent = t('share');
 
@@ -1306,7 +1429,6 @@
 
   // --- イベント ---
   startBtn.addEventListener('click', () => {
-    sg.onGameStart();
     showIntroScreen();
   });
 
@@ -1314,15 +1436,13 @@
 
   slotBtn.addEventListener('click', stopNextSlot);
 
-  // スロット結果→会話シーンへ
   raceBtn.addEventListener('click', () => {
     showConversation();
   });
 
-  // 会話シーン進行
   convNextBtn.addEventListener('click', () => {
     convStep++;
-    sg.sound.play('tap');
+    SoundSystem.play('tap');
     const conv = t('conversation');
     if (convStep < conv.length) {
       updateConversation();
@@ -1331,28 +1451,22 @@
     }
   });
 
-  // ヨシノリアップ画面タップ→博士に乗るシーン
   yoshinoriScreen.addEventListener('click', () => {
-    if (phase === 'yoshinori') {
-      showMountScene();
-    }
+    if (phase === 'yoshinori') showMountScene();
   });
 
-  // 博士に乗る→乗車完了演出→レース開始
   let mountTriggered = false;
   mountScreen.addEventListener('click', () => {
     if (phase === 'mount' && !mountTriggered) {
       mountTriggered = true;
-      sg.sound.stopBgm();
-      sg.sound.play('dramatic');
+      SoundSystem.stopBgm();
+      SoundSystem.play('dramatic');
 
-      // 乗車完了テキスト更新
       document.getElementById('mount-text').textContent = t('mountComplete');
       const subEl = document.getElementById('mount-subtext');
       if (subEl) subEl.textContent = t('mountSub');
 
-      // シネマティック演出
-      createMountEffects();
+      createMountSparks();
 
       const overlay = document.getElementById('mount-overlay');
       overlay.classList.remove('hidden');
@@ -1368,19 +1482,16 @@
   // シェアボタン
   let lastResultPos = '';
   let lastResultSec = '';
-  let lastResultPosIdx = null;
 
   shareBtn.addEventListener('click', () => {
     const gameURL = window.location.href;
-    const pos = t('posLabels')[lastResultPosIdx] || lastResultPos;
-    const shareText = t('shareText', pos, lastResultSec) + '\n' + gameURL;
+    const shareText = t('shareText', lastResultPos, lastResultSec) + '\n' + gameURL;
     const tweetURL = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
     window.open(tweetURL, '_blank');
   });
 
   retryBtn.addEventListener('click', () => {
-    // Remove NEW RECORD badge if present
-    const oldRec = document.querySelector('.sg-new-record');
+    const oldRec = document.querySelector('.new-record');
     if (oldRec) oldRec.remove();
     shareBtn.classList.add('hidden');
     resultHighscore.style.display = 'none';

@@ -8,17 +8,17 @@
   const SITE_BASE = '../../';
 
   // ===== 正式リリース済みゲームID =====
-  const RELEASED_IDS = ['escape-room', 'whack-kanikani', 'business-analysis'];
+  const RELEASED_IDS = ['drive', 'escape-room', 'whack-kanikani', 'business-analysis'];
 
   // ===== ゲームカタログ =====
   const GAME_CATALOG = [
-    { id: 'escape-room', title: 'かわいい部屋からの脱出', emoji: '🚪', genre: 'パズル', desc: '気付いたらかわいい部屋にいた。脱出せよ。' },
-    { id: 'whack-kanikani', title: 'かにかにパニック！', emoji: '🦀', genre: 'アクション', desc: 'ヤクザ蟹を叩きまくれ！30秒の激闘。' },
-    { id: 'business-analysis', title: '経営分析ゲーム', emoji: '📊', genre: 'アドベンチャー', desc: '天才たちの戯れ。数字に愛されろ。' },
+    { id: 'escape-room', title: 'かわいい部屋からの脱出', titleEn: 'Escape Room', emoji: '🚪', genre: 'パズル', genreEn: 'Puzzle', desc: '気付いたらかわいい部屋にいた。脱出せよ。' },
+    { id: 'whack-kanikani', title: 'かにかにパニック！', titleEn: 'Kani-Kani Panic!', emoji: '🦀', genre: 'アクション', genreEn: 'Action', desc: 'ヤクザ蟹を叩きまくれ！30秒の激闘。' },
+    { id: 'business-analysis', title: '経営分析ゲーム', titleEn: 'Business Analysis', emoji: '📊', genre: 'アドベンチャー', genreEn: 'Adventure', desc: '天才たちの戯れ。数字に愛されろ。' },
     { id: 'chaos-stream', title: 'カオス配信シミュレーター', emoji: '📺', genre: 'シミュレーション', desc: 'あなたの配信、カオスです。' },
     { id: 'cosmic-chain', title: 'コズミック・チェイン', emoji: '🌟', genre: 'パズル', desc: '星々の連鎖反応を起こせ。' },
     { id: 'dress-up', title: 'びじんメーカー', emoji: '👗', genre: 'カスタマイズ', desc: 'あなただけのびじんを作ろう。' },
-    { id: 'drive', title: '黄金ドライバー', emoji: '🚗', genre: 'レース', desc: '博士のせなかでGO！' },
+    { id: 'drive', title: '黄金ドライバー', titleEn: 'Golden Driver', emoji: '🚗', genre: 'レース', genreEn: 'Racing', desc: '博士のせなかでGO！' },
     { id: 'elite-english', title: 'エリートイングリッシュ！', emoji: '🎓', genre: 'クイズ', desc: 'エリートな英語力を見せつけろ。' },
     { id: 'fortune', title: 'シュール前世占い', emoji: '🔮', genre: '占い', desc: 'あなたの前世は何だった？' },
     { id: 'holo-analysis', title: 'ホロメン経営分析', emoji: '📈', genre: 'クイズ', desc: '鼻毛たちの戯れ。' },
@@ -154,6 +154,54 @@
         147, 147, 175, 175, 147, 147, 175, 175,
       ]
     },
+    // レース・スピード系（黄金ドライバー）— 疾走感あるロック調
+    race: {
+      tempo: 180, key: 'Em', wave: 'sawtooth', volume: 0.07,
+      melody: [
+        330, 392, 494, 659, 494, 659, 784, 659,
+        587, 659, 784, 988, 784, 659, 587, 494,
+        330, 494, 587, 659, 784, 659, 587, 494,
+        392, 494, 587, 784, 659, 587, 494, 392,
+      ],
+      bass: [
+        165, 165, 165, 165, 196, 196, 196, 196,
+        220, 220, 220, 220, 247, 247, 196, 196,
+        165, 165, 165, 165, 196, 196, 196, 196,
+        220, 220, 247, 247, 196, 196, 165, 165,
+      ]
+    },
+    // 悲しい系（黄金ドライバー 博士に乗るシーン）
+    sad: {
+      tempo: 65, key: 'Am', wave: 'sine', volume: 0.10,
+      melody: [
+        440, 392, 349, 330, 349, 392, 349, 330,
+        294, 330, 349, 392, 349, 330, 294, 262,
+        220, 262, 294, 330, 294, 262, 220, 196,
+        220, 262, 294, 349, 330, 294, 262, 220,
+      ],
+      bass: [
+        110, 110, 131, 131, 147, 147, 131, 131,
+        110, 110, 131, 131, 147, 147, 110, 110,
+        88, 88, 110, 110, 131, 131, 110, 110,
+        88, 88, 110, 110, 88, 88, 110, 110,
+      ]
+    },
+    // 不穏系（黄金ドライバー 会話シーン）
+    ominous: {
+      tempo: 75, key: 'Dm', wave: 'triangle', volume: 0.09,
+      melody: [
+        294, 277, 262, 277, 294, 262, 247, 233,
+        262, 247, 233, 220, 233, 247, 220, 208,
+        294, 311, 330, 311, 294, 277, 262, 247,
+        233, 220, 208, 196, 208, 220, 233, 220,
+      ],
+      bass: [
+        147, 139, 131, 139, 147, 131, 123, 117,
+        131, 123, 117, 110, 117, 123, 110, 104,
+        147, 156, 165, 156, 147, 139, 131, 123,
+        117, 110, 104, 98, 104, 110, 117, 110,
+      ]
+    },
     // 配信・サイバー系（カオス配信）
     cyber: {
       tempo: 135, key: 'Em', wave: 'sawtooth', volume: 0.06,
@@ -260,7 +308,7 @@
     'chaos-stream': 'cyber',
     'cosmic-chain': 'cosmic',
     'dress-up': 'cute',
-    'drive': 'action',
+    'drive': 'race',
     'elite-english': 'quiz',
     'fortune': 'cute',
     'holo-analysis': 'quiz',
@@ -807,6 +855,110 @@
           });
           break;
         }
+        case 'dramatic': {
+          // ドーン！ — 衝撃的な不協和音 + 低音の地鳴り
+          this._duckBgm(1.5);
+          // 低音の衝撃波
+          const oscLow = ctx.createOscillator();
+          const gLow = ctx.createGain();
+          oscLow.type = 'sawtooth';
+          oscLow.frequency.setValueAtTime(80, now);
+          oscLow.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+          gLow.gain.setValueAtTime(this.volume * 0.8, now);
+          gLow.gain.exponentialRampToValueAtTime(0.01, now + 1.0);
+          oscLow.connect(gLow);
+          gLow.connect(ctx.destination);
+          oscLow.start(now);
+          oscLow.stop(now + 1.0);
+          // 不協和音の和音（短2度 + 増4度）
+          [147, 156, 208, 220].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.value = freq;
+            g.gain.setValueAtTime(this.volume * 0.4, now + 0.02 * i);
+            g.gain.exponentialRampToValueAtTime(0.01, now + 0.6 + 0.1 * i);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.02 * i);
+            osc.stop(now + 0.7 + 0.1 * i);
+          });
+          // 高音の衝撃
+          const oscHigh = ctx.createOscillator();
+          const gHigh = ctx.createGain();
+          oscHigh.type = 'sawtooth';
+          oscHigh.frequency.setValueAtTime(2000, now);
+          oscHigh.frequency.exponentialRampToValueAtTime(200, now + 0.3);
+          gHigh.gain.setValueAtTime(this.volume * 0.5, now);
+          gHigh.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          oscHigh.connect(gHigh);
+          gHigh.connect(ctx.destination);
+          oscHigh.start(now);
+          oscHigh.stop(now + 0.4);
+          break;
+        }
+        case 'slot_stop': {
+          // カシャン！ — スロットが止まる音
+          const oscSlot = ctx.createOscillator();
+          const gSlot = ctx.createGain();
+          oscSlot.type = 'square';
+          oscSlot.frequency.setValueAtTime(600, now);
+          oscSlot.frequency.exponentialRampToValueAtTime(400, now + 0.06);
+          gSlot.gain.setValueAtTime(this.volume * 0.4, now);
+          gSlot.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          oscSlot.connect(gSlot);
+          gSlot.connect(ctx.destination);
+          oscSlot.start(now);
+          oscSlot.stop(now + 0.12);
+          break;
+        }
+        case 'boost': {
+          // シュイーン！ — ダッシュ音
+          const oscBoost = ctx.createOscillator();
+          const gBoost = ctx.createGain();
+          oscBoost.type = 'sawtooth';
+          oscBoost.frequency.setValueAtTime(200, now);
+          oscBoost.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
+          oscBoost.frequency.exponentialRampToValueAtTime(800, now + 0.4);
+          gBoost.gain.setValueAtTime(this.volume * 0.4, now);
+          gBoost.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+          oscBoost.connect(gBoost);
+          gBoost.connect(ctx.destination);
+          oscBoost.start(now);
+          oscBoost.stop(now + 0.5);
+          break;
+        }
+        case 'banana_set': {
+          // ペチャッ — バナナ設置音
+          const oscBan = ctx.createOscillator();
+          const gBan = ctx.createGain();
+          oscBan.type = 'sine';
+          oscBan.frequency.setValueAtTime(500, now);
+          oscBan.frequency.exponentialRampToValueAtTime(150, now + 0.15);
+          gBan.gain.setValueAtTime(this.volume * 0.4, now);
+          gBan.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          oscBan.connect(gBan);
+          gBan.connect(ctx.destination);
+          oscBan.start(now);
+          oscBan.stop(now + 0.2);
+          break;
+        }
+        case 'shield': {
+          // キラーン — バリア音
+          [880, 1100, 1320, 1760].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            g.gain.setValueAtTime(this.volume * 0.3, now + i * 0.06);
+            g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.06 + 0.3);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + i * 0.06);
+            osc.stop(now + i * 0.06 + 0.35);
+          });
+          break;
+        }
       }
     }
   };
@@ -959,16 +1111,17 @@
     const shuffled = released.sort(() => Math.random() - 0.5);
     const picks = shuffled.slice(0, 3);
 
+    const isEn = (document.documentElement.lang || '').startsWith('en');
     const section = document.createElement('div');
     section.className = 'sg-recommend';
     section.innerHTML = `
-      <div class="sg-recommend-title">${_t('otherGames', '🎮 他のゲームも遊ぶ')}</div>
+      <div class="sg-recommend-title">${isEn ? '🎮 Play Other Games' : _t('otherGames', '🎮 他のゲームも遊ぶ')}</div>
       <div class="sg-recommend-cards">
         ${picks.map(g => `
           <a href="../${g.id}/index.html" class="sg-recommend-card">
             <span class="sg-recommend-emoji">${g.emoji}</span>
-            <span class="sg-recommend-name">${g.title}</span>
-            <span class="sg-recommend-genre">${g.genre}</span>
+            <span class="sg-recommend-name">${(isEn && g.titleEn) ? g.titleEn : g.title}</span>
+            <span class="sg-recommend-genre">${(isEn && g.genreEn) ? g.genreEn : g.genre}</span>
           </a>
         `).join('')}
       </div>
@@ -1032,12 +1185,15 @@
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // i18n が利用可能なら、言語変更時にラベルを更新
+    // 言語変更時にラベルを更新（SurrealI18n 経由またはカスタムイベント経由）
     if (window.SurrealI18n && typeof window.SurrealI18n.onLangChange === 'function') {
       window.SurrealI18n.onLangChange(function () {
         insertRecommendSections();
       });
     }
+    window.addEventListener('surreal-lang-change', function () {
+      insertRecommendSections();
+    });
 
     return {
       sound: SoundSystem,

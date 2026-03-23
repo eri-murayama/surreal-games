@@ -250,6 +250,7 @@ function t(key, ...args) {
 function setLang(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
+  window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
   // タイトル更新
   document.title = lang === 'ja' ? '脱出ゲーム - かわいい部屋からの脱出' : 'Escape Game - Escape from a Cute Room';

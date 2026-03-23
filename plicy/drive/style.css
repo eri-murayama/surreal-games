@@ -1,4 +1,4 @@
-/* === 黄金の金色ドライバー - 昭和レトロ風レースゲーム === */
+/* === 黄金の金色ドライバー - Plicy版 === */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -34,7 +34,7 @@ body {
 }
 
 .game-title {
-  font-family: 'Zen Maru Gothic', sans-serif;
+  font-family: 'Dela Gothic One', 'Zen Maru Gothic', sans-serif;
   font-size: 1.5rem;
   font-weight: 900;
   color: #cc6600;
@@ -416,7 +416,7 @@ body {
 }
 
 #result-title {
-  font-family: 'Zen Maru Gothic', sans-serif;
+  font-family: 'Dela Gothic One', 'Zen Maru Gothic', sans-serif;
   font-size: 1.8rem;
   font-weight: 900;
   text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
@@ -447,6 +447,18 @@ body {
   color: #cc6600;
 }
 
+.new-record {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #ff3300;
+  animation: pulse-record 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-record {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
 #retry-btn {
   background: linear-gradient(180deg, #ff6633, #cc3300);
   color: #fff;
@@ -471,52 +483,6 @@ body {
 #share-btn:hover {
   transform: translate(2px, 2px);
   box-shadow: 1px 1px 0 #3a2a1a;
-}
-
-/* おすすめゲーム導線を暖色テーマに上書き */
-#result-screen .sg-recommend {
-  background: rgba(139, 69, 19, 0.1);
-  border: 2px solid rgba(139, 69, 19, 0.2);
-  margin-top: 4px;
-  padding: 10px;
-}
-
-#result-screen .sg-recommend-title {
-  color: #5c3317;
-  text-shadow: none;
-}
-
-#result-screen .sg-recommend-card {
-  background: rgba(139, 69, 19, 0.08);
-  border-color: rgba(139, 69, 19, 0.2);
-  color: #3a2a1a;
-}
-
-#result-screen .sg-recommend-card:hover {
-  background: rgba(139, 69, 19, 0.15);
-}
-
-#result-screen .sg-recommend-genre {
-  background: rgba(139, 69, 19, 0.1);
-  color: #5c3317;
-}
-
-#result-screen .sg-recommend-all {
-  color: #8b4513;
-}
-
-/* === 戻るリンク === */
-.back-to-top-link {
-  display: inline-block;
-  padding: 6px 0;
-  color: #8b4513;
-  text-decoration: none;
-  font-size: 0.8rem;
-  flex-shrink: 0;
-}
-
-.back-to-top-link:hover {
-  text-decoration: underline;
 }
 
 /* === 会話シーン === */
@@ -544,6 +510,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 #conv-image {
@@ -621,7 +588,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  font-family: 'Zen Maru Gothic', sans-serif;
+  font-family: 'Dela Gothic One', 'Zen Maru Gothic', sans-serif;
   font-size: 1.4rem;
   font-weight: 900;
   color: #fff;
@@ -676,163 +643,93 @@ body {
   overflow: hidden;
 }
 
-/* 白フラッシュ→暗転 */
 #mount-flash {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  background: radial-gradient(circle, rgba(255,215,0,0.95) 0%, rgba(255,100,0,0.7) 40%, rgba(0,0,0,0.8) 80%);
   animation: mount-flash-anim 2.5s ease-out forwards;
 }
 
 @keyframes mount-flash-anim {
-  0% { background: rgba(255,255,255,0); }
-  8% { background: rgba(255,255,255,1); }
-  25% { background: rgba(0,0,0,0.85); }
-  100% { background: rgba(0,0,0,0.85); }
+  0% { opacity: 0; transform: scale(0.1); }
+  15% { opacity: 1; transform: scale(1.5); }
+  30% { opacity: 0.8; transform: scale(1); background: radial-gradient(circle, rgba(255,215,0,0.95) 0%, rgba(255,100,0,0.7) 40%, rgba(0,0,0,0.9) 80%); }
+  50% { opacity: 1; }
+  100% { opacity: 0.9; background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(0,0,0,0.85) 60%); }
 }
 
-/* シネマティック黒帯（上） */
-.mount-cinema-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 30%;
-  background: #000;
-  z-index: 3;
-  transform: translateY(-100%);
-  animation: cinema-top 0.5s 0.3s ease-out forwards;
-}
-
-@keyframes cinema-top {
-  to { transform: translateY(0); }
-}
-
-/* シネマティック黒帯（下） */
-.mount-cinema-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30%;
-  background: #000;
-  z-index: 3;
-  transform: translateY(100%);
-  animation: cinema-bottom 0.5s 0.3s ease-out forwards;
-}
-
-@keyframes cinema-bottom {
-  to { transform: translateY(0); }
-}
-
-/* メインテキスト — 画面中央に大きくズバッと */
 #mount-text {
   position: relative;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 2.2rem;
+  font-family: 'Dela Gothic One', 'Zen Maru Gothic', sans-serif;
+  font-size: 3rem;
   font-weight: 900;
   color: #ffd700;
   text-shadow:
     0 0 10px #ffd700,
-    0 0 20px #ff6600,
-    3px 3px 0 #8b0000;
-  letter-spacing: 0.15em;
+    0 0 30px #ff6600,
+    0 0 60px #cc3300,
+    0 0 100px rgba(255,100,0,0.5),
+    4px 4px 0 #8b0000;
+  letter-spacing: 0.3em;
   white-space: pre-line;
   text-align: center;
-  z-index: 5;
+  animation: mount-text-anim 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   opacity: 0;
-  animation: mount-text-slam 0.6s 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  z-index: 2;
 }
 
-/* サブテキスト */
 #mount-subtext {
   position: relative;
   font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.8);
-  letter-spacing: 0.4em;
-  z-index: 5;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.5em;
+  animation: mount-sub-anim 1.5s 0.8s ease-out forwards;
   opacity: 0;
-  animation: mount-sub-fade 0.8s 1.2s ease-out forwards;
+  z-index: 2;
 }
 
-/* スパークコンテナ */
 #mount-sparks {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 4;
+  z-index: 1;
   overflow: hidden;
 }
 
 .mount-spark {
   position: absolute;
-  width: 3px;
-  height: 3px;
+  width: 4px;
+  height: 4px;
   background: #ffd700;
   border-radius: 50%;
-  box-shadow: 0 0 4px #ffd700;
-  animation: spark-fly 1.2s ease-out forwards;
+  box-shadow: 0 0 6px #ffd700, 0 0 12px #ff6600;
+  animation: spark-fly 1.5s ease-out forwards;
 }
 
-/* ゴールドライン演出 */
-.mount-gold-line {
-  position: absolute;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #ffd700, transparent);
-  z-index: 4;
-  animation: gold-line-sweep 0.6s 0.5s ease-out forwards;
-  opacity: 0;
+@keyframes mount-text-anim {
+  0% { opacity: 0; transform: scale(5) rotate(-15deg); filter: blur(10px); }
+  30% { opacity: 1; transform: scale(0.8) rotate(3deg); filter: blur(0); }
+  45% { transform: scale(1.2) rotate(-2deg); }
+  60% { transform: scale(0.95) rotate(1deg); }
+  75% { transform: scale(1.05) rotate(0deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
-/* テキスト：叩きつけ */
-@keyframes mount-text-slam {
-  0% { opacity: 0; transform: scale(3); filter: blur(8px); }
-  60% { opacity: 1; transform: scale(0.95); filter: blur(0); }
-  80% { transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-@keyframes mount-sub-fade {
-  0% { opacity: 0; letter-spacing: 1em; }
-  100% { opacity: 1; letter-spacing: 0.4em; }
+@keyframes mount-sub-anim {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes spark-fly {
   0% { opacity: 1; transform: translate(0, 0) scale(1); }
   100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
-}
-
-@keyframes gold-line-sweep {
-  0% { opacity: 0; width: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; width: 100%; }
-}
-
-/* 画面振動 */
-@keyframes mount-shake {
-  0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-4px, 2px); }
-  20% { transform: translate(4px, -2px); }
-  30% { transform: translate(-3px, -3px); }
-  40% { transform: translate(3px, 3px); }
-  50% { transform: translate(-2px, 1px); }
-  60% { transform: translate(2px, -1px); }
-  70% { transform: translate(-1px, 2px); }
-  80% { transform: translate(1px, -1px); }
-}
-
-#mount-screen.shaking {
-  animation: mount-shake 0.5s ease-out;
-}
-
-#mount-screen {
-  position: relative;
 }
 
 .hidden { display: none !important; }

@@ -64,6 +64,7 @@ function setLang(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
   document.title = lang === 'ja' ? 'かにかにパニック！ - もぐらたたき' : 'Kani-Kani Panic! - Whack-a-Crab';
+  window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
   // タイトル
   document.querySelector('.game-title').textContent = t('title');

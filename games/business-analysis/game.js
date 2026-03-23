@@ -595,10 +595,12 @@
 
   function setLang(lang) {
     currentLang = lang;
+    document.documentElement.lang = lang;
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
     applyLang();
+    window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
   }
 
   function initLangSwitch() {
