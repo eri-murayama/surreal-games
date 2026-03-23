@@ -285,6 +285,7 @@
     bgmNodes: [],
     bgmTimers: [],
     currentBgmPreset: null,
+    bgmSpeedMultiplier: 1.0,
     bgmGain: null,       // BGM専用GainNode（ダッキング用）
     _duckTimer: null,
 
@@ -365,7 +366,7 @@
       const ctx = this.ctx;
       const bgmDest = this.bgmGain || ctx.destination; // ダッキング用GainNode経由
       const now = ctx.currentTime;
-      const baseBeat = 60 / preset.tempo;
+      const baseBeat = (60 / preset.tempo) / (this.bgmSpeedMultiplier || 1.0);
       const vol = preset.volume;
       const swing = preset.swing;
 
@@ -459,10 +460,16 @@
 
     stopBgm() {
       this.bgmPlaying = false;
+      this.bgmSpeedMultiplier = 1.0;
       this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
       this.bgmNodes = [];
       this.bgmTimers.forEach(t => clearTimeout(t));
       this.bgmTimers = [];
+    },
+
+    // BGMのテンポ倍率を変更（次のループから反映）
+    setBgmSpeed(multiplier) {
+      this.bgmSpeedMultiplier = multiplier;
     },
 
     // SE再生
@@ -522,43 +529,16 @@
           break;
         }
         case 'hit': {
-          // ガンッ！金属ハンマーの打撃音
-          // 1) アタック — 瞬間的な高音の衝撃
-          const hitAtk = ctx.createOscillator();
-          const hitAtkG = ctx.createGain();
-          hitAtk.type = 'square';
-          hitAtk.frequency.setValueAtTime(1200, now);
-          hitAtk.frequency.exponentialRampToValueAtTime(300, now + 0.03);
-          hitAtkG.gain.setValueAtTime(this.volume * 0.7, now);
-          hitAtkG.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-          hitAtk.connect(hitAtkG);
-          hitAtkG.connect(ctx.destination);
-          hitAtk.start(now);
-          hitAtk.stop(now + 0.06);
-          // 2) ボディ — 重い低音の「ドン」
-          const hitBody = ctx.createOscillator();
-          const hitBodyG = ctx.createGain();
-          hitBody.type = 'sine';
-          hitBody.frequency.setValueAtTime(120, now);
-          hitBody.frequency.exponentialRampToValueAtTime(50, now + 0.12);
-          hitBodyG.gain.setValueAtTime(this.volume * 0.6, now);
-          hitBodyG.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-          hitBody.connect(hitBodyG);
-          hitBodyG.connect(ctx.destination);
-          hitBody.start(now);
-          hitBody.stop(now + 0.16);
-          // 3) 金属の残響 — キーンという余韻
-          const hitRing = ctx.createOscillator();
-          const hitRingG = ctx.createGain();
-          hitRing.type = 'sine';
-          hitRing.frequency.setValueAtTime(2400, now + 0.02);
-          hitRing.frequency.exponentialRampToValueAtTime(1800, now + 0.25);
-          hitRingG.gain.setValueAtTime(this.volume * 0.15, now + 0.02);
-          hitRingG.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-          hitRing.connect(hitRingG);
-          hitRingG.connect(ctx.destination);
-          hitRing.start(now + 0.02);
-          hitRing.stop(now + 0.26);
+          // ドン！ — 重い打撃音
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.exponentialRampToValueAtTime(40, now + 0.12);
+          gain.gain.value = this.volume * 0.7;
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc.connect(gain);
+          osc.start(now);
+          osc.stop(now + 0.16);
           break;
         }
         case 'combo': {

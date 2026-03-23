@@ -198,6 +198,10 @@ function startCountdown() {
     state.timeLeft--;
     timerEl.textContent = state.timeLeft;
 
+    // BGMテンポを難易度に合わせて加速（残り時間に応じて1.0→1.6倍速）
+    const progress = 1 - state.timeLeft / GAME_DURATION;
+    SurrealGames.SoundSystem.setBgmSpeed(1.0 + progress * 0.6);
+
     if (state.timeLeft <= 10) {
       timerEl.classList.add('urgent');
     }
