@@ -1167,10 +1167,15 @@
     const dh = parts[1];
     if (!dw || !dh) return;
 
-    // body の余計なスクロールを防止
+    // body をスケーリング用にリセット
     document.body.style.overflow = 'hidden';
     document.body.style.margin = '0';
+    document.body.style.padding = '0';
+    document.body.style.width = '100vw';
     document.body.style.height = '100vh';
+    document.body.style.height = '100dvh';
+    document.body.style.display = 'block';
+    document.body.style.position = 'relative';
 
     // ラッパーを固定サイズに設定
     wrapper.style.width = dw + 'px';
@@ -1179,6 +1184,8 @@
     wrapper.style.maxHeight = 'none';
     wrapper.style.margin = '0';
     wrapper.style.position = 'absolute';
+    wrapper.style.top = '0';
+    wrapper.style.left = '0';
     wrapper.style.transformOrigin = 'top left';
     wrapper.style.overflowY = 'auto';
     wrapper.style.overflowX = 'hidden';
@@ -1186,7 +1193,7 @@
     function applyScale() {
       var vw = window.innerWidth;
       var vh = window.innerHeight;
-      var scale = Math.min(vw / dw, vh / dh);
+      var scale = Math.min(vw / dw, vh / dh, 1); // 1以上にはしない（PC時の拡大防止）
       var scaledW = dw * scale;
       var scaledH = dh * scale;
       var offsetX = (vw - scaledW) / 2;
