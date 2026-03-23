@@ -1153,10 +1153,64 @@
     return btn;
   }
 
+  // ===== 固定アスペクト比スケーリング =====
+  // #game-wrapper に data-sg-scale="幅x高さ" を指定すると有効化
+  // 例: data-sg-scale="400x700"
+  function initScaling() {
+    const wrapper = document.getElementById('game-wrapper');
+    if (!wrapper) return;
+    const attr = wrapper.getAttribute('data-sg-scale');
+    if (!attr) return;
+
+    const parts = attr.split('x').map(Number);
+    const dw = parts[0];
+    const dh = parts[1];
+    if (!dw || !dh) return;
+
+    // body の余計なスクロールを防止
+    document.body.style.overflow = 'hidden';
+    document.body.style.margin = '0';
+    document.body.style.height = '100vh';
+
+    // ラッパーを固定サイズに設定
+    wrapper.style.width = dw + 'px';
+    wrapper.style.height = dh + 'px';
+    wrapper.style.maxWidth = 'none';
+    wrapper.style.maxHeight = 'none';
+    wrapper.style.margin = '0';
+    wrapper.style.position = 'absolute';
+    wrapper.style.transformOrigin = 'top left';
+    wrapper.style.overflowY = 'auto';
+    wrapper.style.overflowX = 'hidden';
+
+    function applyScale() {
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      var scale = Math.min(vw / dw, vh / dh);
+      var scaledW = dw * scale;
+      var scaledH = dh * scale;
+      var offsetX = (vw - scaledW) / 2;
+      var offsetY = (vh - scaledH) / 2;
+      wrapper.style.transform = 'translate(' + offsetX + 'px,' + offsetY + 'px) scale(' + scale + ')';
+    }
+
+    applyScale();
+    window.addEventListener('resize', applyScale);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(applyScale, 200);
+    });
+    if (screen.orientation) {
+      screen.orientation.addEventListener('change', function () {
+        setTimeout(applyScale, 200);
+      });
+    }
+  }
+
   // ===== 初期化 =====
   function init(gameId) {
     SoundSystem.init();
     createSoundToggle();
+    initScaling();
 
     // ゲーム間導線をリザルト画面に挿入
     function insertRecommendSections() {
