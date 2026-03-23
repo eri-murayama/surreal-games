@@ -118,6 +118,11 @@ const LANG = {
       { max: Infinity, icon: '😴', name: '居座り犯', comment: 'もはや住んでる。' },
     ],
 
+    // ハイスコア
+    bestTime: 'ベストタイム',
+    bestTimeDisplay: (m, s) => `${m}分${s}秒`,
+    newRecord: '🎉 新記録！',
+
     // 戻るリンク
     backToTop: '← トップに戻る',
   },
@@ -223,6 +228,11 @@ const LANG = {
       { max: 300, icon: '🐌', name: 'Leisurely Trespasser', comment: 'Took too long enjoying yourself. You\'ll get reported.' },
       { max: Infinity, icon: '😴', name: 'Squatter', comment: 'At this point, you live here.' },
     ],
+
+    // ハイスコア
+    bestTime: 'Best Time',
+    bestTimeDisplay: (m, s) => `${m}m ${s}s`,
+    newRecord: '🎉 New Record!',
 
     backToTop: '← Back to Top',
   },
