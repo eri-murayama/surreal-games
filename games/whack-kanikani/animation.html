@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かにかに四コマ劇場 🦀</title>
+<link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #fff5f5;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== タイトル ===== */
+.main-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: clamp(24px, 5vw, 36px);
+  color: #e86b6b;
+  text-align: center;
+  margin: 24px 0 8px;
+  text-shadow: 2px 2px 0 #fff;
+}
+.subtitle {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: clamp(12px, 2.5vw, 16px);
+  color: #999;
+  margin-bottom: 16px;
+}
+
+/* ===== 四コマ全体 ===== */
+.yonkoma-stage {
+  position: relative;
+  width: min(420px, 92vw);
+}
+
+/* ===== コマ ===== */
+.panel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 3px solid #333;
+  background: #fff;
+  overflow: hidden;
+  margin-bottom: -3px;
+}
+.panel:first-child { border-radius: 12px 12px 0 0; }
+.panel:last-child { border-radius: 0 0 12px 12px; margin-bottom: 0; }
+
+/* コマ番号 */
+.panel-num {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: #e86b6b;
+  z-index: 10;
+  opacity: 0.6;
+}
+
+/* ===== 背景 ===== */
+.bg-sky {
+  background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 60%, #a5d6a7 85%, #81c784 100%);
+}
+.bg-room {
+  background: linear-gradient(180deg, #fff8e1 0%, #ffecb3 100%);
+}
+.bg-night {
+  background: linear-gradient(180deg, #1a237e 0%, #283593 40%, #3949ab 100%);
+}
+.bg-pink {
+  background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 100%);
+}
+
+/* ===== かにかに画像 ===== */
+.kanikani-img {
+  position: absolute;
+  height: 75%;
+  bottom: 5%;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+/* ===== 吹き出し ===== */
+.bubble {
+  position: absolute;
+  background: white;
+  border: 2.5px solid #333;
+  border-radius: 18px;
+  padding: 8px 14px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  font-size: clamp(11px, 2.8vw, 15px);
+  color: #333;
+  max-width: 55%;
+  line-height: 1.5;
+  z-index: 5;
+  opacity: 0;
+  transform: scale(0.7);
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  width: 0; height: 0;
+}
+/* しっぽ下向き */
+.bubble.tail-down::after {
+  bottom: -12px; left: 30%;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 13px solid #333;
+}
+.bubble.tail-down::before {
+  content: '';
+  position: absolute;
+  bottom: -9px; left: calc(30% + 1px);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 11px solid white;
+  z-index: 1;
+}
+/* しっぽ左向き */
+.bubble.tail-left::after {
+  left: -12px; top: 40%;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 13px solid #333;
+}
+.bubble.tail-left::before {
+  content: '';
+  position: absolute;
+  left: -9px; top: calc(40% + 1px);
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 11px solid white;
+  z-index: 1;
+}
+
+/* 心の声（もくもく） */
+.bubble.thought {
+  border-radius: 40%;
+  border-style: dashed;
+  border-color: #888;
+  background: rgba(255,255,255,0.9);
+  font-size: clamp(10px, 2.5vw, 13px);
+  color: #666;
+}
+
+/* ===== エフェクト文字 ===== */
+.effect-text {
+  position: absolute;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 900;
+  z-index: 8;
+  opacity: 0;
+}
+
+/* ===== 集中線 ===== */
+.focus-lines {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 2;
+}
+.focus-lines::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: repeating-conic-gradient(
+    rgba(0,0,0,0.03) 0deg 2deg,
+    transparent 2deg 8deg
+  );
+}
+
+/* ===== アニメーション共通 ===== */
+.anim-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+.anim-pop-in {
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.anim-shake {
+  animation: shake 0.5s ease;
+}
+.anim-float {
+  animation: float 3s ease-in-out infinite;
+}
+.anim-bounce {
+  animation: bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+@keyframes popIn {
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px) rotate(-1deg); }
+  40% { transform: translateX(5px) rotate(1deg); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes bounce {
+  0% { opacity: 0; transform: scale(0) translateY(20px); }
+  60% { transform: scale(1.15) translateY(-5px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes zoomIn {
+  from { transform: scale(0.3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+@keyframes dropIn {
+  0% { transform: translateY(-120%); opacity: 0; }
+  60% { transform: translateY(10%); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+}
+@keyframes sweatDrop {
+  0% { opacity: 0; transform: translateY(-5px); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(15px); }
+}
+@keyframes expandBg {
+  from { transform: scale(0); border-radius: 50%; }
+  to { transform: scale(1); border-radius: 0; }
+}
+@keyframes flyAway {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-200px) translateX(80px) rotate(30deg); opacity: 0; }
+}
+
+/* ===== 星 ===== */
+.stars {
+  position: absolute;
+  inset: 0;
+}
+.star {
+  position: absolute;
+  color: #fff9c4;
+  font-size: 10px;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+/* ===== エピソードナビ ===== */
+.episode-nav {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.episode-btn {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 14px;
+  padding: 8px 18px;
+  border: 2px solid #e86b6b;
+  border-radius: 20px;
+  background: white;
+  color: #e86b6b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.episode-btn:hover, .episode-btn.active {
+  background: #e86b6b;
+  color: white;
+}
+
+/* ===== 再生ボタン ===== */
+.play-btn {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 18px;
+  padding: 12px 32px;
+  border: 3px solid #e86b6b;
+  border-radius: 30px;
+  background: #e86b6b;
+  color: white;
+  cursor: pointer;
+  margin: 16px 0 24px;
+  transition: all 0.2s;
+}
+.play-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(232, 107, 107, 0.4);
+}
+
+/* ===== ゲームリンク ===== */
+.game-link {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 14px;
+  color: #e86b6b;
+  text-decoration: none;
+  margin-bottom: 30px;
+  padding: 8px 20px;
+  border: 2px solid #e86b6b;
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+.game-link:hover {
+  background: #e86b6b;
+  color: white;
+}
+
+/* 小道具 */
+.prop {
+  position: absolute;
+  font-size: 28px;
+  z-index: 4;
+  opacity: 0;
+}
+</style>
+</head>
+<body>
+
+<h1 class="main-title">🦀 かにかに四コマ劇場 🦀</h1>
+<p class="subtitle">ほのぼのシュール四コマアニメーション</p>
+
+<div class="episode-nav">
+  <button class="episode-btn active" onclick="playEpisode(0)">第1話</button>
+  <button class="episode-btn" onclick="playEpisode(1)">第2話</button>
+  <button class="episode-btn" onclick="playEpisode(2)">第3話</button>
+</div>
+
+<div class="yonkoma-stage" id="stage">
+  <!-- 4つのコマ -->
+  <div class="panel" id="panel-1"><span class="panel-num">①</span></div>
+  <div class="panel" id="panel-2"><span class="panel-num">②</span></div>
+  <div class="panel" id="panel-3"><span class="panel-num">③</span></div>
+  <div class="panel" id="panel-4"><span class="panel-num">④</span></div>
+</div>
+
+<button class="play-btn" id="play-btn" onclick="replayEpisode()">▶ もういちど見る</button>
+<a href="index.html" class="game-link">🔨 かにかにを叩きに行く</a>
+
+<script>
+const IMG = 'kanikani.png';
+let currentEpisode = 0;
+let animTimers = [];
+
+// エピソードデータ
+const episodes = [
+  // ===== 第1話：腹筋の換気 =====
+  {
+    title: '腹筋の換気',
+    panels: [
+      {
+        bg: 'bg-sky',
+        elements: [
+          { type: 'kanikani', style: 'left:50%;transform:translateX(-50%)', anim: 'slideInLeft', delay: 300 },
+          { type: 'bubble', text: 'いい天気だなぁ', style: 'top:8%;right:8%', tail: 'tail-down', delay: 800 },
+        ]
+      },
+      {
+        bg: 'bg-sky',
+        elements: [
+          { type: 'kanikani', style: 'left:25%', anim: 'fadeIn', delay: 200 },
+          { type: 'bubble', text: 'こんな日は\nやっぱり…', style: 'top:8%;right:8%', tail: 'tail-down', delay: 600 },
+          { type: 'thought', text: 'ワクワク', style: 'top:5%;left:5%', delay: 1000 },
+        ]
+      },
+      {
+        bg: 'bg-sky',
+        elements: [
+          { type: 'kanikani', style: 'left:50%;transform:translateX(-50%)', anim: 'zoomIn', delay: 200 },
+          { type: 'focus-lines', delay: 200 },
+          { type: 'effect', text: 'バッ！！', style: 'top:5%;left:10%;font-size:clamp(22px,5vw,32px);color:#e86b6b;transform:rotate(-8deg)', delay: 500 },
+          { type: 'bubble', text: '腹筋の換気！！', style: 'top:5%;right:5%;font-size:clamp(13px,3vw,17px)', tail: 'tail-down', delay: 700 },
+        ]
+      },
+      {
+        bg: 'bg-sky',
+        elements: [
+          { type: 'kanikani', style: 'left:50%;transform:translateX(-50%)', anim: 'float', delay: 200 },
+          { type: 'prop', text: '〜♪', style: 'top:15%;right:15%;font-size:22px;color:#e86b6b', delay: 500 },
+          { type: 'prop', text: '〜♪', style: 'top:25%;left:10%;font-size:18px;color:#f48fb1', delay: 800 },
+          { type: 'bubble', text: '今日の換気率\n100%だね', style: 'top:5%;right:5%', tail: 'tail-down', delay: 600 },
+          { type: 'thought', text: '…何の換気？', style: 'bottom:8%;left:5%;font-size:clamp(9px,2vw,11px)', delay: 1400 },
+        ]
+      },
+    ]
+  },
+  // ===== 第2話：夜のさんぽ =====
+  {
+    title: '夜のさんぽ',
+    panels: [
+      {
+        bg: 'bg-night',
+        elements: [
+          { type: 'stars' },
+          { type: 'kanikani', style: 'left:15%', anim: 'slideInLeft', delay: 300 },
+          { type: 'bubble', text: 'お夜さんぽ\nしよっと', style: 'top:8%;right:8%;background:#1a237e;color:#fff;border-color:#fff', tail: 'tail-down', delay: 800 },
+        ]
+      },
+      {
+        bg: 'bg-night',
+        elements: [
+          { type: 'stars' },
+          { type: 'kanikani', style: 'left:55%', anim: 'fadeIn', delay: 200 },
+          { type: 'prop', text: '🌙', style: 'top:8%;left:12%', delay: 100 },
+          { type: 'bubble', text: 'あ、お月さまだ', style: 'top:10%;left:5%;background:#1a237e;color:#fff;border-color:#fff', tail: 'tail-left', delay: 700 },
+        ]
+      },
+      {
+        bg: 'bg-night',
+        elements: [
+          { type: 'stars' },
+          { type: 'kanikani', style: 'left:50%;transform:translateX(-50%)', anim: 'zoomIn', delay: 200 },
+          { type: 'bubble', text: 'ぼくの腹筋も\n光ってる…？', style: 'top:5%;right:5%;background:#1a237e;color:#fff;border-color:#fff', tail: 'tail-down', delay: 700 },
+          { type: 'effect', text: 'ﾋﾟｶｰ', style: 'bottom:20%;left:50%;transform:translateX(-50%);font-size:clamp(16px,4vw,24px);color:#fff9c4', delay: 1100 },
+        ]
+      },
+      {
+        bg: 'bg-night',
+        elements: [
+          { type: 'stars' },
+          { type: 'kanikani', style: 'left:50%;transform:translateX(-50%)', anim: 'float', delay: 200 },
+          { type: 'bubble', text: 'お月さまと\nおそろいだね', style: 'top:5%;right:5%;background:#1a237e;color:#fff;border-color:#fff', tail: 'tail-down', delay: 600 },
+          { type: 'prop', text: '🌙', style: 'top:8%;left:8%', delay: 300 },
+          { type: 'thought', text: '腹筋は光らない', style: 'bottom:5%;right:5%;font-size:clamp(9px,2vw,11px);color:#aaa;border-color:#aaa', delay: 1500 },
+        ]
+      },
+    ]
+  },
+  // ===== 第3話：自己紹介 =====
+  {
+    title: 'じこしょうかい',
+    panels: [
+      {
+        bg: 'bg-pink',
+        elements: [
+          { type: 'kanikani', style: 'left:50%;transform:translateX(-50%)', anim: 'dropIn', delay: 200 },
+          { type: 'bubble', text: 'みなさん\nこんにちは！', style: 'top:5%;right:5%', tail: 'tail-down', delay: 700 },
+          { type: 'effect', text: 'ドーン', style: 'top:8%;left:5%;font-size:clamp(18px,4vw,26px);color:#e86b6b;transform:rotate(-5deg)', delay: 400 },
+        ]
+      },
+      {
+        bg: 'bg-pink',
+        elements: [
+          { type: 'kanikani', style: 'right:10%', anim: 'fadeIn', delay: 200 },
+          { type: 'bubble', text: 'ぼくの名前は\nかにかに！', style: 'top:8%;left:5%', tail: 'tail-left', delay: 600 },
+          { type: 'bubble', text: '好きなものは\n腹筋の換気です', style: 'bottom:8%;left:5%', tail: 'tail-left', delay: 1200 },
+        ]
+      },
+      {
+        bg: 'bg-pink',
+        elements: [
+          { type: 'kanikani', style: 'left:10%', anim: 'fadeIn', delay: 200 },
+          { type: 'bubble', text: '趣味は…', style: 'top:8%;right:8%', tail: 'tail-down', delay: 600 },
+          { type: 'focus-lines', delay: 900 },
+          { type: 'effect', text: 'ﾊﾞﾊﾞｰﾝ', style: 'top:5%;left:5%;font-size:clamp(20px,5vw,30px);color:#e86b6b', delay: 1000 },
+          { type: 'bubble', text: '叩かれること\nです！！', style: 'bottom:5%;right:5%;font-size:clamp(13px,3vw,17px)', tail: 'tail-down', delay: 1100 },
+        ]
+      },
+      {
+        bg: 'bg-pink',
+        elements: [
+          { type: 'kanikani', style: 'left:50%;transform:translateX(-50%)', anim: 'wiggle', delay: 200 },
+          { type: 'bubble', text: '…うそです\nほんとはいたい', style: 'top:5%;right:5%', tail: 'tail-down', delay: 800 },
+          { type: 'prop', text: '💧', style: 'top:20%;left:22%;font-size:16px', anim: 'sweatDrop', delay: 1200 },
+          { type: 'thought', text: 'たすけて', style: 'bottom:5%;left:5%;font-size:clamp(9px,2vw,11px)', delay: 1600 },
+        ]
+      },
+    ]
+  },
+];
+
+function clearPanels() {
+  animTimers.forEach(t => clearTimeout(t));
+  animTimers = [];
+  for (let i = 1; i <= 4; i++) {
+    const panel = document.getElementById(`panel-${i}`);
+    // パネル番号だけ残す
+    const num = panel.querySelector('.panel-num');
+    panel.innerHTML = '';
+    panel.className = 'panel';
+    panel.appendChild(num);
+  }
+}
+
+function createKanikani(el) {
+  const img = document.createElement('img');
+  img.src = IMG;
+  img.className = 'kanikani-img';
+  img.style.cssText = el.style || '';
+  img.style.opacity = '0';
+  return img;
+}
+
+function createBubble(el) {
+  const div = document.createElement('div');
+  div.className = `bubble ${el.tail || ''} ${el.thought ? 'thought' : ''}`;
+  div.style.cssText = el.style || '';
+  div.innerHTML = (el.text || '').replace(/\n/g, '<br>');
+  return div;
+}
+
+function createThought(el) {
+  const div = document.createElement('div');
+  div.className = 'bubble thought';
+  div.style.cssText = el.style || '';
+  div.innerHTML = (el.text || '').replace(/\n/g, '<br>');
+  return div;
+}
+
+function createEffect(el) {
+  const div = document.createElement('div');
+  div.className = 'effect-text';
+  div.style.cssText = el.style || '';
+  div.textContent = el.text || '';
+  return div;
+}
+
+function createFocusLines() {
+  const div = document.createElement('div');
+  div.className = 'focus-lines';
+  return div;
+}
+
+function createStars() {
+  const container = document.createElement('div');
+  container.className = 'stars';
+  const positions = [
+    [10,15],[25,8],[45,12],[65,5],[80,18],[90,10],[15,70],[35,65],[55,75],[75,68],[88,60],[50,40],[30,35],[70,30]
+  ];
+  positions.forEach(([l,t], i) => {
+    const s = document.createElement('span');
+    s.className = 'star';
+    s.textContent = '✦';
+    s.style.left = l + '%';
+    s.style.top = t + '%';
+    s.style.animationDelay = (i * 0.3) + 's';
+    s.style.fontSize = (8 + Math.random() * 8) + 'px';
+    container.appendChild(s);
+  });
+  return container;
+}
+
+function createProp(el) {
+  const div = document.createElement('div');
+  div.className = 'prop';
+  div.style.cssText = el.style || '';
+  div.textContent = el.text || '';
+  return div;
+}
+
+function animateElement(dom, anim, delay) {
+  const t = setTimeout(() => {
+    if (anim === 'slideInLeft') {
+      dom.style.animation = 'slideInLeft 0.6s ease forwards';
+    } else if (anim === 'slideInRight') {
+      dom.style.animation = 'slideInRight 0.6s ease forwards';
+    } else if (anim === 'zoomIn') {
+      dom.style.animation = 'zoomIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    } else if (anim === 'dropIn') {
+      dom.style.animation = 'dropIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    } else if (anim === 'fadeIn') {
+      dom.style.animation = 'fadeIn 0.5s ease forwards';
+    } else if (anim === 'float') {
+      dom.style.opacity = '1';
+      dom.style.animation = 'float 3s ease-in-out infinite';
+    } else if (anim === 'wiggle') {
+      dom.style.opacity = '1';
+      dom.style.animation = 'wiggle 0.5s ease-in-out 3';
+    } else if (anim === 'popIn') {
+      dom.style.animation = 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    } else if (anim === 'bounce') {
+      dom.style.animation = 'bounce 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    } else if (anim === 'sweatDrop') {
+      dom.style.animation = 'sweatDrop 1s ease forwards';
+    } else {
+      dom.style.opacity = '1';
+    }
+  }, delay);
+  animTimers.push(t);
+}
+
+function playPanel(panelIndex, panelData, baseDelay) {
+  const panel = document.getElementById(`panel-${panelIndex + 1}`);
+  panel.classList.add(panelData.bg);
+
+  panelData.elements.forEach(el => {
+    const delay = baseDelay + (el.delay || 0);
+    let dom;
+
+    switch (el.type) {
+      case 'kanikani':
+        dom = createKanikani(el);
+        panel.appendChild(dom);
+        animateElement(dom, el.anim || 'fadeIn', delay);
+        break;
+
+      case 'bubble':
+        dom = createBubble(el);
+        panel.appendChild(dom);
+        animateElement(dom, 'popIn', delay);
+        break;
+
+      case 'thought':
+        dom = createThought(el);
+        panel.appendChild(dom);
+        animateElement(dom, 'popIn', delay);
+        break;
+
+      case 'effect':
+        dom = createEffect(el);
+        panel.appendChild(dom);
+        animateElement(dom, 'bounce', delay);
+        break;
+
+      case 'focus-lines':
+        dom = createFocusLines();
+        panel.appendChild(dom);
+        animateElement(dom, 'fadeIn', delay);
+        break;
+
+      case 'stars':
+        dom = createStars();
+        panel.appendChild(dom);
+        dom.style.opacity = '1';
+        break;
+
+      case 'prop':
+        dom = createProp(el);
+        panel.appendChild(dom);
+        animateElement(dom, el.anim || 'popIn', delay);
+        break;
+    }
+  });
+}
+
+function playEpisode(index) {
+  currentEpisode = index;
+  clearPanels();
+
+  // ボタンの状態更新
+  document.querySelectorAll('.episode-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === index);
+  });
+
+  const ep = episodes[index];
+  ep.panels.forEach((panelData, i) => {
+    const baseDelay = i * 2000; // 各コマ2秒間隔
+    const t = setTimeout(() => {
+      playPanel(i, panelData, 0);
+    }, baseDelay);
+    animTimers.push(t);
+  });
+}
+
+function replayEpisode() {
+  playEpisode(currentEpisode);
+}
+
+// 初回再生
+playEpisode(0);
+</script>
+
+</body>
+</html>
