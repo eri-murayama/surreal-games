@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>プロフィール背景画像 ジェネレーター</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; color: #fff; }
+    canvas { border: 2px solid #fff; margin: 20px 0; max-width: 90vw; }
+    .buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    button { padding: 12px 32px; font-size: 16px; background: #ff69b4; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #d63384; }
+    button.blue { background: #6a8fc7; }
+    button.blue:hover { background: #4a6fa7; }
+    p { color: #aaa; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>プロフィール背景画像</h1>
+  <canvas id="canvas" width="2000" height="2000"></canvas>
+  <div class="buttons">
+    <button onclick="download()">ダウンロード (PNG)</button>
+    <button class="blue" onclick="regenerate()">別パターン生成</button>
+  </div>
+  <p>2000x2000px / PLiCyプロフィール背景用</p>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 2000, H = 2000;
+
+    const img = new Image();
+    img.onload = () => generate();
+    img.src = 'kanikani-source.png';
+
+    function generate() {
+      // 高画質スムージング設定
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      // ピンク背景グラデーション
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, '#ffb6c1');
+      grad.addColorStop(0.5, '#ff91a4');
+      grad.addColorStop(1, '#ff69b4');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      const rng = (min, max) => min + Math.random() * (max - min);
+
+      // かにかにをグリッド状にたくさん並べる（大きめサイズで高画質）
+      const size = 400; // 各かにかにのサイズ（大きくして画質向上）
+      const cols = Math.ceil(W / size) + 1;
+      const rows = Math.ceil(H / size) + 1;
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const x = col * size + rng(-30, 30);
+          const y = row * size + rng(-30, 30);
+          const s = size * rng(0.8, 1.0);
+          const rotation = rng(-0.25, 0.25);
+          const alpha = rng(0.6, 0.95);
+
+          ctx.save();
+          ctx.translate(x + size / 2, y + size / 2);
+          ctx.rotate(rotation);
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(img, -s / 2, -s / 2, s, s);
+          ctx.restore();
+        }
+      }
+    }
+
+    function regenerate() {
+      generate();
+    }
+
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'profile-background.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

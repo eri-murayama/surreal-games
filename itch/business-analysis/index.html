@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>経営分析ゲーム～天才たちの戯れ～</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+      <div id="title-sparkle-container"></div>
+      <div class="deco-frame"></div>
+      <div class="deco-corner deco-corner--tl"></div>
+      <div class="deco-corner deco-corner--tr"></div>
+      <div class="deco-corner deco-corner--bl"></div>
+      <div class="deco-corner deco-corner--br"></div>
+      <div id="title-character">
+        <div id="atsushi-title"><img src="atsushi.png" alt="篤"></div>
+      </div>
+      <h1 id="game-title">
+        経営分析ゲーム<br>
+        ～天才たちの<ruby>戯れ<rp>(</rp><rt>シーソーゲーム</rt><rp>)</rp></ruby>～
+      </h1>
+      <button id="start-btn">レディー★ゴー</button>
+    </div>
+
+    <!-- オープニング画面 -->
+    <div id="opening-screen" class="hidden">
+      <div id="opening-bg"></div>
+      <div class="deco-frame"></div>
+      <div id="opening-speed-lines"></div>
+      <div id="atsushi-opening" class="chara-entrance"><img src="atsushi.png" alt="篤"></div>
+      <div id="opening-text-box">
+        <div id="opening-name">篤</div>
+        <p id="opening-text"></p>
+      </div>
+      <div class="next-indicator hidden" id="opening-indicator">▽</div>
+    </div>
+
+    <!-- ラーメン屋シーン -->
+    <div id="ramen-screen" class="hidden">
+      <div id="ramen-shop">
+        <div id="shop-bg"></div>
+        <div class="clickable-obj" id="obj-oyaji" data-name="oyaji">
+          <div class="obj-visual" id="visual-oyaji"></div>
+          <div class="obj-label">店主</div>
+        </div>
+        <div class="clickable-obj" id="obj-ramen" data-name="ramen">
+          <div class="obj-visual" id="visual-ramen"></div>
+          <div class="obj-label">ラーメン</div>
+        </div>
+        <div class="clickable-obj" id="obj-register" data-name="register">
+          <div class="obj-visual" id="visual-register"></div>
+          <div class="obj-label">レジ</div>
+        </div>
+        <div class="clickable-obj" id="obj-sign" data-name="sign">
+          <div class="obj-visual" id="visual-sign"></div>
+          <div class="obj-label">看板</div>
+        </div>
+        <div class="clickable-obj" id="obj-table" data-name="table">
+          <div class="obj-visual" id="visual-table"></div>
+          <div class="obj-label">テーブル</div>
+        </div>
+      </div>
+
+      <div id="atsushi-ramen"><img src="atsushi.png" alt="篤"></div>
+
+      <div id="dialogue-box" class="hidden">
+        <div id="dialogue-name">篤</div>
+        <p id="dialogue-text"></p>
+        <div id="dialogue-indicator" class="next-indicator hidden">▽</div>
+      </div>
+
+      <div id="ramen-hint">経営的にまずい箇所をクリックしろ</div>
+    </div>
+
+    <!-- レジ演出画面 -->
+    <div id="register-scene" class="hidden">
+      <div class="deco-frame"></div>
+      <div id="atsushi-register"><img src="atsushi-pose.png" alt="篤"></div>
+      <div id="register-animation"></div>
+      <div id="register-text-box">
+        <div id="register-name">篤</div>
+        <p id="register-text"></p>
+      </div>
+      <div class="next-indicator hidden" id="register-indicator">▽</div>
+    </div>
+
+    <!-- エンディング画面 -->
+    <div id="ending-screen" class="hidden">
+      <div id="ending-sparkle-container"></div>
+      <div class="deco-frame"></div>
+      <div class="deco-corner deco-corner--tl"></div>
+      <div class="deco-corner deco-corner--tr"></div>
+      <div class="deco-corner deco-corner--bl"></div>
+      <div class="deco-corner deco-corner--br"></div>
+      <div id="atsushi-ending"><img src="atsushi.png" alt="篤"></div>
+      <div id="ending-text-box">
+        <p id="ending-text"></p>
+      </div>
+      <div id="ending-buttons" class="hidden">
+        <button class="game-end-btn" id="replay-btn">もう一回やる</button>
+      </div>
+    </div>
+
+    <div id="lang-switch">
+      <button class="lang-btn active" data-lang="ja">JP</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

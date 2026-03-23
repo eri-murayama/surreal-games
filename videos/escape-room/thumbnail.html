@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>サムネイル - かわいい部屋からの脱出</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700;800&family=Noto+Sans+JP:wght@900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #111;
+  }
+
+  .thumbnail {
+    width: 1280px;
+    height: 720px;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+
+  /* キャラ画像を背景にドーンと配置 */
+  .face-bg {
+    position: absolute;
+    top: 50%;
+    left: 38%;
+    transform: translate(-50%, -50%);
+    width: 820px;
+    height: 820px;
+    z-index: 1;
+  }
+
+  .face-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: contrast(1.5) saturate(0.4) sepia(0.2);
+    opacity: 0.55;
+  }
+
+  /* 赤黒のビネット */
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 70% 70% at 38% 50%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 40%,
+      rgba(0, 0, 0, 0.85) 70%,
+      #000 100%
+    );
+    z-index: 2;
+  }
+
+  /* 赤いグロー */
+  .red-atmosphere {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 60% 80% at 35% 55%,
+      rgba(180, 0, 0, 0.25) 0%,
+      transparent 60%
+    );
+    z-index: 3;
+  }
+
+  /* ノイズテクスチャ */
+  .noise {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  /* スキャンライン */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 2px,
+      rgba(0, 0, 0, 0.15) 4px
+    );
+  }
+
+  /* メインタイトル「扉が、開かない。」PVに合わせる */
+  .title-block {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    text-align: right;
+  }
+
+  .title-top {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: 42px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.5em;
+    margin-bottom: 16px;
+  }
+
+  .title-main {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 900;
+    font-size: 110px;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+    text-shadow:
+      0 0 60px rgba(200, 0, 0, 0.7),
+      0 0 120px rgba(200, 0, 0, 0.3);
+  }
+
+  .title-main .accent {
+    color: #e02020;
+    text-shadow:
+      0 0 40px rgba(255, 30, 30, 0.9),
+      0 0 80px rgba(255, 30, 30, 0.5),
+      0 0 160px rgba(255, 30, 30, 0.3);
+  }
+
+  /* 赤い細ライン */
+  .red-line {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #cc2222, transparent);
+    margin: 20px 0;
+    box-shadow: 0 0 20px rgba(204, 34, 34, 0.6);
+  }
+
+  .subtitle {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.35em;
+  }
+
+  /* 左下にゲーム名 */
+  .game-title {
+    position: absolute;
+    bottom: 40px;
+    left: 50px;
+    z-index: 10;
+  }
+
+  .game-title-text {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.4em;
+    border-left: 3px solid rgba(204, 34, 34, 0.7);
+    padding-left: 16px;
+  }
+
+  /* 心拍ライン */
+  .heartbeat {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 8;
+    opacity: 0.3;
+  }
+
+  .heartbeat svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* グリッチバー */
+  .glitch-bar {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 20, 20, 0.5);
+    z-index: 6;
+    box-shadow: 0 0 10px rgba(255, 20, 20, 0.4);
+  }
+</style>
+</head>
+<body>
+<div class="thumbnail">
+
+  <!-- キャラの顔ドーン -->
+  <div class="face-bg">
+    <img src="illust9.png" alt="">
+  </div>
+
+  <!-- オーバーレイ -->
+  <div class="vignette"></div>
+  <div class="red-atmosphere"></div>
+  <div class="noise"></div>
+  <div class="scanlines"></div>
+
+  <!-- グリッチバー -->
+  <div class="glitch-bar" style="top: 18%;"></div>
+  <div class="glitch-bar" style="top: 72%; width: 60%;"></div>
+
+  <!-- メインタイトル -->
+  <div class="title-block">
+    <div class="title-top">その部屋から</div>
+    <div class="title-main">
+      <span class="accent">脱</span>出<span class="accent">不</span>能
+    </div>
+    <div class="red-line"></div>
+    <div class="subtitle">謎を解け、さもなくば——</div>
+  </div>
+
+  <!-- 左下にゲーム名 -->
+  <div class="game-title">
+    <div class="game-title-text">かわいい部屋からの脱出</div>
+  </div>
+
+  <!-- 心拍ライン -->
+  <div class="heartbeat">
+    <svg viewBox="0 0 1280 50" preserveAspectRatio="none">
+      <polyline
+        points="0,25 300,25 340,25 355,8 370,42 385,12 400,38 415,25 600,25 640,25 655,8 670,42 685,12 700,38 715,25 900,25 940,25 955,8 970,42 985,12 1000,38 1015,25 1280,25"
+        fill="none"
+        stroke="rgba(204, 34, 34, 0.7)"
+        stroke-width="1.5"
+      />
+    </svg>
+  </div>
+
+</div>
+</body>
+</html>

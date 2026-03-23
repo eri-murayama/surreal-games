@@ -1,0 +1,1255 @@
+/* ===== 経営分析ゲーム スタイル ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  background: #0d0221;
+  color: #f0e6ff;
+  font-family: 'Zen Maru Gothic', 'Shippori Mincho', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#game-wrapper {
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* ===== 画面遷移 ===== */
+
+.screen-fade-in {
+  animation: screenFadeIn 0.6s ease-out;
+}
+
+@keyframes screenFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ===== 言語切り替え ===== */
+
+#lang-switch {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+  display: flex;
+  gap: 4px;
+}
+
+.lang-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  background: rgba(50, 20, 80, 0.5);
+  color: #a090c0;
+  border: 1px solid rgba(196, 160, 255, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.lang-btn:hover {
+  background: rgba(80, 40, 120, 0.6);
+  color: #d0c0f0;
+}
+
+.lang-btn.active {
+  background: rgba(140, 80, 200, 0.5);
+  color: #f0e0ff;
+  border-color: #b090d0;
+}
+
+/* ===== 共通デコ ===== */
+
+.deco-frame {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(196, 160, 255, 0.15);
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.deco-frame::before, .deco-frame::after {
+  content: '';
+  position: absolute;
+  font-size: 10px;
+  color: rgba(255, 215, 0, 0.4);
+}
+
+.deco-frame::before { top: -5px; left: 15px; }
+.deco-frame::after { bottom: -5px; right: 15px; }
+
+.deco-corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-color: rgba(255, 215, 0, 0.3);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.deco-corner--tl { top: 15px; left: 15px; border-width: 2px 0 0 2px; border-radius: 8px 0 0 0; }
+.deco-corner--tr { top: 15px; right: 15px; border-width: 2px 2px 0 0; border-radius: 0 8px 0 0; }
+.deco-corner--bl { bottom: 15px; left: 15px; border-width: 0 0 2px 2px; border-radius: 0 0 0 8px; }
+.deco-corner--br { bottom: 15px; right: 15px; border-width: 0 2px 2px 0; border-radius: 0 0 8px 0; }
+
+/* ===== タイトル画面 ===== */
+
+#title-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 40%, #4a2c8a 70%, #f5c6ec 100%);
+  padding: 15px;
+}
+
+#title-sparkle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: sparkle-float 3s ease-in-out infinite;
+  box-shadow: 0 0 6px 2px rgba(255, 215, 0, 0.8), 0 0 12px 4px rgba(255, 180, 255, 0.4);
+}
+
+.sparkle--star {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 12px;
+  line-height: 1;
+  animation: sparkle-star 4s ease-in-out infinite;
+}
+
+@keyframes sparkle-float {
+  0%, 100% { opacity: 0; transform: scale(0) translateY(0); }
+  50% { opacity: 1; transform: scale(1) translateY(-20px); }
+}
+
+@keyframes sparkle-star {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+#title-character {
+  margin-bottom: 10px;
+  animation: chara-float 3s ease-in-out infinite;
+}
+
+@keyframes chara-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+#atsushi-title {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+  position: relative;
+}
+
+#atsushi-title img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(196, 160, 255, 0.6)) drop-shadow(0 0 50px rgba(255, 215, 0, 0.2));
+}
+
+/* キャラ後光 */
+#atsushi-title::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, rgba(196, 160, 255, 0.08) 40%, transparent 70%);
+  border-radius: 50%;
+  animation: halo-pulse 3s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes halo-pulse {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+}
+
+#game-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(255, 215, 0, 0.8),
+    0 0 40px rgba(255, 180, 255, 0.6),
+    0 0 60px rgba(200, 150, 255, 0.4);
+  line-height: 1.6;
+  margin-bottom: 25px;
+  animation: title-glow 2s ease-in-out infinite alternate;
+  z-index: 5;
+}
+
+@keyframes title-glow {
+  0% {
+    text-shadow:
+      0 0 20px rgba(255, 215, 0, 0.6),
+      0 0 40px rgba(255, 180, 255, 0.4),
+      0 0 60px rgba(200, 150, 255, 0.2);
+    letter-spacing: 0;
+  }
+  100% {
+    text-shadow:
+      0 0 30px rgba(255, 215, 0, 1),
+      0 0 60px rgba(255, 180, 255, 0.8),
+      0 0 90px rgba(200, 150, 255, 0.6),
+      0 0 120px rgba(255, 255, 200, 0.3);
+    letter-spacing: 2px;
+  }
+}
+
+#game-title ruby { ruby-position: over; }
+
+#game-title rt {
+  font-size: 12px;
+  color: #ffd700;
+  letter-spacing: 1px;
+}
+
+#start-btn {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2ff7, #c471ed, #ff6ec7);
+  background-size: 200% 200%;
+  animation: btn-gradient 3s ease infinite;
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 30px;
+  padding: 14px 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(123, 47, 247, 0.4), 0 0 40px rgba(255, 110, 199, 0.2);
+  z-index: 5;
+  letter-spacing: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes btn-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#start-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+  animation: btn-shine 3s ease-in-out infinite;
+}
+
+@keyframes btn-shine {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+#start-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 30px rgba(196, 113, 237, 0.6), 0 0 60px rgba(255, 110, 199, 0.3);
+}
+
+/* ===== オープニング画面 ===== */
+
+#opening-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #0d0221 0%, #1a0a3e 50%, #2d1b69 100%);
+  padding: 15px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+#opening-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(196, 160, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 180, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* 集中線エフェクト */
+#opening-speed-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1;
+}
+
+#opening-speed-lines.active {
+  opacity: 1;
+  animation: speed-flash 0.5s ease-out;
+}
+
+@keyframes speed-flash {
+  0% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+.speed-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 150%;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.3), transparent);
+  transform-origin: center center;
+}
+
+#atsushi-opening {
+  width: 320px;
+  height: 320px;
+  position: relative;
+  margin-bottom: 5px;
+  z-index: 2;
+}
+
+#atsushi-opening img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(196, 160, 255, 0.5));
+}
+
+/* キャラ登場アニメーション */
+.chara-entrance {
+  animation: charaEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes charaEntrance {
+  0% { opacity: 0; transform: scale(0.3) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 衝撃セリフ用の演出 */
+.chara-impact {
+  animation: charaImpact 0.4s ease-out;
+}
+
+@keyframes charaImpact {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+#opening-name {
+  font-size: 12px;
+  color: #ffd700;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+
+
+#opening-text-box {
+  background: rgba(13, 2, 33, 0.9);
+  border: 1px solid rgba(196, 160, 255, 0.4);
+  border-radius: 12px;
+  padding: 14px 20px;
+  max-width: 400px;
+  width: 100%;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 20px rgba(123, 47, 247, 0.15), inset 0 0 30px rgba(196, 160, 255, 0.05);
+}
+
+#opening-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #f0e6ff;
+  white-space: pre-wrap;
+  width: 100%;
+}
+
+/* ▽インジケーター */
+.next-indicator {
+  font-size: 16px;
+  color: #c4a0ff;
+  text-align: center;
+  margin-top: 8px;
+  animation: bounce-down 1s ease-in-out infinite;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* hiddenでもスペースを保持してレイアウトシフトを防ぐ */
+.next-indicator.hidden {
+  display: block !important;
+  visibility: hidden;
+}
+
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* ===== ラーメン屋シーン ===== */
+
+#ramen-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #1a1209;
+}
+
+#ramen-shop {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
+}
+
+#shop-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      #3d2b1a 0%,
+      #2a1f12 30%,
+      #1a1209 60%,
+      #0d0a05 100%
+    );
+}
+
+/* 汚れエフェクト */
+#shop-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(80, 60, 30, 0.5) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 50%, rgba(60, 40, 20, 0.4) 0%, transparent 35%),
+    radial-gradient(ellipse at 50% 80%, rgba(40, 30, 15, 0.6) 0%, transparent 45%);
+}
+
+/* 暗い照明エフェクト */
+#shop-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 200, 100, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: light-flicker 4s ease-in-out infinite;
+}
+
+@keyframes light-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+  52% { opacity: 1; }
+  54% { opacity: 0.8; }
+}
+
+/* ハエ演出 */
+.fly-particle {
+  position: absolute;
+  font-size: 10px;
+  z-index: 5;
+  pointer-events: none;
+  animation: fly-buzz 3s ease-in-out infinite;
+}
+
+@keyframes fly-buzz {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(15px, -10px); }
+  50% { transform: translate(-5px, -20px); }
+  75% { transform: translate(-15px, -5px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* クリッカブルオブジェクト共通 */
+.clickable-obj {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+
+.clickable-obj:hover {
+  transform: scale(1.08);
+}
+
+.clickable-obj:hover .obj-label {
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.clickable-obj:active {
+  transform: translate(var(--shake-base-x, 0), var(--shake-base-y, 0)) scale(0.95);
+}
+
+/* ホバー時の光る枠 */
+.clickable-obj::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  transition: border-color 0.3s;
+  pointer-events: none;
+}
+
+.clickable-obj:hover::after {
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.obj-label {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 4px;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s;
+}
+
+.clickable-obj.found { pointer-events: none; }
+
+.clickable-obj.found .obj-visual {
+  box-shadow: 0 0 15px rgba(0, 255, 100, 0.6);
+}
+
+.clickable-obj.wrong {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(var(--shake-base-x, 0), var(--shake-base-y, 0)); }
+  25% { transform: translate(calc(var(--shake-base-x, 0px) - 3px), var(--shake-base-y, 0)); }
+  75% { transform: translate(calc(var(--shake-base-x, 0px) + 3px), var(--shake-base-y, 0)); }
+}
+
+/* ❌ エフェクト */
+.wrong-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+  color: #ff4444;
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 30;
+  animation: wrong-pop 0.6s ease-out forwards;
+}
+
+@keyframes wrong-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1) translateY(-20px); }
+}
+
+/* ⭕ エフェクト */
+.correct-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 60px;
+  color: #ffd700;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+  pointer-events: none;
+  z-index: 30;
+  animation: correct-pop 0.8s ease-out forwards;
+}
+
+@keyframes correct-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(-30deg); }
+  40% { opacity: 1; transform: translate(-50%, -50%) scale(1.4) rotate(10deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2) translateY(-30px); }
+}
+
+/* 店主（おやじ） */
+#obj-oyaji { top: 20%; left: 10%; }
+
+#visual-oyaji {
+  width: 80px;
+  height: 100px;
+  background: linear-gradient(180deg, #5a4a30 0%, #3a2a15 100%);
+  border-radius: 40% 40% 30% 30%;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+#visual-oyaji::before {
+  content: '😤';
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 30px;
+}
+
+#visual-oyaji::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 40%;
+  background: linear-gradient(180deg, #8a7a5a, #6a5a3a);
+  border-radius: 0 0 30% 30%;
+  opacity: 0.8;
+}
+
+/* ラーメン */
+#obj-ramen { top: 35%; left: 40%; }
+
+#visual-ramen {
+  width: 70px;
+  height: 50px;
+  background: radial-gradient(ellipse, #8a7a50 0%, #5a4a2a 100%);
+  border-radius: 5px 5px 50% 50%;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#visual-ramen::before {
+  content: '🍜';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 40px;
+}
+
+#visual-ramen::after {
+  content: '💀';
+  position: absolute;
+  top: -30px;
+  right: -10px;
+  font-size: 16px;
+  animation: stink-float 2s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes stink-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+  50% { transform: translateY(-10px) rotate(10deg); opacity: 0.8; }
+}
+
+/* レジ */
+#obj-register { top: 25%; right: 10%; }
+
+#visual-register {
+  width: 60px;
+  height: 55px;
+  background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 100%);
+  border-radius: 5px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#visual-register::before {
+  content: '💰';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+}
+
+/* 看板 */
+#obj-sign { top: 16%; left: 50%; transform: translateX(-50%); --shake-base-x: -50%; }
+
+#visual-sign {
+  width: 120px;
+  height: 40px;
+  background: linear-gradient(180deg, #5a3a1a, #3a2a0a);
+  border-radius: 5px;
+  position: relative;
+  border: 2px solid #2a1a05;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#visual-sign::before {
+  content: 'ラーメン';
+  font-size: 16px;
+  color: #c8a860;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* テーブル */
+#obj-table { top: 45%; right: 25%; }
+
+#visual-table {
+  width: 70px;
+  height: 35px;
+  background: linear-gradient(180deg, #5a4020 0%, #3a2810 100%);
+  border-radius: 3px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#visual-table::before {
+  content: '🪑';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+}
+
+/* 篤（ラーメン屋シーン） */
+#atsushi-ramen {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 160px;
+  height: 180px;
+  z-index: 15;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#atsushi-ramen:hover {
+  transform: scale(1.05);
+}
+
+#atsushi-ramen:active {
+  transform: scale(0.97);
+}
+
+#atsushi-ramen img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(196, 160, 255, 0.4));
+}
+
+/* セリフ欄 */
+#dialogue-box {
+  position: absolute;
+  bottom: 10px;
+  left: 160px;
+  right: 10px;
+  background: rgba(13, 2, 33, 0.92);
+  border: 1px solid rgba(196, 160, 255, 0.4);
+  border-radius: 12px;
+  padding: 10px 14px 6px;
+  z-index: 20;
+  cursor: pointer;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 15px rgba(123, 47, 247, 0.15), inset 0 0 20px rgba(196, 160, 255, 0.03);
+}
+
+/* セリフ欄吹き出し尻尾 */
+#dialogue-box::after {
+  content: '';
+  position: absolute;
+  bottom: 15px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid rgba(13, 2, 33, 0.92);
+}
+
+#dialogue-name {
+  font-size: 12px;
+  color: #ffd700;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: 3px;
+}
+
+
+#dialogue-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #f0e6ff;
+  white-space: pre-wrap;
+  flex: 1;
+}
+
+#dialogue-indicator {
+  text-align: right;
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+#ramen-hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 160, 0, 0.95));
+  color: #1a0533;
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 900;
+  z-index: 20;
+  white-space: nowrap;
+  animation: hint-pulse 1.5s ease-in-out infinite;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+}
+
+@keyframes hint-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 160, 0, 0.3);
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), 0 0 50px rgba(255, 160, 0, 0.5), 0 0 80px rgba(255, 110, 0, 0.2);
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+/* ===== レジ演出画面 ===== */
+
+#register-scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #0d0221, #1a0a3e);
+  padding: 15px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* 篤 立ち絵（レジ演出） */
+#atsushi-register {
+  width: 320px;
+  height: 320px;
+  position: relative;
+  z-index: 3;
+  animation: register-chara-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+             register-chara-float 3s ease-in-out 0.8s infinite;
+}
+
+#atsushi-register img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(196, 160, 255, 0.5)) drop-shadow(0 0 40px rgba(255, 215, 0, 0.2));
+}
+
+/* 後光 */
+#atsushi-register::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 360px;
+  height: 360px;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+    conic-gradient(from 0deg, transparent, rgba(255, 215, 0, 0.08), transparent, rgba(196, 160, 255, 0.08), transparent);
+  border-radius: 50%;
+  animation: register-halo 5s linear infinite;
+  z-index: -1;
+}
+
+@keyframes register-chara-entrance {
+  0% { opacity: 0; transform: translateY(60px) scale(0.5) rotate(-15deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+@keyframes register-chara-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(2deg); }
+  50% { transform: translateY(-5px) rotate(-1deg); }
+  75% { transform: translateY(-12px) rotate(-2deg); }
+}
+
+@keyframes register-halo {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+#register-animation {
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.money-particle {
+  position: absolute;
+  font-size: 30px;
+  animation: money-fly 2s ease-out forwards;
+}
+
+@keyframes money-fly {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(0.5); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1.2); }
+}
+
+#register-name {
+  font-size: 12px;
+  color: #ffd700;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+
+
+#register-text-box {
+  background: rgba(13, 2, 33, 0.9);
+  border: 1px solid rgba(196, 160, 255, 0.3);
+  border-radius: 12px;
+  padding: 14px 20px;
+  max-width: 400px;
+  width: 100%;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  z-index: 2;
+  box-shadow: 0 0 20px rgba(123, 47, 247, 0.15), inset 0 0 30px rgba(196, 160, 255, 0.05);
+}
+
+#register-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #f0e6ff;
+  white-space: pre-wrap;
+  width: 100%;
+}
+
+/* 画面フラッシュ */
+.screen-flash {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 215, 0, 0.3);
+  pointer-events: none;
+  z-index: 50;
+  animation: flash 0.4s ease-out forwards;
+}
+
+@keyframes flash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ===== エンディング画面 ===== */
+
+#ending-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1a0533 0%, #2d1b69 40%, #f5c6ec 100%);
+  padding: 15px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+#ending-sparkle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#atsushi-ending {
+  width: 350px;
+  height: 350px;
+  position: relative;
+  margin-bottom: 15px;
+  z-index: 2;
+  animation: ending-chara 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes ending-chara {
+  0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+#atsushi-ending img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 30px rgba(196, 160, 255, 0.6)) drop-shadow(0 0 60px rgba(255, 215, 0, 0.4));
+}
+
+/* エンディング後光 */
+#atsushi-ending::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 50%),
+    conic-gradient(from 0deg, transparent, rgba(255, 215, 0, 0.1), transparent, rgba(196, 160, 255, 0.1), transparent);
+  border-radius: 50%;
+  animation: ending-halo 4s linear infinite;
+  z-index: -1;
+}
+
+@keyframes ending-halo {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+#ending-text-box {
+  background: rgba(13, 2, 33, 0.85);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  border-radius: 12px;
+  padding: 16px 20px;
+  max-width: 400px;
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
+}
+
+#ending-text {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #ffd700;
+  text-align: center;
+  white-space: pre-wrap;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+#ending-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  z-index: 5;
+}
+
+.game-end-btn {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2ff7, #c471ed);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 25px;
+  padding: 12px 36px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  min-width: 200px;
+}
+
+.game-end-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(196, 113, 237, 0.5);
+}
+
+/* ===== テキスト送り演出 ===== */
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #c4a0ff;
+  animation: cursor-blink 0.6s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ===== 漫画エフェクト ===== */
+
+.manga-exclaim {
+  position: absolute;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 40px;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 3px 3px 0 #7b2ff7;
+  pointer-events: none;
+  z-index: 30;
+  animation: exclaim-pop 1s ease-out forwards;
+}
+
+@keyframes exclaim-pop {
+  0% { opacity: 0; transform: scale(0) rotate(-20deg); }
+  40% { opacity: 1; transform: scale(1.3) rotate(5deg); }
+  70% { transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(0.8) translateY(-20px); }
+}
+
+/* ===== レスポンシブ ===== */
+
+@media (max-width: 480px) {
+  #game-title {
+    font-size: 21px;
+    margin-bottom: 18px;
+  }
+
+  #atsushi-title {
+    width: 170px;
+    height: 170px;
+  }
+
+  #title-character {
+    margin-bottom: 8px;
+  }
+
+  #atsushi-opening {
+    width: 250px;
+    height: 250px;
+    margin-bottom: 3px;
+  }
+
+  #opening-text-box {
+    height: 120px;
+    padding: 12px 14px;
+  }
+
+  #dialogue-box {
+    bottom: 8px;
+    left: 130px;
+    right: 8px;
+    height: 120px;
+    padding: 8px 10px 4px;
+  }
+
+  #atsushi-ramen {
+    width: 120px;
+    height: 140px;
+  }
+
+  #dialogue-text {
+    font-size: 12px;
+  }
+
+  #ramen-hint {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+
+  .obj-label {
+    font-size: 10px;
+  }
+
+  #atsushi-ending {
+    width: 280px;
+    height: 280px;
+  }
+
+  #atsushi-register {
+    width: 260px;
+    height: 260px;
+  }
+
+  #register-animation {
+    width: 100px;
+    height: 100px;
+  }
+
+  #start-btn {
+    font-size: 18px;
+    padding: 12px 40px;
+  }
+
+  #register-text-box {
+    height: 130px;
+  }
+}

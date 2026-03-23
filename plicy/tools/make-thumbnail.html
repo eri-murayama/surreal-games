@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>サムネイル ジェネレーター</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; color: #fff; }
+    canvas { border: 2px solid #fff; margin: 20px 0; }
+    button { padding: 12px 32px; font-size: 16px; background: #ff69b4; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #d63384; }
+    p { color: #aaa; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>かにかに 顔面アップ サムネイル</h1>
+  <canvas id="canvas" width="640" height="480"></canvas>
+  <button onclick="download()">ダウンロード (PNG)</button>
+  <p>640x480px / PLiCyサムネイル用</p>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 640, H = 480;
+
+    const img = new Image();
+    img.onload = () => draw();
+    img.src = '../games/whack-kanikani/kanikani.png';
+
+    function draw() {
+      // ピンク背景グラデーション
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, '#ffb6c1');
+      grad.addColorStop(1, '#ff69b4');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // かにかにの顔面部分をドアップで描画
+      // 元画像の顔部分（目・鼻・口あたり）を切り出して拡大
+      // 元画像サイズを確認して顔の中心を狙う
+      const srcW = img.naturalWidth;
+      const srcH = img.naturalHeight;
+
+      // 顔の中心あたり: 上部の目〜口を含む範囲を切り出し
+      // 目は上部1/4あたり、口は中央あたり
+      const cropX = srcW * 0.18;
+      const cropY = srcH * 0.02;
+      const cropW = srcW * 0.55;
+      const cropH = srcH * 0.65;
+
+      // キャンバスいっぱいに描画（少しはみ出すくらいのアップ）
+      const scale = Math.max(W / cropW, H / cropH) * 1.1;
+      const drawW = cropW * scale;
+      const drawH = cropH * scale;
+      const drawX = (W - drawW) / 2;
+      const drawY = (H - drawH) / 2;
+
+      ctx.drawImage(img, cropX, cropY, cropW, cropH, drawX, drawY, drawW, drawH);
+    }
+
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'kanikani-thumbnail.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

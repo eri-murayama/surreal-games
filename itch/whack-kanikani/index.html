@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crab Crab Panic! - Whack-a-Mole</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 左右デコレーション -->
+  <div class="side-deco side-deco--left">
+    <img src="kanikani.png" class="deco-chara deco-chara--1" alt="">
+    <div class="deco-bubble deco-bubble--1">Abs need<br>daily airing!</div>
+    <div class="deco-star">✦</div>
+    <div class="deco-star deco-star--2">❀</div>
+    <div class="deco-star deco-star--3">✧</div>
+  </div>
+  <div class="side-deco side-deco--right">
+    <img src="kanikani.png" class="deco-chara deco-chara--2" alt="">
+    <div class="deco-bubble deco-bubble--2">Whack me,<br>I'll be back!</div>
+    <div class="deco-star deco-star--4">♪</div>
+    <div class="deco-star deco-star--5">✦</div>
+    <div class="deco-star deco-star--6">❀</div>
+  </div>
+
+  <div id="game-wrapper">
+    <h1 class="game-title">🦀 Crab Crab Panic! 🦀</h1>
+    <p class="game-subtitle">Whack the dream yakuza crab! Abs need daily airing!</p>
+
+    <!-- スコア・タイマー -->
+    <div id="hud">
+      <div class="hud-item">
+        <span class="hud-label">SCORE</span>
+        <span id="score" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">TIME</span>
+        <span id="timer" class="hud-value">30</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">COMBO</span>
+        <span id="combo" class="hud-value">0</span>
+      </div>
+    </div>
+
+    <!-- ゲームボード -->
+    <div id="board">
+      <div class="hole" data-index="0"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="1"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="2"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="3"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="4"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="5"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="6"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="7"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+      <div class="hole" data-index="8"><div class="hole-bg"></div><div class="mole-container"><img src="kanikani.png" class="mole" alt="Crab"></div></div>
+    </div>
+
+    <!-- スタート / リザルト -->
+    <div id="overlay" class="overlay">
+      <div id="overlay-content">
+        <div id="start-screen">
+          <div class="overlay-icon">🦀</div>
+          <h2>Crab Crab Panic!</h2>
+          <p>Whack the crabs popping out<br>of the holes! You have 30 seconds!</p>
+          <button id="start-btn">START</button>
+        </div>
+        <div id="result-screen" class="hidden">
+          <div class="overlay-icon">🎉</div>
+          <h2>Time's Up!</h2>
+          <p id="result-score"></p>
+          <p id="result-rank"></p>
+          <p id="result-comment"></p>
+          <button id="retry-btn">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ヒットエフェクト用 -->
+    <div id="hit-effects"></div>
+  </div>
+
+  <!-- カスタムカーソル（釘バット） -->
+  <div id="custom-cursor">
+    <div id="cursor-bat"></div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

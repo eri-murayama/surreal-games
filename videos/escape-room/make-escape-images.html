@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かわいい部屋からの脱出 - PV</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700;800&family=Zen+Antique+Soft&family=Bebas+Neue&family=Dela+Gothic+One&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --font-jp: 'Shippori Mincho', serif;
+    --font-jp-display: 'Dela Gothic One', sans-serif;
+    --font-jp-soft: 'Zen Antique Soft', serif;
+    --font-en: 'Bebas Neue', sans-serif;
+    --red: #cc2222;
+    --red-glow: rgba(255, 40, 40, 0.6);
+  }
+
+  body {
+    background: #000;
+    overflow: hidden;
+    font-family: var(--font-jp);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #stage {
+    width: 1280px;
+    height: 720px;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ========================================
+     パーティクル背景（常時）
+     ======================================== */
+  #particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 80, 80, 0.4);
+    border-radius: 50%;
+    animation: particleFall linear infinite;
+  }
+
+  /* ========================================
+     SCENE 0 (0s-3.5s): 静かな導入
+     ======================================== */
+  #scene-intro {
+    animation: fadeInOut 3.8s ease 0.3s forwards;
+    z-index: 10;
+  }
+  #scene-intro .tiny-text {
+    color: rgba(255,255,255,0.2);
+    font-family: var(--font-jp-soft);
+    font-size: 20px;
+    letter-spacing: 0.6em;
+    opacity: 0;
+    animation: fadeIn 2.5s ease 0.8s forwards;
+  }
+  /* 導入中の心拍ライン */
+  #heartbeat-line {
+    position: absolute;
+    bottom: 38%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: transparent;
+    z-index: 11;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 1.5s forwards, fadeOut 0.5s ease 3.5s forwards;
+  }
+  #heartbeat-line::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg,
+      transparent 0%, transparent 35%,
+      var(--red) 40%, transparent 42%,
+      var(--red) 44%, transparent 48%,
+      transparent 100%
+    );
+    animation: heartbeatSweep 1.5s ease 1.5s infinite;
+    filter: blur(0.5px);
+    box-shadow: 0 0 10px var(--red-glow);
+  }
+
+  /* ========================================
+     SCENE 1 (3.5s-6.5s): 顔じわじわ巨大化
+     ======================================== */
+  #scene-face-grow {
+    animation: sceneSlide 3s ease 3.5s forwards;
+    z-index: 10;
+  }
+  #scene-face-grow img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    animation: growFace 3s cubic-bezier(0.25, 0, 0.2, 1) 3.5s forwards;
+    filter: contrast(1.3) saturate(0.5);
+  }
+  /* 顔の周囲にグリッチ枠 */
+  #scene-face-grow::after {
+    content: '';
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    border: 1px solid rgba(255, 50, 50, 0.3);
+    animation: glitchBox 0.2s steps(2) 4.5s infinite alternate, growBox 2s ease 4.5s forwards;
+    opacity: 0;
+  }
+
+  /* ========================================
+     SCENE 2 (6.5s-8.5s): 顔ドーン + グリッチ
+     ======================================== */
+  #scene-face-slam {
+    animation: sceneSlide 2s ease 6.5s forwards;
+    z-index: 12;
+  }
+  #scene-face-slam img {
+    width: 900px;
+    height: 900px;
+    object-fit: contain;
+    animation: faceSlam 0.25s cubic-bezier(0, 0, 0.2, 1) 6.5s both;
+    filter: contrast(1.6) saturate(0.3) sepia(0.3);
+  }
+  #scene-face-slam .red-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(180, 0, 0, 0.5) 0%, rgba(0,0,0,0.9) 65%);
+  }
+  /* グリッチスライス */
+  #scene-face-slam .glitch-slice {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    animation: glitchSlice 0.15s steps(3) 6.6s 4;
+  }
+  #scene-face-slam .glitch-slice img {
+    width: 900px;
+    height: 900px;
+    object-fit: contain;
+    filter: contrast(1.6) saturate(3) hue-rotate(90deg);
+    mix-blend-mode: screen;
+    opacity: 0.4;
+  }
+
+  /* ========================================
+     SCENE 3 (8s-10s): 「扉が、開かない。」
+     ======================================== */
+  #scene-text1 {
+    flex-direction: column;
+    background: #000;
+    animation: sceneSlide 2.4s ease 8s forwards;
+    z-index: 10;
+  }
+  #scene-text1 .msg {
+    color: #fff;
+    font-family: var(--font-jp);
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    opacity: 0;
+    animation: typeIn 0.6s ease 8.3s forwards;
+  }
+  /* テキスト下のアンダーライン演出 */
+  #scene-text1 .msg::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: var(--red);
+    margin-top: 16px;
+    animation: lineGrow 0.8s ease 8.8s forwards;
+    box-shadow: 0 0 15px var(--red-glow);
+  }
+
+  /* ========================================
+     SCENE 4 (10s-12.5s): 謎生物スクロール
+     ======================================== */
+  #scene-creature {
+    animation: sceneSlide 2.8s ease 10s forwards;
+    background: #050510;
+    overflow: hidden;
+    z-index: 10;
+  }
+  #scene-creature img {
+    height: 520px;
+    object-fit: contain;
+    filter: brightness(0.6) contrast(1.5) hue-rotate(15deg);
+    animation: creatureScroll 2.8s linear 10s both;
+  }
+  #scene-creature .creature-label {
+    position: absolute;
+    bottom: 70px;
+    right: 80px;
+    color: rgba(255,255,255,0.1);
+    font-family: var(--font-jp-soft);
+    font-size: 16px;
+    letter-spacing: 0.5em;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 11s forwards;
+  }
+  /* 走査線を強調 */
+  #scene-creature .scan-bar {
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 50, 50, 0.15);
+    animation: scanDown 2s linear 10s infinite;
+    box-shadow: 0 0 20px rgba(255, 50, 50, 0.2);
+  }
+
+  /* ========================================
+     SCENE 5 (12.5s-14.5s): フラッシュワード連打
+     ======================================== */
+  .flash-word {
+    position: absolute;
+    font-family: var(--font-jp-display);
+    font-weight: 900;
+    opacity: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+  #fw1 {
+    font-size: 220px; color: rgba(255,40,40,0.9); top: 5%; left: 2%;
+    transform: rotate(-12deg);
+    text-shadow: 0 0 80px var(--red-glow), 0 0 160px rgba(255,0,0,0.2);
+    animation: flashBang 0.32s ease 12.5s forwards;
+  }
+  #fw2 {
+    font-size: 100px; color: rgba(255,255,255,0.85); top: 58%; right: 5%;
+    font-family: var(--font-jp-soft);
+    transform: rotate(5deg);
+    text-shadow: 0 0 40px rgba(255,255,255,0.4);
+    animation: flashBang 0.32s ease 12.85s forwards;
+  }
+  #fw3 {
+    font-size: 160px; color: rgba(255,60,60,0.85); top: 28%; left: 20%;
+    transform: rotate(-3deg);
+    text-shadow: 0 0 60px var(--red-glow);
+    animation: flashBang 0.32s ease 13.2s forwards;
+  }
+  #fw4 {
+    font-size: 130px; color: rgba(255,255,255,0.5); top: 62%; left: 8%;
+    font-family: var(--font-jp-soft);
+    transform: rotate(7deg);
+    animation: flashBang 0.32s ease 13.55s forwards;
+  }
+  #fw5 {
+    font-size: 200px; color: rgba(255,30,30,0.95); top: 10%; right: 5%;
+    transform: rotate(-6deg);
+    text-shadow: 0 0 100px var(--red-glow);
+    animation: flashBang 0.32s ease 13.9s forwards;
+  }
+
+  /* ========================================
+     SCENE 6 (14.5s-17s): 絵画浮遊 + 色収差
+     ======================================== */
+  #scene-painting {
+    animation: sceneSlide 2.8s ease 14.5s forwards;
+    background: linear-gradient(180deg, #080410 0%, #100808 100%);
+    z-index: 10;
+  }
+  #scene-painting img {
+    max-height: 400px;
+    object-fit: contain;
+    animation: floatRotate 2.8s ease-in-out 14.5s both;
+    filter: brightness(0.8) contrast(1.3);
+  }
+  /* 色収差ゴースト */
+  #scene-painting .chromatic {
+    position: absolute;
+    max-height: 400px;
+    object-fit: contain;
+    animation: floatRotate 2.8s ease-in-out 14.5s both;
+    filter: brightness(0.5) contrast(1.3) hue-rotate(120deg);
+    mix-blend-mode: screen;
+    opacity: 0.35;
+    transform-origin: center;
+    margin-left: 12px;
+    margin-top: -6px;
+  }
+  #scene-painting .painting-whisper {
+    position: absolute;
+    bottom: 55px;
+    color: rgba(255,255,255,0.08);
+    font-family: var(--font-jp-soft);
+    font-size: 20px;
+    letter-spacing: 1.2em;
+    opacity: 0;
+    animation: fadeIn 1s ease 15.5s forwards;
+  }
+
+  /* ========================================
+     SCENE 7 (17s-19.5s): 主人公3分裂 + 回転
+     ======================================== */
+  #scene-multiply {
+    animation: sceneSlide 2.8s ease 17s forwards;
+    background: #000;
+    gap: 0;
+    z-index: 10;
+  }
+  #scene-multiply img {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+  }
+  #scene-multiply img:nth-child(1) {
+    animation: multiLeft 0.8s ease 17.3s both;
+    filter: hue-rotate(40deg) saturate(2) brightness(0.8);
+    opacity: 0;
+  }
+  #scene-multiply img:nth-child(2) {
+    animation: multiCenter 0.8s ease 17.5s both, slowSpin 4s linear 17.5s infinite;
+    filter: contrast(2) saturate(0) brightness(1.2);
+    opacity: 0;
+    width: 320px;
+    height: 320px;
+  }
+  #scene-multiply img:nth-child(3) {
+    animation: multiRight 0.8s ease 17.7s both;
+    filter: hue-rotate(-40deg) saturate(2) brightness(0.8);
+    opacity: 0;
+  }
+  /* 背景にうっすら巨大な顔 */
+  #scene-multiply .bg-face {
+    position: absolute;
+    width: 1400px;
+    height: 1400px;
+    object-fit: contain;
+    opacity: 0;
+    filter: brightness(0.08) contrast(2) saturate(0);
+    animation: fadeIn 1s ease 17.2s forwards;
+    z-index: -1;
+  }
+
+  /* ========================================
+     SCENE 8 (19.5s-21.5s): 「あなたが問題だ。」
+     ======================================== */
+  #scene-text2 {
+    flex-direction: column;
+    gap: 16px;
+    background: #000;
+    animation: sceneSlide 2.4s ease 19.5s forwards;
+    z-index: 10;
+  }
+  #scene-text2 .msg {
+    color: var(--red);
+    font-family: var(--font-jp-display);
+    font-size: 64px;
+    letter-spacing: 0.15em;
+    opacity: 0;
+    animation: titleSlam 0.4s ease 19.8s forwards;
+    text-shadow: 0 0 40px var(--red-glow), 0 0 80px rgba(255,0,0,0.2);
+  }
+  #scene-text2 .sub {
+    color: rgba(255,255,255,0.2);
+    font-family: var(--font-en);
+    font-size: 28px;
+    letter-spacing: 0.6em;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 20.3s forwards;
+  }
+
+  /* ========================================
+     SCENE 9 (21.5s-23.5s): さくらんぼ横断
+     ======================================== */
+  #scene-cherry {
+    animation: sceneSlide 2.5s ease 21.5s forwards;
+    background: linear-gradient(135deg, #030310 0%, #100303 100%);
+    overflow: hidden;
+    z-index: 10;
+  }
+  #scene-cherry img {
+    height: 380px;
+    object-fit: contain;
+    filter: brightness(0.85) contrast(1.3);
+    animation: walkAcross 2.5s ease-in-out 21.5s both;
+  }
+  /* 影 */
+  #scene-cherry .shadow {
+    position: absolute;
+    bottom: 25%;
+    width: 250px;
+    height: 20px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
+    animation: walkAcross 2.5s ease-in-out 21.5s both;
+    filter: blur(5px);
+  }
+
+  /* ========================================
+     SCENE 10 (23.5s-25.5s): 悲鳴 + 画面震動
+     ======================================== */
+  #scene-scream {
+    background: #000;
+    animation: sceneSlide 2s ease 23.5s forwards;
+    z-index: 10;
+  }
+  #scene-scream .scream {
+    color: #5577bb;
+    font-family: var(--font-jp-display);
+    font-size: 80px;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: typeIn 0.2s ease 23.8s forwards, shakeText 0.1s linear 24s 10;
+    text-shadow: 0 0 30px rgba(80, 120, 200, 0.4);
+  }
+  /* 画面自体を揺らす */
+  #scene-scream .shake-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    animation: shakeScreen 0.08s linear 23.9s 15;
+  }
+
+  /* ========================================
+     SCENE 11 (25s-25.5s): 一瞬の黒 + ノイズ
+     ======================================== */
+  #scene-blackout {
+    background: #000;
+    animation: fadeInOut 1s ease 25s forwards;
+    z-index: 15;
+  }
+  #scene-blackout .noise-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+    background-size: 256px;
+    opacity: 0.5;
+  }
+
+  /* ========================================
+     SCENE FINAL (25.5s-): タイトル
+     ======================================== */
+  #scene-title {
+    flex-direction: column;
+    gap: 18px;
+    background: #000;
+    animation: fadeIn 0.6s ease 25.8s forwards;
+    z-index: 200;
+  }
+  #scene-title .game-title {
+    color: #fff;
+    font-family: var(--font-jp-display);
+    font-size: 68px;
+    letter-spacing: 0.06em;
+    opacity: 0;
+    animation: titleSlam 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 26.5s forwards;
+    text-shadow: 0 0 50px var(--red-glow), 0 4px 30px rgba(0,0,0,0.8);
+  }
+  #scene-title .game-title em {
+    color: var(--red);
+    font-style: normal;
+  }
+  #scene-title .subtitle {
+    color: rgba(255,255,255,0.25);
+    font-family: var(--font-en);
+    font-size: 26px;
+    letter-spacing: 0.5em;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 27.2s forwards;
+  }
+  #scene-title .tagline {
+    color: rgba(255,255,255,0.4);
+    font-family: var(--font-jp-soft);
+    font-size: 22px;
+    letter-spacing: 0.2em;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 27.8s forwards;
+  }
+  #scene-title .play-now {
+    margin-top: 20px;
+    color: #fff;
+    font-family: var(--font-jp-display);
+    font-size: 22px;
+    letter-spacing: 0.25em;
+    border: 2px solid rgba(255,255,255,0.5);
+    padding: 14px 48px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 28.3s forwards, pulseGlow 1.8s ease 28.8s infinite alternate;
+    position: relative;
+  }
+  /* ボタンのシャイン演出 */
+  #scene-title .play-now::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: btnShine 3s ease 29s infinite;
+  }
+
+  /* ===== 常時エフェクト ===== */
+  #scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0, 0, 0, 0.06) 2px, rgba(0, 0, 0, 0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 300;
+  }
+  #vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, 0.75) 100%);
+    pointer-events: none;
+    z-index: 301;
+  }
+  /* フィルムグレイン */
+  #grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.4'/%3E%3C/svg%3E");
+    background-size: 256px;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 302;
+    animation: grainShift 0.5s steps(4) infinite;
+  }
+
+  /* 画面フラッシュ */
+  .screen-flash {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 150;
+    pointer-events: none;
+  }
+  #sf1 { background: #fff; animation: screenFlash 0.2s ease 6.5s forwards; }
+  #sf2 { background: #ff0000; animation: screenFlash 0.15s ease 7.8s forwards; }
+  #sf3 { background: #fff; animation: screenFlash 0.1s ease 12.5s forwards; }
+  #sf4 { background: #fff; animation: screenFlash 0.1s ease 12.85s forwards; }
+  #sf5 { background: #ff1111; animation: screenFlash 0.1s ease 13.2s forwards; }
+  #sf6 { background: #fff; animation: screenFlash 0.1s ease 13.55s forwards; }
+  #sf7 { background: #ff0000; animation: screenFlash 0.1s ease 13.9s forwards; }
+  #sf8 { background: #fff; animation: screenFlash 0.12s ease 17s forwards; }
+  #sf9 { background: #111; animation: screenFlash 0.08s ease 19.7s forwards; }
+  #sf10 { background: #fff; animation: screenFlash 0.5s ease 25.5s forwards; }
+  #sf11 { background: var(--red); animation: screenFlash 0.3s ease 26.4s forwards; }
+
+  /* ===== KEYFRAMES ===== */
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; } to { opacity: 0; }
+  }
+  @keyframes fadeInOut {
+    0% { opacity: 0; } 15% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; }
+  }
+  @keyframes sceneSlide {
+    0% { opacity: 0; } 5% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; }
+  }
+  @keyframes typeIn {
+    0% { opacity: 0; transform: translateY(18px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes growFace {
+    0%   { width: 60px; height: 60px; opacity: 0.2; filter: contrast(1.3) saturate(0.5) blur(3px); }
+    60%  { width: 400px; height: 400px; opacity: 0.6; filter: contrast(1.3) saturate(0.5) blur(1px); }
+    100% { width: 650px; height: 650px; opacity: 1; filter: contrast(1.3) saturate(0.5) blur(0); }
+  }
+  @keyframes growBox {
+    0% { width: 80px; height: 80px; opacity: 0; }
+    30% { opacity: 0.5; }
+    100% { width: 500px; height: 500px; opacity: 0; }
+  }
+  @keyframes faceSlam {
+    0% { transform: scale(0.4); opacity: 0; }
+    25% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes glitchSlice {
+    0%   { clip-path: inset(20% 0 60% 0); transform: translateX(8px); }
+    33%  { clip-path: inset(50% 0 20% 0); transform: translateX(-12px); }
+    66%  { clip-path: inset(10% 0 70% 0); transform: translateX(5px); }
+    100% { clip-path: inset(60% 0 10% 0); transform: translateX(-8px); }
+  }
+  @keyframes glitchBox {
+    from { transform: translate(-2px, 1px); }
+    to { transform: translate(2px, -1px); }
+  }
+  @keyframes lineGrow {
+    from { width: 0; } to { width: 100%; }
+  }
+  @keyframes creatureScroll {
+    0%   { transform: translateX(750px); }
+    100% { transform: translateX(-750px); }
+  }
+  @keyframes scanDown {
+    0% { top: -5%; } 100% { top: 105%; }
+  }
+  @keyframes flashBang {
+    0%   { opacity: 0; transform: scale(3); }
+    15%  { opacity: 1; }
+    55%  { opacity: 0.8; }
+    100% { opacity: 0; transform: scale(1); }
+  }
+  @keyframes floatRotate {
+    0%   { transform: rotate(-8deg) scale(0.7); opacity: 0; }
+    25%  { opacity: 1; }
+    50%  { transform: rotate(5deg) scale(1.08); }
+    75%  { opacity: 1; }
+    100% { transform: rotate(-3deg) scale(0.95); opacity: 0; }
+  }
+  @keyframes multiLeft {
+    0%   { opacity: 0; transform: translateX(0) rotate(0); }
+    100% { opacity: 1; transform: translateX(-150px) rotate(-18deg); }
+  }
+  @keyframes multiCenter {
+    0%   { opacity: 0; transform: scale(0.3); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes multiRight {
+    0%   { opacity: 0; transform: translateX(0) rotate(0); }
+    100% { opacity: 1; transform: translateX(150px) rotate(18deg); }
+  }
+  @keyframes slowSpin {
+    from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+  }
+  @keyframes walkAcross {
+    0%   { transform: translateX(800px) scaleX(-1); }
+    40%  { transform: translateX(30px) scaleX(-1) translateY(-25px); }
+    55%  { transform: translateX(-30px) scaleX(-1) translateY(0); }
+    100% { transform: translateX(-800px) scaleX(-1); }
+  }
+  @keyframes shakeText {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-15px) translateY(-5px); }
+    50% { transform: translateX(10px) translateY(8px); }
+    75% { transform: translateX(-8px) translateY(-3px); }
+  }
+  @keyframes shakeScreen {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-4px, 3px); }
+    50% { transform: translate(5px, -2px); }
+    75% { transform: translate(-3px, -4px); }
+  }
+  @keyframes titleSlam {
+    0%   { opacity: 0; transform: scale(4.5); filter: blur(20px); }
+    60%  { opacity: 1; transform: scale(0.95); filter: blur(0); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+  @keyframes pulseGlow {
+    from { box-shadow: 0 0 10px rgba(255, 80, 80, 0.15), inset 0 0 10px rgba(255, 80, 80, 0.05); }
+    to   { box-shadow: 0 0 35px rgba(255, 80, 80, 0.4), inset 0 0 15px rgba(255, 80, 80, 0.1); }
+  }
+  @keyframes btnShine {
+    0%, 100% { left: -80%; }
+    40% { left: 130%; }
+  }
+  @keyframes screenFlash {
+    0% { opacity: 0; } 20% { opacity: 0.9; } 100% { opacity: 0; }
+  }
+  @keyframes heartbeatSweep {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes particleFall {
+    0%   { transform: translateY(-10px) translateX(0); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(720px) translateX(30px); opacity: 0; }
+  }
+  @keyframes grainShift {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-5%, -5%); }
+    50%  { transform: translate(3%, 2%); }
+    75%  { transform: translate(-2%, 4%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* ===== 操作 ===== */
+  #controls {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 999;
+  }
+  #controls button {
+    background: rgba(255,255,255,0.08);
+    color: #666;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 6px 18px;
+    font-size: 13px;
+    font-family: var(--font-jp);
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  #controls button:hover { background: rgba(255,255,255,0.15); color: #aaa; }
+
+  /* 開始オーバーレイ */
+  #start-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 9999;
+    cursor: pointer;
+  }
+  #start-overlay .start-text {
+    color: #fff;
+    font-family: var(--font-jp-display);
+    font-size: 32px;
+    letter-spacing: 0.3em;
+    animation: pulseOpacity 2s ease infinite alternate;
+  }
+  #start-overlay .start-sub {
+    color: rgba(255,255,255,0.25);
+    font-family: var(--font-en);
+    font-size: 18px;
+    letter-spacing: 0.5em;
+  }
+  @keyframes pulseOpacity {
+    from { opacity: 0.5; } to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- パーティクル（JSで生成） -->
+  <div id="particles"></div>
+
+  <!-- 心拍ライン -->
+  <div id="heartbeat-line"></div>
+
+  <!-- 0s: 導入 -->
+  <div class="layer" id="scene-intro">
+    <div class="tiny-text">ある部屋に、入ってしまった。</div>
+  </div>
+
+  <!-- 3.5s: 顔じわじわ -->
+  <div class="layer" id="scene-face-grow">
+    <img src="../../games/escape-room/protagonist.png" alt="">
+  </div>
+
+  <!-- 6.5s: 顔ドーン -->
+  <div class="layer" id="scene-face-slam">
+    <div class="red-overlay"></div>
+    <img src="../../games/escape-room/protagonist.png" alt="">
+    <div class="glitch-slice"><img src="../../games/escape-room/protagonist.png" alt=""></div>
+  </div>
+
+  <!-- 8s: テキスト -->
+  <div class="layer" id="scene-text1">
+    <div class="msg">扉が、開かない。</div>
+  </div>
+
+  <!-- 10s: 謎生物 -->
+  <div class="layer" id="scene-creature">
+    <img src="../../games/escape-room/window-view.png" alt="">
+    <div class="creature-label">窓 の 外 に 何 か い る</div>
+    <div class="scan-bar"></div>
+  </div>
+
+  <!-- フラッシュワード -->
+  <div class="flash-word" id="fw1">謎</div>
+  <div class="flash-word" id="fw2">匂い</div>
+  <div class="flash-word" id="fw3">不法侵入</div>
+  <div class="flash-word" id="fw4">うふふ</div>
+  <div class="flash-word" id="fw5">脱出</div>
+
+  <!-- 14.5s: 絵画 -->
+  <div class="layer" id="scene-painting">
+    <img src="../../games/escape-room/painting-art.png" alt="" class="chromatic">
+    <img src="../../games/escape-room/painting-art.png" alt="">
+    <div class="painting-whisper">ね こ は ね こ で も</div>
+  </div>
+
+  <!-- 17s: 分裂 -->
+  <div class="layer" id="scene-multiply">
+    <img src="../../games/escape-room/protagonist.png" alt="" class="bg-face">
+    <img src="../../games/escape-room/protagonist.png" alt="">
+    <img src="../../games/escape-room/protagonist.png" alt="">
+    <img src="../../games/escape-room/protagonist.png" alt="">
+  </div>
+
+  <!-- 19.5s: テキスト2 -->
+  <div class="layer" id="scene-text2">
+    <div class="msg">あなたが問題だ。</div>
+    <div class="sub">YOU ARE THE PROBLEM</div>
+  </div>
+
+  <!-- 21.5s: さくらんぼ -->
+  <div class="layer" id="scene-cherry">
+    <img src="../../games/escape-room/sakuranbo.jpg" alt="">
+    <div class="shadow"></div>
+  </div>
+
+  <!-- 23.5s: 悲鳴 -->
+  <div class="layer" id="scene-scream">
+    <div class="shake-wrapper">
+      <div class="scream">ぎょごおおお</div>
+    </div>
+  </div>
+
+  <!-- 25s: 暗転ノイズ -->
+  <div class="layer" id="scene-blackout">
+    <div class="noise-overlay"></div>
+  </div>
+
+  <!-- 25.5s: タイトル -->
+  <div class="layer" id="scene-title">
+    <div class="game-title"><em>かわいい</em>部屋からの脱出</div>
+    <div class="subtitle">ESCAPE FROM A CUTE ROOM</div>
+    <div class="tagline">無料で遊べる脱出ゲーム</div>
+    <div class="play-now">プレイする</div>
+  </div>
+
+  <!-- フラッシュ -->
+  <div class="screen-flash" id="sf1"></div>
+  <div class="screen-flash" id="sf2"></div>
+  <div class="screen-flash" id="sf3"></div>
+  <div class="screen-flash" id="sf4"></div>
+  <div class="screen-flash" id="sf5"></div>
+  <div class="screen-flash" id="sf6"></div>
+  <div class="screen-flash" id="sf7"></div>
+  <div class="screen-flash" id="sf8"></div>
+  <div class="screen-flash" id="sf9"></div>
+  <div class="screen-flash" id="sf10"></div>
+  <div class="screen-flash" id="sf11"></div>
+  <div id="scanlines"></div>
+  <div id="vignette"></div>
+  <div id="grain"></div>
+</div>
+
+<!-- 音声開始用オーバーレイ -->
+<div id="start-overlay" onclick="this.style.display='none'">
+  <div class="start-text">クリックして再生</div>
+  <div class="start-sub">CLICK TO PLAY</div>
+</div>
+
+<div id="controls">
+  <button onclick="replayWithAudio()">もう一度再生</button>
+  <button onclick="togglePause()" id="pauseBtn">一時停止</button>
+  <button onclick="recordAndDownload()" id="recBtn">動画を保存 (WebM)</button>
+</div>
+
+<script>
+  // ===== Web Audio BGM エンジン =====
+  let audioCtx = null;
+  let masterGain = null;
+
+  function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.7;
+    masterGain.connect(audioCtx.destination);
+  }
+
+  // ドローン（持続低音）
+  function playDrone(startTime, duration, freq = 55) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    osc.type = 'sawtooth';
+    osc.frequency.value = freq;
+    filter.type = 'lowpass';
+    filter.frequency.value = 200;
+    filter.Q.value = 5;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.15, startTime + 2);
+    gain.gain.setValueAtTime(0.15, startTime + duration - 2);
+    gain.gain.linearRampToValueAtTime(0, startTime + duration);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  }
+
+  // 心拍音
+  function playHeartbeat(startTime, count, interval) {
+    for (let i = 0; i < count; i++) {
+      const t = startTime + i * interval;
+      // ドクッ（低音パルス2回）
+      [0, 0.12].forEach((offset, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = idx === 0 ? 50 : 40;
+        gain.gain.setValueAtTime(0, t + offset);
+        gain.gain.linearRampToValueAtTime(idx === 0 ? 0.35 : 0.25, t + offset + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.2);
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start(t + offset);
+        osc.stop(t + offset + 0.25);
+      });
+    }
+  }
+
+  // 衝撃音（ドーン）
+  function playImpact(startTime, intensity = 1) {
+    // サブベース
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(80 * intensity, startTime);
+    osc.frequency.exponentialRampToValueAtTime(25, startTime + 0.5);
+    gain.gain.setValueAtTime(0.5 * intensity, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.8);
+    osc.connect(gain);
+    gain.connect(masterGain);
+    osc.start(startTime);
+    osc.stop(startTime + 0.8);
+
+    // ノイズバースト
+    const bufferSize = audioCtx.sampleRate * 0.3;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
+    }
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    const nGain = audioCtx.createGain();
+    const nFilter = audioCtx.createBiquadFilter();
+    nFilter.type = 'lowpass';
+    nFilter.frequency.value = 800;
+    nGain.gain.setValueAtTime(0.3 * intensity, startTime);
+    nGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+    noise.connect(nFilter);
+    nFilter.connect(nGain);
+    nGain.connect(masterGain);
+    noise.start(startTime);
+  }
+
+  // ライジングテンション（シューッと上がる音）
+  function playRiser(startTime, duration) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(80, startTime);
+    osc.frequency.exponentialRampToValueAtTime(2000, startTime + duration);
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(200, startTime);
+    filter.frequency.exponentialRampToValueAtTime(3000, startTime + duration);
+    filter.Q.value = 2;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.2, startTime + duration * 0.8);
+    gain.gain.linearRampToValueAtTime(0, startTime + duration);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  }
+
+  // 不協和音パッド
+  function playDissonantPad(startTime, duration) {
+    [110, 116.5, 130.8, 155.6].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+      // ゆっくりデチューン
+      osc.detune.setValueAtTime(0, startTime);
+      osc.detune.linearRampToValueAtTime((i - 1.5) * 15, startTime + duration);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.06, startTime + 1.5);
+      gain.gain.setValueAtTime(0.06, startTime + duration - 1.5);
+      gain.gain.linearRampToValueAtTime(0, startTime + duration);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    });
+  }
+
+  // 悲鳴・金属音
+  function playScreech(startTime) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(800, startTime);
+    osc.frequency.linearRampToValueAtTime(2500, startTime + 0.1);
+    osc.frequency.linearRampToValueAtTime(600, startTime + 0.8);
+    filter.type = 'bandpass';
+    filter.frequency.value = 1500;
+    filter.Q.value = 10;
+    gain.gain.setValueAtTime(0.15, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.8);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+    osc.start(startTime);
+    osc.stop(startTime + 0.8);
+  }
+
+  // リバースシンバル風（タイトル前）
+  function playReverseCymbal(startTime, duration) {
+    const bufferSize = audioCtx.sampleRate * duration;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const t = i / bufferSize;
+      data[i] = (Math.random() * 2 - 1) * t * t;
+    }
+    const src = audioCtx.createBufferSource();
+    src.buffer = buffer;
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(2000, startTime);
+    filter.frequency.linearRampToValueAtTime(500, startTime + duration);
+    gain.gain.setValueAtTime(0.01, startTime);
+    gain.gain.linearRampToValueAtTime(0.3, startTime + duration);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+    src.start(startTime);
+  }
+
+  // タイトル和音（壮大な着地）
+  function playTitleChord(startTime) {
+    [55, 110, 165, 220, 330].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = i < 2 ? 'sawtooth' : 'sine';
+      osc.frequency.value = freq;
+      const vol = i < 2 ? 0.12 : 0.08;
+      gain.gain.setValueAtTime(vol, startTime);
+      gain.gain.setValueAtTime(vol, startTime + 2);
+      gain.gain.linearRampToValueAtTime(vol * 0.6, startTime + 5);
+      gain.gain.linearRampToValueAtTime(0, startTime + 8);
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2000, startTime);
+      filter.frequency.linearRampToValueAtTime(400, startTime + 8);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+      osc.start(startTime);
+      osc.stop(startTime + 8);
+    });
+  }
+
+  // フラッシュワード用の短いヒット音
+  function playHit(startTime, freq = 100) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(freq, startTime);
+    osc.frequency.exponentialRampToValueAtTime(30, startTime + 0.15);
+    gain.gain.setValueAtTime(0.25, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
+    osc.connect(gain);
+    gain.connect(masterGain);
+    osc.start(startTime);
+    osc.stop(startTime + 0.2);
+  }
+
+  function startBGM() {
+    initAudio();
+    const t = audioCtx.currentTime + 0.1;
+
+    // 0s-8s: 導入ドローン + 心拍
+    playDrone(t, 8, 45);
+    playHeartbeat(t + 1.2, 4, 1.2);
+
+    // 3.5s: 顔登場でテンション上昇
+    playRiser(t + 3.5, 3);
+
+    // 6.5s: 顔ドーン！
+    playImpact(t + 6.5, 1.2);
+
+    // 8s-14.5s: 不協和音パッド
+    playDissonantPad(t + 8, 6.5);
+    playDrone(t + 8, 6.5, 55);
+
+    // 12.5s-14.1s: フラッシュワード ヒット音連打
+    playHit(t + 12.5, 120);
+    playHit(t + 12.85, 100);
+    playHit(t + 13.2, 140);
+    playHit(t + 13.55, 90);
+    playHit(t + 13.9, 160);
+
+    // 14.5s-17s: 絵画シーン（静かなドローン）
+    playDrone(t + 14.5, 2.5, 65);
+
+    // 17s: 分裂シーン
+    playImpact(t + 17, 0.7);
+    playDissonantPad(t + 17, 2.5);
+
+    // 19.5s: 「あなたが問題だ」
+    playImpact(t + 19.5, 1);
+
+    // 21.5s-23.5s: さくらんぼ（不穏なドローン）
+    playDrone(t + 21.5, 2, 50);
+
+    // 23.5s: 悲鳴
+    playScreech(t + 23.8);
+    playImpact(t + 23.8, 0.8);
+
+    // 24.5s: タイトル前リバースシンバル
+    playReverseCymbal(t + 24.5, 1.5);
+
+    // 26s: タイトル着地
+    playImpact(t + 26.4, 1.3);
+    playTitleChord(t + 26.5);
+  }
+
+  // 初回クリックで音声を開始（ブラウザのAutoplay Policy対策）
+  let audioStarted = false;
+  document.addEventListener('click', function onFirstClick() {
+    if (!audioStarted) {
+      audioStarted = true;
+      startBGM();
+      // 映像もリスタートして同期
+      replay();
+    }
+  }, { once: false });
+
+  // パーティクル生成
+  const particlesEl = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (4 + Math.random() * 6) + 's';
+    p.style.animationDelay = Math.random() * 10 + 's';
+    p.style.width = (1 + Math.random() * 2) + 'px';
+    p.style.height = p.style.width;
+    p.style.opacity = 0.1 + Math.random() * 0.3;
+    particlesEl.appendChild(p);
+  }
+
+  function replayWithAudio() {
+    // 音声コンテキストをリセット
+    if (audioCtx) {
+      audioCtx.close();
+      audioCtx = null;
+    }
+    audioStarted = true;
+    startBGM();
+    replay();
+  }
+
+  // 再生 / 一時停止
+  function replay() {
+    const stage = document.getElementById('stage');
+    // パーティクルを再生成
+    particlesEl.innerHTML = '';
+    stage.style.display = 'none';
+    void stage.offsetHeight;
+    stage.style.display = '';
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (4 + Math.random() * 6) + 's';
+      p.style.animationDelay = Math.random() * 10 + 's';
+      p.style.width = (1 + Math.random() * 2) + 'px';
+      p.style.height = p.style.width;
+      p.style.opacity = 0.1 + Math.random() * 0.3;
+      particlesEl.appendChild(p);
+    }
+    document.querySelectorAll('#stage *').forEach(el => {
+      el.style.animationPlayState = 'running';
+    });
+    paused = false;
+    document.getElementById('pauseBtn').textContent = '一時停止';
+  }
+
+  // ===== ブラウザ内録画 =====
+  async function recordAndDownload() {
+    const btn = document.getElementById('recBtn');
+    btn.textContent = '録画準備中...';
+    btn.disabled = true;
+
+    const stage = document.getElementById('stage');
+    const W = 1280, H = 720, FPS = 30;
+    const DURATION = 31; // 秒
+
+    // canvas を用意
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Audio の出力先を MediaStream にも接続
+    let combinedStream;
+    const canvasStream = canvas.captureStream(FPS);
+
+    if (audioCtx && masterGain) {
+      const audioDest = audioCtx.createMediaStreamDestination();
+      masterGain.connect(audioDest);
+      combinedStream = new MediaStream([
+        ...canvasStream.getVideoTracks(),
+        ...audioDest.stream.getAudioTracks(),
+      ]);
+    } else {
+      combinedStream = canvasStream;
+    }
+
+    // MediaRecorder
+    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+      ? 'video/webm;codecs=vp9,opus'
+      : MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')
+        ? 'video/webm;codecs=vp8,opus'
+        : 'video/webm';
+    const recorder = new MediaRecorder(combinedStream, {
+      mimeType,
+      videoBitsPerSecond: 4_000_000,
+    });
+    const chunks = [];
+    recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+
+    // html2canvas 的な描画：foreignObject SVG → Image → canvas
+    // CORS制限を回避するためインラインスタイルのみのクローンを作成
+    async function drawStageToCanvas() {
+      try {
+        // DOM を SVG foreignObject に埋め込んで canvas に描画
+        const clone = stage.cloneNode(true);
+        clone.style.position = 'static';
+        // computedStyle を全要素にインライン化
+        const allOriginal = stage.querySelectorAll('*');
+        const allClone = clone.querySelectorAll('*');
+        // スタイルのコピーは重いのでルートのみ
+        const stageStyle = getComputedStyle(stage);
+        for (const prop of stageStyle) {
+          clone.style.setProperty(prop, stageStyle.getPropertyValue(prop));
+        }
+
+        const svgData = new XMLSerializer().serializeToString(clone);
+        const svgBlob = new Blob([
+          `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">`,
+          `<foreignObject width="100%" height="100%">`,
+          `<div xmlns="http://www.w3.org/1999/xhtml">`,
+          svgData,
+          `</div></foreignObject></svg>`
+        ], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = url;
+        });
+        ctx.clearRect(0, 0, W, H);
+        ctx.drawImage(img, 0, 0, W, H);
+        URL.revokeObjectURL(url);
+      } catch {
+        // フォールバック: 黒フレーム（CORSエラー時）
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, W, H);
+      }
+    }
+
+    // 映像と音を最初からリスタート
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    startBGM();
+    // Audio出力を録画ストリームにも接続
+    if (audioCtx && masterGain) {
+      const audioDest = audioCtx.createMediaStreamDestination();
+      masterGain.connect(audioDest);
+      audioDest.stream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
+    }
+    replay();
+
+    btn.textContent = '録画中... 0/' + DURATION + '秒';
+    recorder.start(100);
+
+    const startT = performance.now();
+    let lastSec = 0;
+
+    // フレーム描画ループ
+    function frame() {
+      const elapsed = (performance.now() - startT) / 1000;
+      if (elapsed >= DURATION) {
+        recorder.stop();
+        return;
+      }
+      const sec = Math.floor(elapsed);
+      if (sec !== lastSec) {
+        btn.textContent = `録画中... ${sec}/${DURATION}秒`;
+        lastSec = sec;
+      }
+      drawStageToCanvas();
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+
+    // 録画完了待ち
+    await new Promise(resolve => { recorder.onstop = resolve; });
+
+    // ダウンロード
+    const blob = new Blob(chunks, { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'kawaii-escape-pv.webm';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '動画を保存 (WebM)';
+    btn.disabled = false;
+  }
+
+  let paused = false;
+  function togglePause() {
+    const allEls = document.querySelectorAll('#stage, #stage *');
+    const btn = document.getElementById('pauseBtn');
+    if (!paused) {
+      paused = true;
+      allEls.forEach(el => el.style.animationPlayState = 'paused');
+      btn.textContent = '再開';
+    } else {
+      paused = false;
+      allEls.forEach(el => el.style.animationPlayState = 'running');
+      btn.textContent = '一時停止';
+    }
+  }
+</script>
+</body>
+</html>

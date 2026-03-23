@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>黄金ドライバー 背景画像ジェネレーター</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; color: #fff; }
+    canvas { border: 2px solid #fff; margin: 20px 0; max-width: 90vw; }
+    button { padding: 12px 32px; font-size: 18px; background: #cc6600; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #ff8800; }
+    p { color: #aaa; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>黄金の金色ドライバー 背景画像</h1>
+  <canvas id="canvas" width="2000" height="2000"></canvas>
+  <button onclick="download()">ダウンロード (PNG)</button>
+  <p>2000x2000px / PLiCy背景用</p>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 2000, H = 2000;
+
+    // 背景グラデーション（黄金〜夕焼け風）
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#ffd700');
+    grad.addColorStop(0.3, '#f5a623');
+    grad.addColorStop(0.6, '#e67e22');
+    grad.addColorStop(1, '#8b4513');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // 放射状の光線（レースフラッグ風）
+    ctx.save();
+    ctx.translate(W / 2, H / 2);
+    ctx.globalAlpha = 0.06;
+    for (let i = 0; i < 24; i++) {
+      const angle = (Math.PI * 2 / 24) * i;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, W, angle, angle + Math.PI / 24);
+      ctx.closePath();
+      ctx.fillStyle = i % 2 === 0 ? '#fff' : '#000';
+      ctx.fill();
+    }
+    ctx.restore();
+
+    const rng = (min, max) => min + Math.random() * (max - min);
+
+    // 道路の破線パターン（散りばめ）
+    ctx.save();
+    ctx.globalAlpha = 0.05;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 8;
+    ctx.setLineDash([40, 30]);
+    for (let i = 0; i < 15; i++) {
+      const x = rng(100, W - 100);
+      const y1 = rng(0, H * 0.3);
+      const y2 = y1 + rng(300, 800);
+      ctx.beginPath();
+      ctx.moveTo(x, y1);
+      ctx.lineTo(x + rng(-100, 100), y2);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // 車の絵文字（散りばめ）
+    function drawEmoji(x, y, size, emoji, alpha) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rng(-0.3, 0.3));
+      ctx.font = `${size}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = alpha || (0.08 + Math.random() * 0.1);
+      ctx.fillText(emoji, 0, 0);
+      ctx.restore();
+    }
+
+    // 車系絵文字
+    const carEmojis = ['🏎️', '🚗', '🛻', '🚜', '🛒'];
+    for (let i = 0; i < 30; i++) {
+      drawEmoji(rng(0, W), rng(0, H), rng(50, 130), carEmojis[Math.floor(Math.random() * carEmojis.length)]);
+    }
+
+    // パーツ系絵文字
+    const partEmojis = ['🔥', '⚡', '💨', '🐹', '🧠', '⭕', '🍩', '🍊', '👞'];
+    for (let i = 0; i < 25; i++) {
+      drawEmoji(rng(0, W), rng(0, H), rng(40, 90), partEmojis[Math.floor(Math.random() * partEmojis.length)]);
+    }
+
+    // レースアイテム絵文字
+    const itemEmojis = ['🍌', '🚀', '🍙'];
+    for (let i = 0; i < 20; i++) {
+      drawEmoji(rng(0, W), rng(0, H), rng(40, 100), itemEmojis[Math.floor(Math.random() * itemEmojis.length)]);
+    }
+
+    // 星やキラキラ
+    for (let i = 0; i < 50; i++) {
+      drawEmoji(rng(0, W), rng(0, H), rng(20, 60), '✦', 0.1 + Math.random() * 0.15);
+    }
+
+    // トロフィー
+    for (let i = 0; i < 10; i++) {
+      drawEmoji(rng(0, W), rng(0, H), rng(60, 120), '🏆');
+    }
+
+    // チェッカーフラッグ
+    for (let i = 0; i < 8; i++) {
+      drawEmoji(rng(0, W), rng(0, H), rng(60, 100), '🏁');
+    }
+
+    // 中央にうっすらタイトル
+    ctx.save();
+    ctx.globalAlpha = 0.06;
+    ctx.font = 'bold 150px sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('黄金の', W / 2, H / 2 - 100);
+    ctx.fillText('金色', W / 2, H / 2 + 30);
+    ctx.fillText('ドライバー', W / 2, H / 2 + 160);
+    ctx.restore();
+
+    // 周辺にビネット効果
+    const vignette = ctx.createRadialGradient(W/2, H/2, W * 0.3, W/2, H/2, W * 0.75);
+    vignette.addColorStop(0, 'rgba(0,0,0,0)');
+    vignette.addColorStop(1, 'rgba(0,0,0,0.3)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'drive-background.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

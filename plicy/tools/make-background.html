@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>背景画像ジェネレーター</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; color: #fff; }
+    canvas { border: 2px solid #fff; margin: 20px 0; }
+    button { padding: 12px 32px; font-size: 18px; background: #ff69b4; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #d63384; }
+    p { color: #aaa; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>かにかにパニック 背景画像</h1>
+  <canvas id="canvas" width="2000" height="2000"></canvas>
+  <button onclick="download()">ダウンロード (PNG)</button>
+  <p>2000x2000px / PLiCy背景用</p>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 2000, H = 2000;
+
+    // 背景グラデーション
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#ffb6c1');
+    grad.addColorStop(0.5, '#ff91a4');
+    grad.addColorStop(1, '#ff69b4');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // ランダムシード的な装飾を描画
+    function drawStar(x, y, size, color, rotation) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.font = `${size}px serif`;
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.15 + Math.random() * 0.15;
+      ctx.fillText('✦', 0, 0);
+      ctx.restore();
+    }
+
+    function drawFlower(x, y, size, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.font = `${size}px serif`;
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.12 + Math.random() * 0.13;
+      ctx.fillText('❀', 0, 0);
+      ctx.restore();
+    }
+
+    function drawNote(x, y, size) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.font = `${size}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.1 + Math.random() * 0.12;
+      ctx.fillText('♪', 0, 0);
+      ctx.restore();
+    }
+
+    function drawCrab(x, y, size) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.font = `${size}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.08 + Math.random() * 0.1;
+      ctx.fillText('🦀', 0, 0);
+      ctx.restore();
+    }
+
+    function drawHeart(x, y, size) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(Math.random() * Math.PI * 2);
+      ctx.font = `${size}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.08 + Math.random() * 0.1;
+      ctx.fillStyle = '#fff';
+      ctx.fillText('♥', 0, 0);
+      ctx.restore();
+    }
+
+    // 散りばめる
+    const rng = (min, max) => min + Math.random() * (max - min);
+
+    // 星をたくさん
+    for (let i = 0; i < 60; i++) {
+      drawStar(rng(0, W), rng(0, H), rng(30, 80), '#fff', Math.random() * Math.PI);
+    }
+
+    // 花
+    for (let i = 0; i < 40; i++) {
+      drawFlower(rng(0, W), rng(0, H), rng(40, 100), '#fff0f5');
+    }
+
+    // 音符
+    for (let i = 0; i < 30; i++) {
+      drawNote(rng(0, W), rng(0, H), rng(40, 90));
+    }
+
+    // カニ
+    for (let i = 0; i < 25; i++) {
+      drawCrab(rng(0, W), rng(0, H), rng(50, 120));
+    }
+
+    // ハート
+    for (let i = 0; i < 35; i++) {
+      drawHeart(rng(0, W), rng(0, H), rng(30, 70));
+    }
+
+    // 中央にうっすらタイトル
+    ctx.save();
+    ctx.globalAlpha = 0.07;
+    ctx.font = 'bold 160px sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('かにかに', W / 2, H / 2 - 80);
+    ctx.fillText('パニック！', W / 2, H / 2 + 80);
+    ctx.restore();
+
+    // ダウンロード
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'kanikani-background.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

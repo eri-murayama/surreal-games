@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>経営分析ゲーム PV書き出し</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Shippori+Mincho:wght@400;700&family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+<style>
+  body { background:#1a0a2e; color:#fff; font-family:'Zen Maru Gothic',sans-serif; display:flex; flex-direction:column; align-items:center; padding:40px; }
+  canvas { border:1px solid #4a0e8f; margin:20px 0; }
+  button { font-size:18px; padding:12px 32px; cursor:pointer; background:linear-gradient(135deg,#c9a0dc,#7c3aed); color:#fff; border:none; border-radius:6px; font-family:inherit; }
+  button:disabled { background:#555; cursor:default; }
+  #status { margin:12px 0; font-size:16px; color:#c9a0dc; }
+  .controls { display:flex; gap:12px; align-items:center; margin:8px 0; }
+  #preview-btn { background:linear-gradient(135deg,#f5c842,#e8a020); }
+  #time-slider { width:400px; }
+</style>
+</head>
+<body>
+<h2>経営分析ゲーム～天才たちの戯れ～ PVエクスポート</h2>
+<p>ボタンを押すと30秒の紹介動画を生成し、自動でダウンロードされます。</p>
+<canvas id="c" width="1280" height="720"></canvas>
+<div class="controls">
+  <button id="preview-btn" onclick="togglePreview()">プレビュー再生</button>
+  <input type="range" id="time-slider" min="0" max="30" step="0.03" value="0">
+  <span id="time-label">0.00s</span>
+</div>
+<button id="btn" onclick="startExport()">動画を生成する</button>
+<div id="status"></div>
+
+<script>
+const W = 1280, H = 720, FPS = 30;
+const DURATION = 30;
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const slider = document.getElementById('time-slider');
+const timeLabel = document.getElementById('time-label');
+
+// フォント
+const FONT_MAIN = "'Zen Maru Gothic', sans-serif";
+const FONT_LOGO = "'Hachi Maru Pop', 'Zen Maru Gothic', cursive";
+const FONT_TITLE = "'Shippori Mincho', 'Zen Maru Gothic', serif";
+
+const images = {};
+const imgSrcs = {
+  atsushi: '../../games/business-analysis/atsushi.png',
+  atsushiPose: '../../games/business-analysis/atsushi-pose.png',
+};
+
+async function loadImages() {
+  const promises = Object.entries(imgSrcs).map(([key, src]) =>
+    new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => { images[key] = img; resolve(); };
+      img.onerror = () => resolve();
+      img.src = src;
+    })
+  );
+  await Promise.all(promises);
+}
+
+// ===== Audio =====
+let audioCtx, masterGain, audioDest;
+let audioScheduled = false;
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new AudioContext();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.55;
+  masterGain.connect(audioCtx.destination);
+  audioDest = audioCtx.createMediaStreamDestination();
+  masterGain.connect(audioDest);
+}
+
+function osc(type, freq, st, dur, vol) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(vol, st);
+  g.gain.exponentialRampToValueAtTime(0.001, st + dur);
+  o.connect(g); g.connect(masterGain);
+  o.start(st); o.stop(st + dur);
+  return o;
+}
+
+function playSparkleArp(st, baseFreq, count=4) {
+  const s = [1, 1.25, 1.5, 1.875, 2, 2.5, 3];
+  for (let i = 0; i < count; i++) {
+    osc('sine', baseFreq * s[i%s.length], st+i*0.08, 0.4, 0.06);
+    osc('triangle', baseFreq * s[i%s.length] * 2, st+i*0.08, 0.25, 0.02);
+  }
+}
+
+function playStringPad(st, dur, notes, vol=0.035) {
+  notes.forEach(freq => {
+    const o1 = audioCtx.createOscillator(), o2 = audioCtx.createOscillator();
+    const g = audioCtx.createGain(), f = audioCtx.createBiquadFilter();
+    o1.type = 'sawtooth'; o1.frequency.value = freq;
+    o2.type = 'sawtooth'; o2.frequency.value = freq * 1.003;
+    f.type = 'lowpass'; f.frequency.value = 800;
+    g.gain.setValueAtTime(0, st);
+    g.gain.linearRampToValueAtTime(vol, st + Math.min(0.8, dur*0.15));
+    g.gain.setValueAtTime(vol, st + dur - Math.min(1, dur*0.2));
+    g.gain.linearRampToValueAtTime(0, st + dur);
+    o1.connect(f); o2.connect(f); f.connect(g); g.connect(masterGain);
+    o1.start(st); o1.stop(st + dur);
+    o2.start(st); o2.stop(st + dur);
+  });
+}
+
+function playPiano(st, freq, dur=1.5, vol=0.12) {
+  osc('triangle', freq, st, dur, vol);
+  osc('sine', freq*2, st, dur*0.6, vol*0.25);
+  osc('sine', freq*3, st, dur*0.3, vol*0.08);
+  const bs = audioCtx.sampleRate*0.02;
+  const buf = audioCtx.createBuffer(1, bs, audioCtx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < bs; i++) d[i] = (Math.random()*2-1)*Math.exp(-i/bs*3);
+  const n = audioCtx.createBufferSource(); n.buffer = buf;
+  const ng = audioCtx.createGain();
+  ng.gain.setValueAtTime(vol*0.3, st); ng.gain.exponentialRampToValueAtTime(0.001, st+0.05);
+  n.connect(ng); ng.connect(masterGain); n.start(st);
+}
+
+function playImpact(st, intensity=1) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(80*intensity, st); o.frequency.exponentialRampToValueAtTime(30, st+0.6);
+  g.gain.setValueAtTime(0.3*intensity, st); g.gain.exponentialRampToValueAtTime(0.001, st+0.8);
+  o.connect(g); g.connect(masterGain); o.start(st); o.stop(st+0.8);
+  const bs = audioCtx.sampleRate*0.15, buf = audioCtx.createBuffer(1, bs, audioCtx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < bs; i++) d[i] = (Math.random()*2-1)*Math.exp(-i/(bs*0.12));
+  const n = audioCtx.createBufferSource(); n.buffer = buf;
+  const ng = audioCtx.createGain(), nf = audioCtx.createBiquadFilter();
+  nf.type = 'lowpass'; nf.frequency.value = 600;
+  ng.gain.setValueAtTime(0.2*intensity, st); ng.gain.exponentialRampToValueAtTime(0.001, st+0.2);
+  n.connect(nf); nf.connect(ng); ng.connect(masterGain); n.start(st);
+  [110,165,220].forEach(f => osc('triangle', f*intensity, st, 1.2, 0.03*intensity));
+}
+
+function playShing(st) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(1500, st); o.frequency.exponentialRampToValueAtTime(4000, st+0.04);
+  o.frequency.exponentialRampToValueAtTime(2500, st+0.4);
+  g.gain.setValueAtTime(0.1, st); g.gain.exponentialRampToValueAtTime(0.001, st+0.6);
+  o.connect(g); g.connect(masterGain); o.start(st); o.stop(st+0.6);
+  const bs = audioCtx.sampleRate*0.1, buf = audioCtx.createBuffer(1, bs, audioCtx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < bs; i++) d[i] = (Math.random()*2-1)*Math.exp(-i/(bs*0.2));
+  const n = audioCtx.createBufferSource(); n.buffer = buf;
+  const ng = audioCtx.createGain(), nf = audioCtx.createBiquadFilter();
+  nf.type = 'highpass'; nf.frequency.value = 5000;
+  ng.gain.setValueAtTime(0.06, st); ng.gain.exponentialRampToValueAtTime(0.001, st+0.1);
+  n.connect(nf); nf.connect(ng); ng.connect(masterGain); n.start(st);
+}
+
+function playComedyFall(st) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(900, st); o.frequency.exponentialRampToValueAtTime(60, st+0.5);
+  g.gain.setValueAtTime(0.12, st); g.gain.exponentialRampToValueAtTime(0.001, st+0.7);
+  o.connect(g); g.connect(masterGain); o.start(st); o.stop(st+0.7);
+}
+
+function playKick(st, vol=0.15) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(150, st); o.frequency.exponentialRampToValueAtTime(40, st+0.15);
+  g.gain.setValueAtTime(vol, st); g.gain.exponentialRampToValueAtTime(0.001, st+0.2);
+  o.connect(g); g.connect(masterGain); o.start(st); o.stop(st+0.25);
+}
+
+function playSnare(st, vol=0.08) {
+  const bs = audioCtx.sampleRate*0.1, buf = audioCtx.createBuffer(1, bs, audioCtx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < bs; i++) d[i] = (Math.random()*2-1)*Math.exp(-i/(bs*0.15));
+  const n = audioCtx.createBufferSource(); n.buffer = buf;
+  const g = audioCtx.createGain(), f = audioCtx.createBiquadFilter();
+  f.type = 'bandpass'; f.frequency.value = 3000; f.Q.value = 1;
+  g.gain.setValueAtTime(vol, st); g.gain.exponentialRampToValueAtTime(0.001, st+0.12);
+  n.connect(f); f.connect(g); g.connect(masterGain); n.start(st);
+  osc('triangle', 180, st, 0.08, vol*0.6);
+}
+
+function playHihat(st, vol=0.04) {
+  const bs = audioCtx.sampleRate*0.04, buf = audioCtx.createBuffer(1, bs, audioCtx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < bs; i++) d[i] = (Math.random()*2-1)*Math.exp(-i/(bs*0.3));
+  const n = audioCtx.createBufferSource(); n.buffer = buf;
+  const g = audioCtx.createGain(), f = audioCtx.createBiquadFilter();
+  f.type = 'highpass'; f.frequency.value = 8000;
+  g.gain.setValueAtTime(vol, st); g.gain.exponentialRampToValueAtTime(0.001, st+0.05);
+  n.connect(f); f.connect(g); g.connect(masterGain); n.start(st);
+}
+
+function playDrumRoll(st, dur) {
+  const hits = Math.floor(dur*25);
+  for (let i = 0; i < hits; i++) {
+    const t2 = st + i*(dur/hits), vol = 0.03 + (i/hits)*0.08;
+    playKick(t2, vol*0.4);
+    if (i%2===0) playSnare(t2, vol*0.3);
+  }
+}
+
+function playRiser(st, dur) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain(), f = audioCtx.createBiquadFilter();
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(100, st); o.frequency.exponentialRampToValueAtTime(2000, st+dur);
+  f.type = 'bandpass'; f.frequency.setValueAtTime(300, st); f.frequency.exponentialRampToValueAtTime(3000, st+dur); f.Q.value = 3;
+  g.gain.setValueAtTime(0, st); g.gain.linearRampToValueAtTime(0.12, st+dur*0.85); g.gain.linearRampToValueAtTime(0, st+dur);
+  o.connect(f); f.connect(g); g.connect(masterGain); o.start(st); o.stop(st+dur);
+}
+
+function playReverseCymbal(st, dur) {
+  const bs = audioCtx.sampleRate*dur, buf = audioCtx.createBuffer(1, bs, audioCtx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < bs; i++) { const p = i/bs; d[i] = (Math.random()*2-1)*p*p; }
+  const s2 = audioCtx.createBufferSource(); s2.buffer = buf;
+  const g = audioCtx.createGain(), f = audioCtx.createBiquadFilter();
+  f.type = 'highpass'; f.frequency.setValueAtTime(3000, st); f.frequency.linearRampToValueAtTime(800, st+dur);
+  g.gain.setValueAtTime(0.01, st); g.gain.linearRampToValueAtTime(0.15, st+dur);
+  s2.connect(f); f.connect(g); g.connect(masterGain); s2.start(st);
+}
+
+function playHeartbeat(st) {
+  [0, 0.13].forEach((off, idx) => {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = idx===0 ? 55 : 45;
+    g.gain.setValueAtTime(0, st+off);
+    g.gain.linearRampToValueAtTime(idx===0 ? 0.2 : 0.12, st+off+0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, st+off+0.2);
+    o.connect(g); g.connect(masterGain); o.start(st+off); o.stop(st+off+0.25);
+  });
+}
+
+// ===== BGM =====
+// シーンタイムライン:
+// S0:  0.0- 2.5  presents
+// S1:  2.5- 5.5  篤登場
+// S2:  5.5-12.0  セリフ（たっぷり6.5s）
+// S3: 12.0-16.5  俺を待ってろ世界 + ラーメン屋
+// S4: 16.5-19.5  店内探索
+// S5: 19.5-25.0  天才分析 + ドヤ（5.5s）
+// S6: 25.0-28.5  タイトル
+// S7: 28.5-30.0  CTA
+
+function scheduleBGM() {
+  if (audioScheduled) return;
+  audioScheduled = true;
+  const t = audioCtx.currentTime + 0.05;
+
+  // S0 (0-2.5s)
+  playSparkleArp(t+0.3, 523, 5);
+  playSparkleArp(t+0.8, 659, 4);
+  playSparkleArp(t+1.4, 784, 6);
+  playStringPad(t, 2.5, [261.6, 329.6, 392, 523.3], 0.025);
+
+  // S1 (2.5-5.5s)
+  playImpact(t+2.5, 1.2);
+  playShing(t+2.6);
+  playPiano(t+2.8, 440, 1.5, 0.15);
+  playPiano(t+3.3, 523.3, 1.2, 0.14);
+  playPiano(t+3.8, 659.3, 1.5, 0.16);
+  playPiano(t+4.3, 784, 2, 0.18);
+  playStringPad(t+2.5, 1.5, [220, 261.6, 329.6], 0.04);
+  playStringPad(t+4, 1.5, [261.6, 329.6, 392, 523.3], 0.04);
+  playKick(t+2.5, 0.18); playSnare(t+3.5, 0.1); playKick(t+4, 0.12);
+  for (let i = 0; i < 6; i++) playHihat(t+2.5+i*0.5, 0.03);
+  playSparkleArp(t+4, 1047, 3);
+
+  // S2 (5.5-12s)
+  playPiano(t+5.5, 329.6, 1.5, 0.1);
+  playPiano(t+6.3, 392, 1.5, 0.1);
+  playPiano(t+7, 440, 1.2, 0.1);
+  playPiano(t+8, 523.3, 1.5, 0.12);
+  playPiano(t+9, 493.9, 1.5, 0.1);
+  playPiano(t+10, 440, 2, 0.1);
+  playPiano(t+11, 392, 2, 0.08);
+  playStringPad(t+5.5, 6.5, [261.6, 329.6, 392, 523.3], 0.03);
+  for (let i = 0; i < 13; i++) {
+    playHihat(t+5.5+i*0.5, 0.025);
+    if (i%2===0) playKick(t+5.5+i*0.5, 0.06);
+  }
+
+  // S3 (12-16.5s)
+  playRiser(t+12, 1.8);
+  playPiano(t+12, 349.2, 0.8, 0.12);
+  playPiano(t+12.5, 440, 0.8, 0.14);
+  playPiano(t+13, 523.3, 0.8, 0.16);
+  playImpact(t+13.5, 1.5);
+  playShing(t+13.6);
+  playPiano(t+13.5, 784, 2.5, 0.2);
+  playSparkleArp(t+13.7, 1568, 5);
+  playComedyFall(t+15);
+  playStringPad(t+15, 2, [146.8, 174.6, 220], 0.035);
+  playHeartbeat(t+15.5);
+  playHeartbeat(t+16);
+
+  // S4 (16.5-19.5s)
+  playStringPad(t+16.5, 3, [146.8, 185, 220, 277.2], 0.03);
+  for (let i = 0; i < 4; i++) {
+    const ct = t + 17 + i*0.6;
+    playKick(ct, 0.08);
+    osc('sine', 600+i*100, ct, 0.15, 0.06);
+    playHihat(ct+0.1, 0.03);
+  }
+  playPiano(t+17, 174.6, 1, 0.08);
+  playPiano(t+17.7, 207.7, 1, 0.08);
+  playPiano(t+18.3, 233, 1, 0.08);
+  playDrumRoll(t+18.8, 0.7);
+
+  // S5 (19.5-25s)
+  playImpact(t+19.5, 1);
+  playShing(t+19.6);
+  playStringPad(t+19.5, 5.5, [261.6, 329.6, 392, 523.3, 659.3], 0.04);
+  playPiano(t+19.8, 523.3, 1, 0.14);
+  playPiano(t+20.3, 659.3, 0.8, 0.14);
+  playPiano(t+20.7, 784, 0.8, 0.16);
+  playPiano(t+21.1, 880, 1.5, 0.18);
+  playSparkleArp(t+21.1, 1760, 5);
+  for (let i = 0; i < 10; i++) {
+    playKick(t+19.5+i*0.5, 0.1);
+    playHihat(t+19.5+i*0.25, 0.03);
+    if (i%2===1) playSnare(t+19.5+i*0.5, 0.08);
+  }
+  playPiano(t+22.5, 659.3, 1.5, 0.12);
+  playPiano(t+23, 784, 2, 0.15);
+  playSparkleArp(t+23, 1318, 4);
+  playSparkleArp(t+24, 2093, 3);
+
+  // S6 (25-28.5s)
+  playReverseCymbal(t+24, 1);
+  playDrumRoll(t+24.3, 0.7);
+  playImpact(t+25, 1.5);
+  playShing(t+25.1);
+  playStringPad(t+25, 3.5, [130.8, 164.8, 196, 261.6, 329.6, 392, 523.3], 0.05);
+  playPiano(t+25, 261.6, 2, 0.18);
+  playPiano(t+25.3, 329.6, 2, 0.16);
+  playPiano(t+25.6, 392, 2, 0.18);
+  playPiano(t+26, 523.3, 3, 0.2);
+  for (let i = 0; i < 6; i++) playSparkleArp(t+25.5+i*0.35, 1047+i*200, 4);
+  playKick(t+25, 0.2); playSnare(t+25.5, 0.12); playKick(t+26, 0.15);
+
+  // S7 (28.5-30s)
+  playStringPad(t+28.5, 2, [261.6, 329.6, 392, 523.3], 0.03);
+  playPiano(t+28.5, 523.3, 2, 0.1);
+  playSparkleArp(t+28.8, 1047, 5);
+  playSparkleArp(t+29.5, 1568, 3);
+  osc('sine', 2093, t+29.8, 0.5, 0.04);
+}
+
+// ===== 描画ヘルパー =====
+function easeOut(t) { return 1-Math.pow(1-t,3); }
+function clamp(v, a=0, b=1) { return Math.max(a, Math.min(b, v)); }
+
+function sceneAlpha(t, start, duration, fadeIn=0.08, fadeOut=0.1) {
+  const p = (t-start)/duration;
+  if (p < 0 || p > 1) return 0;
+  if (p < fadeIn) return p/fadeIn;
+  if (p > 1-fadeOut) return (1-p)/fadeOut;
+  return 1;
+}
+
+function drawShoujoGradient(alpha, hue=0) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = alpha;
+  const g = ctx.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,`hsl(${(280+hue)%360},40%,15%)`);
+  g.addColorStop(0.5,`hsl(${(320+hue)%360},50%,20%)`);
+  g.addColorStop(1,`hsl(${(340+hue)%360},45%,12%)`);
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  ctx.restore();
+}
+
+const sparkles = Array.from({length:80}, () => ({
+  x:Math.random(), y:Math.random(),
+  size:2+Math.random()*6, speed:0.2+Math.random()*0.8,
+  phase:Math.random()*Math.PI*2,
+  type:Math.random()>0.4?'star':'circle',
+  char:['✦','✧','⋆','★','☆','✶','❋','✴'][Math.floor(Math.random()*8)]
+}));
+
+function drawSparkles(t, alpha, color='#ffd700') {
+  if (alpha <= 0) return;
+  ctx.save();
+  sparkles.forEach(s => {
+    const blink = Math.sin(t*s.speed*4+s.phase);
+    if (blink < 0) return;
+    const x = s.x*W, y = ((s.y*H+t*s.speed*30)%(H+40))-20;
+    ctx.globalAlpha = alpha*blink*0.8;
+    if (s.type==='star') {
+      ctx.font = `${s.size*3}px sans-serif`;
+      ctx.fillStyle = color; ctx.textAlign = 'center';
+      ctx.shadowColor = color; ctx.shadowBlur = 12;
+      ctx.fillText(s.char, x, y);
+    } else {
+      ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(x, y, s.size, 0, Math.PI*2); ctx.fill();
+    }
+  });
+  ctx.shadowBlur = 0; ctx.restore();
+}
+
+const petals = Array.from({length:25}, () => ({
+  x:Math.random()*W, y:-50-Math.random()*200,
+  size:8+Math.random()*12, speedY:30+Math.random()*50,
+  speedX:-15+Math.random()*30, rot:Math.random()*Math.PI*2,
+  rotSpeed:0.5+Math.random()*2, phase:Math.random()*100
+}));
+
+function drawRosePetals(t, alpha) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = alpha;
+  petals.forEach(p => {
+    const y = ((p.y+t*p.speedY+p.phase*p.speedY)%(H+300))-100;
+    const x = (p.x+Math.sin(t*0.8+p.phase)*40+t*p.speedX*0.3)%(W+100);
+    ctx.save(); ctx.translate(x, y); ctx.rotate(p.rot+t*p.rotSpeed);
+    ctx.fillStyle = `rgba(255,${100+Math.floor(p.phase%50)},${130+Math.floor(p.phase%40)},0.7)`;
+    ctx.beginPath(); ctx.ellipse(0,0,p.size,p.size*0.5,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+  ctx.restore();
+}
+
+function drawSpeedLines(t, cx, cy, alpha, color='rgba(255,215,0,') {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = alpha;
+  for (let i = 0; i < 48; i++) {
+    const angle = (i*7.5+t*25)*Math.PI/180;
+    const innerR = 150+Math.sin(t*3+i)*25;
+    const outerR = 700+Math.sin(t*2+i*0.5)*120;
+    ctx.strokeStyle = color+(0.15+Math.sin(t*4+i)*0.1)+')';
+    ctx.lineWidth = 1.5+Math.sin(t*5+i*2);
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(angle)*innerR, cy+Math.sin(angle)*innerR);
+    ctx.lineTo(cx+Math.cos(angle)*outerR, cy+Math.sin(angle)*outerR);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawDecoFrame(alpha) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = alpha;
+  const m = 28;
+  ctx.strokeStyle = 'rgba(200,160,220,0.35)'; ctx.lineWidth = 2;
+  ctx.strokeRect(m, m, W-m*2, H-m*2);
+  ctx.strokeStyle = 'rgba(255,215,0,0.15)'; ctx.lineWidth = 1;
+  ctx.strokeRect(m+8, m+8, W-m*2-16, H-m*2-16);
+  [[m,m,1,1],[W-m,m,-1,1],[m,H-m,1,-1],[W-m,H-m,-1,-1]].forEach(([cx,cy,dx,dy]) => {
+    ctx.strokeStyle = 'rgba(255,215,0,0.45)'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(cx+dx*45,cy); ctx.lineTo(cx,cy); ctx.lineTo(cx,cy+dy*45); ctx.stroke();
+    ctx.strokeStyle = 'rgba(200,160,220,0.3)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(cx+dx*8,cy+dy*8,12,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,215,0,0.5)';
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(Math.PI/4); ctx.fillRect(-4,-4,8,8); ctx.restore();
+  });
+  ctx.restore();
+}
+
+function drawText(text, x, y, size, color, alpha, opts={}) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = clamp(alpha);
+  ctx.font = `${opts.weight||'900'} ${size}px ${opts.font||FONT_MAIN}`;
+  ctx.fillStyle = color; ctx.textAlign = opts.align||'center'; ctx.textBaseline = 'middle';
+  if (opts.rot) { ctx.translate(x,y); ctx.rotate(opts.rot*Math.PI/180); x=0; y=0; }
+  if (opts.shadow) { ctx.shadowColor = opts.shadow; ctx.shadowBlur = opts.shadowBlur||20; }
+  if (opts.stroke) { ctx.strokeStyle = opts.stroke; ctx.lineWidth = opts.strokeWidth||4; ctx.lineJoin = 'round'; ctx.strokeText(text,x,y); }
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+function typewriterLen(text, t, startT, speed=15) {
+  return Math.min(text.length, Math.floor(Math.max(0, t-startT)*speed));
+}
+
+function drawCharacter(img, x, y, scale, alpha, opts={}) {
+  if (!img || alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = clamp(alpha);
+  const w = img.width*scale, h = img.height*scale;
+  ctx.translate(x, y);
+  if (opts.rot) ctx.rotate(opts.rot);
+  if (opts.glow) { ctx.shadowColor = opts.glow; ctx.shadowBlur = 35; }
+  ctx.drawImage(img, -w/2, -h/2, w, h);
+  ctx.restore();
+}
+
+function drawSpeechBubble(x, y, w, h, alpha, tailX) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = alpha;
+  const r = 18;
+  ctx.shadowColor = 'rgba(100,50,150,0.3)'; ctx.shadowBlur = 15; ctx.shadowOffsetY = 4;
+  ctx.fillStyle = 'rgba(255,255,255,0.94)';
+  ctx.strokeStyle = 'rgba(180,120,220,0.5)'; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(x-w/2+r, y-h/2);
+  ctx.lineTo(x+w/2-r, y-h/2);
+  ctx.quadraticCurveTo(x+w/2, y-h/2, x+w/2, y-h/2+r);
+  ctx.lineTo(x+w/2, y+h/2-r);
+  ctx.quadraticCurveTo(x+w/2, y+h/2, x+w/2-r, y+h/2);
+  const tx = tailX !== undefined ? tailX : x;
+  ctx.lineTo(tx+18, y+h/2); ctx.lineTo(tx, y+h/2+22); ctx.lineTo(tx-18, y+h/2);
+  ctx.lineTo(x-w/2+r, y+h/2);
+  ctx.quadraticCurveTo(x-w/2, y+h/2, x-w/2, y+h/2-r);
+  ctx.lineTo(x-w/2, y-h/2+r);
+  ctx.quadraticCurveTo(x-w/2, y-h/2, x-w/2+r, y-h/2);
+  ctx.closePath(); ctx.fill();
+  ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.stroke();
+  ctx.restore();
+}
+
+function drawRamenShop(t, alpha) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = alpha;
+  const wg = ctx.createLinearGradient(0,0,0,H);
+  wg.addColorStop(0,'#5a4a3a'); wg.addColorStop(1,'#3a2a1a');
+  ctx.fillStyle = wg; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = 'rgba(60,40,20,0.3)';
+  for (let i = 0; i < 20; i++) {
+    ctx.beginPath(); ctx.ellipse((i*137)%W,(i*89)%H,25+i*3,12+i*2,i*0.5,0,Math.PI*2); ctx.fill();
+  }
+  ctx.fillStyle = '#6b4c2a'; ctx.fillRect(0,H*0.6,W,H*0.05);
+  ctx.fillStyle = '#4a3518'; ctx.fillRect(0,H*0.65,W,H*0.35);
+  for (let i = 0; i < 5; i++) {
+    const nx = 200+i*180;
+    ctx.fillStyle = '#cc3333'; ctx.fillRect(nx,0,80,100);
+    ctx.fillStyle = '#fff'; ctx.font = '24px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('麺', nx+40, 60);
+  }
+  ctx.fillStyle = '#d4a565'; ctx.fillRect(W*0.35,H*0.05,W*0.3,H*0.08);
+  ctx.fillStyle = '#3a1a0a'; ctx.font = 'bold 30px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('ラーメン', W*0.5, H*0.1+5);
+  ctx.fillStyle = '#888'; ctx.fillRect(W*0.75,H*0.45,80,90);
+  ctx.fillStyle = '#555'; ctx.fillRect(W*0.77,H*0.48,76,30);
+  ctx.font = '48px sans-serif'; ctx.fillText('🍜', W*0.3, H*0.55); ctx.fillText('🍜', W*0.55, H*0.55);
+  ctx.fillStyle = 'rgba(80,60,40,0.5)'; ctx.fillRect(W*0.15,H*0.5,150,80);
+  ctx.font = '60px sans-serif'; ctx.fillText('👨‍🍳', W*0.12, H*0.4);
+  ctx.font = '22px sans-serif';
+  [[0.6,0.2],[0.25,0.32],[0.78,0.38],[0.45,0.15]].forEach(([fx,fy],i) => {
+    ctx.fillText('🪰', W*fx+Math.sin(t*3+i*2)*15, H*fy+Math.cos(t*2.5+i*1.5)*10);
+  });
+  ctx.restore();
+}
+
+function drawFlash(t, flashT, dur, color) {
+  const p = (t-flashT)/dur;
+  if (p < 0 || p > 1) return;
+  const a = p < 0.15 ? p/0.15 : 1-(p-0.15)/0.85;
+  ctx.fillStyle = color.replace('A', String(clamp(a*0.85)));
+  ctx.fillRect(0,0,W,H);
+}
+
+function getShake(t, startT, dur, intensity) {
+  const elapsed = t-startT;
+  if (elapsed < 0 || elapsed > dur) return {x:0,y:0};
+  const decay = 1-elapsed/dur;
+  return { x:Math.sin(elapsed*60)*intensity*decay, y:Math.cos(elapsed*45)*intensity*decay*0.7 };
+}
+
+function drawVignette(intensity=0.5) {
+  const g = ctx.createRadialGradient(W/2,H/2,W*0.25,W/2,H/2,W*0.7);
+  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,`rgba(0,0,0,${intensity})`);
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+}
+
+function drawMangaExclaim(t, startT, text, x, y, size, alpha) {
+  const elapsed = t-startT;
+  if (elapsed < 0 || elapsed > 0.8 || alpha <= 0) return;
+  const scale = elapsed < 0.1 ? elapsed/0.1*1.5 : 1+0.5*Math.exp(-(elapsed-0.1)*8);
+  const a = elapsed < 0.5 ? 1 : 1-(elapsed-0.5)/0.3;
+  drawText(text, x, y, size*scale, '#ffdd00', alpha*a, {
+    shadow:'rgba(255,200,0,0.6)', shadowBlur:25,
+    stroke:'rgba(150,80,0,0.5)', strokeWidth:3
+  });
+}
+
+// ===== メイン描画 =====
+function drawFrame(t) {
+  ctx.fillStyle = '#0a0515'; ctx.fillRect(0,0,W,H);
+
+  // タイムライン:
+  // S0:  0.0- 2.5  presents
+  // S1:  2.5- 5.5  篤登場
+  // S2:  5.5-12.0  セリフ（6.5s たっぷり）
+  // S3: 12.0-16.5  俺を待ってろ世界 + ラーメン屋
+  // S4: 16.5-19.5  店内探索
+  // S5: 19.5-25.0  天才分析 + ドヤ（5.5s）
+  // S6: 25.0-28.5  タイトル
+  // S7: 28.5-30.0  CTA
+
+  // ===== S0 (0-2.5s): シュールゲームス presents =====
+  {
+    const a = sceneAlpha(t, 0, 2.5, 0.2, 0.2);
+    if (a > 0) {
+      drawShoujoGradient(a, t*8);
+      drawSparkles(t, a*0.5, '#c9a0dc');
+      drawRosePetals(t, a*0.3);
+      drawDecoFrame(a*0.5);
+      const tp1 = clamp((t-0.4)/0.6);
+      drawText('シュールゲームス', W/2, H/2-30, 36, 'rgba(200,160,220,0.8)', a*tp1, {weight:'700', font:FONT_LOGO});
+      const tp2 = clamp((t-1.0)/0.5);
+      drawText('presents', W/2, H/2+22, 22, 'rgba(200,160,220,0.45)', a*tp2, {weight:'400', font:FONT_TITLE});
+      if (t > 1.5 && t < 2.3) {
+        const sp = (t-1.5)/0.8;
+        const sx = W*0.1+sp*W*0.8;
+        ctx.save(); ctx.globalAlpha = a*(1-sp);
+        const sg = ctx.createLinearGradient(sx-80,0,sx+80,0);
+        sg.addColorStop(0,'rgba(255,215,0,0)'); sg.addColorStop(0.5,'rgba(255,215,0,0.4)'); sg.addColorStop(1,'rgba(255,215,0,0)');
+        ctx.fillStyle = sg; ctx.fillRect(0,H/2-60,W,120);
+        ctx.restore();
+      }
+    }
+  }
+
+  // ===== S1 (2.5-5.5s): 篤 登場 =====
+  {
+    const a = sceneAlpha(t, 2.5, 3, 0.05, 0.12);
+    if (a > 0) {
+      drawShoujoGradient(a, 30);
+      const shake = getShake(t, 2.5, 0.5, 12);
+      ctx.save(); ctx.translate(shake.x, shake.y);
+      drawSpeedLines(t, W/2, H*0.45, a*0.5);
+      const enterP = clamp((t-2.6)/0.6);
+      const charScale = images.atsushi ? Math.min(1.4, 680/images.atsushi.height) : 1;
+      const slamScale = enterP < 0.3 ? easeOut(enterP/0.3)*1.15 : 1+(1.15-1)*Math.exp(-(enterP-0.3)*10);
+      drawCharacter(images.atsushi, W/2, H*0.42, charScale*slamScale, a*clamp(enterP/0.2), {glow:'rgba(255,215,0,0.4)'});
+      ctx.restore();
+      drawSparkles(t, a*0.6, '#ffd700');
+      drawRosePetals(t, a*0.4);
+      drawDecoFrame(a*0.4);
+      drawFlash(t, 2.5, 0.4, 'rgba(255,255,255,A)');
+      drawFlash(t, 2.6, 0.2, 'rgba(255,215,0,A)');
+      drawMangaExclaim(t, 2.7, '！！', W*0.75, H*0.2, 70, a);
+      // 名前テロップ
+      const nameP = clamp((t-3.5)/0.5);
+      if (nameP > 0) {
+        ctx.save(); ctx.globalAlpha = a*nameP*0.85;
+        const ng = ctx.createLinearGradient(W*0.05,0,W*0.55,0);
+        ng.addColorStop(0,'rgba(80,20,120,0)'); ng.addColorStop(0.2,'rgba(80,20,120,0.8)');
+        ng.addColorStop(0.8,'rgba(80,20,120,0.8)'); ng.addColorStop(1,'rgba(80,20,120,0)');
+        ctx.fillStyle = ng; ctx.fillRect(W*0.05,H*0.76,W*0.5,55);
+        ctx.restore();
+        drawText('天才経営アナリスト', W*0.3, H*0.77+5, 18, 'rgba(255,215,0,0.9)', a*nameP, {font:FONT_MAIN});
+        drawText('篤', W*0.3, H*0.77+35, 42, '#fff', a*nameP, {shadow:'rgba(200,100,255,0.5)', shadowBlur:18, font:FONT_TITLE});
+      }
+    }
+  }
+
+  // ===== S2 (5.5-12s): セリフ（6.5s たっぷり） =====
+  // fadeOut starts at 5.5+6.5*(1-0.1) = 11.35
+  // テキスト計算:
+  //   l1: 16字 speed20 → 6.3+0.8=7.1完了, 読む時間 11.35-7.1=4.25s ✓
+  //   l2a: 14字 speed20 → 8.2+0.7=8.9完了, 読む時間 11.35-8.9=2.45s ✓
+  //   l2b: 17字 speed20 → 9.2+0.85=10.05完了, 読む時間 11.35-10.05=1.3s ✓
+  {
+    const a = sceneAlpha(t, 5.5, 6.5, 0.06, 0.1);
+    if (a > 0) {
+      drawShoujoGradient(a, 50);
+      drawRosePetals(t, a*0.25);
+      const charScale = images.atsushi ? Math.min(1.0, 500/images.atsushi.height) : 1;
+      drawCharacter(images.atsushi, W*0.18, H*0.48+Math.sin(t*1.8)*8, charScale, a, {glow:'rgba(200,160,220,0.25)'});
+      drawSparkles(t, a*0.3, '#c9a0dc');
+
+      // セリフ1: 自己紹介
+      const b1P = clamp((t-6)/0.3);
+      if (b1P > 0) {
+        drawSpeechBubble(W*0.6, H*0.25, 500, 80, a*b1P, W*0.45);
+        const l1 = '俺の名は篤。天才経営アナリスト。';
+        const len1 = typewriterLen(l1, t, 6.3, 20);
+        drawText(l1.substring(0,len1), W*0.6, H*0.25, 24, '#2a1a3e', a*b1P, {weight:'700', font:FONT_MAIN});
+      }
+
+      // セリフ2: 名言
+      const b2P = clamp((t-8)/0.3);
+      if (b2P > 0) {
+        drawSpeechBubble(W*0.6, H*0.58, 520, 110, a*b2P, W*0.45);
+        const l2a = 'ものごとは二つに分けられる。';
+        const l2b = '分析できるか…できないか…だ…！！';
+        const len2a = typewriterLen(l2a, t, 8.2, 20);
+        const len2b = typewriterLen(l2b, t, 9.2, 20);
+        drawText(l2a.substring(0,len2a), W*0.6, H*0.54, 22, '#2a1a3e', a*b2P, {weight:'700', font:FONT_MAIN});
+        if (len2b > 0) {
+          drawText(l2b.substring(0,len2b), W*0.6, H*0.63, 22, '#4a1a2e', a*b2P, {weight:'900', font:FONT_MAIN});
+        }
+      }
+
+      drawDecoFrame(a*0.3);
+    }
+  }
+
+  // ===== S3 (12-16.5s): 「俺を待ってろ、世界…！！」→ ラーメン屋 =====
+  // 前半 12-15: セリフ (12字 speed12 → 12.7+1=13.7完了, 読む時間 15-13.7=1.3s ✓)
+  // 後半 15-16.5: ラーメン屋
+  {
+    const a = sceneAlpha(t, 12, 4.5, 0.04, 0.08);
+    if (a > 0) {
+      if (t < 15) {
+        drawShoujoGradient(a, 70);
+        const shake2 = getShake(t, 13.5, 0.6, 18);
+        ctx.save(); ctx.translate(shake2.x, shake2.y);
+        const growP = clamp((t-12.3)/2);
+        const charScale = images.atsushiPose ? Math.min(0.6+growP*1.0, 1.6)*(600/Math.max(1,images.atsushiPose.height)) : 1;
+        drawCharacter(images.atsushiPose, W/2, H*0.42, charScale, a, {
+          glow:'rgba(255,215,0,0.4)', rot:Math.sin(t*2)*0.02
+        });
+        ctx.restore();
+        drawSpeedLines(t, W/2, H*0.42, a*clamp((t-13)/0.8)*0.6);
+        drawSparkles(t, a*0.6, '#ffd700');
+        drawRosePetals(t, a*0.4);
+
+        const sp = clamp((t-12.3)/0.3);
+        if (sp > 0) {
+          const line = '俺を待ってろ、世界…！！';
+          const len = typewriterLen(line, t, 12.5, 12);
+          drawText(line.substring(0,len), W/2, H*0.82, 40, '#fff', a*sp, {
+            shadow:'rgba(255,215,0,0.5)', shadowBlur:22,
+            stroke:'rgba(100,50,0,0.5)', strokeWidth:5, font:FONT_TITLE
+          });
+        }
+
+        drawFlash(t, 13.5, 0.4, 'rgba(255,255,255,A)');
+        drawFlash(t, 13.6, 0.2, 'rgba(255,215,0,A)');
+        drawMangaExclaim(t, 13.5, '！！', W*0.82, H*0.12, 90, a);
+        drawMangaExclaim(t, 13.7, 'ドン！', W*0.15, H*0.2, 55, a);
+        drawDecoFrame(a*0.4);
+      }
+
+      if (t >= 15) {
+        const ramenA = clamp((t-15)/0.5)*a;
+        drawRamenShop(t, ramenA);
+        drawVignette(0.4);
+        const tp = clamp((t-15.3)/0.3);
+        ctx.save(); ctx.globalAlpha = ramenA*tp*0.85;
+        const tg = ctx.createLinearGradient(0,H*0.82,0,H);
+        tg.addColorStop(0,'rgba(0,0,0,0)'); tg.addColorStop(0.3,'rgba(0,0,0,0.85)'); tg.addColorStop(1,'rgba(0,0,0,0.85)');
+        ctx.fillStyle = tg; ctx.fillRect(0,H*0.82,W,H*0.18);
+        ctx.restore();
+        drawText('さびれたラーメン屋の経営分析か…', W/2, H*0.91, 30, '#fff', ramenA*tp, {
+          shadow:'rgba(0,0,0,0.6)', shadowBlur:10, font:FONT_MAIN
+        });
+      }
+    }
+  }
+
+  // ===== S4 (16.5-19.5s): 店内探索（ネタバレなし） =====
+  // fadeOut starts at 16.5+3*(1-0.1) = 19.2
+  {
+    const a = sceneAlpha(t, 16.5, 3, 0.05, 0.1);
+    if (a > 0) {
+      drawRamenShop(t, a);
+      const hintP = clamp((t-16.8)/0.4);
+      drawText('経営的にまずい箇所をクリックしろ', W/2, H*0.14, 28, '#ffdd00', a*hintP*(0.6+Math.sin(t*4)*0.3), {
+        shadow:'rgba(255,200,0,0.4)', shadowBlur:15, stroke:'rgba(60,30,0,0.6)', strokeWidth:3, font:FONT_MAIN
+      });
+
+      const qMarks = [
+        {x:W*0.12,y:H*0.35,start:17.0},
+        {x:W*0.3,y:H*0.52,start:17.3},
+        {x:W*0.55,y:H*0.52,start:17.6},
+        {x:W*0.78,y:H*0.48,start:17.9},
+        {x:W*0.5,y:H*0.08,start:18.1},
+      ];
+      qMarks.forEach(q => {
+        const qp = clamp((t-q.start)/0.3);
+        if (qp > 0) {
+          ctx.save(); ctx.globalAlpha = a*qp*0.6;
+          ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(q.x,q.y,25+(t-q.start)*8,0,Math.PI*2); ctx.stroke();
+          ctx.restore();
+          drawText('？', q.x, q.y-35, 40*(1+Math.sin(t*5+q.x)*0.1), '#ffdd00', a*qp*0.9, {shadow:'rgba(255,200,0,0.5)',shadowBlur:12});
+        }
+      });
+
+      const teaserP = clamp((t-18.5)/0.3);
+      if (teaserP > 0) {
+        ctx.save(); ctx.globalAlpha = a*teaserP*0.9;
+        ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(0,H*0.38,W,H*0.24);
+        ctx.restore();
+        drawText('正解は…？', W/2, H*0.5, 48, '#fff', a*teaserP, {
+          shadow:'rgba(255,215,0,0.4)', shadowBlur:20, stroke:'rgba(100,50,0,0.4)', strokeWidth:3, font:FONT_TITLE
+        });
+      }
+      drawVignette(0.4);
+    }
+  }
+
+  // ===== S5 (19.5-25s): 篤の天才分析 + ドヤ（5.5s） =====
+  // fadeOut starts at 19.5+5.5*(1-0.1) = 24.55
+  // テキスト計算:
+  //   line1: 15字 speed20 → 20.1+0.75=20.85完了
+  //   line2: 11字 speed20 → 21.1+0.55=21.65完了
+  //   line3:  5字 speed20 → 21.9+0.25=22.15完了
+  //   secret: instant at 22.3
+  //   doya: 19字 speed22 → 22.8+0.86=23.66完了, 読む時間 24.55-23.66=0.89s
+  {
+    const a = sceneAlpha(t, 19.5, 5.5, 0.04, 0.1);
+    if (a > 0) {
+      drawShoujoGradient(a, 60);
+      const shake3 = getShake(t, 19.5, 0.4, 10);
+      ctx.save(); ctx.translate(shake3.x, shake3.y);
+      const charScale = images.atsushiPose ? Math.min(1.4, 680/images.atsushiPose.height) : 1;
+      drawCharacter(images.atsushiPose, W*0.25, H*0.45+Math.sin(t*2.5)*10, charScale, a, {
+        rot:Math.sin(t*1.5)*0.03, glow:'rgba(255,215,0,0.35)'
+      });
+      ctx.restore();
+
+      drawSpeedLines(t, W*0.25, H*0.45, a*0.3);
+      drawSparkles(t, a*0.6, '#ffd700');
+      drawRosePetals(t, a*0.3);
+      drawFlash(t, 19.5, 0.3, 'rgba(255,255,255,A)');
+      drawMangaExclaim(t, 19.6, '！', W*0.55, H*0.15, 80, a);
+
+      const lines = [
+        {text:'経営分析の結果、答えは明白だ。', start:20, y:H*0.18},
+        {text:'この店に足りないもの…', start:21, y:H*0.33},
+        {text:'それは……', start:21.8, y:H*0.48},
+      ];
+      lines.forEach(l => {
+        const lp = clamp((t-l.start)/0.3);
+        const len = typewriterLen(l.text, t, l.start+0.1, 20);
+        if (lp > 0) {
+          drawText(l.text.substring(0,len), W*0.65, l.y, 28, '#fff', a*lp, {
+            shadow:'rgba(200,100,255,0.4)', shadowBlur:12,
+            stroke:'rgba(60,20,100,0.5)', strokeWidth:3, font:FONT_MAIN
+          });
+        }
+      });
+
+      const secretP = clamp((t-22.3)/0.3);
+      if (secretP > 0) {
+        drawText('…答えはゲームで確かめろ！', W*0.65, H*0.63, 24, '#ffdd00', a*secretP*(0.7+Math.sin(t*5)*0.3), {
+          shadow:'rgba(255,200,0,0.4)', shadowBlur:15, font:FONT_MAIN
+        });
+      }
+
+      // ドヤ顔セリフ
+      const doyaP = clamp((t-22.6)/0.3);
+      if (doyaP > 0) {
+        ctx.save(); ctx.globalAlpha = a*doyaP*0.85;
+        ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0,H*0.76,W,H*0.14);
+        ctx.restore();
+        const doyaLine = 'ふ…また才能をきらめかせちまったぜ…';
+        const doyaLen = typewriterLen(doyaLine, t, 22.7, 22);
+        // 19字/22=0.86s → 完了23.56, 読む時間 24.55-23.56=0.99s
+        drawText(doyaLine.substring(0,doyaLen), W/2, H*0.83, 26, 'rgba(200,160,220,0.95)', a*doyaP, {font:FONT_TITLE});
+      }
+
+      drawDecoFrame(a*0.35);
+    }
+  }
+
+  // ===== S6 (25-28.5s): タイトルドーン =====
+  {
+    const a = sceneAlpha(t, 25, 3.5, 0.03, 0.1);
+    if (a > 0) {
+      drawShoujoGradient(a, 0);
+      const shake4 = getShake(t, 25, 0.5, 12);
+      ctx.save(); ctx.translate(shake4.x, shake4.y);
+      drawSpeedLines(t, W/2, H/2, a*0.3);
+      if (images.atsushiPose) {
+        const bgScale = Math.min(2, 1000/images.atsushiPose.height);
+        drawCharacter(images.atsushiPose, W/2, H*0.5, bgScale, a*0.12, {glow:'rgba(200,160,220,0.1)'});
+      }
+      ctx.restore();
+
+      drawSparkles(t, a*0.9, '#ffd700');
+      drawRosePetals(t, a*0.5);
+      drawFlash(t, 25, 0.4, 'rgba(255,255,255,A)');
+      drawFlash(t, 25.1, 0.2, 'rgba(255,215,0,A)');
+
+      const tp = clamp((t-25.5)/0.4);
+      if (tp > 0) {
+        const scale = 1+(1-easeOut(tp))*2.5;
+        drawText('経営分析ゲーム', W/2, H*0.32, 64*scale, '#ffd700', a*tp, {
+          shadow:'rgba(255,215,0,0.5)', shadowBlur:30,
+          stroke:'rgba(100,40,0,0.6)', strokeWidth:5, font:FONT_TITLE
+        });
+      }
+      const sp = clamp((t-26.2)/0.4);
+      if (sp > 0) {
+        drawText('～天才たちの戯れ～', W/2, H*0.5, 40, 'rgba(220,180,255,0.95)', a*sp, {
+          shadow:'rgba(200,160,220,0.4)', shadowBlur:15, font:FONT_TITLE
+        });
+      }
+      const cp = clamp((t-26.8)/0.5);
+      if (cp > 0) {
+        const cs = images.atsushiPose ? Math.min(0.9, 450/images.atsushiPose.height) : 0.9;
+        drawCharacter(images.atsushiPose, W/2, H*0.76+Math.sin(t*2)*6, cs*easeOut(cp), a*cp, {glow:'rgba(255,215,0,0.3)'});
+      }
+      drawDecoFrame(a*0.6);
+    }
+  }
+
+  // ===== S7 (28.5-30s): CTA =====
+  {
+    const a = clamp((t-28.5)/0.3)*clamp((30.5-t)/0.5);
+    if (a > 0) {
+      drawShoujoGradient(a, 15);
+      drawSparkles(t, a*0.5, '#c9a0dc');
+      drawRosePetals(t, a*0.2);
+      drawDecoFrame(a*0.5);
+      const lp = clamp((t-28.6)/0.3);
+      drawText('シュールゲームス', W/2, H*0.22, 24, 'rgba(200,160,220,0.6)', a*lp, {font:FONT_LOGO});
+      drawText('経営分析ゲーム～天才たちの戯れ～', W/2, H*0.35, 34, '#ffd700', a*lp, {
+        shadow:'rgba(255,215,0,0.3)', shadowBlur:12, font:FONT_TITLE
+      });
+      const bp = clamp((t-28.8)/0.3);
+      if (bp > 0) {
+        const bx=W/2, by=H*0.52, bw=360, bh=60;
+        ctx.save(); ctx.globalAlpha = a*bp;
+        const bg = ctx.createLinearGradient(bx-bw/2,by,bx+bw/2,by);
+        bg.addColorStop(0,'rgba(180,80,240,0.85)'); bg.addColorStop(1,'rgba(100,40,180,0.85)');
+        ctx.fillStyle = bg;
+        ctx.beginPath(); ctx.roundRect(bx-bw/2,by-bh/2,bw,bh,30); ctx.fill();
+        ctx.strokeStyle = 'rgba(255,215,0,0.5)'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.restore();
+        drawText('ブラウザで無料プレイ', bx, by, 28, '#fff', a*bp, {
+          shadow:'rgba(255,255,255,0.3)', shadowBlur:10, font:FONT_MAIN
+        });
+        const shineP = ((t-29.2)%1.5)/1.5;
+        if (shineP > 0 && shineP < 0.35) {
+          const sx = bx-bw/2+shineP*bw*3;
+          ctx.save(); ctx.globalAlpha = a*bp*(1-shineP/0.35)*0.35;
+          const sg = ctx.createLinearGradient(sx-50,0,sx+50,0);
+          sg.addColorStop(0,'rgba(255,255,255,0)'); sg.addColorStop(0.5,'rgba(255,255,255,0.5)'); sg.addColorStop(1,'rgba(255,255,255,0)');
+          ctx.fillStyle = sg;
+          ctx.beginPath(); ctx.roundRect(bx-bw/2,by-bh/2,bw,bh,30); ctx.clip();
+          ctx.fillRect(sx-50,by-bh/2,100,bh);
+          ctx.restore();
+        }
+      }
+      if (images.atsushi) {
+        const cs = Math.min(0.5, 220/images.atsushi.height);
+        drawCharacter(images.atsushi, W*0.82, H*0.72+Math.sin(t*2)*4, cs, a*clamp((t-29)/0.3), {glow:'rgba(200,160,220,0.2)'});
+      }
+      drawText('surreal-games.com', W/2, H*0.68, 18, 'rgba(200,160,220,0.4)', a*clamp((t-29.2)/0.3), {font:FONT_MAIN});
+    }
+  }
+
+  drawVignette(0.3);
+}
+
+// ===== プレビュー =====
+let previewRunning = false;
+let previewAnimId = null;
+
+slider.addEventListener('input', () => {
+  if (!previewRunning) {
+    const t = parseFloat(slider.value);
+    timeLabel.textContent = t.toFixed(2) + 's';
+    drawFrame(t);
+  }
+});
+
+function togglePreview() {
+  const btn = document.getElementById('preview-btn');
+  if (previewRunning) {
+    previewRunning = false;
+    if (previewAnimId) cancelAnimationFrame(previewAnimId);
+    btn.textContent = 'プレビュー再生';
+    return;
+  }
+
+  // 音声初期化
+  initAudio();
+  if (!audioScheduled) scheduleBGM();
+
+  previewRunning = true;
+  btn.textContent = '停止';
+  const startTime = performance.now();
+  const startOffset = parseFloat(slider.value);
+  function tick() {
+    if (!previewRunning) return;
+    const elapsed = (performance.now()-startTime)/1000+startOffset;
+    if (elapsed >= DURATION) { previewRunning = false; btn.textContent = 'プレビュー再生'; return; }
+    slider.value = elapsed;
+    timeLabel.textContent = elapsed.toFixed(2)+'s';
+    drawFrame(elapsed);
+    previewAnimId = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+// ===== エクスポート =====
+async function startExport() {
+  const btn = document.getElementById('btn');
+  try {
+    btn.disabled = true;
+    btn.textContent = '画像読み込み中...';
+    await loadImages();
+
+    btn.textContent = '音声準備中...';
+    audioCtx = null; audioScheduled = false;
+    initAudio();
+    scheduleBGM();
+
+    const canvasStream = canvas.captureStream(FPS);
+    if (!canvasStream || canvasStream.getVideoTracks().length === 0) {
+      throw new Error('canvas.captureStream が利用できません。Chrome最新版で開いてください。');
+    }
+
+    const tracks = [...canvasStream.getVideoTracks()];
+    if (audioDest && audioDest.stream) {
+      tracks.push(...audioDest.stream.getAudioTracks());
+    }
+    const combined = new MediaStream(tracks);
+
+    let mimeType = 'video/webm';
+    for (const mt of ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']) {
+      if (MediaRecorder.isTypeSupported(mt)) { mimeType = mt; break; }
+    }
+    const recorder = new MediaRecorder(combined, { mimeType, videoBitsPerSecond: 5_000_000 });
+    const chunks = [];
+    recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+    recorder.onerror = e => { throw new Error('MediaRecorder エラー: ' + e.error); };
+
+    recorder.start(500);
+    btn.textContent = '録画中... 0/'+DURATION+'秒';
+
+    await new Promise(resolve => {
+      const startT = performance.now();
+      const interval = setInterval(() => {
+        const elapsed = (performance.now()-startT)/1000;
+        if (elapsed >= DURATION) { clearInterval(interval); recorder.stop(); return; }
+        btn.textContent = `録画中... ${Math.floor(elapsed)}/${DURATION}秒`;
+        statusEl.textContent = `${Math.floor(elapsed)} / ${DURATION} 秒`;
+        drawFrame(elapsed);
+      }, 1000/FPS);
+      recorder.onstop = resolve;
+    });
+
+    const blob = new Blob(chunks, {type:mimeType});
+    if (blob.size < 1000) {
+      throw new Error('録画データが空です。ブラウザがMediaRecorderに対応していない可能性があります。');
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'business-analysis-pv.webm';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+    btn.textContent = 'ダウンロード完了！';
+    statusEl.textContent = 'business-analysis-pv.webm を保存しました';
+    setTimeout(() => { btn.textContent = '動画を生成する'; btn.disabled = false; }, 3000);
+  } catch(err) {
+    console.error(err);
+    btn.textContent = '動画を生成する';
+    btn.disabled = false;
+    statusEl.textContent = '⚠ エラー: ' + err.message;
+    statusEl.style.color = '#ff6b6b';
+    setTimeout(() => { statusEl.style.color = '#c9a0dc'; }, 5000);
+  }
+}
+
+loadImages().then(() => {
+  drawFrame(0);
+  statusEl.textContent = '準備完了 - プレビューまたはエクスポート';
+});
+</script>
+</body>
+</html>

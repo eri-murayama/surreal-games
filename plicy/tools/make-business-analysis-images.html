@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>経営分析ゲーム サムネ＆背景 ジェネレーター</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; color: #fff; }
+    h2 { margin-top: 30px; }
+    canvas { border: 2px solid #fff; margin: 10px 0; max-width: 90vw; }
+    .buttons { display: flex; gap: 12px; margin-bottom: 20px; }
+    button { padding: 10px 28px; font-size: 15px; background: #7b2ff7; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #5a1fd0; }
+    button.blue { background: #6a8fc7; }
+    button.blue:hover { background: #4a6fa7; }
+    p { color: #aaa; margin: 4px 0 10px; }
+  </style>
+</head>
+<body>
+  <h1>経営分析ゲーム - サムネ＆背景</h1>
+
+  <!-- サムネイル -->
+  <h2>サムネイル（篤 顔面アップ）</h2>
+  <canvas id="thumb" width="640" height="480"></canvas>
+  <div class="buttons">
+    <button onclick="downloadCanvas('thumb', 'business-analysis-thumbnail.png')">ダウンロード</button>
+  </div>
+  <p>640x480px</p>
+
+  <!-- 背景画像 -->
+  <h2>背景画像</h2>
+  <canvas id="bg" width="2000" height="2000"></canvas>
+  <div class="buttons">
+    <button onclick="downloadCanvas('bg', 'business-analysis-background.png')">ダウンロード</button>
+    <button class="blue" onclick="generateBg()">別パターン生成</button>
+  </div>
+  <p>2000x2000px</p>
+
+  <script>
+    const imgAtsushi = new Image();
+    let loaded = 0;
+    imgAtsushi.onload = () => { loaded++; if (loaded >= 1) init(); };
+    imgAtsushi.src = '../../games/business-analysis/atsushi.png';
+
+    function init() {
+      generateThumb();
+      generateBg();
+    }
+
+    // ===== サムネイル：篤の顔面アップ =====
+    function generateThumb() {
+      const c = document.getElementById('thumb');
+      const ctx = c.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      const W = 640, H = 480;
+
+      // 紫〜ピンクのグラデーション背景
+      const grad = ctx.createRadialGradient(W / 2, H * 0.4, 0, W / 2, H / 2, W * 0.7);
+      grad.addColorStop(0, '#c4a0ff');
+      grad.addColorStop(0.5, '#4a2c8a');
+      grad.addColorStop(1, '#1a0533');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // 篤の顔部分を大きくクロップ
+      const srcW = imgAtsushi.naturalWidth;
+      const srcH = imgAtsushi.naturalHeight;
+
+      // 顔の上部を中心にクロップ
+      const cropX = srcW * 0.15;
+      const cropY = srcH * 0.0;
+      const cropW = srcW * 0.7;
+      const cropH = srcH * 0.55;
+
+      const scale = Math.max(W / cropW, H / cropH) * 1.1;
+      const drawW = cropW * scale;
+      const drawH = cropH * scale;
+      const drawX = (W - drawW) / 2;
+      const drawY = (H - drawH) / 2;
+
+      ctx.drawImage(imgAtsushi, cropX, cropY, cropW, cropH, drawX, drawY, drawW, drawH);
+
+      // 上下にビネット
+      const vTop = ctx.createLinearGradient(0, 0, 0, H * 0.2);
+      vTop.addColorStop(0, 'rgba(26, 5, 51, 0.7)');
+      vTop.addColorStop(1, 'rgba(26, 5, 51, 0)');
+      ctx.fillStyle = vTop;
+      ctx.fillRect(0, 0, W, H * 0.2);
+
+      const vBot = ctx.createLinearGradient(0, H * 0.8, 0, H);
+      vBot.addColorStop(0, 'rgba(26, 5, 51, 0)');
+      vBot.addColorStop(1, 'rgba(26, 5, 51, 0.7)');
+      ctx.fillStyle = vBot;
+      ctx.fillRect(0, H * 0.8, W, H * 0.2);
+
+      // 左右にもビネット
+      const vLeft = ctx.createLinearGradient(0, 0, W * 0.15, 0);
+      vLeft.addColorStop(0, 'rgba(26, 5, 51, 0.5)');
+      vLeft.addColorStop(1, 'rgba(26, 5, 51, 0)');
+      ctx.fillStyle = vLeft;
+      ctx.fillRect(0, 0, W * 0.15, H);
+
+      const vRight = ctx.createLinearGradient(W * 0.85, 0, W, 0);
+      vRight.addColorStop(0, 'rgba(26, 5, 51, 0)');
+      vRight.addColorStop(1, 'rgba(26, 5, 51, 0.5)');
+      ctx.fillStyle = vRight;
+      ctx.fillRect(W * 0.85, 0, W * 0.15, H);
+    }
+
+    // ===== 背景画像：篤の全身像タイル =====
+    function generateBg() {
+      const c = document.getElementById('bg');
+      const ctx = c.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      const W = 2000, H = 2000;
+
+      // 紫グラデーション背景
+      const grad = ctx.createLinearGradient(0, 0, W * 0.3, H);
+      grad.addColorStop(0, '#2d1b69');
+      grad.addColorStop(0.3, '#1a0a3e');
+      grad.addColorStop(0.6, '#2d1b69');
+      grad.addColorStop(1, '#0d0221');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      const rng = (min, max) => min + Math.random() * (max - min);
+
+      // 装飾：お金、星、分析関連
+      const decorations = ['✦', '✧', '💴', '💰', '📊', '📈', '★', '⋆'];
+      for (let i = 0; i < 50; i++) {
+        ctx.save();
+        ctx.translate(rng(0, W), rng(0, H));
+        ctx.rotate(Math.random() * Math.PI * 2);
+        ctx.font = `${rng(30, 70)}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.globalAlpha = 0.08 + Math.random() * 0.12;
+        ctx.fillStyle = '#ffd700';
+        ctx.fillText(decorations[Math.floor(Math.random() * decorations.length)], 0, 0);
+        ctx.restore();
+      }
+
+      // 篤の全身像をタイル状に配置
+      const size = 500;
+      const cols = Math.ceil(W / size) + 1;
+      const rows = Math.ceil(H / size) + 1;
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const x = col * size + rng(-30, 30);
+          const y = row * size + rng(-30, 30);
+          const s = size * rng(0.75, 0.95);
+          const rotation = rng(-0.15, 0.15);
+          const alpha = rng(0.06, 0.15);
+
+          ctx.save();
+          ctx.translate(x + size / 2, y + size / 2);
+          ctx.rotate(rotation);
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(imgAtsushi, -s / 2, -s / 2, s, s);
+          ctx.restore();
+        }
+      }
+    }
+
+    function downloadCanvas(id, filename) {
+      const c = document.getElementById(id);
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = c.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

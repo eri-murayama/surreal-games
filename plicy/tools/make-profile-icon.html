@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>プロフィールアイコン ジェネレーター</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; color: #fff; }
+    .preview { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; align-items: flex-end; margin: 20px 0; }
+    .preview-item { text-align: center; }
+    .preview-item p { color: #aaa; margin-top: 8px; }
+    canvas { border: 2px solid #fff; }
+    .buttons { display: flex; gap: 12px; margin-top: 20px; }
+    button { padding: 12px 32px; font-size: 16px; background: #ff69b4; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #d63384; }
+  </style>
+</head>
+<body>
+  <h1>プロフィールアイコン</h1>
+
+  <div class="preview">
+    <div class="preview-item">
+      <canvas id="canvas" width="500" height="500"></canvas>
+      <p>500x500px（アップロード用）</p>
+    </div>
+    <div class="preview-item">
+      <canvas id="preview-small" width="100" height="100" style="border-radius: 50%;"></canvas>
+      <p>実際の表示サイズ</p>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="download()">ダウンロード (PNG)</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const S = 500;
+
+    const img = new Image();
+    img.onload = () => generate();
+    img.src = 'kanikani-source.png';
+
+    function generate() {
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      // ピンク円形背景
+      const grad = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+      grad.addColorStop(0, '#ffccd5');
+      grad.addColorStop(1, '#ff91a4');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2, S / 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // かにかにの顔部分を大きく配置
+      // 元画像の顔（目〜口）の中心を切り出し
+      const srcW = img.naturalWidth;
+      const srcH = img.naturalHeight;
+
+      // 顔中心部分を切り出し（目玉〜口あたり）
+      const cropX = srcW * 0.15;
+      const cropY = srcH * 0.0;
+      const cropW = srcW * 0.6;
+      const cropH = srcH * 0.7;
+
+      // キャンバスにフィットさせて描画
+      const scale = Math.max(S / cropW, S / cropH) * 0.9;
+      const drawW = cropW * scale;
+      const drawH = cropH * scale;
+      const drawX = (S - drawW) / 2;
+      const drawY = (S - drawH) / 2 + 20; // 少し下に
+
+      // 円形にクリップ
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2, S / 2 - 4, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, cropX, cropY, cropW, cropH, drawX, drawY, drawW, drawH);
+      ctx.restore();
+
+      // 白い円形の枠線
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2, S / 2 - 4, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 小さいプレビューにも描画
+      const small = document.getElementById('preview-small');
+      const sctx = small.getContext('2d');
+      sctx.imageSmoothingEnabled = true;
+      sctx.imageSmoothingQuality = 'high';
+      sctx.drawImage(canvas, 0, 0, 100, 100);
+    }
+
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'profile-icon.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PV書き出し</title>
+<style>
+  body { background:#111; color:#fff; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; padding:40px; }
+  canvas { border:1px solid #333; margin:20px 0; }
+  button { font-size:18px; padding:12px 32px; cursor:pointer; background:#cc2222; color:#fff; border:none; border-radius:6px; }
+  button:disabled { background:#555; cursor:default; }
+  #status { margin:12px 0; font-size:16px; color:#aaa; }
+</style>
+</head>
+<body>
+<h2>PV動画エクスポート (WebM)</h2>
+<p>ボタンを押すと30秒の動画を生成し、自動でダウンロードされます。</p>
+<canvas id="c" width="1280" height="720"></canvas>
+<button id="btn" onclick="startExport()">動画を生成する</button>
+<div id="status"></div>
+
+<script>
+const W = 1280, H = 720, FPS = 30;
+const DURATION = 30; // 秒
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+
+// 画像読み込み
+const images = {};
+const imgSrcs = {
+  protagonist: '../../games/escape-room/protagonist.png',
+  window: '../../games/escape-room/window-view.png',
+  painting: '../../games/escape-room/painting-art.png',
+  sakuranbo: '../../games/escape-room/sakuranbo.jpg',
+};
+
+async function loadImages() {
+  const promises = Object.entries(imgSrcs).map(([key, src]) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => { images[key] = img; resolve(); };
+      img.onerror = reject;
+      img.src = src;
+    });
+  });
+  await Promise.all(promises);
+}
+
+// ===== Audio Engine (同じもの) =====
+let audioCtx, masterGain, audioDest;
+
+function initAudio() {
+  audioCtx = new AudioContext();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.7;
+  masterGain.connect(audioCtx.destination);
+  audioDest = audioCtx.createMediaStreamDestination();
+  masterGain.connect(audioDest);
+}
+
+function playDrone(st, dur, freq=55) {
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain(), f=audioCtx.createBiquadFilter();
+  o.type='sawtooth'; o.frequency.value=freq; f.type='lowpass'; f.frequency.value=200; f.Q.value=5;
+  g.gain.setValueAtTime(0,st); g.gain.linearRampToValueAtTime(0.15,st+Math.min(2,dur/2));
+  g.gain.setValueAtTime(0.15,st+dur-Math.min(2,dur/2)); g.gain.linearRampToValueAtTime(0,st+dur);
+  o.connect(f); f.connect(g); g.connect(masterGain); o.start(st); o.stop(st+dur);
+}
+function playHeartbeat(st,count,interval) {
+  for(let i=0;i<count;i++){const t=st+i*interval;
+    [0,0.12].forEach((off,idx)=>{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type='sine'; o.frequency.value=idx===0?50:40;
+      g.gain.setValueAtTime(0,t+off); g.gain.linearRampToValueAtTime(idx===0?0.35:0.25,t+off+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,t+off+0.2);
+      o.connect(g); g.connect(masterGain); o.start(t+off); o.stop(t+off+0.25);
+    });
+  }
+}
+function playImpact(st,intensity=1) {
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(80*intensity,st); o.frequency.exponentialRampToValueAtTime(25,st+0.5);
+  g.gain.setValueAtTime(0.5*intensity,st); g.gain.exponentialRampToValueAtTime(0.001,st+0.8);
+  o.connect(g); g.connect(masterGain); o.start(st); o.stop(st+0.8);
+  const bs=audioCtx.sampleRate*0.3,buf=audioCtx.createBuffer(1,bs,audioCtx.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<bs;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(bs*0.1));
+  const n=audioCtx.createBufferSource(); n.buffer=buf;
+  const ng=audioCtx.createGain(),nf=audioCtx.createBiquadFilter();
+  nf.type='lowpass'; nf.frequency.value=800;
+  ng.gain.setValueAtTime(0.3*intensity,st); ng.gain.exponentialRampToValueAtTime(0.001,st+0.3);
+  n.connect(nf); nf.connect(ng); ng.connect(masterGain); n.start(st);
+}
+function playRiser(st,dur) {
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+  o.type='sawtooth'; o.frequency.setValueAtTime(80,st); o.frequency.exponentialRampToValueAtTime(2000,st+dur);
+  f.type='bandpass'; f.frequency.setValueAtTime(200,st); f.frequency.exponentialRampToValueAtTime(3000,st+dur); f.Q.value=2;
+  g.gain.setValueAtTime(0,st); g.gain.linearRampToValueAtTime(0.2,st+dur*0.8); g.gain.linearRampToValueAtTime(0,st+dur);
+  o.connect(f); f.connect(g); g.connect(masterGain); o.start(st); o.stop(st+dur);
+}
+function playDissonantPad(st,dur) {
+  [110,116.5,130.8,155.6].forEach((freq,i)=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type=i%2===0?'sine':'triangle'; o.frequency.value=freq;
+    o.detune.setValueAtTime(0,st); o.detune.linearRampToValueAtTime((i-1.5)*15,st+dur);
+    g.gain.setValueAtTime(0,st); g.gain.linearRampToValueAtTime(0.06,st+Math.min(1.5,dur/2));
+    g.gain.setValueAtTime(0.06,st+dur-Math.min(1.5,dur/2)); g.gain.linearRampToValueAtTime(0,st+dur);
+    o.connect(g); g.connect(masterGain); o.start(st); o.stop(st+dur);
+  });
+}
+function playScreech(st) {
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+  o.type='square'; o.frequency.setValueAtTime(800,st); o.frequency.linearRampToValueAtTime(2500,st+0.1);
+  o.frequency.linearRampToValueAtTime(600,st+0.8);
+  f.type='bandpass'; f.frequency.value=1500; f.Q.value=10;
+  g.gain.setValueAtTime(0.15,st); g.gain.exponentialRampToValueAtTime(0.001,st+0.8);
+  o.connect(f); f.connect(g); g.connect(masterGain); o.start(st); o.stop(st+0.8);
+}
+function playReverseCymbal(st,dur) {
+  const bs=audioCtx.sampleRate*dur,buf=audioCtx.createBuffer(1,bs,audioCtx.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<bs;i++){const t=i/bs; d[i]=(Math.random()*2-1)*t*t;}
+  const s=audioCtx.createBufferSource(); s.buffer=buf;
+  const g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+  f.type='highpass'; f.frequency.setValueAtTime(2000,st); f.frequency.linearRampToValueAtTime(500,st+dur);
+  g.gain.setValueAtTime(0.01,st); g.gain.linearRampToValueAtTime(0.3,st+dur);
+  s.connect(f); f.connect(g); g.connect(masterGain); s.start(st);
+}
+function playHit(st,freq=100) {
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type='square'; o.frequency.setValueAtTime(freq,st); o.frequency.exponentialRampToValueAtTime(30,st+0.15);
+  g.gain.setValueAtTime(0.25,st); g.gain.exponentialRampToValueAtTime(0.001,st+0.15);
+  o.connect(g); g.connect(masterGain); o.start(st); o.stop(st+0.2);
+}
+function playTitleChord(st) {
+  [55,110,165,220,330].forEach((freq,i)=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type=i<2?'sawtooth':'sine'; o.frequency.value=freq;
+    const v=i<2?0.12:0.08;
+    g.gain.setValueAtTime(v,st); g.gain.setValueAtTime(v,st+2);
+    g.gain.linearRampToValueAtTime(v*0.6,st+5); g.gain.linearRampToValueAtTime(0,st+8);
+    const f=audioCtx.createBiquadFilter(); f.type='lowpass';
+    f.frequency.setValueAtTime(2000,st); f.frequency.linearRampToValueAtTime(400,st+8);
+    o.connect(f); f.connect(g); g.connect(masterGain); o.start(st); o.stop(st+8);
+  });
+}
+
+function scheduleBGM() {
+  const t = audioCtx.currentTime + 0.05;
+  playDrone(t,8,45); playHeartbeat(t+1.2,4,1.2); playRiser(t+3.5,3);
+  playImpact(t+6.5,1.2);
+  playDissonantPad(t+8,6.5); playDrone(t+8,6.5,55);
+  playHit(t+12.5,120); playHit(t+12.85,100); playHit(t+13.2,140); playHit(t+13.55,90); playHit(t+13.9,160);
+  playDrone(t+14.5,2.5,65);
+  playImpact(t+17,0.7); playDissonantPad(t+17,2.5);
+  playImpact(t+19.5,1);
+  playDrone(t+21.5,2,50);
+  playScreech(t+23.8); playImpact(t+23.8,0.8);
+  playReverseCymbal(t+24.5,1.5);
+  playImpact(t+26.4,1.3); playTitleChord(t+26.5);
+}
+
+// ===== 描画ヘルパー =====
+function easeInOut(t) { return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+function easeOut(t) { return 1-Math.pow(1-t,3); }
+function clamp(v,a=0,b=1) { return Math.max(a,Math.min(b,v)); }
+
+// シーンの進行度 (0未満=まだ, 0-1=表示中, 1超=終了)
+function sceneProgress(t, start, duration) {
+  return (t - start) / duration;
+}
+// フェードイン・アウトのアルファ
+function sceneAlpha(t, start, duration, fadeIn=0.08, fadeOut=0.1) {
+  const p = sceneProgress(t, start, duration);
+  if (p < 0 || p > 1) return 0;
+  if (p < fadeIn) return p / fadeIn;
+  if (p > 1 - fadeOut) return (1 - p) / fadeOut;
+  return 1;
+}
+
+// 画面フラッシュ
+const flashes = [
+  { t: 6.5, dur: 0.2, color: 'rgba(255,255,255,' },
+  { t: 7.8, dur: 0.15, color: 'rgba(255,0,0,' },
+  { t: 12.5, dur: 0.1, color: 'rgba(255,255,255,' },
+  { t: 12.85, dur: 0.1, color: 'rgba(255,255,255,' },
+  { t: 13.2, dur: 0.1, color: 'rgba(255,50,50,' },
+  { t: 13.55, dur: 0.1, color: 'rgba(255,255,255,' },
+  { t: 13.9, dur: 0.1, color: 'rgba(255,0,0,' },
+  { t: 17.0, dur: 0.12, color: 'rgba(255,255,255,' },
+  { t: 19.7, dur: 0.08, color: 'rgba(20,20,20,' },
+  { t: 25.5, dur: 0.4, color: 'rgba(255,255,255,' },
+  { t: 26.4, dur: 0.25, color: 'rgba(200,30,30,' },
+];
+
+// フラッシュワード
+const flashWords = [
+  { t:12.5, text:'謎', x:0.08, y:0.15, size:180, rot:-12, color:'rgba(255,40,40,A)' },
+  { t:12.85, text:'匂い', x:0.65, y:0.6, size:80, rot:5, color:'rgba(255,255,255,A)' },
+  { t:13.2, text:'不法侵入', x:0.15, y:0.32, size:120, rot:-3, color:'rgba(255,60,60,A)' },
+  { t:13.55, text:'うふふ', x:0.1, y:0.65, size:100, rot:7, color:'rgba(255,255,255,A)' },
+  { t:13.9, text:'脱出', x:0.55, y:0.15, size:160, rot:-6, color:'rgba(255,30,30,A)' },
+];
+
+// パーティクル
+const particles = Array.from({length:40}, () => ({
+  x: Math.random(), speed: 0.005 + Math.random()*0.01,
+  offset: Math.random()*DURATION, size: 1+Math.random()*2, opacity: 0.1+Math.random()*0.25,
+}));
+
+function drawParticles(t) {
+  particles.forEach(p => {
+    const y = ((t * p.speed * 60 + p.offset * 50) % (H + 20)) - 10;
+    const x = p.x * W + Math.sin(t * 0.5 + p.offset * 10) * 20;
+    ctx.fillStyle = `rgba(255,80,80,${p.opacity})`;
+    ctx.beginPath();
+    ctx.arc(x, y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawScanlines() {
+  ctx.fillStyle = 'rgba(0,0,0,0.06)';
+  for (let y = 0; y < H; y += 4) {
+    ctx.fillRect(0, y, W, 2);
+  }
+}
+
+function drawVignette() {
+  const grad = ctx.createRadialGradient(W/2, H/2, W*0.25, W/2, H/2, W*0.7);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.75)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function drawImageCentered(img, scale, alpha, filter) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  const w = img.width * scale, h = img.height * scale;
+  ctx.drawImage(img, (W-w)/2, (H-h)/2, w, h);
+  ctx.restore();
+}
+
+function drawText(text, x, y, size, color, alpha, rot=0, font='sans-serif') {
+  if (alpha <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = clamp(alpha);
+  ctx.font = `900 ${size}px ${font}`;
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.translate(x, y);
+  if (rot) ctx.rotate(rot * Math.PI / 180);
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+}
+
+// ===== メイン描画関数 =====
+function drawFrame(t) {
+  // 背景
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+
+  // パーティクル
+  drawParticles(t);
+
+  // --- SCENE 0 (0-3.5s): 「ある部屋に、入ってしまった。」---
+  {
+    const a = sceneAlpha(t, 0.3, 3.2);
+    if (a > 0) {
+      const textA = clamp((t - 0.8) / 2);
+      drawText('ある部屋に、入ってしまった。', W/2, H/2, 20, 'rgba(255,255,255,0.25)', a * textA);
+    }
+    // 心拍ライン
+    if (t > 1.5 && t < 3.5) {
+      const lineA = clamp((t-1.5)/0.3) * clamp((3.5-t)/0.3);
+      const sweep = ((t - 1.5) % 1.5) / 1.5;
+      ctx.save();
+      ctx.globalAlpha = lineA * 0.6;
+      ctx.strokeStyle = '#cc2222';
+      ctx.lineWidth = 2;
+      ctx.shadowColor = 'rgba(255,40,40,0.6)';
+      ctx.shadowBlur = 10;
+      const sx = sweep * W;
+      ctx.beginPath();
+      ctx.moveTo(sx - 30, H*0.5);
+      ctx.lineTo(sx - 15, H*0.5);
+      ctx.lineTo(sx - 8, H*0.5 - 20);
+      ctx.lineTo(sx, H*0.5 + 15);
+      ctx.lineTo(sx + 8, H*0.5);
+      ctx.lineTo(sx + 30, H*0.5);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // --- SCENE 1 (3.5-6.5s): 顔じわじわ巨大化 ---
+  {
+    const a = sceneAlpha(t, 3.5, 3);
+    if (a > 0) {
+      const p = clamp((t - 3.5) / 3);
+      const scale = 0.2 + p * 2.5; // 小さい→大きい
+      const imgA = 0.2 + p * 0.8;
+      ctx.save();
+      ctx.globalAlpha = a * imgA;
+      ctx.filter = `contrast(1.3) saturate(0.5)`;
+      drawImageCentered(images.protagonist, scale, a * imgA);
+      ctx.filter = 'none';
+      ctx.restore();
+    }
+  }
+
+  // --- SCENE 2 (6.5-8.5s): 顔ドーン + グリッチ ---
+  {
+    const a = sceneAlpha(t, 6.5, 2);
+    if (a > 0) {
+      // 赤オーバーレイ
+      const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.5);
+      grad.addColorStop(0, `rgba(180,0,0,${0.5*a})`);
+      grad.addColorStop(1, `rgba(0,0,0,${0.9*a})`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // 顔バーン
+      const slamP = clamp((t - 6.5) / 0.25);
+      const slamScale = 3 + (slamP < 0.25 ? (1-slamP*4)*0.5 : 0); // バウンス
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.filter = 'contrast(1.6) saturate(0.3) sepia(0.3)';
+      drawImageCentered(images.protagonist, slamScale, a);
+      ctx.filter = 'none';
+      ctx.restore();
+
+      // グリッチスライス
+      if (t > 6.6 && t < 7.2) {
+        ctx.save();
+        ctx.globalAlpha = 0.4 * a;
+        const sliceY = (Math.floor((t-6.6)*20) % 3) * H / 3;
+        ctx.beginPath();
+        ctx.rect(0, sliceY, W, H/3);
+        ctx.clip();
+        const offX = (Math.sin(t * 80) * 15)|0;
+        ctx.filter = 'saturate(3) hue-rotate(90deg)';
+        drawImageCentered(images.protagonist, slamScale, 0.4);
+        ctx.filter = 'none';
+        ctx.restore();
+      }
+    }
+  }
+
+  // --- SCENE 3 (8-10s): 「扉が、開かない。」---
+  {
+    const a = sceneAlpha(t, 8, 2.4);
+    if (a > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${a})`;
+      ctx.fillRect(0, 0, W, H);
+      const textP = clamp((t - 8.3) / 0.5);
+      const ty = H/2 + (1-textP)*18;
+      drawText('扉が、開かない。', W/2, ty, 48, '#fff', a * textP);
+      // アンダーライン
+      const lineP = clamp((t - 8.8) / 0.8);
+      if (lineP > 0) {
+        const lw = 300 * lineP;
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.strokeStyle = '#cc2222';
+        ctx.lineWidth = 2;
+        ctx.shadowColor = 'rgba(255,40,40,0.6)';
+        ctx.shadowBlur = 15;
+        ctx.beginPath();
+        ctx.moveTo(W/2 - lw/2, H/2 + 36);
+        ctx.lineTo(W/2 + lw/2, H/2 + 36);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+
+  // --- SCENE 4 (10-12.5s): 謎生物スクロール ---
+  {
+    const a = sceneAlpha(t, 10, 2.8);
+    if (a > 0) {
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.fillStyle = '#050510';
+      ctx.fillRect(0, 0, W, H);
+      const scrollP = (t - 10) / 2.8;
+      const imgX = W * 0.8 - scrollP * W * 1.6;
+      ctx.filter = 'brightness(0.6) contrast(1.5)';
+      const iw = images.window.width * 0.9, ih = images.window.height * 0.9;
+      ctx.drawImage(images.window, imgX - iw/2, (H-ih)/2, iw, ih);
+      ctx.filter = 'none';
+      // ラベル
+      if (t > 11) {
+        const la = clamp((t-11)/0.5);
+        drawText('窓 の 外 に 何 か い る', W*0.7, H*0.85, 16, 'rgba(255,255,255,0.12)', a * la);
+      }
+      // 走査バー
+      const barY = ((t - 10) % 2) / 2 * H;
+      ctx.fillStyle = 'rgba(255,50,50,0.15)';
+      ctx.shadowColor = 'rgba(255,50,50,0.2)';
+      ctx.shadowBlur = 20;
+      ctx.fillRect(0, barY, W, 3);
+      ctx.shadowBlur = 0;
+      ctx.restore();
+    }
+  }
+
+  // --- フラッシュワード (12.5-14.5s) ---
+  flashWords.forEach(fw => {
+    const p = (t - fw.t) / 0.32;
+    if (p >= 0 && p <= 1) {
+      const a = p < 0.15 ? p/0.15 : p < 0.55 ? 1 : 1-(p-0.55)/0.45;
+      const s = 1 + (1-p)*2; // 3→1に縮小
+      ctx.save();
+      ctx.translate(fw.x * W, fw.y * H);
+      ctx.rotate(fw.rot * Math.PI / 180);
+      ctx.scale(s, s);
+      ctx.globalAlpha = clamp(a);
+      ctx.font = `900 ${fw.size}px sans-serif`;
+      ctx.fillStyle = fw.color.replace('A', String(clamp(a)));
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = fw.color.replace('A','0.5');
+      ctx.shadowBlur = 60;
+      ctx.fillText(fw.text, 0, 0);
+      ctx.restore();
+    }
+  });
+
+  // --- SCENE 5 (14.5-17s): 絵画浮遊 ---
+  {
+    const a = sceneAlpha(t, 14.5, 2.8);
+    if (a > 0) {
+      const p = (t - 14.5) / 2.8;
+      const rot = (-8 + p * 13) * Math.PI / 180;
+      const scale = 0.7 + Math.sin(p * Math.PI) * 0.35;
+      ctx.save();
+      ctx.globalAlpha = a * (p < 0.25 ? p/0.25 : p > 0.75 ? (1-p)/0.25 : 1);
+      ctx.translate(W/2, H/2);
+      ctx.rotate(rot);
+      const iw = images.painting.width * scale * 0.5;
+      const ih = images.painting.height * scale * 0.5;
+      // 色収差ゴースト
+      ctx.globalAlpha = a * 0.3;
+      ctx.filter = 'hue-rotate(120deg) brightness(0.5)';
+      ctx.drawImage(images.painting, -iw/2 + 12, -ih/2 - 6, iw, ih);
+      ctx.filter = 'brightness(0.8) contrast(1.3)';
+      ctx.globalAlpha = a;
+      ctx.drawImage(images.painting, -iw/2, -ih/2, iw, ih);
+      ctx.filter = 'none';
+      ctx.restore();
+      // ささやき
+      if (t > 15.5) {
+        const wa = clamp((t-15.5)/1) * a;
+        drawText('ね こ は ね こ で も', W/2, H*0.88, 20, 'rgba(255,255,255,0.1)', wa);
+      }
+    }
+  }
+
+  // --- SCENE 6 (17-19.5s): 主人公3分裂 ---
+  {
+    const a = sceneAlpha(t, 17, 2.8);
+    if (a > 0) {
+      ctx.save();
+      ctx.globalAlpha = a;
+      // 背景巨大顔
+      ctx.globalAlpha = a * 0.08;
+      ctx.filter = 'contrast(2) saturate(0)';
+      drawImageCentered(images.protagonist, 5, a * 0.08);
+      ctx.filter = 'none';
+
+      // 3体
+      const mp = clamp((t - 17.3) / 0.8);
+      // 左
+      ctx.globalAlpha = a * mp;
+      ctx.save();
+      ctx.filter = 'hue-rotate(40deg) saturate(2) brightness(0.8)';
+      ctx.translate(W/2 - 150*mp, H/2);
+      ctx.rotate(-18 * mp * Math.PI / 180);
+      ctx.drawImage(images.protagonist, -125, -125, 250, 250);
+      ctx.restore();
+      // 右
+      ctx.save();
+      ctx.globalAlpha = a * clamp((t-17.7)/0.8);
+      ctx.filter = 'hue-rotate(-40deg) saturate(2) brightness(0.8)';
+      ctx.translate(W/2 + 150*mp, H/2);
+      ctx.rotate(18 * mp * Math.PI / 180);
+      ctx.drawImage(images.protagonist, -125, -125, 250, 250);
+      ctx.restore();
+      // 中央（回転）
+      ctx.save();
+      ctx.globalAlpha = a * clamp((t-17.5)/0.8);
+      ctx.filter = 'contrast(2) saturate(0) brightness(1.2)';
+      ctx.translate(W/2, H/2);
+      ctx.rotate(((t-17.5) * 1.5) % (Math.PI*2));
+      ctx.drawImage(images.protagonist, -160, -160, 320, 320);
+      ctx.restore();
+      ctx.filter = 'none';
+      ctx.restore();
+    }
+  }
+
+  // --- SCENE 7 (19.5-21.5s): 「あなたが問題だ。」---
+  {
+    const a = sceneAlpha(t, 19.5, 2.4);
+    if (a > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${a})`;
+      ctx.fillRect(0, 0, W, H);
+      const sp = clamp((t-19.8)/0.4);
+      const s = 1 + (1-sp)*3.5;
+      const blur = (1-sp)*20;
+      ctx.save();
+      ctx.globalAlpha = a * sp;
+      ctx.font = `900 ${64*s}px sans-serif`;
+      ctx.fillStyle = '#cc2222';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(255,40,40,0.6)';
+      ctx.shadowBlur = 40;
+      ctx.fillText('あなたが問題だ。', W/2, H/2 - 20);
+      ctx.shadowBlur = 0;
+      ctx.restore();
+      // 英語サブ
+      if (t > 20.3) {
+        const ea = clamp((t-20.3)/0.5) * a;
+        drawText('YOU ARE THE PROBLEM', W/2, H/2 + 50, 28, 'rgba(255,255,255,0.22)', ea);
+      }
+    }
+  }
+
+  // --- SCENE 8 (21.5-23.5s): さくらんぼ横断 ---
+  {
+    const a = sceneAlpha(t, 21.5, 2.5);
+    if (a > 0) {
+      ctx.save();
+      ctx.globalAlpha = a;
+      const p = (t - 21.5) / 2.5;
+      const x = W * 1.1 - p * W * 1.8;
+      const bounceY = -Math.abs(Math.sin(p * Math.PI * 2)) * 25;
+      ctx.filter = 'brightness(0.85) contrast(1.3)';
+      const iw = 350, ih = images.sakuranbo.height / images.sakuranbo.width * 350;
+      ctx.save();
+      ctx.translate(x, H/2 + bounceY);
+      ctx.scale(-1, 1); // 反転
+      ctx.drawImage(images.sakuranbo, -iw/2, -ih/2, iw, ih);
+      ctx.restore();
+      // 影
+      ctx.globalAlpha = a * 0.3;
+      ctx.filter = 'blur(5px)';
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.ellipse(x, H*0.72, 120, 10, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.filter = 'none';
+      ctx.restore();
+    }
+  }
+
+  // --- SCENE 9 (23.5-25.5s): 悲鳴 ---
+  {
+    const a = sceneAlpha(t, 23.5, 2);
+    if (a > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${a})`;
+      ctx.fillRect(0, 0, W, H);
+      const tp = clamp((t-23.8)/0.2);
+      // 震動
+      let sx=0, sy=0;
+      if (t > 23.9 && t < 25) {
+        sx = Math.sin(t*80)*8;
+        sy = Math.cos(t*60)*6;
+      }
+      ctx.save();
+      ctx.translate(sx, sy);
+      drawText('ぎょごおおお', W/2, H/2, 80, '#5577bb', a * tp);
+      ctx.restore();
+    }
+  }
+
+  // --- SCENE 10 (25-25.8s): 暗転ノイズ ---
+  {
+    const a = sceneAlpha(t, 25, 0.8, 0.2, 0.3);
+    if (a > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${a})`;
+      ctx.fillRect(0, 0, W, H);
+      // ノイズ
+      ctx.globalAlpha = a * 0.15;
+      for (let i = 0; i < 200; i++) {
+        const rx = Math.random()*W, ry = Math.random()*H;
+        const rv = Math.random()*255;
+        ctx.fillStyle = `rgb(${rv},${rv},${rv})`;
+        ctx.fillRect(rx, ry, 3, 2);
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // --- SCENE FINAL (25.8s-): タイトル ---
+  {
+    const a = clamp((t - 25.8) / 0.6);
+    if (a > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${a})`;
+      ctx.fillRect(0, 0, W, H);
+
+      // タイトル
+      const tp = clamp((t - 26.5) / 0.5);
+      if (tp > 0) {
+        const s = 1 + (1-easeOut(tp))*3.5;
+        ctx.save();
+        ctx.globalAlpha = a * tp;
+        ctx.font = `900 ${Math.round(68*s)}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(255,40,40,0.5)';
+        ctx.shadowBlur = 50;
+        // 2色描画
+        const titleY = H/2 - 40;
+        ctx.fillStyle = '#cc2222';
+        ctx.fillText('かわいい', W/2 - 160*s, titleY);
+        const redW = ctx.measureText('かわいい').width;
+        ctx.fillStyle = '#fff';
+        ctx.fillText('部屋からの脱出', W/2 + 80*s, titleY);
+        ctx.shadowBlur = 0;
+        ctx.restore();
+      }
+      // サブタイトル
+      const sp = clamp((t - 27.2) / 0.5);
+      if (sp > 0) {
+        drawText('ESCAPE FROM A CUTE ROOM', W/2, H/2 + 20, 26, 'rgba(255,255,255,0.25)', a*sp);
+      }
+      // タグライン
+      const tgp = clamp((t - 27.8) / 0.5);
+      if (tgp > 0) {
+        drawText('無料で遊べる脱出ゲーム', W/2, H/2 + 60, 22, 'rgba(255,255,255,0.4)', a*tgp);
+      }
+      // ボタン風
+      const bp = clamp((t - 28.3) / 0.5);
+      if (bp > 0) {
+        ctx.save();
+        ctx.globalAlpha = a * bp;
+        const bx = W/2, by = H/2 + 115;
+        const bw = 200, bh = 48;
+        ctx.strokeStyle = `rgba(255,255,255,${0.5 + Math.sin(t*3)*0.1})`;
+        ctx.lineWidth = 2;
+        ctx.shadowColor = `rgba(255,80,80,${0.2+Math.sin(t*2)*0.1})`;
+        ctx.shadowBlur = 20;
+        ctx.strokeRect(bx-bw/2, by-bh/2, bw, bh);
+        ctx.shadowBlur = 0;
+        ctx.font = '900 22px sans-serif';
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('プレイする', bx, by);
+        // シャイン
+        const shineX = ((t - 29) % 3) / 3;
+        if (shineX > 0 && shineX < 0.4) {
+          const sx = bx - bw/2 + shineX * bw * 2.5;
+          const grad = ctx.createLinearGradient(sx-40, 0, sx+40, 0);
+          grad.addColorStop(0, 'rgba(255,255,255,0)');
+          grad.addColorStop(0.5, 'rgba(255,255,255,0.12)');
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(bx-bw/2, by-bh/2, bw, bh);
+        }
+        ctx.restore();
+      }
+    }
+  }
+
+  // --- 画面フラッシュ ---
+  flashes.forEach(f => {
+    const p = (t - f.t) / f.dur;
+    if (p >= 0 && p <= 1) {
+      const a = p < 0.2 ? (p/0.2)*0.9 : 0.9*(1-(p-0.2)/0.8);
+      ctx.fillStyle = f.color + clamp(a) + ')';
+      ctx.fillRect(0, 0, W, H);
+    }
+  });
+
+  // --- スキャンライン & ビネット ---
+  drawScanlines();
+  drawVignette();
+}
+
+// ===== エクスポート =====
+async function startExport() {
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = '画像読み込み中...';
+
+  await loadImages();
+
+  btn.textContent = '音声準備中...';
+  initAudio();
+  scheduleBGM();
+
+  // ストリーム作成
+  const canvasStream = canvas.captureStream(FPS);
+  const combined = new MediaStream([
+    ...canvasStream.getVideoTracks(),
+    ...audioDest.stream.getAudioTracks(),
+  ]);
+
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+    ? 'video/webm;codecs=vp9,opus'
+    : 'video/webm';
+  const recorder = new MediaRecorder(combined, { mimeType, videoBitsPerSecond: 5_000_000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+
+  // フレーム描画ループ（固定インターバルで確実に全フレーム描画）
+  recorder.start(500);
+
+  btn.textContent = '録画中... 0/' + DURATION + '秒';
+
+  await new Promise(resolve => {
+    const startT = performance.now();
+    const interval = setInterval(() => {
+      const elapsed = (performance.now() - startT) / 1000;
+      if (elapsed >= DURATION) {
+        clearInterval(interval);
+        recorder.stop();
+        return;
+      }
+      statusEl.textContent = `${Math.floor(elapsed)} / ${DURATION} 秒`;
+      drawFrame(elapsed);
+    }, 1000 / FPS);
+    recorder.onstop = resolve;
+  });
+
+  // ダウンロード
+  const blob = new Blob(chunks, { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kawaii-escape-pv.webm';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+
+  btn.textContent = 'ダウンロード完了！';
+  statusEl.textContent = 'kawaii-escape-pv.webm を保存しました';
+  setTimeout(() => { btn.textContent = '動画を生成する'; btn.disabled = false; }, 3000);
+}
+
+// プレビュー用: 画像読み込んで最初のフレームだけ描画
+loadImages().then(() => {
+  drawFrame(0);
+  statusEl.textContent = '準備完了 - ボタンを押してエクスポート';
+});
+</script>
+</body>
+</html>
