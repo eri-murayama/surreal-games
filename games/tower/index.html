@@ -62,13 +62,20 @@
       <canvas id="game-canvas"></canvas>
       <div id="game-log"></div>
       <div id="mobile-controls">
-        <button class="ctrl-btn" data-dir="up">▲</button>
-        <div class="ctrl-row">
-          <button class="ctrl-btn" data-dir="left">◀</button>
-          <button class="ctrl-btn" data-dir="wait">●</button>
-          <button class="ctrl-btn" data-dir="right">▶</button>
+        <div id="mobile-dpad">
+          <button class="ctrl-btn" data-dir="up">▲</button>
+          <div class="ctrl-row">
+            <button class="ctrl-btn" data-dir="left">◀</button>
+            <button class="ctrl-btn" data-dir="wait">●</button>
+            <button class="ctrl-btn" data-dir="right">▶</button>
+          </div>
+          <button class="ctrl-btn" data-dir="down">▼</button>
         </div>
-        <button class="ctrl-btn" data-dir="down">▼</button>
+        <div id="mobile-actions">
+          <button class="action-btn" id="mob-equip-btn" title="装備">⚔️</button>
+          <button class="action-btn" id="mob-bag-btn" title="バッグ">🎒</button>
+          <button class="action-btn" id="mob-gacha-btn" title="ガチャ">🎰</button>
+        </div>
       </div>
     </div>
 

@@ -268,10 +268,19 @@ body {
 /* ===== モバイルコントロール ===== */
 #mobile-controls {
   display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+#mobile-dpad {
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  margin-top: 8px;
 }
 
 .ctrl-row {
@@ -302,15 +311,49 @@ body {
   transform: scale(0.9);
 }
 
+#mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.action-btn {
+  width: 46px;
+  height: 46px;
+  font-size: 20px;
+  background: rgba(255, 171, 64, 0.08);
+  border: 1px solid rgba(255, 171, 64, 0.25);
+  border-radius: 10px;
+  color: #ffab40;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: all 0.1s;
+}
+
+.action-btn:active {
+  background: rgba(255, 171, 64, 0.3);
+  transform: scale(0.9);
+}
+
+/* PCではHUDボタン表示、モバイルコントロール非表示 */
+/* モバイルではモバイルコントロール表示、HUDボタンはコンパクト */
 @media (pointer: coarse) {
   #mobile-controls { display: flex; }
+  #hud-buttons { display: none; }
 }
 
 @media (max-width: 420px) {
-  #mobile-controls { display: flex; }
+  #mobile-controls { display: flex; gap: 10px; }
+  #hud-buttons { display: none; }
   .game-title { font-size: 22px; }
   #game-hud { font-size: 11px; gap: 4px; }
   .ctrl-btn { width: 48px; height: 48px; font-size: 20px; }
+  .action-btn { width: 42px; height: 42px; font-size: 18px; }
 }
 
 /* ===== オーバーレイ共通スタイル ===== */

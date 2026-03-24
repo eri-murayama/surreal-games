@@ -1841,27 +1841,48 @@
 
     // プレイヤー描画
     const playerX = p.x * TILE, playerY = p.y * TILE;
+    const pcx = playerX + TILE / 2, pcy = playerY + TILE / 2;
+
+    // 常時光彩（脈動）
+    const pulseGlow = 0.18 + Math.sin(tileAnimPhase * 0.07) * 0.1;
+    const pulseRadius = TILE * 0.8 + Math.sin(tileAnimPhase * 0.05) * 3;
+    const grad = ctx.createRadialGradient(pcx, pcy, 0, pcx, pcy, pulseRadius);
+    grad.addColorStop(0, `rgba(179, 136, 255, ${pulseGlow * 1.2})`);
+    grad.addColorStop(0.5, `rgba(179, 136, 255, ${pulseGlow * 0.5})`);
+    grad.addColorStop(1, 'rgba(179, 136, 255, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(playerX - TILE * 0.3, playerY - TILE * 0.3, TILE * 1.6, TILE * 1.6);
 
     // バリアエフェクト
     if (p.barrierTurns > 0) {
-      const glow = 0.2 + Math.sin(tileAnimPhase * 0.1) * 0.1;
-      ctx.fillStyle = `rgba(66, 165, 245, ${glow})`;
-      ctx.beginPath(); ctx.arc(playerX + TILE / 2, playerY + TILE / 2, TILE * 0.7, 0, Math.PI * 2); ctx.fill();
+      const glow = 0.25 + Math.sin(tileAnimPhase * 0.1) * 0.12;
+      ctx.strokeStyle = `rgba(66, 165, 245, ${glow + 0.3})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(pcx, pcy, TILE * 0.65, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = `rgba(66, 165, 245, ${glow * 0.5})`;
+      ctx.beginPath(); ctx.arc(pcx, pcy, TILE * 0.65, 0, Math.PI * 2); ctx.fill();
     }
 
     // 毒エフェクト
     if (game.statusEffects.poison > 0) {
       const glow = 0.15 + Math.sin(tileAnimPhase * 0.1) * 0.1;
       ctx.fillStyle = `rgba(100, 200, 100, ${glow})`;
-      ctx.beginPath(); ctx.arc(playerX + TILE / 2, playerY + TILE / 2, TILE * 0.6, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(pcx, pcy, TILE * 0.55, 0, Math.PI * 2); ctx.fill();
     }
 
-    ctx.font = `${TILE - 2}px serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('🧙', playerX + TILE / 2, playerY + TILE / 2);
+    // 足元インジケーター（白いリング）
+    ctx.strokeStyle = `rgba(255, 255, 255, ${0.25 + Math.sin(tileAnimPhase * 0.06) * 0.1})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(pcx, pcy + 4, TILE * 0.35, 0, Math.PI * 2); ctx.stroke();
 
-    // プレイヤーHPバー
-    const phpW = TILE - 4, phpH = 3, phpX = playerX + 2, phpY = playerY;
-    ctx.fillStyle = '#222'; ctx.fillRect(phpX, phpY, phpW, phpH);
+    // プレイヤー本体（少し大きめに）
+    ctx.font = `${TILE + 2}px serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🧙', pcx, pcy - 1);
+
+    // プレイヤーHPバー（他の敵より太く目立つ）
+    const phpW = TILE - 2, phpH = 4, phpX = playerX + 1, phpY = playerY - 2;
+    ctx.fillStyle = '#111'; ctx.fillRect(phpX - 1, phpY - 1, phpW + 2, phpH + 2);
+    ctx.fillStyle = '#333'; ctx.fillRect(phpX, phpY, phpW, phpH);
     const hpRatio = p.hp / p.maxHp;
     ctx.fillStyle = hpRatio > 0.5 ? '#66bb6a' : hpRatio > 0.25 ? '#ffa726' : '#ff6b6b';
     ctx.fillRect(phpX, phpY, phpW * hpRatio, phpH);
@@ -2063,6 +2084,11 @@
   $('hud-gacha-btn').addEventListener('click', tryOpenGacha);
   $('hud-equip-btn').addEventListener('click', () => { if (game && game.state === 'play') openEquipment(); });
   $('hud-bag-btn').addEventListener('click', () => { if (game && game.state === 'play') openBag(); });
+
+  // モバイルアクションボタン
+  if ($('mob-equip-btn')) $('mob-equip-btn').addEventListener('click', () => { if (game && game.state === 'play') openEquipment(); });
+  if ($('mob-bag-btn')) $('mob-bag-btn').addEventListener('click', () => { if (game && game.state === 'play') openBag(); });
+  if ($('mob-gacha-btn')) $('mob-gacha-btn').addEventListener('click', tryOpenGacha);
 
   // ===== ハイスコア表示 =====
   function showHighScore() {
