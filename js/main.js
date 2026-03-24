@@ -41,6 +41,14 @@ const observer = new IntersectionObserver(
   { threshold: 0.1 }
 );
 
+// スタガーインデックスを設定（カード・ギャラリー）
+document.querySelectorAll('.game-card.fade-in').forEach((el, i) => {
+  el.style.setProperty('--stagger', i);
+});
+document.querySelectorAll('.gallery-item.fade-in').forEach((el, i) => {
+  el.style.setProperty('--stagger', i);
+});
+
 document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
 
 // about背景キャラのふわっと出現 + ランダム巨大化
@@ -128,6 +136,138 @@ if (logo) {
     }
   });
 }
+
+// ========================================
+// タイプライターエフェクト（タグライン）
+// ========================================
+(function initTypewriter() {
+  var tagline = document.querySelector('.tagline');
+  if (!tagline) return;
+
+  var fullText = tagline.textContent;
+  tagline.textContent = '';
+  tagline.classList.add('typing');
+
+  // ローディング完了後に開始
+  setTimeout(function() {
+    var i = 0;
+    var interval = setInterval(function() {
+      i++;
+      tagline.textContent = fullText.slice(0, i);
+      if (i >= fullText.length) {
+        clearInterval(interval);
+        // 完了後しばらくしてカーソルを消す
+        setTimeout(function() {
+          tagline.style.borderRight = 'none';
+          tagline.classList.remove('typing');
+        }, 2000);
+      }
+    }, 120);
+  }, 1800);
+})();
+
+// ========================================
+// 背景パーティクル（星）エフェクト
+// ========================================
+(function initParticles() {
+  var canvas = document.createElement('canvas');
+  canvas.id = 'particle-canvas';
+  document.body.prepend(canvas);
+  var ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  var particles = [];
+  var count = Math.min(60, Math.floor(window.innerWidth / 20));
+  var colors = ['#ff6ec7', '#00fff7', '#ffff00', '#39ff14'];
+
+  for (var i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 0.5,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: Math.random() * 0.5 + 0.1,
+      pulse: Math.random() * Math.PI * 2
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.dx;
+      p.y += p.dy;
+      p.pulse += 0.02;
+
+      // 画面端で反対側に
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+
+      var a = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = a;
+      ctx.fill();
+
+      // グロー
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = a * 0.15;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ========================================
+// マウス追従3Dティルト（ゲームカード）
+// ========================================
+(function initCardTilt() {
+  var cards = document.querySelectorAll('.game-card');
+  cards.forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      var rotateY = x * 12;
+      var rotateX = -y * 8;
+      card.style.transform = 'perspective(800px) rotateY(' + rotateY + 'deg) rotateX(' + rotateX + 'deg) translateY(-8px)';
+      card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3), ' +
+        (x * 20) + 'px ' + (y * 20) + 'px 30px rgba(255,110,199,0.15)';
+    });
+
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = '';
+      card.style.boxShadow = '';
+    });
+  });
+})();
+
+// ========================================
+// セクション間にグロー区切り線を自動挿入
+// ========================================
+(function insertDividers() {
+  var sections = document.querySelectorAll('main > section');
+  for (var i = 0; i < sections.length - 1; i++) {
+    var divider = document.createElement('div');
+    divider.className = 'section-divider';
+    sections[i].after(divider);
+  }
+})();
 
 // ========================================
 // お知らせセクション: data/news.json から動的読み込み

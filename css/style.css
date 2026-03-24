@@ -166,11 +166,29 @@ body {
   padding: 0.3rem 0.8rem;
   border-radius: 999px;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.fixed-nav__link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--accent-pink);
+  border-radius: 1px;
+  transition: width 0.3s ease, left 0.3s ease;
 }
 
 .fixed-nav__link:hover {
   color: var(--accent-pink);
   background: rgba(255, 110, 199, 0.1);
+}
+
+.fixed-nav__link:hover::after {
+  width: 60%;
+  left: 20%;
 }
 
 /* トップに戻るボタン */
@@ -352,6 +370,9 @@ body {
   font-size: clamp(1rem, 2.5vw, 1.4rem);
   color: var(--text-muted);
   line-height: 2;
+  border-right: 2px solid transparent;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .hero-nav {
@@ -393,10 +414,18 @@ section {
   font-size: clamp(1.5rem, 5vw, 2.5rem);
   text-align: center;
   margin-bottom: 0.5rem;
-  background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan));
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan), var(--accent-yellow), var(--accent-pink));
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: gradientShift 6s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .section-subtitle {
@@ -1117,6 +1146,63 @@ footer {
   transform: translateY(0);
 }
 
+/* スタガーアニメーション（カード時差表示） */
+.game-card.fade-in { transition-delay: calc(var(--stagger, 0) * 0.12s); }
+.gallery-item.fade-in { transition-delay: calc(var(--stagger, 0) * 0.1s); }
+
+/* セクション間のグロー区切り線 */
+.section-divider {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-pink), var(--accent-cyan), transparent);
+  opacity: 0.4;
+  position: relative;
+}
+
+.section-divider::before {
+  content: '';
+  position: absolute;
+  inset: -4px 20%;
+  height: 9px;
+  background: linear-gradient(90deg, transparent, rgba(255, 110, 199, 0.3), rgba(0, 255, 247, 0.3), transparent);
+  filter: blur(4px);
+  border-radius: 50%;
+}
+
+/* パーティクルキャンバス */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* メインコンテンツはパーティクルの上に */
+#hero, main, footer, .fixed-nav, .back-to-top {
+  position: relative;
+  z-index: 1;
+}
+
+/* タイプライターカーソル点滅 */
+@keyframes blinkCaret {
+  50% { border-color: transparent; }
+}
+
+.tagline.typing {
+  animation: blinkCaret 0.7s step-end infinite;
+}
+
+/* マウス追従3Dティルト */
+.game-card {
+  transform-style: preserve-3d;
+}
+
+.game-card__body {
+  transform: translateZ(20px);
+}
+
 /* ========================================
    イースターエッグ: 画面反転
    ======================================== */
@@ -1137,6 +1223,16 @@ footer {
    ======================================== */
 
 @media (max-width: 768px) {
+  .tagline {
+    width: auto !important;
+    white-space: normal;
+    border-right: none !important;
+  }
+
+  .tagline.typing {
+    animation: none;
+  }
+
   .fixed-nav {
     gap: 0.25rem;
     padding: 0.4rem 0.5rem;
@@ -1150,6 +1246,8 @@ footer {
     padding: 0.25rem 0.5rem;
     white-space: nowrap;
   }
+
+  .fixed-nav__link::after { display: none; }
 
   .game-grid {
     grid-template-columns: 1fr;
