@@ -14,6 +14,8 @@ body {
   padding: 8px;
   overflow-x: hidden;
   cursor: none;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
 }
 
 #game-wrapper {
@@ -94,6 +96,7 @@ body {
   border: 3px solid #4a2008;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.1);
   position: relative;
+  touch-action: none;
 }
 
 /* 穴 */
@@ -212,7 +215,7 @@ body {
 
 /* オーバーレイ */
 .overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -220,7 +223,7 @@ body {
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 200;
   overflow-y: auto;
@@ -312,6 +315,16 @@ button.btn-disabled {
 
 .hidden {
   display: none !important;
+}
+
+/* ハイスコア表示 */
+#sg-high-score-display {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 4px;
 }
 
 /* カスタムカーソル（釘バット） */
@@ -597,11 +610,15 @@ body::after {
   display: flex;
   gap: 4px;
   z-index: 300;
+  pointer-events: auto;
 }
 
 .lang-btn {
   margin-top: 0;
   padding: 4px 10px;
+  width: auto;
+  min-width: 0;
+  max-width: 48px;
   font-size: 11px;
   font-family: 'Zen Maru Gothic', sans-serif;
   font-weight: 700;
@@ -615,6 +632,8 @@ body::after {
   box-shadow: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .lang-btn:hover {
