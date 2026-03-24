@@ -467,6 +467,9 @@
       }
       if (state.typing) return;
 
+      // 篤タップで変な音
+      sg.sound.play('smash');
+
       state.dialogueOpen = true;
       state.currentDialogueSource = 'atsushi';
       const lines = t().atsushiLines;
