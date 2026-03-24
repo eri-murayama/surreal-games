@@ -130,84 +130,20 @@ body {
   text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
 }
 
-/* ===== Nishida Face (CSS Art) ===== */
-.nishida-preview {
+/* ===== Character Preview (Title) ===== */
+.character-preview {
   display: flex;
   justify-content: center;
   margin-bottom: 24px;
 }
 
-.nishida-face {
-  position: relative;
-  width: 100px;
+.character-img {
+  width: 120px;
   height: 120px;
-}
-
-.nishida-hair {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90px;
-  height: 45px;
-  background: #1a1a1a;
-  border-radius: 45px 45px 0 0;
-  z-index: 1;
-}
-
-.nishida-head {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 85px;
-  background: #f5d6b8;
-  border-radius: 40px 40px 35px 35px;
-  z-index: 0;
-}
-
-.nishida-head .eye {
-  position: absolute;
-  top: 30px;
-  width: 10px;
-  height: 12px;
-  background: #1a1a1a;
+  object-fit: contain;
   border-radius: 50%;
-}
-
-.nishida-head .eye.left { left: 18px; }
-.nishida-head .eye.right { right: 18px; }
-
-.nose-hair {
-  position: absolute;
-  top: 48px;
-  width: 2px;
-  height: 10px;
-  background: #333;
-  z-index: 2;
-}
-
-.nose-hair.left {
-  left: 35px;
-  transform: rotate(-15deg);
-}
-
-.nose-hair.right {
-  right: 35px;
-  transform: rotate(15deg);
-}
-
-.nishida-head .mouth {
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  height: 12px;
-  border: 3px solid #1a1a1a;
-  border-top: none;
-  border-radius: 0 0 12px 12px;
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 
 /* ===== Buttons ===== */
@@ -436,82 +372,46 @@ body {
   min-height: 2.2rem;
 }
 
-/* ===== さーやコメント欄 ===== */
-.saaya-comment-box {
+/* ===== 主人公コメント欄 ===== */
+.character-comment-box {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background: linear-gradient(135deg, rgba(255, 182, 193, 0.15), rgba(255, 105, 180, 0.1));
-  border: 1px solid rgba(255, 105, 180, 0.3);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(212, 165, 116, 0.1));
+  border: 1px solid rgba(251, 191, 36, 0.3);
   border-radius: 16px;
   padding: 16px;
   margin-bottom: 20px;
   text-align: left;
 }
 
-.saaya-face {
+.character-face {
   flex-shrink: 0;
   width: 60px;
-  height: 70px;
-  position: relative;
+  height: 60px;
 }
 
-.saaya-head {
-  position: relative;
-  width: 55px;
-  height: 62px;
-  background: #f8e0cc;
-  border-radius: 28px 28px 24px 24px;
-}
-
-.saaya-hair {
-  position: absolute;
-  top: -5px;
-  left: 50%;
-  transform: translateX(-50%);
+.character-result-img {
   width: 60px;
-  height: 35px;
-  background: #3a2010;
-  border-radius: 30px 30px 0 0;
-  z-index: 1;
-}
-
-.saaya-head .eye {
-  position: absolute;
-  top: 24px;
-  width: 7px;
-  height: 8px;
-  background: #1a1a1a;
+  height: 60px;
+  object-fit: contain;
   border-radius: 50%;
+  border: 2px solid var(--gold);
 }
 
-.saaya-head .eye.left { left: 13px; }
-.saaya-head .eye.right { right: 13px; }
-
-.saaya-mouth {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14px;
-  height: 3px;
-  background: #c06060;
-  border-radius: 2px;
-}
-
-.saaya-speech {
+.character-speech {
   flex: 1;
   min-width: 0;
 }
 
-.saaya-name {
+.character-name {
   font-size: 0.75rem;
-  color: var(--pink);
+  color: var(--gold);
   font-weight: 700;
   margin-bottom: 4px;
 }
 
-.saaya-text {
+.character-text {
   font-size: 0.9rem;
   color: var(--cream);
   line-height: 1.6;
@@ -533,37 +433,20 @@ body {
     font-size: 0.95rem;
   }
 
-  .nishida-face {
-    width: 80px;
-    height: 100px;
+  .character-img {
+    width: 96px;
+    height: 96px;
   }
-
-  .nishida-hair {
-    width: 72px;
-    height: 36px;
-  }
-
-  .nishida-head {
-    width: 64px;
-    height: 68px;
-  }
-
-  .nishida-head .eye { top: 24px; width: 8px; height: 10px; }
-  .nishida-head .eye.left { left: 14px; }
-  .nishida-head .eye.right { right: 14px; }
-  .nose-hair { top: 38px; }
-  .nose-hair.left { left: 28px; }
-  .nose-hair.right { right: 28px; }
 
   .result-container {
     padding: 20px 16px;
   }
 
-  .saaya-comment-box {
+  .character-comment-box {
     padding: 12px;
   }
 
-  .saaya-text {
+  .character-text {
     font-size: 0.8rem;
   }
 }

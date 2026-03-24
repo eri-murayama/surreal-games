@@ -1,6 +1,6 @@
 /* ============================================================
    うんコーンキャッチャー  |  game.js
-   西田がコーンでうんこをキャッチして積み上げるゲーム
+   主人公がコーンでうんこをキャッチして積み上げるゲーム
    ============================================================ */
 
 (() => {
@@ -32,48 +32,48 @@
   const SPAWN_INTERVAL_MIN = 600;
   const SPAWN_INTERVAL_DECREASE = 40;
 
-  // ---- Nishida's reactions ----
-  const NISHIDA_CATCH = [
+  // ---- 主人公のリアクション ----
+  const HERO_CATCH = [
     'よっしゃ！', 'ナイスキャッチ！', 'うまい！',
     'のってきた！', 'まだまだ！', 'いけるいける！',
-    'レモンジャムの味がする！', 'ララチューン♪',
-    '芸人の勘や！', 'これがラランドや！'
+    'うん…ソフトクリームの匂いがする！', 'もっとちょうだい！',
+    '最高の気分！', 'うんち…じゃなくてソフトクリーム！'
   ];
 
-  const NISHIDA_MILESTONE = [
+  const HERO_MILESTONE = [
     '5段！ソフトクリームっぽくなってきた！',
-    '10段！もはや芸術やな！',
-    '15段！東京タワー超えたわ！',
+    '10段！もはや芸術だね！',
+    '15段！東京タワー超えた！',
     '20段！宇宙まで届け！',
-    '25段！神の領域や！'
+    '25段！神の領域だ！'
   ];
 
-  // ---- さーやのヒス構文 ----
-  const SAAYA_COMMENTS = {
+  // ---- 主人公のリザルトコメント ----
+  const HERO_COMMENTS = {
     terrible: [
-      'へぇ〜、{score}点なんだ。\nまぁ、私は別にいいけど。\nうんこも拾えないんだね。',
-      'ふーん、{stack}段しか積めなかったんだ。\n私だったらもっと積めるけど。\nまぁ別にどうでもいいけどね。',
-      '{score}点ってさ、\n普通にやってもそれくらいいくよね？\nいや、責めてるわけじゃないけど。',
+      'え…{score}点？\nうん…ソフトクリームだよね、あれ。\n絶対ソフトクリームだったのに…。',
+      '{stack}段しか積めなかった…。\nもっとうんち…ソフトクリームが\n欲しかったのに！',
+      '{score}点かぁ…。\nソフトクリーム、全然キャッチできなかった。\n…あ、今ソフトクリームって言ったよね？',
     ],
     bad: [
-      'あ、{stack}段積めたんだ。\nまぁまぁじゃない？知らんけど。\n私なら倍は積むけどね。',
-      '{score}点か〜。\n頑張ったんだろうね、うん。\nで、それで満足なの？別にいいけど。',
-      'うんこ{stack}段ね。\n西田にしては頑張ったんじゃない？\nレモンジャムでも飲んで落ち着きなよ。',
+      '{stack}段！まだまだだなぁ。\nもっとうん…ソフトクリームを\n積み上げたかった！',
+      '{score}点か。\nソフトクリームの匂い、\nもっと嗅ぎたかったなぁ…。',
+      'うんち…じゃなくてソフトクリーム{stack}段！\n次はもっといけるはず！',
     ],
     ok: [
-      '{stack}段も積めたんだ、すごいじゃん。\nいや別に褒めてないけど。\nもうちょっと頑張れたんじゃないの？',
-      '{score}点ね。\nまぁ悪くはないんじゃない？\n私の推しならもっと取るけどね、別にいいけど。',
-      'へぇ〜{stack}段。\nちょっと見直したかも。\nいや、見直してないけど。',
+      '{stack}段！いい感じ！\nこのソフトクリーム…じゃなくて\nうん…ソフトクリームタワー、最高！',
+      '{score}点！なかなかだね！\nもっとソフトクリーム積みたいなぁ。\nあの形、たまらないよね…。',
+      '{stack}段も積めた！\nうんち…ソフトクリームの山、\n見てるだけで幸せだよ！',
     ],
     good: [
-      '{stack}段！？\nちょっと何それ、引くんだけど。\nうんこの才能あるよ。褒めてないけど。',
-      '{score}点じゃん、やるね。\nいやまぁ、私がやったらもっといくけど。\n…ちょっとだけ認めてあげる。',
-      'は？{stack}段？\nそういうとこだよ西田は。\n変なことだけ上手いんだから。',
+      '{stack}段！すごくない！？\nこのソフトクリームタワー、\n世界一だよ絶対！…たぶん！',
+      '{score}点！やったぁ！\nうんち…ソフトクリームのキャッチ、\n僕って天才かも！',
+      '{stack}段のソフトクリームタワー！\nもう食べき…いや、見切れないよ！\n最高の眺めだなぁ！',
     ],
     amazing: [
-      '{stack}段って…\nもう人間じゃないでしょ。\nうんこに人生捧げてるの？\n…ちょっとかっこいいかも。言ってないけど。',
-      '{score}点…\nは？意味わかんないんだけど。\nこのゲーム壊れてない？\n…まぁ、すごいけど。絶対言わないけど。',
-      '西田さぁ…{stack}段って…\nもうララチューンの歌詞にするわ。\n「うんこ{stack}段の男」。\n…冗談だけど。半分本気だけど。',
+      '{stack}段！？\nこれもうソフトクリームの神だよね！？\n…あ、今うんちって言いそうに\nなったけど言ってないからね！',
+      '{score}点…！\nソフトクリームへの愛が止まらない！\nうんち…違う！ソフトクリーム！\nソフトクリームが大好きなだけ！',
+      '{stack}段の超巨大ソフトクリーム！\nこれはもう芸術だよ！\nうんちって言った人いる？\n僕は言ってないよ！絶対！',
     ]
   };
 
@@ -125,77 +125,38 @@
     }
   }
 
-  function drawNishida(x, y) {
-    // Head
-    const headW = 44;
-    const headH = 48;
-    const headX = x;
-    const headY = y - CONE_H - (stack.length * 14) - headH / 2 - 10;
+  // ---- Character image ----
+  const heroImg = new Image();
+  heroImg.src = 'character.png';
+  let heroImgLoaded = false;
+  heroImg.onload = () => { heroImgLoaded = true; };
 
-    // Body (simple)
-    ctx.fillStyle = '#3366cc';
-    ctx.fillRect(headX - 18, headY + headH / 2, 36, 30);
+  function drawHero(x, y) {
+    const imgSize = 56;
+    const headX = x;
+    const headY = y - CONE_H - (stack.length * 14) - imgSize / 2 - 10;
 
     // Arms holding cone
     ctx.strokeStyle = '#f5d6b8';
     ctx.lineWidth = 5;
     ctx.lineCap = 'round';
-    // Left arm
     ctx.beginPath();
-    ctx.moveTo(headX - 18, headY + headH / 2 + 10);
+    ctx.moveTo(headX - 18, headY + imgSize / 2);
     ctx.lineTo(x - CONE_W / 2 + 5, y - CONE_H + 5);
     ctx.stroke();
-    // Right arm
     ctx.beginPath();
-    ctx.moveTo(headX + 18, headY + headH / 2 + 10);
+    ctx.moveTo(headX + 18, headY + imgSize / 2);
     ctx.lineTo(x + CONE_W / 2 - 5, y - CONE_H + 5);
     ctx.stroke();
 
-    // Head shape
-    ctx.fillStyle = '#f5d6b8';
-    ctx.beginPath();
-    ctx.ellipse(headX, headY, headW / 2, headH / 2, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Hair
-    ctx.fillStyle = '#1a1a1a';
-    ctx.beginPath();
-    ctx.ellipse(headX, headY - 10, headW / 2 + 2, 20, 0, Math.PI, Math.PI * 2);
-    ctx.fill();
-
-    // Eyes
-    ctx.fillStyle = '#1a1a1a';
-    ctx.beginPath();
-    ctx.ellipse(headX - 10, headY - 2, 4, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(headX + 10, headY - 2, 4, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Nose hair (シュールゲームス tradition)
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(headX - 3, headY + 8);
-    ctx.quadraticCurveTo(headX - 8, headY + 16, headX - 2, headY + 18);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(headX + 3, headY + 8);
-    ctx.quadraticCurveTo(headX + 8, headY + 16, headX + 2, headY + 18);
-    ctx.stroke();
-
-    // Mouth (happy when catching)
-    ctx.fillStyle = '#1a1a1a';
-    if (combo > 0) {
-      // Big smile
+    // Draw character image
+    if (heroImgLoaded) {
+      ctx.save();
       ctx.beginPath();
-      ctx.arc(headX, headY + 12, 8, 0, Math.PI);
-      ctx.fill();
-    } else {
-      // Normal
-      ctx.beginPath();
-      ctx.arc(headX, headY + 14, 6, 0.1 * Math.PI, 0.9 * Math.PI);
-      ctx.stroke();
+      ctx.arc(headX, headY, imgSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(heroImg, headX - imgSize / 2, headY - imgSize / 2, imgSize, imgSize);
+      ctx.restore();
     }
   }
 
@@ -370,12 +331,12 @@
 
     // Reactions
     if (stackCount % 5 === 0) {
-      const idx = Math.min(Math.floor(stackCount / 5) - 1, NISHIDA_MILESTONE.length - 1);
-      showCombo(NISHIDA_MILESTONE[idx]);
+      const idx = Math.min(Math.floor(stackCount / 5) - 1, HERO_MILESTONE.length - 1);
+      showCombo(HERO_MILESTONE[idx]);
     } else if (combo >= 3 && combo % 3 === 0) {
       showCombo('💩×' + combo + ' コンボ！');
     } else if (Math.random() < 0.25) {
-      const msg = NISHIDA_CATCH[Math.floor(Math.random() * NISHIDA_CATCH.length)];
+      const msg = HERO_CATCH[Math.floor(Math.random() * HERO_CATCH.length)];
       showNishidaComment(msg);
     }
 
@@ -402,8 +363,8 @@
     // Draw stacked poops
     drawStackedPoops(playerX, playerY);
 
-    // Draw Nishida
-    drawNishida(playerX, playerY);
+    // Draw hero
+    drawHero(playerX, playerY);
   }
 
   // ---- Game lifecycle ----
@@ -450,7 +411,7 @@
     else rank = '😢 うんこ初心者 😢';
     $('result-rank').textContent = rank;
 
-    // さーやのヒス構文
+    // 主人公のコメント
     let tier;
     if (maxStack >= 25) tier = 'amazing';
     else if (maxStack >= 15) tier = 'good';
@@ -458,10 +419,10 @@
     else if (maxStack >= 5) tier = 'bad';
     else tier = 'terrible';
 
-    const comments = SAAYA_COMMENTS[tier];
+    const comments = HERO_COMMENTS[tier];
     let comment = comments[Math.floor(Math.random() * comments.length)];
     comment = comment.replace(/\{score\}/g, score).replace(/\{stack\}/g, maxStack);
-    $('saaya-text').textContent = comment;
+    $('character-text').textContent = comment;
 
     // Share button
     const existingShareBtn = $('share-btn');

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>うんコーンキャッチャー | シュールゲームス</title>
-  <meta name="description" content="西田がソフトクリームのコーンで落ちてくるうんこをキャッチ！何段積めるかな？※シュールゲームスの全キャラクターには鼻毛が生えています。">
+  <meta name="description" content="主人公がソフトクリームのコーンで落ちてくるうんこをキャッチ！何段積めるかな？">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
   <script>
@@ -44,27 +44,16 @@
     <div class="title-container">
       <div class="title-icon">💩🍦</div>
       <h1 class="game-title">うんコーン<br>キャッチャー</h1>
-      <p class="game-subtitle">～西田、それ乗せるとこちゃうで～</p>
-      <div class="nishida-preview" aria-hidden="true">
-        <div class="nishida-face">
-          <div class="nishida-hair"></div>
-          <div class="nishida-head">
-            <div class="eye left"></div>
-            <div class="eye right"></div>
-            <div class="nose-hair left"></div>
-            <div class="nose-hair right"></div>
-            <div class="mouth"></div>
-          </div>
-        </div>
+      <div class="character-preview" aria-hidden="true">
+        <img src="character.png" alt="主人公" class="character-img">
       </div>
       <div id="highscore-display" class="highscore-display"></div>
       <button id="start-btn" class="btn-primary">💩 ゲームスタート 💩</button>
       <div class="controls-help">
         <p class="help-title">操作方法</p>
-        <p>← → ：西田を移動</p>
-        <p>スマホ：画面をタッチで左右移動</p>
+        <p>PC：← → キーで主人公を左右に移動</p>
+        <p>スマホ：画面の左半分/右半分をタッチで移動</p>
       </div>
-      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
     </div>
   </div>
 
@@ -101,24 +90,18 @@
         </div>
       </div>
       <div class="result-rank" id="result-rank"></div>
-      <!-- さーやのヒス構文コーナー -->
-      <div class="saaya-comment-box">
-        <div class="saaya-face">
-          <div class="saaya-head">
-            <div class="saaya-hair"></div>
-            <div class="eye left"></div>
-            <div class="eye right"></div>
-            <div class="saaya-mouth"></div>
-          </div>
+      <!-- 主人公のコメントコーナー -->
+      <div class="character-comment-box">
+        <div class="character-face">
+          <img src="character.png" alt="主人公" class="character-result-img">
         </div>
-        <div class="saaya-speech">
-          <p class="saaya-name">さーや</p>
-          <p id="saaya-text" class="saaya-text"></p>
+        <div class="character-speech">
+          <p class="character-name">主人公</p>
+          <p id="character-text" class="character-text"></p>
         </div>
       </div>
       <button id="retry-btn" class="btn-primary">💩 もう一度プレイ 💩</button>
       <button id="title-btn" class="btn-secondary">タイトルに戻る</button>
-      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
     </div>
   </div>
 
