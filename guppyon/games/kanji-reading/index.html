@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>難読漢字チャレンジ - ゲロゲーロ学園</title>
+  <meta name="description" content="難しい漢字の読み方を当てる大人向け脳トレゲーム。難読漢字15問チャレンジ！">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Kosugi+Maru&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <style>
+    /* ====== BASE ====== */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: 'Zen Maru Gothic', 'Kosugi Maru', sans-serif;
+      background: linear-gradient(135deg, #1a1040 0%, #2c1654 30%, #1e0e38 60%, #0d0824 100%);
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .game-wrapper {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 500px;
+      height: 100%;
+      max-height: 860px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0f0a2a 0%, #1a0e40 40%, #120930 100%);
+      border-radius: 0;
+    }
+
+    @media (min-width: 520px) {
+      .game-container {
+        border-radius: 28px;
+        height: 92vh;
+        box-shadow:
+          0 0 0 1px rgba(212, 175, 55, 0.25),
+          0 20px 80px rgba(0, 0, 0, 0.7),
+          inset 0 1px 0 rgba(212, 175, 55, 0.15);
+      }
+    }
+
+    /* ====== DECORATIVE BACKGROUND ====== */
+    .bg-pattern {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-pattern::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(212,175,55,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 30% at 50% 100%, rgba(100,60,180,0.15) 0%, transparent 60%);
+    }
+
+    .kanji-float {
+      position: absolute;
+      font-family: 'Zen Maru Gothic', serif;
+      font-weight: 900;
+      color: rgba(212, 175, 55, 0.05);
+      pointer-events: none;
+      animation: kanjiDrift linear infinite;
+    }
+
+    @keyframes kanjiDrift {
+      0%   { transform: translateY(100vh) rotate(-10deg); opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { transform: translateY(-120px) rotate(10deg); opacity: 0; }
+    }
+
+    /* ====== SCREENS ====== */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      z-index: 1;
+      transition: opacity 0.45s cubic-bezier(.4,0,.2,1), transform 0.45s cubic-bezier(.4,0,.2,1);
+    }
+
+    .screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96) translateY(8px);
+    }
+
+    /* ====== BACK BUTTON ====== */
+    .back-btn {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 100;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 50px;
+      padding: 7px 14px;
+      color: #d4af37;
+      font-size: 0.8rem;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .back-btn:hover {
+      background: rgba(212, 175, 55, 0.28);
+      border-color: rgba(212, 175, 55, 0.6);
+      color: #f0d060;
+    }
+
+    .back-btn:active { transform: scale(0.94); }
+
+    /* ====== TITLE SCREEN ====== */
+    .title-emblem {
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.18), transparent 60%),
+                  linear-gradient(135deg, #2a1860 0%, #3d2280 100%);
+      border: 2px solid rgba(212, 175, 55, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.6rem;
+      margin-bottom: 18px;
+      box-shadow:
+        0 0 0 6px rgba(212,175,55,0.1),
+        0 0 40px rgba(212,175,55,0.2),
+        0 8px 24px rgba(0,0,0,0.4);
+      animation: emblemGlow 3s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes emblemGlow {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(212,175,55,0.1), 0 0 40px rgba(212,175,55,0.2), 0 8px 24px rgba(0,0,0,0.4); }
+      50%       { box-shadow: 0 0 0 8px rgba(212,175,55,0.18), 0 0 60px rgba(212,175,55,0.35), 0 8px 24px rgba(0,0,0,0.4); }
+    }
+
+    .title-main {
+      font-family: 'Zen Maru Gothic', serif;
+      font-weight: 900;
+      font-size: 1.9rem;
+      color: #f0d060;
+      text-shadow:
+        0 0 20px rgba(240,208,96,0.6),
+        0 2px 8px rgba(0,0,0,0.5);
+      letter-spacing: 0.05em;
+      text-align: center;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .title-sub {
+      font-size: 0.85rem;
+      color: rgba(212,175,55,0.65);
+      letter-spacing: 0.12em;
+      margin-bottom: 26px;
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    .title-divider {
+      width: 180px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent);
+      margin: 0 auto 24px;
+    }
+
+    .title-info-cards {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .info-card {
+      background: rgba(212,175,55,0.08);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .info-card-icon { font-size: 1.4rem; display: block; margin-bottom: 3px; }
+
+    .info-card-label {
+      font-size: 0.72rem;
+      color: rgba(212,175,55,0.7);
+      font-family: 'Kosugi Maru', sans-serif;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .info-card-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f0d060;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #c8982a 0%, #e8c040 40%, #c8982a 100%);
+      border: none;
+      border-radius: 50px;
+      padding: 16px 48px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #1a0e30;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow:
+        0 4px 20px rgba(200,152,42,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      letter-spacing: 0.1em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .start-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(200,152,42,0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+
+    .start-btn:active { transform: scale(0.96); }
+
+    /* ====== GAME SCREEN ====== */
+    #game-screen {
+      justify-content: flex-start;
+      padding: 14px 16px 16px;
+      gap: 0;
+    }
+
+    .game-hud {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-top: 42px;
+      flex-shrink: 0;
+    }
+
+    .hud-pill {
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.25);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #d4af37;
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    .hud-score {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #f0d060;
+      font-family: 'Zen Maru Gothic', sans-serif;
+    }
+
+    /* TIMER */
+    .timer-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .timer-number {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: #f0d060;
+      min-width: 28px;
+      text-align: center;
+      transition: color 0.3s;
+    }
+
+    .timer-number.warning { color: #ffb84d; }
+    .timer-number.danger  { color: #ff5252; animation: timerWarn 0.4s ease-in-out infinite; }
+
+    @keyframes timerWarn {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.15); }
+    }
+
+    .timer-track {
+      flex: 1;
+      height: 7px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.1s linear, background 0.3s;
+      background: linear-gradient(90deg, #d4af37, #f0d060);
+    }
+
+    .timer-fill.warning { background: linear-gradient(90deg, #e08020, #ffb84d); }
+    .timer-fill.danger  { background: linear-gradient(90deg, #c0142a, #ff5252); }
+
+    /* KANJI DISPLAY */
+    .kanji-card {
+      width: 100%;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.1) 0%, transparent 60%),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 20px;
+      padding: 20px 16px 16px;
+      text-align: center;
+      margin-bottom: 14px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kanji-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent);
+    }
+
+    .kanji-label {
+      font-size: 0.72rem;
+      color: rgba(212,175,55,0.55);
+      letter-spacing: 0.18em;
+      font-family: 'Kosugi Maru', sans-serif;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .kanji-display {
+      font-family: 'Zen Maru Gothic', serif;
+      font-weight: 900;
+      font-size: 3.4rem;
+      color: #ffffff;
+      text-shadow:
+        0 0 30px rgba(212,175,55,0.25),
+        0 2px 10px rgba(0,0,0,0.4);
+      letter-spacing: 0.08em;
+      line-height: 1.1;
+      transition: opacity 0.2s;
+    }
+
+    .kanji-display.pop {
+      animation: kanjiPop 0.35s cubic-bezier(.2,1.4,.4,1);
+    }
+
+    @keyframes kanjiPop {
+      0%   { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    /* CHOICES */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .choice-btn {
+      padding: 14px 10px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      color: #e8e0ff;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.04em;
+    }
+
+    .choice-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .choice-btn:not([disabled]):hover {
+      background: rgba(212,175,55,0.15);
+      border-color: rgba(212,175,55,0.4);
+      color: #f8f0c0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+
+    .choice-btn:not([disabled]):active { transform: scale(0.95); }
+
+    .choice-btn.correct {
+      background: linear-gradient(135deg, rgba(50,180,80,0.35), rgba(30,140,60,0.25));
+      border-color: #4caf50;
+      color: #a0f0a0;
+      box-shadow: 0 0 20px rgba(76,175,80,0.3);
+      animation: correctPulse 0.4s ease;
+    }
+
+    @keyframes correctPulse {
+      0%   { transform: scale(0.95); }
+      50%  { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    .choice-btn.wrong {
+      background: linear-gradient(135deg, rgba(200,30,30,0.35), rgba(160,10,10,0.25));
+      border-color: #e53935;
+      color: #ff9090;
+      animation: wrongShake 0.4s ease;
+    }
+
+    @keyframes wrongShake {
+      0%   { transform: translateX(0); }
+      20%  { transform: translateX(-8px); }
+      40%  { transform: translateX(8px); }
+      60%  { transform: translateX(-5px); }
+      80%  { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+
+    .choice-btn.reveal {
+      background: linear-gradient(135deg, rgba(50,180,80,0.25), rgba(30,140,60,0.15));
+      border-color: rgba(76,175,80,0.5);
+      color: rgba(160,240,160,0.7);
+    }
+
+    .choice-btn[disabled] { cursor: default; }
+
+    /* FEEDBACK OVERLAY */
+    .feedback-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .feedback-overlay.show { opacity: 1; }
+
+    .feedback-icon {
+      font-size: 6rem;
+      filter: drop-shadow(0 0 30px rgba(255,255,255,0.4));
+      animation: feedbackPop 0.45s cubic-bezier(.2,1.5,.4,1);
+    }
+
+    @keyframes feedbackPop {
+      0%   { transform: scale(0.2) rotate(-20deg); opacity: 0; }
+      100% { transform: scale(1)   rotate(0deg);   opacity: 1; }
+    }
+
+    /* ====== RESULT SCREEN ====== */
+    .result-emblem {
+      font-size: 4.5rem;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 20px rgba(212,175,55,0.5));
+      animation: resultBounce 1.2s ease-in-out infinite;
+    }
+
+    @keyframes resultBounce {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%       { transform: translateY(-10px) rotate(3deg); }
+    }
+
+    .result-rank {
+      font-family: 'Zen Maru Gothic', serif;
+      font-weight: 900;
+      font-size: 2.2rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .result-rank.hakase { color: #f0d060; text-shadow: 0 0 30px rgba(240,208,96,0.7); }
+    .result-rank.sensei { color: #a0d8ff; text-shadow: 0 0 30px rgba(160,216,255,0.6); }
+    .result-rank.gakusei { color: #b0ffb8; text-shadow: 0 0 20px rgba(176,255,184,0.5); }
+    .result-rank.shoshinsha { color: #e0b0ff; text-shadow: 0 0 20px rgba(224,176,255,0.5); }
+
+    .result-score-area {
+      background: rgba(212,175,55,0.1);
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 20px;
+      padding: 14px 32px;
+      margin: 10px 0 16px;
+      text-align: center;
+    }
+
+    .result-score-label {
+      font-size: 0.75rem;
+      color: rgba(212,175,55,0.6);
+      letter-spacing: 0.15em;
+      font-family: 'Kosugi Maru', sans-serif;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .result-score-num {
+      font-family: 'Zen Maru Gothic', serif;
+      font-weight: 900;
+      font-size: 3rem;
+      color: #f0d060;
+      line-height: 1;
+    }
+
+    .result-score-num span {
+      font-size: 1.2rem;
+      color: rgba(240,208,96,0.7);
+    }
+
+    .result-comment {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      margin-bottom: 14px;
+      line-height: 1.6;
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    .fact-card {
+      width: 100%;
+      background: rgba(80, 40, 140, 0.25);
+      border: 1px solid rgba(160, 100, 255, 0.25);
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+
+    .fact-card-title {
+      font-size: 0.72rem;
+      color: rgba(200,160,255,0.7);
+      letter-spacing: 0.15em;
+      font-family: 'Kosugi Maru', sans-serif;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .fact-card-text {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.65;
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    .result-buttons {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .replay-btn {
+      flex: 2;
+      background: linear-gradient(135deg, #c8982a 0%, #e8c040 40%, #c8982a 100%);
+      border: none;
+      border-radius: 50px;
+      padding: 15px 20px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1rem;
+      font-weight: 900;
+      color: #1a0e30;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 18px rgba(200,152,42,0.4), inset 0 1px 0 rgba(255,255,255,0.35);
+      letter-spacing: 0.05em;
+    }
+
+    .replay-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,152,42,0.55); }
+    .replay-btn:active { transform: scale(0.95); }
+
+    .home-btn {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 15px 16px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .home-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .home-btn:active { transform: scale(0.95); }
+
+    /* ====== PARTICLES ====== */
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: particleFly linear forwards;
+    }
+
+    @keyframes particleFly {
+      0%   { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-200px) scale(0); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="game-container">
+
+      <!-- Decorative BG -->
+      <div class="bg-pattern" id="bg-pattern"></div>
+
+      <!-- Floating particles container -->
+      <div class="particles" id="particles"></div>
+
+      <!-- Back button (always visible) -->
+      <a class="back-btn" href="../../index.html">🐸 もどる</a>
+
+      <!-- ==============================
+           TITLE SCREEN
+           ============================== -->
+      <div class="screen" id="title-screen">
+        <div class="title-emblem">🐸📖</div>
+        <div class="title-main">難読漢字<br>チャレンジ</div>
+        <div class="title-sub">KANJI READING MASTER</div>
+        <div class="title-divider"></div>
+
+        <div class="title-info-cards">
+          <div class="info-card">
+            <span class="info-card-icon">📝</span>
+            <span class="info-card-label">問題数</span>
+            <span class="info-card-value">15問</span>
+          </div>
+          <div class="info-card">
+            <span class="info-card-icon">⏱</span>
+            <span class="info-card-label">制限時間</span>
+            <span class="info-card-value">20秒／問</span>
+          </div>
+          <div class="info-card">
+            <span class="info-card-icon">🎓</span>
+            <span class="info-card-label">対象</span>
+            <span class="info-card-value">大人向け</span>
+          </div>
+        </div>
+
+        <button class="start-btn" id="start-btn">はじめる</button>
+      </div>
+
+      <!-- ==============================
+           GAME SCREEN
+           ============================== -->
+      <div class="screen hidden" id="game-screen">
+        <!-- HUD -->
+        <div class="game-hud">
+          <div class="hud-pill" id="q-counter">1 / 15</div>
+          <div class="hud-score" id="score-display">正解 <span id="score-num">0</span></div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer-row">
+          <div class="timer-number" id="timer-num">20</div>
+          <div class="timer-track">
+            <div class="timer-fill" id="timer-fill"></div>
+          </div>
+        </div>
+
+        <!-- Kanji Card -->
+        <div class="kanji-card">
+          <span class="kanji-label">この漢字の読み方は？</span>
+          <div class="kanji-display" id="kanji-display">海豚</div>
+        </div>
+
+        <!-- Choices -->
+        <div class="choices-grid" id="choices-grid">
+          <button class="choice-btn" data-index="0"></button>
+          <button class="choice-btn" data-index="1"></button>
+          <button class="choice-btn" data-index="2"></button>
+          <button class="choice-btn" data-index="3"></button>
+        </div>
+
+        <!-- Feedback overlay -->
+        <div class="feedback-overlay" id="feedback-overlay">
+          <div class="feedback-icon" id="feedback-icon">⭕</div>
+        </div>
+      </div>
+
+      <!-- ==============================
+           RESULT SCREEN
+           ============================== -->
+      <div class="screen hidden" id="result-screen">
+        <div class="result-emblem" id="result-emblem">🎓</div>
+        <div class="result-rank" id="result-rank">博士</div>
+
+        <div class="result-score-area">
+          <span class="result-score-label">スコア</span>
+          <div class="result-score-num" id="result-score-num">0<span> / 15</span></div>
+        </div>
+
+        <div class="result-comment" id="result-comment"></div>
+
+        <div class="fact-card">
+          <span class="fact-card-title">📚 豆知識</span>
+          <div class="fact-card-text" id="fact-text"></div>
+        </div>
+
+        <div class="result-buttons">
+          <button class="replay-btn" id="replay-btn">もう一度</button>
+          <a class="home-btn" href="../../index.html">🐸 ホーム</a>
+        </div>
+      </div>
+
+    </div><!-- .game-container -->
+  </div><!-- .game-wrapper -->
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ==============================
+       QUESTION BANK (40+ questions)
+       ============================== */
+    const QUESTIONS = [
+      {
+        kanji: '海豚',
+        correct: 'いるか',
+        options: ['いるか', 'かいとん', 'うみぶた', 'あざらし'],
+        fact: '「海豚」は英語の dolphin を漢字で写したもの。海に棲む豚のような生き物という意味で当て字された。実際はイルカ目の哺乳類。'
+      },
+      {
+        kanji: '河豚',
+        correct: 'ふぐ',
+        options: ['ふぐ', 'かわぶた', 'どじょう', 'なまず'],
+        fact: '「河豚」は中国語由来の漢字。膨らむ性質が豚に似ているとして付けられた。テトロドトキシンという猛毒を持つが、適切に調理すれば絶品の食材。'
+      },
+      {
+        kanji: '案山子',
+        correct: 'かかし',
+        options: ['かかし', 'あんざんし', 'やまんば', 'くぐつ'],
+        fact: '「案山子」は本来、山の中に立てた標識のこと。かかしは「嗅かし（かがかし）」が語源で、臭いで鳥獣を追い払う存在。'
+      },
+      {
+        kanji: '五月雨',
+        correct: 'さみだれ',
+        options: ['さみだれ', 'ごがつあめ', 'つゆ', 'にわかあめ'],
+        fact: '「さみだれ」の「さ」は古語で神聖な田植えを指す接頭語。五月（旧暦）に降る雨という意味で、梅雨のころの長雨を表す。'
+      },
+      {
+        kanji: '紫陽花',
+        correct: 'あじさい',
+        options: ['あじさい', 'しようか', 'すみれ', 'あやめ'],
+        fact: '「紫陽花」は唐の詩人・白居易が別の花（ライラック）に名付けた漢字。日本ではアジサイに当てられた。花の色が土壌の酸性度によって変わることで有名。'
+      },
+      {
+        kanji: '向日葵',
+        correct: 'ひまわり',
+        options: ['ひまわり', 'こうじつき', 'きくいも', 'あさがお'],
+        fact: '「向日葵」は太陽に向かって葵（あおい）のように咲く花という意味。実際には成長中にのみ太陽を追う動き（屈光性）をし、開花後は東を向いたまま固定される。'
+      },
+      {
+        kanji: '蒲公英',
+        correct: 'たんぽぽ',
+        options: ['たんぽぽ', 'ほうこうえい', 'かわら草', 'すいせん'],
+        fact: '「蒲公英」は中国語の蒲公英（púgōngyīng）をそのまま当てた漢字。根を乾燥させたものは「蒲公英根（ほこうえいこん）」として漢方薬に使われる。'
+      },
+      {
+        kanji: '土竜',
+        correct: 'もぐら',
+        options: ['もぐら', 'どりゅう', 'つちへび', 'ミミズ'],
+        fact: '「土竜」は土の中に棲む竜という意味で、モグラの漢字表記。視力はほぼないが聴覚と嗅覚が鋭く、1日に自分の体重に近い量の昆虫や幼虫を食べる。'
+      },
+      {
+        kanji: '百舌鳥',
+        correct: 'もず',
+        options: ['もず', 'ひゃくぜつとり', 'うぐいす', 'つぐみ'],
+        fact: '「百舌鳥」は百種の舌を持つ鳥という意味。モズは他の鳥の鳴き声を巧みに真似る能力を持ち、「モズの高鳴き」は秋の訪れを告げる風物詩とされてきた。'
+      },
+      {
+        kanji: '不如帰',
+        correct: 'ほととぎす',
+        options: ['ほととぎす', 'ふじょき', 'かっこう', 'つばめ'],
+        fact: '「不如帰（帰るに如かず）」は中国の故事に由来。ホトトギスの声が「帰ることができない」と嘆く魂の声に聞こえたとされる。古来より和歌に詠まれてきた夏の鳥。'
+      },
+      {
+        kanji: '翡翠',
+        correct: 'かわせみ',
+        options: ['かわせみ', 'ひすい', 'とびうお', 'さぎ'],
+        fact: '「翡翠」は本来、カワセミという鳥の名。その羽の鮮やかな青緑色が宝石のヒスイに似ていることから、宝石のことも「翡翠」と呼ぶようになった。'
+      },
+      {
+        kanji: '胡瓜',
+        correct: 'きゅうり',
+        options: ['きゅうり', 'こうり', 'にがうり', 'へちま'],
+        fact: '「胡瓜」の「胡」は西域（中央アジア）を意味し、シルクロード経由で伝来した野菜。未熟な状態で収穫・食べる世界でも珍しい野菜で、95%以上が水分。'
+      },
+      {
+        kanji: '南瓜',
+        correct: 'かぼちゃ',
+        options: ['かぼちゃ', 'なんか', 'とうがん', 'ゆうがお'],
+        fact: '「南瓜」はカンボジア（Cambodia）からポルトガル人が日本に持ち込んだことに由来。カンボジア→カンポジャ→カボチャと変化した。漢字はカンボジアを「南の瓜」と書いた。'
+      },
+      {
+        kanji: '玉蜀黍',
+        correct: 'とうもろこし',
+        options: ['とうもろこし', 'たましょくしょ', 'もろこし', 'きびがら'],
+        fact: '「玉蜀黍」は中国語由来。「蜀黍」はモロコシ（高粱）のことで、「玉」は美しいという形容。「とうもろこし」の「とう」は唐（中国）、「もろこし」は唐土（唐の国）を意味する。'
+      },
+      {
+        kanji: '心太',
+        correct: 'ところてん',
+        options: ['ところてん', 'しんた', 'くずもち', 'わらびもち'],
+        fact: '「心太」はテングサを煮溶かして固めた食品。古くは「心太（こころふと）」と読んでいたが、いつしか「ところてん」に変化。奈良時代から食べられている日本最古のゼリー状食品とも言われる。'
+      },
+      {
+        kanji: '御御御付',
+        correct: 'おみおつけ',
+        options: ['おみおつけ', 'ごごごつき', 'おてつき', 'ごぜんもの'],
+        fact: '「御御御付」は味噌汁の丁寧語。「御（お）」を何度も重ねた極めて丁寧な表現で、宮中言葉に由来する。現代でも改まった場では「おみおつけ」が使われる。'
+      },
+      {
+        kanji: '独楽',
+        correct: 'こま',
+        options: ['こま', 'どくがく', 'ひとりあそび', 'けん玉'],
+        fact: '「独楽」はひとりで楽しめる遊び道具という意味。コマは古代エジプトや古代ローマにも存在し、世界最古の玩具のひとつ。日本には飛鳥時代に伝来したとされる。'
+      },
+      {
+        kanji: '飛沫',
+        correct: 'しぶき',
+        options: ['しぶき', 'とびまつ', 'ひまつ', 'あわ'],
+        fact: '「飛沫」は「飛んで散る沫（あわ）」という意味。「ひまつ」とも読み、感染症対策の文脈で「飛沫感染」として広く知られるようになった。'
+      },
+      {
+        kanji: '時化',
+        correct: 'しけ',
+        options: ['しけ', 'じか', 'あれ', 'なぎ'],
+        fact: '「時化」は海が荒れた状態を表す漁師言葉。「時節が化ける（変わる）」という意味に由来するとも言われる。転じて、商売が振るわない状態も「時化」と表現する。'
+      },
+      {
+        kanji: '雪崩',
+        correct: 'なだれ',
+        options: ['なだれ', 'ゆきくずれ', 'ゆきなだれ', 'せっぽう'],
+        fact: '「雪崩」の「なだれ」は「傾れ（なだれ）」に由来。斜面が崩れ落ちる様子を表す動詞「なだれる」が語源。時速300km超に達する乾雪なだれは最も危険とされる。'
+      },
+      {
+        kanji: '海松',
+        correct: 'みる',
+        options: ['みる', 'うみまつ', 'かいしょう', 'もずく'],
+        fact: '「海松」は深緑色の海藻で、松の木に似た形から名付けられた。古来より高級食材として珍重され、万葉集にも詠まれている。現代では「みる貝」（ミル貝）としてよく知られる。'
+      },
+      {
+        kanji: '水母',
+        correct: 'くらげ',
+        options: ['くらげ', 'みずはは', 'すいぼ', 'みずくら'],
+        fact: '「水母」はクラゲの漢字表記。体の約95%が水でできていることから「水の母」と書く。全身に毒針を持つ刺胞動物で、一部の種は「不老不死」と称され注目されている。'
+      },
+      {
+        kanji: '蛸',
+        correct: 'たこ',
+        options: ['たこ', 'いか', 'えび', 'かに'],
+        fact: '「蛸」は8本の足（触手）を持つ軟体動物。タコは非常に知能が高く、瓶のふたを開けたり、迷路を学習する能力が実験で確認されている。3つの心臓を持つのも特徴。'
+      },
+      {
+        kanji: '鯰',
+        correct: 'なまず',
+        options: ['なまず', 'うなぎ', 'どじょう', 'にしき鯉'],
+        fact: '「鯰」は底生の淡水魚。古来より地震を起こす生き物とされ、地震前にナマズが暴れるという言い伝えが有名。現代の研究でも電磁気変化を感知する可能性が示されている。'
+      },
+      {
+        kanji: '薔薇',
+        correct: 'ばら',
+        options: ['ばら', 'しょうび', 'とげ花', 'しょうか'],
+        fact: '「薔薇」は画数の多い漢字として有名（薔＝17画、薇＝16画）。バラは約5000万年前から存在し、世界最古の栽培植物のひとつ。古代ローマでは愛と美の象徴とされていた。'
+      },
+      {
+        kanji: '鰐',
+        correct: 'わに',
+        options: ['わに', 'とかげ', 'おおとかげ', 'かいがい'],
+        fact: '「鰐」はワニの漢字。古代の日本語では鮫（サメ）のこともワニと呼んでいた。因幡の白兎神話に登場する「ワニ」はサメのことという説が有力。'
+      },
+      {
+        kanji: '木耳',
+        correct: 'きくらげ',
+        options: ['きくらげ', 'もくじ', 'こみみ', 'きのこ'],
+        fact: '「木耳」はクラゲに似た形をした木に生えるキノコ。乾燥させると縮み、水で戻すと大きく膨らむ。鉄分が豊富で中華料理に欠かせない食材。'
+      },
+      {
+        kanji: '海星',
+        correct: 'ひとで',
+        options: ['ひとで', 'うみほし', 'かいせい', 'さかな'],
+        fact: '「海星」は星形の棘皮動物。腕を1本切っても再生する強い再生能力を持ち、場合によっては切れた腕から新しい個体が生まれることもある。'
+      },
+      {
+        kanji: '躑躅',
+        correct: 'つつじ',
+        options: ['つつじ', 'てきちょく', 'ゆきやなぎ', 'さつき'],
+        fact: '「躑躅（躑躅）」は画数の多い難読漢字の代表格（躑＝21画、躅＝20画）。ツツジは日本の都道府県の花に最も多く採用されており、毒成分を含むため食用には適さない。'
+      },
+      {
+        kanji: '鸚鵡',
+        correct: 'おうむ',
+        options: ['おうむ', 'ひょうし', 'とらつぐみ', 'からす'],
+        fact: '「鸚鵡返し」という言葉の由来。オウム目の鳥は大脳皮質が発達しており、人間の言葉を模倣できる。賢いものでは300語以上の語彙を持ち会話に近い応答ができる個体もいる。'
+      },
+      {
+        kanji: '糊塗',
+        correct: 'こと',
+        options: ['こと', 'のりと', 'のべぬり', 'かたりべ'],
+        fact: '「糊塗（こと）」は、失敗や欠点をその場しのぎでごまかすこと。「糊（のり）を塗って隠す」という意味から来ており、「問題を糊塗する」のように使う。'
+      },
+      {
+        kanji: '逆鱗',
+        correct: 'げきりん',
+        options: ['げきりん', 'ぎゃくりん', 'さかうろこ', 'こうりん'],
+        fact: '「逆鱗に触れる」は目上の人を激怒させることの比喩。龍の顎の下に逆さに生えた一枚のウロコに触れると激怒するという中国の故事に由来する。'
+      },
+      {
+        kanji: '螺旋',
+        correct: 'らせん',
+        options: ['らせん', 'かいまき', 'つのまき', 'ほらがい'],
+        fact: '「螺旋」の「螺」はニシガイなどの巻き貝を意味する。DNAの二重らせん構造、銀河の渦巻き、カタツムリの殻など、自然界にはらせん構造が至る所に見られる。'
+      },
+      {
+        kanji: '牛蒡',
+        correct: 'ごぼう',
+        options: ['ごぼう', 'うしぼう', 'ぎゅうほう', 'おおね'],
+        fact: '「牛蒡」はキク科の根菜。日本では根を食用にするが、食用とするのは世界でも日本と韓国くらいで、欧米では主に薬草として使われてきた歴史がある。'
+      },
+      {
+        kanji: '海苔',
+        correct: 'のり',
+        options: ['のり', 'かいたい', 'うみこけ', 'もずく'],
+        fact: '「海苔」は海に生える苔という意味。日本でのノリ養殖の歴史は江戸時代に始まり、世界で食用海藻を日常的に食べる文化は東アジアが中心。板海苔1枚には葉酸が豊富に含まれる。'
+      },
+      {
+        kanji: '杜若',
+        correct: 'かきつばた',
+        options: ['かきつばた', 'もりわか', 'やちぐさ', 'あやめ'],
+        fact: '「杜若」は水辺に咲く紫色の花。在原業平の和歌「から衣 きつつなれにし つましあれば はるばるきぬる 旅をしぞ思ふ」は各句の頭にか・き・つ・は・たを詠み込んだ名歌。'
+      },
+      {
+        kanji: '白粉',
+        correct: 'おしろい',
+        options: ['おしろい', 'はくふん', 'しろこ', 'しっくい'],
+        fact: '「白粉（おしろい）」は顔に塗る白い化粧品。古代エジプトや古代ローマにも存在し、日本には奈良時代に中国から伝わった。近世まで鉛白が使われていたが毒性が問題となった。'
+      },
+      {
+        kanji: '行方',
+        correct: 'ゆくえ',
+        options: ['ゆくえ', 'こうほう', 'いきかた', 'ゆきかた'],
+        fact: '「行方不明」は英語の "missing person" に相当するが、「行き先がわからない」という詩的な表現が特徴。古語「ゆくかた」が「ゆくえ」に変化したとされる。'
+      },
+      {
+        kanji: '十六夜',
+        correct: 'いざよい',
+        options: ['いざよい', 'じゅうろくや', 'じゅうろくよい', 'もちのよる'],
+        fact: '「十六夜（いざよい）」は旧暦16日の夜の月のこと。満月（15日）の翌日で、月の出が少し遅れることから「ためらう」意味の古語「いざよう」が語源。'
+      },
+      {
+        kanji: '柘榴',
+        correct: 'ざくろ',
+        options: ['ざくろ', 'たくろ', 'もものき', 'あけび'],
+        fact: '「柘榴」はペルシア語の「zakuro」から転じた外来語に漢字を当てたもの。多くの種が詰まった果実は豊穣の象徴とされ、古来より世界各地で宗教的な意味を持つ果物。'
+      },
+      {
+        kanji: '雲雀',
+        correct: 'ひばり',
+        options: ['ひばり', 'うんじゃく', 'すずめ', 'つばくろ'],
+        fact: '「雲雀」は空高く舞い上がりながら鳴く小鳥。「雲を引っかく雀」という意味で「雲雀（ひばり）」と名付けられた。春の訪れを告げる鳥として古くから和歌に詠まれてきた。'
+      },
+      {
+        kanji: '蝙蝠',
+        correct: 'こうもり',
+        options: ['こうもり', 'へんぷく', 'かわほり', 'よるとり'],
+        fact: '「蝙蝠」はコウモリの漢字。古くは「かわほり」とも呼ばれた。超音波エコーロケーションで暗闇を飛ぶ唯一の飛翔哺乳類。世界の哺乳類の約4分の1がコウモリの仲間。'
+      },
+    ];
+
+    const TOTAL_QUESTIONS = 15;
+    const TIME_PER_QUESTION = 20;
+
+    /* ==============================
+       WEB AUDIO API
+       ============================== */
+    let audioCtx = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+      }
+      return audioCtx;
+    }
+
+    function playTone(freq, type, duration, vol = 0.3, startDelay = 0) {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + startDelay);
+      gain.gain.setValueAtTime(0, ctx.currentTime + startDelay);
+      gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + startDelay + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startDelay + duration);
+      osc.start(ctx.currentTime + startDelay);
+      osc.stop(ctx.currentTime + startDelay + duration + 0.01);
+    }
+
+    function soundCorrect() {
+      playTone(523, 'sine', 0.12, 0.22);
+      playTone(659, 'sine', 0.12, 0.22, 0.12);
+      playTone(784, 'sine', 0.22, 0.22, 0.24);
+    }
+
+    function soundWrong() {
+      playTone(220, 'sawtooth', 0.08, 0.18);
+      playTone(180, 'sawtooth', 0.18, 0.15, 0.1);
+    }
+
+    function soundTick() {
+      playTone(880, 'square', 0.04, 0.06);
+    }
+
+    function soundTimeout() {
+      playTone(300, 'sawtooth', 0.08, 0.2);
+      playTone(200, 'sawtooth', 0.25, 0.2, 0.1);
+    }
+
+    function soundStart() {
+      [0, 0.12, 0.24].forEach((d, i) => {
+        playTone([392, 523, 659][i], 'sine', 0.15, 0.2, d);
+      });
+    }
+
+    function soundResult(score) {
+      if (score >= 13) {
+        // Fanfare
+        [0,0.1,0.2,0.3,0.5].forEach((d,i) => {
+          playTone([523,659,784,784,1047][i], 'sine', 0.2, 0.25, d);
+        });
+      } else if (score >= 10) {
+        playTone(523, 'sine', 0.15, 0.2);
+        playTone(659, 'sine', 0.2, 0.2, 0.15);
+      } else {
+        playTone(392, 'sine', 0.2, 0.18);
+        playTone(330, 'sine', 0.3, 0.15, 0.2);
+      }
+    }
+
+    /* ==============================
+       BACKGROUND DECORATION
+       ============================== */
+    function initBgPattern() {
+      const container = document.getElementById('bg-pattern');
+      const floatKanji = ['文', '語', '読', '字', '訓', '音', '書', '学', '知', '才'];
+      floatKanji.forEach((k, i) => {
+        const el = document.createElement('div');
+        el.className = 'kanji-float';
+        el.textContent = k;
+        const size = 28 + Math.random() * 40;
+        el.style.cssText = `
+          font-size: ${size}px;
+          left: ${5 + (i / floatKanji.length) * 88}%;
+          animation-duration: ${14 + Math.random() * 12}s;
+          animation-delay: ${-Math.random() * 14}s;
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    /* ==============================
+       PARTICLES
+       ============================== */
+    function spawnParticles(x, y, isCorrect) {
+      const container = document.getElementById('particles');
+      const colors = isCorrect
+        ? ['#f0d060','#ffd700','#ffe880','#ffffff','#c8ff80']
+        : ['#ff5252','#ff8a80','#ffb4b4','#ff6680'];
+      for (let i = 0; i < 12; i++) {
+        const el = document.createElement('div');
+        el.className = 'particle';
+        const size = 4 + Math.random() * 7;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 30 + Math.random() * 70;
+        const dx = Math.cos(angle) * dist;
+        el.style.cssText = `
+          width: ${size}px; height: ${size}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          left: ${x + dx}px; top: ${y}px;
+          animation-duration: ${0.6 + Math.random() * 0.5}s;
+          animation-delay: ${Math.random() * 0.08}s;
+          opacity: 0.9;
+        `;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 1200);
+      }
+    }
+
+    /* ==============================
+       GAME STATE
+       ============================== */
+    let questionPool = [];
+    let currentIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let timeLeft = TIME_PER_QUESTION;
+    let answered = false;
+    let lastShownKanji = '';
+
+    /* ==============================
+       SCREEN MANAGEMENT
+       ============================== */
+    function showScreen(id) {
+      ['title-screen', 'game-screen', 'result-screen'].forEach(s => {
+        document.getElementById(s).classList.toggle('hidden', s !== id);
+      });
+    }
+
+    /* ==============================
+       SHUFFLE
+       ============================== */
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    /* ==============================
+       GAME INIT
+       ============================== */
+    function startGame() {
+      soundStart();
+      questionPool = shuffle(QUESTIONS).slice(0, TOTAL_QUESTIONS);
+      currentIndex = 0;
+      score = 0;
+      updateScoreDisplay();
+      showScreen('game-screen');
+      loadQuestion();
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById('score-num').textContent = score;
+    }
+
+    /* ==============================
+       LOAD QUESTION
+       ============================== */
+    function loadQuestion() {
+      answered = false;
+      const q = questionPool[currentIndex];
+      lastShownKanji = q.kanji;
+
+      // Counter
+      document.getElementById('q-counter').textContent = `${currentIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+      // Kanji display
+      const kanjiEl = document.getElementById('kanji-display');
+      kanjiEl.textContent = q.kanji;
+      kanjiEl.classList.remove('pop');
+      void kanjiEl.offsetWidth; // reflow
+      kanjiEl.classList.add('pop');
+
+      // Shuffle options
+      const shuffled = shuffle(q.options);
+      const buttons = document.querySelectorAll('.choice-btn');
+      buttons.forEach((btn, i) => {
+        btn.textContent = shuffled[i];
+        btn.className = 'choice-btn';
+        btn.disabled = false;
+        btn.dataset.reading = shuffled[i];
+      });
+
+      // Hide feedback
+      const fb = document.getElementById('feedback-overlay');
+      fb.classList.remove('show');
+
+      // Start timer
+      startTimer();
+    }
+
+    /* ==============================
+       TIMER
+       ============================== */
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = TIME_PER_QUESTION;
+      updateTimerUI();
+
+      timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        if (timeLeft <= 0) {
+          timeLeft = 0;
+          updateTimerUI();
+          clearInterval(timerInterval);
+          handleTimeout();
+        } else {
+          // Tick sound on integer seconds
+          if (timeLeft <= 5 && Math.abs(timeLeft - Math.round(timeLeft)) < 0.11) {
+            soundTick();
+          }
+          updateTimerUI();
+        }
+      }, 100);
+    }
+
+    function updateTimerUI() {
+      const pct = timeLeft / TIME_PER_QUESTION;
+      const numEl = document.getElementById('timer-num');
+      const fillEl = document.getElementById('timer-fill');
+
+      numEl.textContent = Math.ceil(timeLeft);
+      fillEl.style.width = (pct * 100) + '%';
+
+      const danger  = timeLeft <= 5;
+      const warning = timeLeft <= 10 && !danger;
+
+      numEl.classList.toggle('danger',  danger);
+      numEl.classList.toggle('warning', warning);
+      fillEl.classList.toggle('danger',  danger);
+      fillEl.classList.toggle('warning', warning);
+    }
+
+    function handleTimeout() {
+      if (answered) return;
+      answered = true;
+      soundTimeout();
+      revealCorrect(null);
+
+      setTimeout(() => advance(), 1600);
+    }
+
+    /* ==============================
+       ANSWER HANDLING
+       ============================== */
+    function handleChoice(btn) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timerInterval);
+
+      const q = questionPool[currentIndex];
+      const chosen = btn.dataset.reading;
+      const isCorrect = (chosen === q.correct);
+
+      // Get button position for particles
+      const rect = btn.getBoundingClientRect();
+      const containerRect = btn.closest('.game-container').getBoundingClientRect();
+      const px = rect.left + rect.width / 2 - containerRect.left;
+      const py = rect.top + rect.height / 2 - containerRect.top;
+      spawnParticles(px, py, isCorrect);
+
+      if (isCorrect) {
+        score++;
+        updateScoreDisplay();
+        soundCorrect();
+        btn.classList.add('correct');
+        showFeedback('⭕');
+      } else {
+        soundWrong();
+        btn.classList.add('wrong');
+        showFeedback('❌');
+        revealCorrect(btn);
+      }
+
+      // Disable all
+      document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+
+      setTimeout(() => advance(), 1500);
+    }
+
+    function revealCorrect(wrongBtn) {
+      const q = questionPool[currentIndex];
+      document.querySelectorAll('.choice-btn').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.reading === q.correct && b !== wrongBtn) {
+          b.classList.add('reveal');
+        }
+      });
+    }
+
+    function showFeedback(icon) {
+      const fb = document.getElementById('feedback-overlay');
+      const fi = document.getElementById('feedback-icon');
+      fi.textContent = icon;
+      fb.classList.add('show');
+      setTimeout(() => fb.classList.remove('show'), 600);
+    }
+
+    /* ==============================
+       ADVANCE
+       ============================== */
+    function advance() {
+      currentIndex++;
+      if (currentIndex >= TOTAL_QUESTIONS) {
+        showResult();
+      } else {
+        loadQuestion();
+      }
+    }
+
+    /* ==============================
+       RESULT SCREEN
+       ============================== */
+    function showResult() {
+      showScreen('result-screen');
+      soundResult(score);
+
+      // Rank
+      let rank, comment, emblem, rankClass;
+      if (score >= 13) {
+        rank = '博士'; emblem = '🏆'; rankClass = 'hakase';
+        comment = '素晴らしい！難読漢字の知識は超一流です。\n本物の漢字博士と呼ぶにふさわしい実力！';
+      } else if (score >= 10) {
+        rank = '先生'; emblem = '🎓'; rankClass = 'sensei';
+        comment = 'なかなかの実力！漢字の知識は相当なもの。\nあと少し練習すれば博士の域に達します。';
+      } else if (score >= 6) {
+        rank = '学生'; emblem = '📚'; rankClass = 'gakusei';
+        comment = '基礎はできています。難しい漢字も少し知っていますね。\nもっと漢字の世界を探求してみましょう！';
+      } else {
+        rank = '初心者'; emblem = '🌱'; rankClass = 'shoshinsha';
+        comment = '難読漢字は奥が深い！今日学んだ読み方を\n覚えておくと次回はきっとよくなりますよ。';
+      }
+
+      document.getElementById('result-emblem').textContent = emblem;
+      const rankEl = document.getElementById('result-rank');
+      rankEl.textContent = rank;
+      rankEl.className = 'result-rank ' + rankClass;
+      document.getElementById('result-score-num').innerHTML = `${score}<span> / 15</span>`;
+      document.getElementById('result-comment').textContent = comment;
+
+      // Fact: pick a random question from the pool
+      const factQ = questionPool[Math.floor(Math.random() * questionPool.length)];
+      document.getElementById('fact-text').innerHTML =
+        `<strong>「${factQ.kanji}」（${factQ.correct}）</strong><br>${factQ.fact}`;
+    }
+
+    /* ==============================
+       EVENT LISTENERS
+       ============================== */
+    document.getElementById('start-btn').addEventListener('click', startGame);
+    document.getElementById('replay-btn').addEventListener('click', startGame);
+
+    document.querySelectorAll('.choice-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleChoice(btn));
+    });
+
+    /* ==============================
+       INIT
+       ============================== */
+    initBgPattern();
+  })();
+  </script>
+</body>
+</html>

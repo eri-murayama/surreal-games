@@ -31,27 +31,17 @@ function initMobileMenu() {
 /* --- Subject Filter (respects age gate) --- */
 function initSubjectFilter() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const gameCards = document.querySelectorAll('.game-card');
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      const subject = btn.dataset.subject;
+      // Re-run filterByAge which now also respects subject
       const savedAge = localStorage.getItem('gero-age') || 'all';
-
-      gameCards.forEach(card => {
-        const matchSubject = (subject === 'all' || card.dataset.subject === subject);
-
-        if (matchSubject) {
-          card.style.display = '';
-          card.style.opacity = '1';
-          card.style.animation = 'fadeInUp 0.4s ease forwards';
-        } else {
-          card.style.display = 'none';
-        }
-      });
+      if (typeof filterByAge === 'function') {
+        filterByAge(savedAge);
+      }
 
       // Play click sound
       if (window.geroAudio && window.geroAudio.initialized) {
@@ -59,14 +49,6 @@ function initSubjectFilter() {
       }
     });
   });
-}
-
-/* Check if a card's age matches the selected age filter */
-function ageMatches(cardAge, selectedAge) {
-  if (selectedAge === 'all' || selectedAge === 'kid') return true;
-  if (selectedAge === 'baby') return cardAge === 'baby';
-  if (selectedAge === 'toddler') return cardAge === 'baby' || cardAge === 'toddler';
-  return true;
 }
 
 /* --- Card Click Effects --- */

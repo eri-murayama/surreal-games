@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>漢字クイズ - ゲロゲーロ学園</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    /* ====== BASE ====== */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: 'Zen Maru Gothic', 'Kosugi Maru', sans-serif;
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 50%, #21d4fd 100%);
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .game-wrapper {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 500px;
+      height: 100%;
+      max-height: 820px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #fff8e1 0%, #fff3e0 50%, #e8f5e9 100%);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    @media (min-width: 520px) {
+      .game-container {
+        border-radius: 28px;
+        height: 92vh;
+        height: 92dvh;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+      }
+    }
+
+    /* ====== FLOATING DECORATIONS ====== */
+    .deco {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+      font-size: 1.6rem;
+      opacity: 0.18;
+      animation: floatDeco 6s ease-in-out infinite;
+    }
+    .deco:nth-child(1) { top: 4%; left: 6%; animation-delay: 0s; }
+    .deco:nth-child(2) { top: 8%; right: 8%; animation-delay: 1.2s; }
+    .deco:nth-child(3) { bottom: 10%; left: 5%; animation-delay: 2.4s; }
+    .deco:nth-child(4) { bottom: 6%; right: 7%; animation-delay: 0.8s; }
+    .deco:nth-child(5) { top: 40%; left: 2%; animation-delay: 3.6s; }
+    .deco:nth-child(6) { top: 35%; right: 2%; animation-delay: 2s; }
+
+    @keyframes floatDeco {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-14px) rotate(5deg); }
+    }
+
+    /* ====== BACK BUTTON ====== */
+    .back-btn {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      background: rgba(255,255,255,0.85);
+      border: 2px solid #ffd54f;
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e65100;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .back-btn:hover {
+      background: #fff9c4;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+    .back-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ====== SCREENS ====== */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96);
+    }
+
+    /* ====== TITLE SCREEN ====== */
+    .title-mascot {
+      font-size: 5.5rem;
+      display: block;
+      margin-bottom: 10px;
+      animation: mascotBounce 1.6s ease-in-out infinite;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+    }
+    @keyframes mascotBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      45% { transform: translateY(-16px) scale(1.05); }
+    }
+
+    .title-label {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2.4rem;
+      color: #e65100;
+      text-shadow: 3px 3px 0 #ffe082, 0 6px 18px rgba(230,81,0,0.2);
+      margin-bottom: 6px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .title-sub {
+      font-size: 0.95rem;
+      color: #5d4037;
+      margin-bottom: 32px;
+      text-align: center;
+      background: rgba(255,255,255,0.6);
+      padding: 6px 18px;
+      border-radius: 50px;
+    }
+
+    .play-btn {
+      background: linear-gradient(135deg, #ff6f00 0%, #ffa000 100%);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 18px 56px;
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #e65100, 0 8px 24px rgba(255,111,0,0.35);
+      transition: all 0.15s ease;
+      letter-spacing: 0.05em;
+    }
+    .play-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #e65100, 0 12px 30px rgba(255,111,0,0.4);
+    }
+    .play-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #e65100, 0 4px 12px rgba(255,111,0,0.3);
+    }
+
+    /* ====== GAME SCREEN ====== */
+    .game-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      margin-top: 48px;
+      padding: 0 4px;
+    }
+
+    .question-counter {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1rem;
+      color: #5d4037;
+      background: rgba(255,255,255,0.75);
+      padding: 5px 14px;
+      border-radius: 50px;
+      border: 2px solid #ffe082;
+    }
+
+    .score-display {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1rem;
+      color: #e65100;
+      background: rgba(255,255,255,0.75);
+      padding: 5px 14px;
+      border-radius: 50px;
+      border: 2px solid #ffe082;
+    }
+
+    /* Timer bar */
+    .timer-wrap {
+      width: 100%;
+      background: rgba(0,0,0,0.08);
+      border-radius: 50px;
+      height: 10px;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    .timer-bar {
+      height: 100%;
+      border-radius: 50px;
+      background: linear-gradient(90deg, #66bb6a, #ffd54f, #ff7043);
+      transition: width 0.25s linear, background-color 0.25s ease;
+      width: 100%;
+    }
+    .timer-bar.warning {
+      background: linear-gradient(90deg, #ff7043, #f44336);
+      animation: timerPulse 0.4s ease-in-out infinite alternate;
+    }
+    @keyframes timerPulse {
+      from { opacity: 1; }
+      to { opacity: 0.65; }
+    }
+
+    /* Kanji card */
+    .kanji-card {
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(145deg, #ffffff, #fff8e1);
+      border: 4px solid #ffe082;
+      border-radius: 24px;
+      padding: 22px 18px 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(255,152,0,0.18), inset 0 2px 0 rgba(255,255,255,0.8);
+      position: relative;
+    }
+    .kanji-card::before {
+      content: 'よみかたは？';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffa000;
+      color: #fff;
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 0.78rem;
+      padding: 3px 14px;
+      border-radius: 50px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    .kanji-char {
+      font-size: 5.5rem;
+      font-weight: 900;
+      color: #3e2723;
+      line-height: 1;
+      margin-bottom: 6px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.06);
+      transition: transform 0.2s ease;
+    }
+    .kanji-char.pop {
+      animation: kanjiPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.8) forwards;
+    }
+    @keyframes kanjiPop {
+      0% { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .grade-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      color: #795548;
+      background: #fff3e0;
+      border: 1.5px solid #ffe082;
+      border-radius: 50px;
+      padding: 2px 10px;
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    /* Answer buttons */
+    .answers-grid {
+      width: 100%;
+      max-width: 340px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .answer-btn {
+      background: #ffffff;
+      border: 3px solid #ffe082;
+      border-radius: 16px;
+      padding: 16px 10px;
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.15rem;
+      color: #4a4a4a;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #e0c040, 0 6px 14px rgba(0,0,0,0.08);
+      transition: all 0.15s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .answer-btn:hover:not(:disabled) {
+      background: #fffde7;
+      transform: translateY(-3px);
+      box-shadow: 0 7px 0 #e0c040, 0 10px 20px rgba(0,0,0,0.12);
+      border-color: #ffd54f;
+    }
+    .answer-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #e0c040, 0 4px 8px rgba(0,0,0,0.08);
+    }
+    .answer-btn:disabled {
+      cursor: default;
+    }
+    .answer-btn.correct {
+      background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+      border-color: #66bb6a;
+      color: #1b5e20;
+      box-shadow: 0 4px 0 #388e3c, 0 6px 18px rgba(76,175,80,0.3);
+      animation: correctPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.4) forwards;
+    }
+    @keyframes correctPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.1); }
+      100% { transform: scale(1.04); }
+    }
+    .answer-btn.wrong {
+      background: linear-gradient(135deg, #ffcdd2, #ef9a9a);
+      border-color: #ef5350;
+      color: #b71c1c;
+      box-shadow: 0 4px 0 #c62828, 0 6px 18px rgba(244,67,54,0.25);
+      animation: wrongShake 0.3s ease forwards;
+    }
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* Feedback overlay */
+    .feedback-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .feedback-overlay.show {
+      opacity: 1;
+    }
+    .feedback-text {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 3.5rem;
+      font-weight: 900;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      animation: feedbackBurst 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.6) forwards;
+    }
+    .feedback-text.correct { color: #2e7d32; }
+    .feedback-text.wrong   { color: #c62828; }
+    @keyframes feedbackBurst {
+      0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
+      60% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* ====== RESULT SCREEN ====== */
+    .result-title {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.8rem;
+      color: #e65100;
+      text-shadow: 2px 2px 0 #ffe082;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .result-rank {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 5.5rem;
+      line-height: 1;
+      animation: rankAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.5) forwards;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+    }
+    @keyframes rankAppear {
+      0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+      70% { transform: scale(1.2) rotate(4deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .rank-s { color: #ff6f00; text-shadow: 0 0 20px rgba(255,111,0,0.5); }
+    .rank-a { color: #1565c0; text-shadow: 0 0 20px rgba(21,101,192,0.4); }
+    .rank-b { color: #2e7d32; text-shadow: 0 0 20px rgba(46,125,50,0.4); }
+    .rank-c { color: #6a1b9a; text-shadow: 0 0 20px rgba(106,27,154,0.3); }
+
+    .result-score {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.3rem;
+      color: #5d4037;
+      margin: 10px 0;
+      background: rgba(255,255,255,0.7);
+      padding: 8px 24px;
+      border-radius: 50px;
+      border: 2px solid #ffe082;
+    }
+
+    .result-msg {
+      font-size: 1.05rem;
+      color: #4a4a4a;
+      text-align: center;
+      margin-bottom: 28px;
+      background: rgba(255,255,255,0.6);
+      padding: 10px 20px;
+      border-radius: 14px;
+      max-width: 300px;
+      line-height: 1.6;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .replay-btn {
+      background: linear-gradient(135deg, #ff6f00, #ffa000);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 32px;
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #e65100, 0 8px 20px rgba(255,111,0,0.3);
+      transition: all 0.15s ease;
+    }
+    .replay-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 0 #e65100, 0 12px 28px rgba(255,111,0,0.35);
+    }
+    .replay-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #e65100;
+    }
+
+    .home-link {
+      display: block;
+      text-align: center;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1rem;
+      color: #795548;
+      background: rgba(255,255,255,0.75);
+      border: 2px solid #ffe082;
+      border-radius: 50px;
+      padding: 12px 32px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .home-link:hover {
+      background: #fff9c4;
+      transform: translateY(-2px);
+    }
+
+    /* ====== CONFETTI ====== */
+    .confetti-wrap {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 5;
+    }
+    .confetti-piece {
+      position: absolute;
+      top: -20px;
+      width: 10px;
+      height: 14px;
+      border-radius: 3px;
+      opacity: 0;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="game-container">
+      <!-- Floating decorations -->
+      <span class="deco">📖</span>
+      <span class="deco">✏️</span>
+      <span class="deco">🌟</span>
+      <span class="deco">🎌</span>
+      <span class="deco">🍀</span>
+      <span class="deco">🔤</span>
+
+      <!-- Back button -->
+      <a href="../../index.html" class="back-btn" aria-label="もどる">🐸 もどる</a>
+
+      <!-- Confetti layer -->
+      <div class="confetti-wrap" id="confettiWrap"></div>
+
+      <!-- Feedback overlay -->
+      <div class="feedback-overlay" id="feedbackOverlay">
+        <span class="feedback-text" id="feedbackText"></span>
+      </div>
+
+      <!-- ====== TITLE SCREEN ====== -->
+      <div class="screen" id="titleScreen">
+        <span class="title-mascot">🐸</span>
+        <div class="title-label">漢字クイズ</div>
+        <div class="title-sub">かんじのよみかたをえらぼう！</div>
+        <button class="play-btn" id="playBtn">あそぶ</button>
+      </div>
+
+      <!-- ====== GAME SCREEN ====== -->
+      <div class="screen hidden" id="gameScreen">
+        <div class="game-header">
+          <div class="question-counter" id="questionCounter">1 / 10</div>
+          <div class="score-display" id="scoreDisplay">⭐ 0</div>
+        </div>
+        <div class="timer-wrap">
+          <div class="timer-bar" id="timerBar"></div>
+        </div>
+        <div class="kanji-card">
+          <div class="kanji-char" id="kanjiChar">山</div>
+          <div class="grade-badge" id="gradeBadge">小学1年生</div>
+        </div>
+        <div class="answers-grid" id="answersGrid">
+          <!-- Dynamically filled -->
+        </div>
+      </div>
+
+      <!-- ====== RESULT SCREEN ====== -->
+      <div class="screen hidden" id="resultScreen">
+        <div class="result-title">けっか発表！</div>
+        <div class="result-rank" id="resultRank">S</div>
+        <div class="result-score" id="resultScore">10 / 10もん せいかい！</div>
+        <div class="result-msg" id="resultMsg">すごい！ぜんもんせいかい！<br>かんじはかせだ！</div>
+        <div class="result-buttons">
+          <button class="replay-btn" id="replayBtn">もういちど</button>
+          <a href="../../index.html" class="home-link">🏠 ゲームいちらんへ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ===================================================
+       QUESTION BANK  (30+ questions, grades 1-3)
+    =================================================== */
+    const QUESTIONS = [
+      // --- Grade 1 ---
+      { kanji: '山', correct: 'やま',   options: ['やま','かわ','うみ','そら'],   grade: 1 },
+      { kanji: '川', correct: 'かわ',   options: ['かわ','はな','やま','いけ'],   grade: 1 },
+      { kanji: '火', correct: 'ひ',     options: ['ひ','みず','かぜ','つち'],     grade: 1 },
+      { kanji: '水', correct: 'みず',   options: ['みず','ひ','き','つち'],       grade: 1 },
+      { kanji: '木', correct: 'き',     options: ['き','はな','くさ','いし'],     grade: 1 },
+      { kanji: '花', correct: 'はな',   options: ['はな','き','くさ','みき'],     grade: 1 },
+      { kanji: '犬', correct: 'いぬ',   options: ['いぬ','ねこ','とり','さかな'], grade: 1 },
+      { kanji: '空', correct: 'そら',   options: ['そら','うみ','やま','かわ'],   grade: 1 },
+      { kanji: '日', correct: 'ひ',     options: ['ひ','つき','ほし','くも'],     grade: 1 },
+      { kanji: '月', correct: 'つき',   options: ['つき','ひ','ほし','かぜ'],     grade: 1 },
+      { kanji: '人', correct: 'ひと',   options: ['ひと','こ','おとこ','おんな'], grade: 1 },
+      { kanji: '子', correct: 'こ',     options: ['こ','おや','ひと','ちち'],     grade: 1 },
+      { kanji: '手', correct: 'て',     options: ['て','あし','め','みみ'],       grade: 1 },
+      { kanji: '目', correct: 'め',     options: ['め','て','はな','くち'],       grade: 1 },
+      { kanji: '耳', correct: 'みみ',   options: ['みみ','め','て','くち'],       grade: 1 },
+
+      // --- Grade 2 ---
+      { kanji: '海', correct: 'うみ',   options: ['うみ','やま','かわ','みずうみ'], grade: 2 },
+      { kanji: '星', correct: 'ほし',   options: ['ほし','つき','ひ','くも'],       grade: 2 },
+      { kanji: '魚', correct: 'さかな', options: ['さかな','とり','むし','いぬ'],   grade: 2 },
+      { kanji: '鳥', correct: 'とり',   options: ['とり','さかな','むし','うさぎ'], grade: 2 },
+      { kanji: '虫', correct: 'むし',   options: ['むし','とり','さかな','はな'],   grade: 2 },
+      { kanji: '草', correct: 'くさ',   options: ['くさ','き','はな','みき'],       grade: 2 },
+      { kanji: '雨', correct: 'あめ',   options: ['あめ','ゆき','かぜ','くも'],     grade: 2 },
+      { kanji: '雪', correct: 'ゆき',   options: ['ゆき','あめ','こおり','かぜ'],   grade: 2 },
+      { kanji: '風', correct: 'かぜ',   options: ['かぜ','くも','あめ','ゆき'],     grade: 2 },
+      { kanji: '石', correct: 'いし',   options: ['いし','つち','すな','みず'],     grade: 2 },
+
+      // --- Grade 3 ---
+      { kanji: '島', correct: 'しま',   options: ['しま','うみ','はま','みなと'],   grade: 3 },
+      { kanji: '池', correct: 'いけ',   options: ['いけ','かわ','うみ','ぬま'],     grade: 3 },
+      { kanji: '谷', correct: 'たに',   options: ['たに','やま','おか','もり'],     grade: 3 },
+      { kanji: '森', correct: 'もり',   options: ['もり','はやし','き','くさ'],     grade: 3 },
+      { kanji: '林', correct: 'はやし', options: ['はやし','もり','き','くさ'],     grade: 3 },
+      { kanji: '岩', correct: 'いわ',   options: ['いわ','いし','つち','すな'],     grade: 3 },
+      { kanji: '波', correct: 'なみ',   options: ['なみ','みず','かわ','うみ'],     grade: 3 },
+      { kanji: '橋', correct: 'はし',   options: ['はし','みち','かわ','みなと'],   grade: 3 },
+    ];
+
+    const ROUND_SIZE = 10;
+    const TIMER_MAX = 15;
+    const GRADE_LABELS = { 1: '小学1年生', 2: '小学2年生', 3: '小学3年生' };
+
+    /* ===================================================
+       AUDIO  (Web Audio API synthesized)
+    =================================================== */
+    let audioCtx = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    function playTone(frequency, type, duration, gainVal = 0.35, startTime = 0) {
+      try {
+        const ctx = getAudioCtx();
+        const t = ctx.currentTime + startTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, t);
+        gain.gain.setValueAtTime(gainVal, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+        osc.start(t);
+        osc.stop(t + duration + 0.05);
+      } catch (_) {}
+    }
+
+    function sfxCorrect() {
+      playTone(523.25, 'sine', 0.12, 0.3, 0);
+      playTone(659.25, 'sine', 0.12, 0.3, 0.1);
+      playTone(783.99, 'sine', 0.2, 0.35, 0.2);
+    }
+
+    function sfxWrong() {
+      playTone(220, 'sawtooth', 0.08, 0.25, 0);
+      playTone(180, 'sawtooth', 0.12, 0.25, 0.07);
+    }
+
+    function sfxTick() {
+      playTone(880, 'square', 0.04, 0.08, 0);
+    }
+
+    function sfxTimeUp() {
+      playTone(300, 'sawtooth', 0.06, 0.2, 0);
+      playTone(250, 'sawtooth', 0.06, 0.2, 0.08);
+      playTone(200, 'sawtooth', 0.1,  0.2, 0.16);
+    }
+
+    function sfxCelebration() {
+      const melody = [523.25, 659.25, 783.99, 1046.5, 987.77, 880, 1046.5];
+      melody.forEach((f, i) => playTone(f, 'sine', 0.18, 0.3, i * 0.12));
+    }
+
+    /* ===================================================
+       STATE
+    =================================================== */
+    let roundQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let timeLeft = TIMER_MAX;
+    let answered = false;
+
+    /* ===================================================
+       DOM
+    =================================================== */
+    const titleScreen     = document.getElementById('titleScreen');
+    const gameScreen      = document.getElementById('gameScreen');
+    const resultScreen    = document.getElementById('resultScreen');
+    const playBtn         = document.getElementById('playBtn');
+    const replayBtn       = document.getElementById('replayBtn');
+    const questionCounter = document.getElementById('questionCounter');
+    const scoreDisplay    = document.getElementById('scoreDisplay');
+    const timerBar        = document.getElementById('timerBar');
+    const kanjiChar       = document.getElementById('kanjiChar');
+    const gradeBadge      = document.getElementById('gradeBadge');
+    const answersGrid     = document.getElementById('answersGrid');
+    const resultRank      = document.getElementById('resultRank');
+    const resultScore     = document.getElementById('resultScore');
+    const resultMsg       = document.getElementById('resultMsg');
+    const feedbackOverlay = document.getElementById('feedbackOverlay');
+    const feedbackText    = document.getElementById('feedbackText');
+    const confettiWrap    = document.getElementById('confettiWrap');
+
+    /* ===================================================
+       SCREEN TRANSITIONS
+    =================================================== */
+    function showScreen(el) {
+      [titleScreen, gameScreen, resultScreen].forEach(s => {
+        if (s === el) {
+          s.classList.remove('hidden');
+        } else {
+          s.classList.add('hidden');
+        }
+      });
+    }
+
+    /* ===================================================
+       SHUFFLE
+    =================================================== */
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    /* ===================================================
+       GAME LOGIC
+    =================================================== */
+    function startGame() {
+      roundQuestions = shuffle(QUESTIONS).slice(0, ROUND_SIZE);
+      currentIndex = 0;
+      score = 0;
+      showScreen(gameScreen);
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const q = roundQuestions[currentIndex];
+
+      // Update counter & score
+      questionCounter.textContent = `${currentIndex + 1} / ${ROUND_SIZE}`;
+      scoreDisplay.textContent = `⭐ ${score}`;
+
+      // Kanji display with pop animation
+      kanjiChar.classList.remove('pop');
+      void kanjiChar.offsetWidth; // reflow
+      kanjiChar.textContent = q.kanji;
+      kanjiChar.classList.add('pop');
+      gradeBadge.textContent = GRADE_LABELS[q.grade];
+
+      // Shuffle answer options
+      const shuffledOptions = shuffle(q.options);
+
+      // Build answer buttons
+      answersGrid.innerHTML = '';
+      shuffledOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => handleAnswer(btn, opt, q.correct));
+        answersGrid.appendChild(btn);
+      });
+
+      // Start timer
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = TIMER_MAX;
+      updateTimerBar();
+      let lastSecond = TIMER_MAX;
+
+      timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+
+        // Tick sound on each whole second under 5 seconds
+        const curSecond = Math.ceil(timeLeft);
+        if (curSecond !== lastSecond && curSecond <= 5 && curSecond > 0) {
+          sfxTick();
+        }
+        lastSecond = curSecond;
+
+        updateTimerBar();
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timeUp();
+        }
+      }, 100);
+    }
+
+    function updateTimerBar() {
+      const pct = Math.max(0, (timeLeft / TIMER_MAX)) * 100;
+      timerBar.style.width = pct + '%';
+      if (pct < 35) {
+        timerBar.classList.add('warning');
+      } else {
+        timerBar.classList.remove('warning');
+      }
+    }
+
+    function timeUp() {
+      if (answered) return;
+      answered = true;
+      sfxTimeUp();
+      // Show correct answer
+      const q = roundQuestions[currentIndex];
+      const buttons = answersGrid.querySelectorAll('.answer-btn');
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === q.correct) {
+          btn.classList.add('correct');
+        }
+      });
+      showFeedback('時間切れ！', false);
+      scheduleNext();
+    }
+
+    function handleAnswer(btn, chosen, correct) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timerInterval);
+
+      // Disable all buttons
+      const buttons = answersGrid.querySelectorAll('.answer-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      if (chosen === correct) {
+        btn.classList.add('correct');
+        score++;
+        sfxCorrect();
+        showFeedback('せいかい！', true);
+      } else {
+        btn.classList.add('wrong');
+        // Highlight correct
+        buttons.forEach(b => {
+          if (b.textContent === correct) b.classList.add('correct');
+        });
+        sfxWrong();
+        showFeedback('ざんねん…', false);
+      }
+
+      scoreDisplay.textContent = `⭐ ${score}`;
+      scheduleNext();
+    }
+
+    function showFeedback(msg, isCorrect) {
+      feedbackText.textContent = msg;
+      feedbackText.className = 'feedback-text ' + (isCorrect ? 'correct' : 'wrong');
+      feedbackOverlay.classList.add('show');
+      setTimeout(() => feedbackOverlay.classList.remove('show'), 700);
+    }
+
+    function scheduleNext() {
+      setTimeout(() => {
+        currentIndex++;
+        if (currentIndex >= ROUND_SIZE) {
+          showResult();
+        } else {
+          loadQuestion();
+        }
+      }, 1000);
+    }
+
+    /* ===================================================
+       RESULT
+    =================================================== */
+    function showResult() {
+      showScreen(resultScreen);
+
+      const pct = score / ROUND_SIZE;
+      let rank, rankClass, msg;
+
+      if (pct === 1) {
+        rank = 'S'; rankClass = 'rank-s';
+        msg = 'すごい！ぜんもんせいかい！\nかんじはかせだ！';
+      } else if (pct >= 0.8) {
+        rank = 'A'; rankClass = 'rank-a';
+        msg = 'とってもよくできました！\nあともうすこしでぜんもんせいかい！';
+      } else if (pct >= 0.6) {
+        rank = 'B'; rankClass = 'rank-b';
+        msg = 'よくできました！\nもっとれんしゅうしてみよう！';
+      } else {
+        rank = 'C'; rankClass = 'rank-c';
+        msg = 'ファイト！\nまたちょうせんしてみよう！';
+      }
+
+      resultRank.textContent = rank;
+      resultRank.className = 'result-rank ' + rankClass;
+      resultScore.textContent = `${score} / ${ROUND_SIZE} もん せいかい！`;
+      resultMsg.innerHTML = msg.replace('\n', '<br>');
+
+      // Trigger rank animation by re-adding the element
+      void resultRank.offsetWidth;
+
+      if (pct >= 0.8) {
+        sfxCelebration();
+        spawnConfetti();
+      }
+    }
+
+    /* ===================================================
+       CONFETTI
+    =================================================== */
+    function spawnConfetti() {
+      confettiWrap.innerHTML = '';
+      const colors = ['#ff6f00','#ffd54f','#66bb6a','#42a5f5','#ec407a','#ab47bc','#26c6da'];
+      for (let i = 0; i < 55; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.width = (8 + Math.random() * 8) + 'px';
+        el.style.height = (10 + Math.random() * 10) + 'px';
+        el.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+        const duration = 1.8 + Math.random() * 2.2;
+        const delay = Math.random() * 1.5;
+        el.style.animation = `confettiFall ${duration}s ${delay}s linear forwards`;
+        confettiWrap.appendChild(el);
+      }
+    }
+
+    /* ===================================================
+       EVENT LISTENERS
+    =================================================== */
+    playBtn.addEventListener('click', () => {
+      try { getAudioCtx().resume(); } catch (_) {}
+      startGame();
+    });
+
+    replayBtn.addEventListener('click', () => {
+      confettiWrap.innerHTML = '';
+      startGame();
+    });
+
+    // Start on title screen
+    showScreen(titleScreen);
+  })();
+  </script>
+</body>
+</html>

@@ -83,6 +83,7 @@
     .age-btn-baby { background: linear-gradient(135deg, #ff8a80, #ff5252); }
     .age-btn-toddler { background: linear-gradient(135deg, #ffb74d, #ff9800); }
     .age-btn-kid { background: linear-gradient(135deg, #64b5f6, #42a5f5); }
+    .age-btn-adult { background: linear-gradient(135deg, #7c4dff, #536dfe); }
     .age-btn-all { background: linear-gradient(135deg, #ce93d8, #ab47bc); }
     .age-btn .age-emoji { font-size: 2rem; display: block; margin-bottom: 5px; }
     .age-btn .age-range { font-size: 0.8rem; opacity: 0.9; margin-top: 3px; display: block; }
@@ -97,6 +98,20 @@
       transition: all 0.3s ease; box-shadow: var(--shadow-soft);
     }
     .sound-toggle:hover { transform: scale(1.1); }
+
+    /* === Age Change Button === */
+    .age-change-btn {
+      position: fixed; top: 15px; right: 75px; z-index: 10001;
+      height: 50px; border-radius: 25px;
+      background: rgba(255,255,255,0.9); border: 3px solid var(--green-main);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.85rem; font-weight: 700; color: var(--text-main);
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center; gap: 4px;
+      padding: 0 16px;
+      transition: all 0.3s ease; box-shadow: var(--shadow-soft);
+    }
+    .age-change-btn:hover { transform: scale(1.05); }
 
     /* === Age Badge on Header === */
     .age-badge {
@@ -171,6 +186,7 @@
     .card-age-tag.baby { background: #ff5252; }
     .card-age-tag.toddler { background: #ff9800; }
     .card-age-tag.kid { background: #42a5f5; }
+    .card-age-tag.adult { background: #7c4dff; }
 
     /* === NEW badge === */
     .card-new-badge {
@@ -249,10 +265,15 @@
         しょうがくせい
         <span class="age-range">6さい〜</span>
       </button>
+      <button class="age-btn age-btn-adult" data-age="adult" onclick="enterSite('adult')">
+        <span class="age-emoji">🧠</span>
+        おとな
+        <span class="age-range">中学生〜おとな</span>
+      </button>
       <button class="age-btn age-btn-all" onclick="enterSite('all')">
         <span class="age-emoji">🌈</span>
         ぜんぶみる
-        <span class="age-range">おとなもOK！</span>
+        <span class="age-range">ぜんねんれいOK！</span>
       </button>
     </div>
   </div>
@@ -282,6 +303,9 @@
           <li><a href="#parents"><span class="nav-emoji">👨‍👩‍👧</span>おうちの方へ</a></li>
         </ul>
       </nav>
+      <button class="age-change-btn" id="ageChangeBtn" onclick="reopenAgeGate()" style="display:none;" title="ねんれいをかえる">
+        <span id="ageBtnEmoji">🌈</span> <span id="ageBtnLabel">ぜんぶ</span>
+      </button>
     </div>
   </header>
 
@@ -306,7 +330,7 @@
 
   <!-- Stats Bar -->
   <div class="stats-bar fade-in-up delay-2">
-    <div class="stat-item">🎮 ゲーム <span class="stat-number">10</span>本</div>
+    <div class="stat-item">🎮 ゲーム <span class="stat-number">14</span>本</div>
     <div class="stat-item">👶 対象 <span class="stat-number">1</span>さい〜</div>
     <div class="stat-item">💰 りょうきん <span class="stat-number">0</span>円</div>
   </div>
@@ -550,6 +574,102 @@
         </div>
       </a>
 
+      <!-- === KID GAMES (小学生向け) === -->
+
+      <!-- Kanji Quiz -->
+      <a href="games/kanji-quiz/index.html" class="game-card fade-in-up delay-5" data-subject="japanese" data-age="kid">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #fff9c4, #ffcc80);">
+          <span class="card-badge">こくご</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">漢</span>
+          <span class="card-age-tag kid">6さい〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">漢字クイズ</h3>
+          <p class="card-desc">漢字の読みかたをあてよう！小1〜小3の漢字がいっぱい！</p>
+          <div class="card-meta">
+            <span class="card-grade">小1〜小3</span>
+            <span class="card-play-btn">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Prefecture Master -->
+      <a href="games/prefecture-master/index.html" class="game-card fade-in-up delay-5" data-subject="brain" data-age="kid">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #c8e6c9, #81d4fa);">
+          <span class="card-badge">ちり</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+          </div>
+          <span class="thumb-emoji">🗾</span>
+          <span class="card-age-tag kid">8さい〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">都道府県マスター</h3>
+          <p class="card-desc">都道府県の名物をあてよう！きみは全問正解できるかな？</p>
+          <div class="card-meta">
+            <span class="card-grade">小3〜小6</span>
+            <span class="card-play-btn">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- === ADULT GAMES (大人向け) === -->
+
+      <!-- Speed Calc -->
+      <a href="games/speed-calc/index.html" class="game-card fade-in-up delay-5" data-subject="math" data-age="adult">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #303f9f, #7c4dff);">
+          <span class="card-badge" style="background: rgba(255,255,255,0.2);">のうトレ</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+          </div>
+          <span class="thumb-emoji" style="color: white;">🧮</span>
+          <span class="card-age-tag adult">中学生〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">脳トレ計算</h3>
+          <p class="card-desc">高速計算で脳を鍛えよう！3段階の難易度で何問正解できる？</p>
+          <div class="card-meta">
+            <span class="card-grade">中学生〜おとな</span>
+            <span class="card-play-btn" style="background: #7c4dff;">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Kanji Reading -->
+      <a href="games/kanji-reading/index.html" class="game-card fade-in-up delay-5" data-subject="japanese" data-age="adult">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #1a237e, #4a148c);">
+          <span class="card-badge" style="background: rgba(255,255,255,0.2);">のうトレ</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+          </div>
+          <span class="thumb-emoji" style="color: #ffd54f;">📖</span>
+          <span class="card-age-tag adult">中学生〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">難読漢字チャレンジ</h3>
+          <p class="card-desc">読めそうで読めない難読漢字！あなたは何問わかる？</p>
+          <div class="card-meta">
+            <span class="card-grade">中学生〜おとな</span>
+            <span class="card-play-btn" style="background: #4a148c;">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
     </div>
   </section>
 
@@ -645,6 +765,14 @@
   </script>
   <script>
     /* === Entrance / Age Gate === */
+    const ageLabels = {
+      baby: { emoji: '👶', label: 'おちびさん' },
+      toddler: { emoji: '🧒', label: 'ちびっこ' },
+      kid: { emoji: '🎒', label: 'しょうがくせい' },
+      adult: { emoji: '🧠', label: 'おとな' },
+      all: { emoji: '🌈', label: 'ぜんぶ' }
+    };
+
     function enterSite(age) {
       // Initialize audio on user interaction
       geroAudio.init();
@@ -661,6 +789,9 @@
       // Filter games by age
       filterByAge(age);
 
+      // Show age change button
+      updateAgeButton(age);
+
       // Start BGM after a brief delay
       setTimeout(() => {
         geroAudio.startBGM(100, 'C');
@@ -669,25 +800,59 @@
 
     function filterByAge(age) {
       const cards = document.querySelectorAll('.game-card');
-      // Show all games, but highlight recommended ones
+      const activeSubject = document.querySelector('.filter-btn.active');
+      const subject = activeSubject ? activeSubject.dataset.subject : 'all';
+
       cards.forEach(card => {
+        const cardAge = card.dataset.age;
+        const cardSubject = card.dataset.subject;
+        const matchSubject = (subject === 'all' || cardSubject === subject);
+        const matchAge = ageMatches(cardAge, age);
+
+        if (matchSubject && matchAge) {
+          card.style.display = '';
+          card.style.opacity = '1';
+          card.style.order = '0';
+        } else if (matchSubject && !matchAge) {
+          // Show but dimmed for non-matching age
+          card.style.display = '';
+          card.style.opacity = '0.5';
+          card.style.order = '1';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function ageMatches(cardAge, selectedAge) {
+      if (selectedAge === 'all') return true;
+      if (selectedAge === 'baby') return cardAge === 'baby';
+      if (selectedAge === 'toddler') return cardAge === 'baby' || cardAge === 'toddler';
+      if (selectedAge === 'kid') return cardAge === 'baby' || cardAge === 'toddler' || cardAge === 'kid';
+      if (selectedAge === 'adult') return cardAge === 'kid' || cardAge === 'adult';
+      return true;
+    }
+
+    function updateAgeButton(age) {
+      const btn = document.getElementById('ageChangeBtn');
+      const info = ageLabels[age] || ageLabels.all;
+      document.getElementById('ageBtnEmoji').textContent = info.emoji;
+      document.getElementById('ageBtnLabel').textContent = info.label;
+      btn.style.display = 'flex';
+    }
+
+    function reopenAgeGate() {
+      localStorage.removeItem('gero-age');
+      const entrance = document.getElementById('entrance');
+      entrance.style.display = '';
+      entrance.classList.remove('hide');
+      document.getElementById('ageChangeBtn').style.display = 'none';
+
+      // Reset all cards to visible
+      document.querySelectorAll('.game-card').forEach(card => {
         card.style.display = '';
         card.style.opacity = '1';
         card.style.order = '0';
-        const cardAge = card.dataset.age;
-        if (age === 'all' || age === 'kid') {
-          // Show everything normally
-        } else {
-          // Recommended games get priority order, others are slightly dimmed
-          const isRecommended =
-            (age === 'baby' && cardAge === 'baby') ||
-            (age === 'toddler' && (cardAge === 'baby' || cardAge === 'toddler'));
-          if (isRecommended) {
-            card.style.order = '-1';
-          } else {
-            card.style.opacity = '0.55';
-          }
-        }
       });
     }
 
@@ -697,6 +862,7 @@
       const entrance = document.getElementById('entrance');
       entrance.style.display = 'none';
       filterByAge(savedAge);
+      updateAgeButton(savedAge);
     }
 
     // Sound toggle
