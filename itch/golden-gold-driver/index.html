@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Golden Gold Driver</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1 class="game-title">Golden Gold Driver</h1>
+
+    <!-- Title Screen -->
+    <div id="title-screen">
+      <img id="title-yoshinori" src="yoshinori.png" alt="Yoshinori">
+      <div id="title-highscore"></div>
+      <button id="start-btn">START</button>
+      <p id="title-hint">← → or tap sides to steer / Space or tap center for items</p>
+    </div>
+
+    <!-- Yoshinori Introduction Screen -->
+    <div id="intro-screen" class="hidden">
+      <img id="intro-yoshinori" src="yoshinori.png" alt="Yoshinori">
+      <div id="intro-text"></div>
+      <button id="intro-next-btn">Next</button>
+    </div>
+
+    <!-- Slot Machine Screen -->
+    <div id="slot-screen" class="hidden">
+      <div id="slot-title">Prof: "Let me build your machine!"</div>
+      <div id="hakase-speech"></div>
+
+      <div id="slot-container">
+        <div class="slot-reel" id="reel1">
+          <div class="slot-label">Body</div>
+          <div class="slot-window"><div class="slot-strip"></div></div>
+        </div>
+        <div class="slot-reel" id="reel2">
+          <div class="slot-label">Engine</div>
+          <div class="slot-window"><div class="slot-strip"></div></div>
+        </div>
+        <div class="slot-reel" id="reel3">
+          <div class="slot-label">Tire</div>
+          <div class="slot-window"><div class="slot-strip"></div></div>
+        </div>
+      </div>
+
+      <button id="slot-btn">STOP!</button>
+      <div id="slot-result" class="hidden"></div>
+      <button id="race-btn" class="hidden">Start Race!</button>
+    </div>
+
+    <!-- Conversation Scene -->
+    <div id="conversation-screen" class="hidden">
+      <img id="conv-image" src="yoshinori-conv.png" alt="Professor and Yoshinori">
+      <div id="conv-dialogue"></div>
+      <button id="conv-next-btn">Next</button>
+    </div>
+
+    <!-- Yoshinori Close-up Scene -->
+    <div id="yoshinori-screen" class="hidden">
+      <img id="yoshinori-closeup" src="yoshinori.png" alt="Yoshinori">
+      <div id="yoshinori-line"></div>
+    </div>
+
+    <!-- Mounting Professor Scene -->
+    <div id="mount-screen" class="hidden">
+      <img id="mount-hakase" src="hakase-mount.png" alt="Professor on all fours">
+      <div id="mount-instruction">Tap to ride the Professor!</div>
+      <div id="mount-overlay" class="hidden">
+        <div id="mount-flash"></div>
+        <div id="mount-sparks"></div>
+        <div id="mount-text">BOARDING
+COMPLETE</div>
+        <div id="mount-subtext"></div>
+      </div>
+    </div>
+
+    <!-- Race Screen -->
+    <div id="race-screen" class="hidden">
+      <div id="race-hud">
+        <div id="hud-position">Pos: 1st</div>
+        <div id="hud-lap">LAP: 1/3</div>
+        <div id="hud-item"></div>
+      </div>
+      <canvas id="race-canvas" width="400" height="500"></canvas>
+      <div id="race-message" class="hidden"></div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="hidden">
+      <div id="result-title"></div>
+      <div id="result-comment"></div>
+      <div id="result-time"></div>
+      <div id="result-highscore"></div>
+      <button id="share-btn" class="hidden">Share on 𝕏</button>
+      <button id="retry-btn">Play Again</button>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

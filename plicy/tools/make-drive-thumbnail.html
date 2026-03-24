@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>黄金ドライバー サムネイルジェネレーター</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; color: #fff; }
+    canvas { border: 2px solid #fff; margin: 20px 0; max-width: 90vw; }
+    button { padding: 12px 32px; font-size: 18px; background: #cc6600; color: #fff; border: none; border-radius: 8px; cursor: pointer; margin: 5px; }
+    button:hover { background: #ff8800; }
+    p { color: #aaa; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>黄金の金色ドライバー サムネイル</h1>
+  <canvas id="canvas" width="480" height="270"></canvas>
+  <div>
+    <button onclick="download()">ダウンロード (PNG)</button>
+  </div>
+  <p>480x270px / PLiCyサムネイル用</p>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 480, H = 270;
+
+    const img = new Image();
+    img.onload = () => {
+      // 元画像の背景色で塗りつぶし
+      ctx.fillStyle = '#f5d5b8';
+      ctx.fillRect(0, 0, W, H);
+
+      // 画像をキャンバス中央にフィット（cover方式）
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const canvasRatio = W / H;
+      let sw, sh, sx, sy;
+
+      // 横幅に合わせて拡大、顔の中心（だいたい画像の45%あたり）を基準に切り出し
+      sw = img.naturalWidth;
+      sh = img.naturalWidth / canvasRatio;
+      sx = 0;
+      // 顔の中心を基準にする（帽子は見切れてOK）
+      const faceCenterY = img.naturalHeight * 0.45;
+      sy = faceCenterY - sh / 2;
+      // はみ出し防止
+      if (sy < 0) sy = 0;
+      if (sy + sh > img.naturalHeight) sy = img.naturalHeight - sh;
+
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+    };
+    img.src = 'screenshot.png';
+
+    function download() {
+      const a = document.createElement('a');
+      a.download = 'drive-thumbnail.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    }
+  </script>
+</body>
+</html>
