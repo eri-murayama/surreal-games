@@ -234,6 +234,7 @@ body {
   padding: 4px 8px;
   background: rgba(255, 248, 220, 0.8);
   border-radius: 6px;
+  white-space: pre-line;
 }
 
 /* === スロット画面 === */
