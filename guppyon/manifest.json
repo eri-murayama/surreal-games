@@ -1,0 +1,20 @@
+{
+  "name": "ゲロゲーロ学園｜子どもの無料知育ゲーム",
+  "short_name": "ゲロゲーロ学園",
+  "description": "1歳から遊べる無料知育ゲームサイト。赤ちゃん向けタッチ遊びから小学生の算数・国語・英語まで。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fffef5",
+  "theme_color": "#4ecdc4",
+  "categories": ["education", "games", "kids"],
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐸</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

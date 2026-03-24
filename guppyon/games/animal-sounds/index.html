@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>どうぶつのこえ｜ゲロゲーロ学園</title>
+  <meta name="baby-game" content="true">
+  <script src="../../js/baby-launcher.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    /* ===== Animal Sounds Game Styles ===== */
+    :root {
+      --as-green: #7bc67e;
+      --as-green-light: #c8e6c9;
+      --as-green-dark: #388e3c;
+      --as-sky: #b3e5fc;
+      --as-cream: #f0faf0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background: linear-gradient(180deg, #b3e5fc 0%, #c8e6c9 30%, #a5d6a7 60%, #81c784 100%);
+      background-attachment: fixed;
+      position: relative;
+    }
+
+    /* Meadow decoration layer */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        radial-gradient(ellipse at 15% 85%, rgba(76, 175, 80, 0.25) 0%, transparent 40%),
+        radial-gradient(ellipse at 85% 90%, rgba(76, 175, 80, 0.2) 0%, transparent 35%),
+        radial-gradient(ellipse at 50% 95%, rgba(56, 142, 60, 0.3) 0%, transparent 30%);
+    }
+
+    /* Floating clouds */
+    .cloud {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50px;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .cloud-1 {
+      width: 120px; height: 40px; top: 5%; left: -10%;
+      animation: cloudFloat 25s linear infinite;
+    }
+    .cloud-1::before { width: 50px; height: 50px; top: -25px; left: 20px; }
+    .cloud-1::after { width: 60px; height: 45px; top: -20px; left: 50px; }
+    .cloud-2 {
+      width: 100px; height: 35px; top: 12%; left: -15%;
+      animation: cloudFloat 35s linear infinite 8s;
+    }
+    .cloud-2::before { width: 45px; height: 40px; top: -20px; left: 15px; }
+    .cloud-2::after { width: 50px; height: 38px; top: -18px; left: 40px; }
+    .cloud-3 {
+      width: 90px; height: 30px; top: 8%; left: -20%;
+      animation: cloudFloat 30s linear infinite 15s;
+    }
+    .cloud-3::before { width: 40px; height: 35px; top: -18px; left: 10px; }
+    .cloud-3::after { width: 45px; height: 32px; top: -15px; left: 35px; }
+
+    @keyframes cloudFloat {
+      from { transform: translateX(0); }
+      to { transform: translateX(calc(100vw + 200px)); }
+    }
+
+    /* Grass blades at bottom */
+    .grass {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .grass::before {
+      content: '🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      font-size: 2rem;
+      letter-spacing: -2px;
+      opacity: 0.4;
+      white-space: nowrap;
+    }
+
+    /* Main container */
+    .game-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 16px 12px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Title */
+    .game-title {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.8rem;
+      color: #2e7d32;
+      text-align: center;
+      margin-bottom: 12px;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.6);
+      animation: titleBounce 3s ease-in-out infinite;
+    }
+    .game-title .emoji { font-size: 2rem; }
+
+    @keyframes titleBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Animal grid */
+    .animal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 8px;
+    }
+
+    @media (min-width: 600px) {
+      .animal-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 640px;
+      }
+    }
+
+    /* Animal button */
+    .animal-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 24px;
+      transition: transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      min-height: 130px;
+      min-width: 80px;
+    }
+
+    .animal-btn:active {
+      transform: scale(0.95);
+    }
+
+    .animal-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      line-height: 1;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1), inset 0 -3px 6px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s, transform 0.3s;
+      position: relative;
+    }
+
+    .animal-btn.bouncing .animal-circle {
+      animation: animalBounce 0.6s ease;
+    }
+
+    .animal-btn.bouncing .animal-circle::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 3px solid currentColor;
+      opacity: 0;
+      animation: glowPulse 0.6s ease;
+    }
+
+    @keyframes animalBounce {
+      0% { transform: scale(1) translateY(0); }
+      15% { transform: scale(1.15) translateY(-18px); }
+      30% { transform: scale(0.95) translateY(0); }
+      45% { transform: scale(1.08) translateY(-10px); }
+      60% { transform: scale(0.98) translateY(0); }
+      75% { transform: scale(1.03) translateY(-4px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    @keyframes glowPulse {
+      0% { opacity: 0; transform: scale(0.8); }
+      30% { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.3); }
+    }
+
+    .animal-name {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #3e2723;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+    }
+
+    /* Floating onomatopoeia text */
+    .sound-text {
+      position: absolute;
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2rem;
+      font-weight: 700;
+      pointer-events: none;
+      z-index: 10;
+      white-space: nowrap;
+      animation: floatUp 1.2s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.5) rotate(-5deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translateY(-20px) scale(1.2) rotate(3deg);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(-60px) scale(1) rotate(-2deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-110px) scale(0.8) rotate(5deg);
+      }
+    }
+
+    /* Particle effects */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      border-radius: 50%;
+      animation: particleBurst 0.8s ease-out forwards;
+    }
+
+    @keyframes particleBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--px), var(--py)) scale(0);
+      }
+    }
+
+    /* Star particles */
+    .star-particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      font-size: 1.2rem;
+      animation: starBurst 1s ease-out forwards;
+    }
+
+    @keyframes starBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(var(--px), var(--py)) scale(1.2) rotate(180deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(var(--px) * 1.5), calc(var(--py) * 1.5)) scale(0) rotate(360deg);
+      }
+    }
+
+    /* Parent exit button */
+    .parent-exit {
+      position: fixed;
+      top: 8px;
+      right: 8px;
+      z-index: 100;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      opacity: 0.3;
+      cursor: pointer;
+      padding: 8px;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Exit overlay */
+    .exit-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .exit-overlay.visible {
+      display: flex;
+    }
+    .exit-dialog {
+      background: white;
+      border-radius: 24px;
+      padding: 32px 28px;
+      text-align: center;
+      max-width: 300px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .exit-dialog p {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .exit-dialog .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .exit-dialog button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 16px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-stay {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .btn-leave {
+      background: #ffcdd2;
+      color: #c62828;
+    }
+
+    /* Start overlay - requires touch to init audio */
+    .start-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #b3e5fc 0%, #c8e6c9 50%, #81c784 100%);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      cursor: pointer;
+    }
+    .start-overlay.hidden { display: none; }
+    .start-title {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2.2rem;
+      color: #2e7d32;
+      text-align: center;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.7);
+    }
+    .start-animals {
+      font-size: 3rem;
+      animation: startWiggle 2s ease-in-out infinite;
+    }
+    @keyframes startWiggle {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    .start-tap {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.3rem;
+      color: #4a4a4a;
+      animation: tapPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes tapPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Color palette for animal circles */
+    .color-0  { background: #ffcdd2; color: #e53935; } /* red */
+    .color-1  { background: #f8bbd0; color: #d81b60; } /* pink */
+    .color-2  { background: #e1bee7; color: #8e24aa; } /* purple */
+    .color-3  { background: #c5cae9; color: #3949ab; } /* indigo */
+    .color-4  { background: #bbdefb; color: #1e88e5; } /* blue */
+    .color-5  { background: #b2ebf2; color: #00acc1; } /* cyan */
+    .color-6  { background: #c8e6c9; color: #43a047; } /* green */
+    .color-7  { background: #dcedc8; color: #7cb342; } /* lime */
+    .color-8  { background: #fff9c4; color: #f9a825; } /* yellow */
+    .color-9  { background: #ffe0b2; color: #fb8c00; } /* orange */
+    .color-10 { background: #d7ccc8; color: #6d4c41; } /* brown */
+    .color-11 { background: #f0f4c3; color: #9e9d24; } /* lime2 */
+  </style>
+</head>
+<body>
+
+  <!-- Decorative clouds -->
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+  <div class="grass"></div>
+
+  <!-- Start overlay (touch to begin - needed for audio context) -->
+  <div class="start-overlay" id="startOverlay">
+    <div class="start-animals">🐕 🐈 🐄 🐷 🐸</div>
+    <div class="start-title">どうぶつのこえ</div>
+    <div class="start-tap">タッチしてはじめよう！</div>
+  </div>
+
+  <!-- Parent exit button -->
+  <button class="parent-exit" id="parentExit" aria-label="保護者メニュー">🐸</button>
+
+  <!-- Exit confirmation dialog -->
+  <div class="exit-overlay" id="exitOverlay">
+    <div class="exit-dialog">
+      <p>おわりにしますか？</p>
+      <div class="btn-row">
+        <button class="btn-stay" id="btnStay">まだあそぶ</button>
+        <button class="btn-leave" id="btnLeave">おわる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main game -->
+  <div class="game-wrapper">
+    <div class="game-title">
+      <span class="emoji">🌿</span> どうぶつのこえ <span class="emoji">🌿</span>
+    </div>
+    <div class="animal-grid" id="animalGrid"></div>
+  </div>
+
+  <script src="../../js/audio.js"></script>
+  <script>
+    /* ===== Animal data ===== */
+    const animals = [
+      { id: 'dog',      emoji: '🐕', name: 'いぬ',     sound: 'ワンワン！',     speak: 'わんわん！',   audioId: 'dog' },
+      { id: 'cat',      emoji: '🐈', name: 'ねこ',     sound: 'ニャーニャー！', speak: 'にゃーにゃー！', audioId: 'cat' },
+      { id: 'cow',      emoji: '🐄', name: 'うし',     sound: 'モーモー！',     speak: 'もーもー！',   audioId: 'cow' },
+      { id: 'pig',      emoji: '🐷', name: 'ぶた',     sound: 'ブーブー！',     speak: 'ぶーぶー！',   audioId: 'pig' },
+      { id: 'frog',     emoji: '🐸', name: 'かえる',   sound: 'ケロケロ！',     speak: 'けろけろ！',   audioId: 'frog' },
+      { id: 'chicken',  emoji: '🐔', name: 'にわとり', sound: 'コケコッコー！', speak: 'こけこっこー！', audioId: 'bird' },
+      { id: 'lion',     emoji: '🦁', name: 'ライオン', sound: 'ガオー！',       speak: 'がおー！',     audioId: 'lion' },
+      { id: 'elephant', emoji: '🐘', name: 'ぞう',     sound: 'パオーン！',     speak: 'ぱおーん！',   audioId: 'elephant' },
+      { id: 'sheep',    emoji: '🐑', name: 'ひつじ',   sound: 'メェーメェー！', speak: 'めぇーめぇー！', audioId: 'sheep' },
+      { id: 'chick',    emoji: '🐥', name: 'ひよこ',   sound: 'ピヨピヨ！',     speak: 'ぴよぴよ！',   audioId: 'bird' },
+      { id: 'duck',     emoji: '🦆', name: 'あひる',   sound: 'ガーガー！',     speak: 'がーがー！',   audioId: 'duck' },
+      { id: 'horse',    emoji: '🐎', name: 'うま',     sound: 'ヒヒーン！',     speak: 'ひひーん！',   audioId: 'cow' },
+    ];
+
+    /* Particle colors */
+    const particleColors = [
+      '#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff',
+      '#ff6bd6', '#ff9f43', '#a55eea', '#2bcbba'
+    ];
+    const starEmojis = ['⭐', '✨', '🌟', '💫', '🎵', '♪'];
+
+    /* ===== Build animal grid ===== */
+    const grid = document.getElementById('animalGrid');
+
+    animals.forEach((animal, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'animal-btn';
+      btn.setAttribute('aria-label', animal.name);
+      btn.innerHTML = `
+        <div class="animal-circle color-${idx}">
+          <span>${animal.emoji}</span>
+        </div>
+        <div class="animal-name">${animal.name}</div>
+      `;
+
+      btn.addEventListener('click', () => handleAnimalTap(btn, animal, idx));
+      btn.addEventListener('touchstart', (e) => {
+        // prevent double-fire on touch devices
+      }, { passive: true });
+
+      grid.appendChild(btn);
+    });
+
+    /* ===== Handle animal tap ===== */
+    function handleAnimalTap(btn, animal, idx) {
+      // Bounce animation
+      btn.classList.remove('bouncing');
+      void btn.offsetWidth; // reflow trigger
+      btn.classList.add('bouncing');
+      setTimeout(() => btn.classList.remove('bouncing'), 700);
+
+      // Play synthesized animal sound
+      geroAudio.playAnimalSound(animal.audioId);
+
+      // Speak the onomatopoeia via Speech API
+      speakText(animal.speak);
+
+      // Show floating sound text
+      showSoundText(btn, animal.sound, idx);
+
+      // Spawn particles
+      spawnParticles(btn);
+    }
+
+    /* ===== Floating sound text ===== */
+    function showSoundText(btn, text, colorIdx) {
+      const el = document.createElement('div');
+      el.className = 'sound-text';
+      el.textContent = text;
+
+      // Use the animal's color
+      const colors = [
+        '#e53935', '#d81b60', '#8e24aa', '#3949ab',
+        '#1e88e5', '#00acc1', '#43a047', '#7cb342',
+        '#f9a825', '#fb8c00', '#6d4c41', '#9e9d24'
+      ];
+      el.style.color = colors[colorIdx] || '#e53935';
+      el.style.textShadow = '2px 2px 0 rgba(255,255,255,0.9)';
+
+      // Position above the button
+      const rect = btn.getBoundingClientRect();
+      el.style.position = 'fixed';
+      el.style.left = (rect.left + rect.width / 2) + 'px';
+      el.style.top = (rect.top) + 'px';
+      el.style.transform = 'translateX(-50%)';
+
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1300);
+    }
+
+    /* ===== Particle effects ===== */
+    function spawnParticles(btn) {
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      // Color circles
+      for (let i = 0; i < 8; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const angle = (Math.PI * 2 / 8) * i + (Math.random() - 0.5) * 0.5;
+        const dist = 40 + Math.random() * 50;
+        const px = Math.cos(angle) * dist;
+        const py = Math.sin(angle) * dist;
+        p.style.cssText = `
+          position: fixed;
+          left: ${cx}px;
+          top: ${cy}px;
+          width: ${8 + Math.random() * 8}px;
+          height: ${8 + Math.random() * 8}px;
+          background: ${particleColors[i % particleColors.length]};
+          --px: ${px}px;
+          --py: ${py}px;
+        `;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 900);
+      }
+
+      // Star/note emojis
+      for (let i = 0; i < 4; i++) {
+        const s = document.createElement('div');
+        s.className = 'star-particle';
+        const angle = (Math.PI * 2 / 4) * i + Math.random() * 0.8;
+        const dist = 50 + Math.random() * 40;
+        s.style.cssText = `
+          position: fixed;
+          left: ${cx}px;
+          top: ${cy}px;
+          --px: ${Math.cos(angle) * dist}px;
+          --py: ${Math.sin(angle) * dist}px;
+        `;
+        s.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 1100);
+      }
+    }
+
+    /* ===== Speech synthesis ===== */
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) return;
+      // Cancel any ongoing speech
+      speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'ja-JP';
+      utter.rate = 0.85;
+      utter.pitch = 1.3;
+      utter.volume = 0.9;
+
+      // Try to pick a Japanese voice
+      const voices = speechSynthesis.getVoices();
+      const jaVoice = voices.find(v => v.lang.startsWith('ja'));
+      if (jaVoice) utter.voice = jaVoice;
+
+      speechSynthesis.speak(utter);
+    }
+
+    // Preload voices
+    if ('speechSynthesis' in window) {
+      speechSynthesis.getVoices();
+      speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+    }
+
+    /* ===== Start overlay (init audio on first touch) ===== */
+    const startOverlay = document.getElementById('startOverlay');
+    startOverlay.addEventListener('click', () => {
+      geroAudio.init();
+      geroAudio.resume();
+      geroAudio.startBGM(80, 'F');
+      startOverlay.classList.add('hidden');
+    });
+
+    /* ===== Parent exit: triple-tap within 2 seconds ===== */
+    const parentExit = document.getElementById('parentExit');
+    const exitOverlay = document.getElementById('exitOverlay');
+    let exitTaps = [];
+
+    parentExit.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const now = Date.now();
+      exitTaps.push(now);
+      // Keep only taps within last 2 seconds
+      exitTaps = exitTaps.filter(t => now - t < 2000);
+      if (exitTaps.length >= 3) {
+        exitTaps = [];
+        exitOverlay.classList.add('visible');
+      }
+    });
+
+    document.getElementById('btnStay').addEventListener('click', () => {
+      exitOverlay.classList.remove('visible');
+    });
+
+    document.getElementById('btnLeave').addEventListener('click', () => {
+      geroAudio.stopBGM();
+      window.location.href = '../../index.html';
+    });
+
+    // Close exit overlay if tapping outside dialog
+    exitOverlay.addEventListener('click', (e) => {
+      if (e.target === exitOverlay) {
+        exitOverlay.classList.remove('visible');
+      }
+    });
+  </script>
+</body>
+</html>

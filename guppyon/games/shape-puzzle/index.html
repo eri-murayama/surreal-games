@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>かたちパズル｜ぐっぴょん</title>
+  <meta name="description" content="いろいろなかたちをおぼえよう！まる・さんかく・しかくなど、たのしくかたちをまなべるゲーム。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;500;700&family=Kosugi+Maru&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐸</text></svg>">
+  <style>
+    /* ===== Game-specific Variables ===== */
+    :root {
+      --game-orange: #FF9800;
+      --game-orange-light: #FFE0B2;
+      --game-orange-dark: #E65100;
+      --game-orange-glow: rgba(255, 152, 0, 0.3);
+      --game-bg: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%);
+    }
+
+    /* ===== Base Layout ===== */
+    body {
+      min-height: 100vh;
+      background: var(--game-bg);
+      overflow-x: hidden;
+    }
+
+    .game-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ===== Top Bar ===== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      margin-bottom: 8px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: white;
+      border: 2px solid var(--game-orange);
+      border-radius: 25px;
+      color: var(--game-orange-dark);
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .back-btn:hover {
+      background: var(--game-orange-light);
+      transform: translateY(-1px);
+    }
+
+    .game-title-bar {
+      font-family: var(--font-accent);
+      font-size: 1.1rem;
+      color: var(--game-orange-dark);
+    }
+
+    /* ===== HUD ===== */
+    .hud {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: white;
+      border-radius: 16px;
+      padding: 10px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 3px 12px rgba(255,152,0,0.15);
+      border: 2px solid var(--game-orange-light);
+    }
+
+    .hud-item {
+      text-align: center;
+      font-family: var(--font-main);
+    }
+
+    .hud-label {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .hud-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--game-orange-dark);
+      font-family: var(--font-accent);
+    }
+
+    .hud-divider {
+      width: 2px;
+      height: 30px;
+      background: var(--game-orange-light);
+      border-radius: 1px;
+    }
+
+    /* ===== Screens ===== */
+    .screen {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Start Screen ===== */
+    .start-screen {
+      text-align: center;
+      padding-top: 10vh;
+    }
+
+    .start-icon {
+      font-size: 4rem;
+      margin-bottom: 8px;
+      display: block;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .start-title {
+      font-family: var(--font-accent);
+      font-size: 2.2rem;
+      color: var(--game-orange-dark);
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 0 var(--game-orange-light);
+    }
+
+    .start-subtitle {
+      font-family: var(--font-main);
+      color: var(--text-light);
+      font-size: 1rem;
+      margin-bottom: 30px;
+    }
+
+    .mode-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 22px;
+      border: 3px solid var(--game-orange);
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      font-family: var(--font-main);
+      transition: all 0.25s;
+      box-shadow: 0 4px 15px var(--game-orange-glow);
+      text-align: left;
+    }
+
+    .mode-btn:hover, .mode-btn:active {
+      background: var(--game-orange);
+      color: white;
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px var(--game-orange-glow);
+    }
+
+    .mode-btn:hover .mode-desc,
+    .mode-btn:active .mode-desc {
+      color: rgba(255,255,255,0.85);
+    }
+
+    .mode-icon {
+      font-size: 2.2rem;
+      flex-shrink: 0;
+    }
+
+    .mode-info {
+      flex: 1;
+    }
+
+    .mode-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--game-orange-dark);
+      margin-bottom: 2px;
+    }
+
+    .mode-btn:hover .mode-name,
+    .mode-btn:active .mode-name {
+      color: white;
+    }
+
+    .mode-desc {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      transition: color 0.25s;
+    }
+
+    /* ===== Shape Display Area ===== */
+    .shape-stage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 220px;
+      margin: 12px 0;
+      position: relative;
+    }
+
+    /* ===== CSS Shapes ===== */
+    .css-shape {
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .shape-circle {
+      width: 160px; height: 160px;
+      border-radius: 50%;
+    }
+
+    .shape-triangle {
+      width: 0; height: 0;
+      border-left: 90px solid transparent;
+      border-right: 90px solid transparent;
+      border-bottom: 156px solid currentColor;
+      background: transparent !important;
+    }
+
+    .shape-square {
+      width: 150px; height: 150px;
+      border-radius: 8px;
+    }
+
+    .shape-rectangle {
+      width: 200px; height: 120px;
+      border-radius: 8px;
+    }
+
+    .shape-star {
+      width: 160px; height: 160px;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    .shape-heart {
+      width: 160px; height: 150px;
+      clip-path: polygon(50% 100%, 0% 35%, 0% 20%, 15% 0%, 35% 0%, 50% 18%, 65% 0%, 85% 0%, 100% 20%, 100% 35%);
+    }
+
+    .shape-diamond {
+      width: 130px; height: 170px;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+
+    .shape-oval {
+      width: 190px; height: 130px;
+      border-radius: 50%;
+    }
+
+    /* Shape with fill color */
+    .css-shape.filled {
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .shape-triangle.filled {
+      box-shadow: none;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.15));
+    }
+
+    /* Outline shape for Build mode */
+    .css-shape.outline {
+      border: 4px dashed #aaa;
+      background: rgba(255,255,255,0.3) !important;
+    }
+
+    .shape-triangle.outline {
+      border: none;
+      border-left: 90px solid transparent;
+      border-right: 90px solid transparent;
+      border-bottom: 156px solid transparent;
+      position: relative;
+      background: transparent !important;
+    }
+
+    .shape-triangle.outline::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: -82px;
+      width: 0; height: 0;
+      border-left: 82px solid transparent;
+      border-right: 82px solid transparent;
+      border-bottom: 142px solid rgba(255,255,255,0.3);
+    }
+
+    .shape-triangle.outline::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -90px;
+      width: 0; height: 0;
+      border-left: 90px solid transparent;
+      border-right: 90px solid transparent;
+      border-bottom: 156px solid transparent;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        #aaa 5px,
+        #aaa 6px
+      );
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+      filter: drop-shadow(0 0 0 #aaa);
+    }
+
+    /* ===== Choice Buttons ===== */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .choice-btn {
+      padding: 16px 12px;
+      border: 3px solid var(--game-orange-light);
+      border-radius: 16px;
+      background: white;
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      transition: all 0.2s;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .choice-btn:hover {
+      border-color: var(--game-orange);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px var(--game-orange-glow);
+    }
+
+    .choice-btn:active {
+      transform: translateY(0);
+    }
+
+    .choice-btn.correct {
+      background: #E8F5E9;
+      border-color: #4CAF50;
+      color: #2E7D32;
+      animation: pulse 0.4s ease;
+    }
+
+    .choice-btn.wrong {
+      background: #FFEBEE;
+      border-color: #EF5350;
+      color: #C62828;
+      animation: shake 0.4s ease;
+    }
+
+    .choice-btn.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* ===== Build Mode Pieces ===== */
+    .build-instruction {
+      text-align: center;
+      font-family: var(--font-main);
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .pieces-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .piece-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1;
+      border: 3px solid var(--game-orange-light);
+      border-radius: 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      padding: 10px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .piece-btn:hover {
+      border-color: var(--game-orange);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 18px var(--game-orange-glow);
+    }
+
+    .piece-btn .css-shape {
+      transform: scale(0.35);
+    }
+
+    .piece-btn.correct {
+      background: #E8F5E9;
+      border-color: #4CAF50;
+      animation: pulse 0.4s ease;
+    }
+
+    .piece-btn.wrong {
+      background: #FFEBEE;
+      border-color: #EF5350;
+      animation: shake 0.4s ease;
+    }
+
+    .piece-btn.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    @keyframes spin-sparkle {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.15); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-8deg); }
+      40% { transform: rotate(8deg); }
+      60% { transform: rotate(-5deg); }
+      80% { transform: rotate(5deg); }
+    }
+
+    .shape-correct {
+      animation: spin-sparkle 0.7s ease;
+    }
+
+    .shape-wrong {
+      animation: wobble 0.5s ease;
+    }
+
+    @keyframes flyIn {
+      0% { transform: scale(0.3) translateY(80px); opacity: 0; }
+      60% { transform: scale(1.1) translateY(-10px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .shape-fly-in {
+      animation: flyIn 0.6s ease forwards;
+    }
+
+    /* ===== Sparkle Particles ===== */
+    .sparkle-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .sparkle {
+      position: absolute;
+      font-size: 1.2rem;
+      animation: sparkleAnim 0.8s ease forwards;
+    }
+
+    @keyframes sparkleAnim {
+      0% { transform: translate(0, 0) scale(0); opacity: 1; }
+      100% { transform: translate(var(--sx), var(--sy)) scale(1.2); opacity: 0; }
+    }
+
+    /* ===== Feedback Text ===== */
+    .feedback {
+      text-align: center;
+      font-family: var(--font-accent);
+      font-size: 1.6rem;
+      min-height: 48px;
+      margin: 8px 0;
+      transition: all 0.3s;
+    }
+
+    .feedback.correct-text {
+      color: #4CAF50;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .feedback.wrong-text {
+      color: #EF5350;
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* ===== Round Indicator ===== */
+    .round-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .round-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--game-orange-light);
+      transition: all 0.3s;
+    }
+
+    .round-dot.done-correct {
+      background: #4CAF50;
+    }
+
+    .round-dot.done-wrong {
+      background: #EF5350;
+    }
+
+    .round-dot.current {
+      background: var(--game-orange);
+      transform: scale(1.3);
+      box-shadow: 0 0 8px var(--game-orange-glow);
+    }
+
+    /* ===== Result Screen ===== */
+    .result-screen {
+      text-align: center;
+      padding-top: 6vh;
+    }
+
+    .result-stars {
+      font-size: 3rem;
+      margin: 16px 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .result-star {
+      opacity: 0;
+      animation: starAppear 0.5s ease forwards;
+    }
+
+    .result-star.dim {
+      filter: grayscale(1);
+      opacity: 0.3 !important;
+    }
+
+    @keyframes starAppear {
+      0% { opacity: 0; transform: scale(0) rotate(-30deg); }
+      60% { transform: scale(1.3) rotate(10deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .result-title {
+      font-family: var(--font-accent);
+      font-size: 2rem;
+      color: var(--game-orange-dark);
+      margin-bottom: 6px;
+    }
+
+    .result-score {
+      font-family: var(--font-main);
+      font-size: 1.1rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .result-detail {
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .result-btn {
+      padding: 14px 24px;
+      border-radius: 30px;
+      border: 3px solid var(--game-orange);
+      font-family: var(--font-main);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .result-btn.primary {
+      background: var(--game-orange);
+      color: white;
+      box-shadow: 0 4px 15px var(--game-orange-glow);
+    }
+
+    .result-btn.primary:hover {
+      background: var(--game-orange-dark);
+      border-color: var(--game-orange-dark);
+      transform: translateY(-2px);
+    }
+
+    .result-btn.secondary {
+      background: white;
+      color: var(--game-orange-dark);
+    }
+
+    .result-btn.secondary:hover {
+      background: var(--game-orange-light);
+      transform: translateY(-2px);
+    }
+
+    /* ===== Timer Bar ===== */
+    .timer-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: var(--game-orange-light);
+      border-radius: 3px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .timer-bar {
+      height: 100%;
+      background: var(--game-orange);
+      border-radius: 3px;
+      transition: width 0.1s linear;
+    }
+
+    .timer-bar.low {
+      background: #EF5350;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 420px) {
+      .start-title { font-size: 1.8rem; }
+      .mode-btn { padding: 14px 16px; }
+      .mode-icon { font-size: 1.8rem; }
+      .shape-stage { min-height: 180px; }
+      .css-shape.shape-circle { width: 130px; height: 130px; }
+      .css-shape.shape-square { width: 120px; height: 120px; }
+      .css-shape.shape-rectangle { width: 170px; height: 100px; }
+      .css-shape.shape-star { width: 130px; height: 130px; }
+      .css-shape.shape-heart { width: 130px; height: 120px; }
+      .css-shape.shape-diamond { width: 110px; height: 140px; }
+      .css-shape.shape-oval { width: 160px; height: 110px; }
+      .css-shape.shape-triangle {
+        border-left-width: 72px;
+        border-right-width: 72px;
+        border-bottom-width: 125px;
+      }
+      .pieces-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .piece-btn .css-shape { transform: scale(0.28); }
+      .choice-btn { font-size: 1.05rem; padding: 13px 10px; }
+    }
+
+    @media (min-width: 600px) {
+      .game-container { padding: 16px 24px; }
+    }
+
+    /* ===== Build mode outline dashed triangle using SVG fallback ===== */
+    .outline-triangle-wrap {
+      position: relative;
+      width: 180px;
+      height: 156px;
+    }
+
+    .outline-triangle-wrap svg {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <a href="../../index.html" class="back-btn">◀ もどる</a>
+      <div class="game-title-bar">🔷 かたちパズル</div>
+    </div>
+
+    <!-- ===== Start Screen ===== -->
+    <div id="startScreen" class="screen active">
+      <div class="start-screen">
+        <span class="start-icon">🔷</span>
+        <h1 class="start-title">かたちパズル</h1>
+        <p class="start-subtitle">いろいろなかたちをおぼえよう！</p>
+        <div class="mode-buttons">
+          <button class="mode-btn" data-mode="identify">
+            <span class="mode-icon">🔷</span>
+            <div class="mode-info">
+              <div class="mode-name">かたちをあてよう</div>
+              <div class="mode-desc">かたちを見て、ただしいなまえをえらぼう！</div>
+            </div>
+          </button>
+          <button class="mode-btn" data-mode="build">
+            <span class="mode-icon">🎨</span>
+            <div class="mode-info">
+              <div class="mode-name">かたちをつくろう</div>
+              <div class="mode-desc">おなじかたちのピースをえらんではめよう！</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Game Screen ===== -->
+    <div id="gameScreen" class="screen">
+      <!-- HUD -->
+      <div class="hud">
+        <div class="hud-item">
+          <div class="hud-label">もんだい</div>
+          <div class="hud-value"><span id="roundNum">1</span>/<span id="roundTotal">10</span></div>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-item">
+          <div class="hud-label">スコア</div>
+          <div class="hud-value" id="scoreDisplay">0</div>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-item">
+          <div class="hud-label">せいかい</div>
+          <div class="hud-value" id="correctDisplay">0</div>
+        </div>
+      </div>
+
+      <!-- Timer -->
+      <div class="timer-bar-wrap">
+        <div class="timer-bar" id="timerBar"></div>
+      </div>
+
+      <!-- Round Dots -->
+      <div class="round-dots" id="roundDots"></div>
+
+      <!-- Shape Stage -->
+      <div class="shape-stage" id="shapeStage"></div>
+
+      <!-- Feedback -->
+      <div class="feedback" id="feedback"></div>
+
+      <!-- Choices / Pieces -->
+      <div id="choicesArea"></div>
+    </div>
+
+    <!-- ===== Result Screen ===== -->
+    <div id="resultScreen" class="screen">
+      <div class="result-screen">
+        <div class="result-stars" id="resultStars"></div>
+        <h2 class="result-title" id="resultTitle"></h2>
+        <p class="result-score" id="resultScore"></p>
+        <p class="result-detail" id="resultDetail"></p>
+        <div class="result-buttons">
+          <button class="result-btn primary" id="retryBtn">🔄 もういちどあそぶ</button>
+          <button class="result-btn secondary" id="modeSelectBtn">📋 モードをえらぶ</button>
+          <a href="../../index.html" class="result-btn secondary" style="text-decoration:none;text-align:center;">🏠 トップにもどる</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================
+       かたちパズル - Shape Puzzle Game
+       ============================================ */
+
+    // ===== Shape Definitions =====
+    const SHAPES = [
+      { id: 'circle',    name: 'まる',       cssClass: 'shape-circle' },
+      { id: 'triangle',  name: 'さんかく',   cssClass: 'shape-triangle' },
+      { id: 'square',    name: 'しかく',     cssClass: 'shape-square' },
+      { id: 'rectangle', name: 'ながしかく', cssClass: 'shape-rectangle' },
+      { id: 'star',      name: 'ほし',       cssClass: 'shape-star' },
+      { id: 'heart',     name: 'ハート',     cssClass: 'shape-heart' },
+      { id: 'diamond',   name: 'ひしがた',   cssClass: 'shape-diamond' },
+      { id: 'oval',      name: 'だえん',     cssClass: 'shape-oval' },
+    ];
+
+    const COLORS = [
+      '#FF7043', '#FF5252', '#AB47BC', '#5C6BC0',
+      '#29B6F6', '#26A69A', '#66BB6A', '#FFA726',
+      '#EC407A', '#7E57C2', '#42A5F5', '#26C6DA',
+    ];
+
+    // ===== Game State =====
+    let state = {
+      mode: null,         // 'identify' or 'build'
+      round: 0,
+      totalRounds: 10,
+      score: 0,
+      correct: 0,
+      results: [],        // per-round result: true/false
+      currentShape: null,
+      currentColor: null,
+      roundStartTime: 0,
+      timerInterval: null,
+      timerSeconds: 10,
+      timerRemaining: 10,
+      locked: false,
+    };
+
+    // ===== DOM Refs =====
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    const screens = {
+      start: $('#startScreen'),
+      game: $('#gameScreen'),
+      result: $('#resultScreen'),
+    };
+
+    // ===== Helpers =====
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function pickRandomColor() {
+      return pickRandom(COLORS);
+    }
+
+    function showScreen(name) {
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      screens[name].classList.add('active');
+    }
+
+    // ===== Create CSS Shape Element =====
+    function createShapeElement(shape, color, extraClass) {
+      const el = document.createElement('div');
+      el.className = `css-shape ${shape.cssClass} ${extraClass || ''}`;
+
+      if (shape.id === 'triangle') {
+        // Triangle uses border-bottom color
+        el.style.borderBottomColor = color;
+      } else {
+        el.style.background = color;
+      }
+
+      return el;
+    }
+
+    // ===== Create Outline Shape Element =====
+    function createOutlineElement(shape) {
+      if (shape.id === 'triangle') {
+        // Use SVG for dashed triangle outline
+        const wrap = document.createElement('div');
+        wrap.className = 'outline-triangle-wrap';
+        wrap.innerHTML = `<svg viewBox="0 0 180 156">
+          <polygon points="90,4 176,152 4,152"
+            fill="rgba(255,255,255,0.3)" stroke="#aaa"
+            stroke-width="4" stroke-dasharray="10,6"
+            stroke-linejoin="round"/>
+        </svg>`;
+        return wrap;
+      }
+
+      const el = document.createElement('div');
+      el.className = `css-shape ${shape.cssClass} outline`;
+      return el;
+    }
+
+    // ===== Sparkle Effect =====
+    function spawnSparkles(container) {
+      const sparkleContainer = document.createElement('div');
+      sparkleContainer.className = 'sparkle-container';
+      container.appendChild(sparkleContainer);
+
+      const emojis = ['✨', '⭐', '🌟', '💫', '🎉'];
+      for (let i = 0; i < 8; i++) {
+        const sp = document.createElement('span');
+        sp.className = 'sparkle';
+        sp.textContent = pickRandom(emojis);
+        const angle = (Math.PI * 2 * i) / 8;
+        const dist = 60 + Math.random() * 40;
+        sp.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+        sp.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+        sp.style.animationDelay = (i * 0.05) + 's';
+        sparkleContainer.appendChild(sp);
+      }
+
+      setTimeout(() => sparkleContainer.remove(), 1000);
+    }
+
+    // ===== Timer =====
+    function startTimer() {
+      state.timerSeconds = state.mode === 'identify' ? 10 : 12;
+      state.timerRemaining = state.timerSeconds;
+      updateTimerBar();
+
+      clearInterval(state.timerInterval);
+      state.timerInterval = setInterval(() => {
+        state.timerRemaining -= 0.1;
+        if (state.timerRemaining <= 0) {
+          state.timerRemaining = 0;
+          clearInterval(state.timerInterval);
+          handleTimeout();
+        }
+        updateTimerBar();
+      }, 100);
+    }
+
+    function stopTimer() {
+      clearInterval(state.timerInterval);
+    }
+
+    function updateTimerBar() {
+      const bar = $('#timerBar');
+      const pct = (state.timerRemaining / state.timerSeconds) * 100;
+      bar.style.width = pct + '%';
+      bar.classList.toggle('low', state.timerRemaining < 3);
+    }
+
+    function handleTimeout() {
+      if (state.locked) return;
+      state.locked = true;
+      state.results.push(false);
+
+      $('#feedback').textContent = 'じかんぎれ！';
+      $('#feedback').className = 'feedback wrong-text';
+
+      // Show correct answer indication
+      const stageShape = $('#shapeStage').querySelector('.css-shape, .outline-triangle-wrap');
+      if (stageShape) stageShape.classList.add('shape-wrong');
+
+      disableAllChoices();
+      setTimeout(nextRound, 1500);
+    }
+
+    // ===== Round Dots =====
+    function renderRoundDots() {
+      const container = $('#roundDots');
+      container.innerHTML = '';
+      for (let i = 0; i < state.totalRounds; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot';
+        if (i < state.round) {
+          dot.classList.add(state.results[i] ? 'done-correct' : 'done-wrong');
+        } else if (i === state.round) {
+          dot.classList.add('current');
+        }
+        container.appendChild(dot);
+      }
+    }
+
+    // ===== Update HUD =====
+    function updateHUD() {
+      $('#roundNum').textContent = state.round + 1;
+      $('#roundTotal').textContent = state.totalRounds;
+      $('#scoreDisplay').textContent = state.score;
+      $('#correctDisplay').textContent = state.correct;
+    }
+
+    function disableAllChoices() {
+      $$('.choice-btn, .piece-btn').forEach(b => b.classList.add('disabled'));
+    }
+
+    // ===== Generate Rounds =====
+    function generateRounds() {
+      // Pick shapes for each round, ensuring variety
+      const rounds = [];
+      const shuffled = shuffle(SHAPES);
+      for (let i = 0; i < state.totalRounds; i++) {
+        rounds.push(shuffled[i % shuffled.length]);
+      }
+      return shuffle(rounds);
+    }
+
+    let roundShapes = [];
+
+    // ===== Start Game =====
+    function startGame(mode) {
+      state.mode = mode;
+      state.round = 0;
+      state.totalRounds = mode === 'identify' ? 10 : 8;
+      state.score = 0;
+      state.correct = 0;
+      state.results = [];
+      state.locked = false;
+
+      roundShapes = generateRounds();
+      showScreen('game');
+      playRound();
+    }
+
+    // ===== Play Round =====
+    function playRound() {
+      state.locked = false;
+      state.currentShape = roundShapes[state.round];
+      state.currentColor = pickRandomColor();
+      state.roundStartTime = Date.now();
+
+      updateHUD();
+      renderRoundDots();
+      $('#feedback').textContent = '';
+      $('#feedback').className = 'feedback';
+
+      if (state.mode === 'identify') {
+        renderIdentifyRound();
+      } else {
+        renderBuildRound();
+      }
+
+      startTimer();
+    }
+
+    // ===== Mode 1: Identify Shape =====
+    function renderIdentifyRound() {
+      const stage = $('#shapeStage');
+      stage.innerHTML = '';
+
+      const shapeEl = createShapeElement(state.currentShape, state.currentColor, 'filled');
+      shapeEl.style.animation = 'fadeIn 0.4s ease';
+      stage.appendChild(shapeEl);
+
+      // Generate 4 choices: 1 correct + 3 wrong
+      const wrongShapes = shuffle(SHAPES.filter(s => s.id !== state.currentShape.id)).slice(0, 3);
+      const choices = shuffle([state.currentShape, ...wrongShapes]);
+
+      const area = $('#choicesArea');
+      area.innerHTML = '';
+      const grid = document.createElement('div');
+      grid.className = 'choices-grid';
+
+      choices.forEach(shape => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = shape.name;
+        btn.addEventListener('click', () => handleIdentifyChoice(btn, shape));
+        grid.appendChild(btn);
+      });
+
+      area.appendChild(grid);
+    }
+
+    function handleIdentifyChoice(btn, chosen) {
+      if (state.locked) return;
+      state.locked = true;
+      stopTimer();
+
+      const isCorrect = chosen.id === state.currentShape.id;
+      const elapsed = (Date.now() - state.roundStartTime) / 1000;
+
+      disableAllChoices();
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        state.correct++;
+
+        // Score: base 100 + speed bonus
+        const speedBonus = Math.max(0, Math.floor((state.timerSeconds - elapsed) * 15));
+        const roundScore = 100 + speedBonus;
+        state.score += roundScore;
+
+        state.results.push(true);
+
+        $('#feedback').textContent = 'せいかい！ +' + roundScore;
+        $('#feedback').className = 'feedback correct-text';
+
+        const stageShape = $('#shapeStage').querySelector('.css-shape');
+        if (stageShape) {
+          stageShape.classList.add('shape-correct');
+          spawnSparkles($('#shapeStage'));
+        }
+      } else {
+        btn.classList.add('wrong');
+        state.results.push(false);
+
+        // Highlight correct
+        $$('.choice-btn').forEach(b => {
+          if (b.textContent === state.currentShape.name) {
+            b.classList.add('correct');
+          }
+        });
+
+        $('#feedback').textContent = 'ざんねん… こたえは「' + state.currentShape.name + '」';
+        $('#feedback').className = 'feedback wrong-text';
+
+        const stageShape = $('#shapeStage').querySelector('.css-shape');
+        if (stageShape) stageShape.classList.add('shape-wrong');
+      }
+
+      updateHUD();
+      setTimeout(nextRound, 1600);
+    }
+
+    // ===== Mode 2: Build Shape =====
+    function renderBuildRound() {
+      const stage = $('#shapeStage');
+      stage.innerHTML = '';
+
+      // Show outline
+      const outlineEl = createOutlineElement(state.currentShape);
+      outlineEl.style.animation = 'fadeIn 0.4s ease';
+      stage.appendChild(outlineEl);
+
+      // Generate pieces: 1 correct + 3 wrong
+      const wrongShapes = shuffle(SHAPES.filter(s => s.id !== state.currentShape.id)).slice(0, 3);
+      const pieces = shuffle([state.currentShape, ...wrongShapes]);
+
+      const area = $('#choicesArea');
+      area.innerHTML = '';
+
+      const instruction = document.createElement('div');
+      instruction.className = 'build-instruction';
+      instruction.textContent = 'おなじかたちをえらんでね！';
+      area.appendChild(instruction);
+
+      const grid = document.createElement('div');
+      grid.className = 'pieces-grid';
+
+      pieces.forEach(shape => {
+        const btn = document.createElement('button');
+        btn.className = 'piece-btn';
+
+        const color = pickRandomColor();
+        const miniShape = createShapeElement(shape, color, 'filled');
+        btn.appendChild(miniShape);
+
+        btn.addEventListener('click', () => handleBuildChoice(btn, shape));
+        grid.appendChild(btn);
+      });
+
+      area.appendChild(grid);
+    }
+
+    function handleBuildChoice(btn, chosen) {
+      if (state.locked) return;
+      state.locked = true;
+      stopTimer();
+
+      const isCorrect = chosen.id === state.currentShape.id;
+      const elapsed = (Date.now() - state.roundStartTime) / 1000;
+
+      disableAllChoices();
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        state.correct++;
+
+        const speedBonus = Math.max(0, Math.floor((state.timerSeconds - elapsed) * 12));
+        const roundScore = 100 + speedBonus;
+        state.score += roundScore;
+
+        state.results.push(true);
+
+        $('#feedback').textContent = 'せいかい！ +' + roundScore;
+        $('#feedback').className = 'feedback correct-text';
+
+        // Replace outline with filled shape that flies in
+        const stage = $('#shapeStage');
+        stage.innerHTML = '';
+        const filledShape = createShapeElement(state.currentShape, state.currentColor, 'filled shape-fly-in');
+        stage.appendChild(filledShape);
+        spawnSparkles(stage);
+      } else {
+        btn.classList.add('wrong');
+        state.results.push(false);
+
+        // Highlight correct piece
+        $$('.piece-btn').forEach(b => {
+          const innerShape = b.querySelector('.css-shape');
+          if (innerShape && innerShape.classList.contains(state.currentShape.cssClass)) {
+            b.classList.add('correct');
+          }
+        });
+
+        $('#feedback').textContent = 'ざんねん… こたえは「' + state.currentShape.name + '」';
+        $('#feedback').className = 'feedback wrong-text';
+
+        const stageEl = stage.querySelector('.css-shape, .outline-triangle-wrap');
+        if (stageEl) stageEl.classList.add('shape-wrong');
+      }
+
+      updateHUD();
+      setTimeout(nextRound, 1600);
+    }
+
+    // ===== Next Round =====
+    function nextRound() {
+      state.round++;
+      if (state.round >= state.totalRounds) {
+        showResult();
+      } else {
+        playRound();
+      }
+    }
+
+    // ===== Result Screen =====
+    function showResult() {
+      stopTimer();
+      showScreen('result');
+
+      const pct = state.correct / state.totalRounds;
+      let stars, title;
+
+      if (pct >= 0.9) {
+        stars = 3;
+        title = 'すごい！かんぺき！';
+      } else if (pct >= 0.7) {
+        stars = 2;
+        title = 'よくできました！';
+      } else if (pct >= 0.4) {
+        stars = 1;
+        title = 'がんばったね！';
+      } else {
+        stars = 0;
+        title = 'もういちどチャレンジ！';
+      }
+
+      // Stars
+      const starsContainer = $('#resultStars');
+      starsContainer.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const starEl = document.createElement('span');
+        starEl.className = 'result-star' + (i >= stars ? ' dim' : '');
+        starEl.textContent = '⭐';
+        starEl.style.animationDelay = (i * 0.3) + 's';
+        starsContainer.appendChild(starEl);
+      }
+
+      $('#resultTitle').textContent = title;
+      $('#resultScore').textContent = state.score + ' てん';
+      $('#resultDetail').textContent =
+        state.totalRounds + 'もんちゅう ' + state.correct + 'もんせいかい！';
+    }
+
+    // ===== Event Listeners =====
+    $$('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        startGame(btn.dataset.mode);
+      });
+    });
+
+    $('#retryBtn').addEventListener('click', () => {
+      startGame(state.mode);
+    });
+
+    $('#modeSelectBtn').addEventListener('click', () => {
+      showScreen('start');
+    });
+  </script>
+</body>
+</html>

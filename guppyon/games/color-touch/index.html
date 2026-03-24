@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>いろいろタッチ｜ゲロゲーロ学園</title>
+<meta name="baby-game" content="true">
+<script src="../../js/baby-launcher.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/style.css">
+<script src="../../js/audio.js"></script>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html, body {
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    background: #ffe0f0;
+    font-family: 'Zen Maru Gothic', sans-serif;
+  }
+  #gameCanvas {
+    display: block;
+    width: 100%;
+    height: 100dvh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  /* Floating emoji layer */
+  .float-emoji {
+    position: fixed;
+    z-index: 10;
+    pointer-events: none;
+    font-size: 48px;
+    animation: emojiFloat 1.5s ease-out forwards;
+  }
+  @keyframes emojiFloat {
+    0% { opacity: 1; transform: scale(0.3) translateY(0); }
+    20% { opacity: 1; transform: scale(1.2) translateY(-20px); }
+    100% { opacity: 0; transform: scale(0.8) translateY(-180px); }
+  }
+  /* Parent exit icon */
+  #parentExit {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    z-index: 100;
+    font-size: 20px;
+    opacity: 0.15;
+    cursor: pointer;
+    line-height: 1;
+    padding: 5px;
+  }
+  /* Exit overlay */
+  #exitOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100dvh;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+  #exitOverlay.show {
+    display: flex;
+  }
+  #exitOverlay a {
+    display: inline-block;
+    padding: 16px 40px;
+    background: #4ecdc4;
+    color: #fff;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  #exitOverlay .close-btn {
+    padding: 12px 30px;
+    background: rgba(255,255,255,0.3);
+    color: #fff;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="parentExit">🐸</div>
+<div id="exitOverlay">
+  <a href="../../index.html">もどる 🏠</a>
+  <button class="close-btn" id="closeOverlay">つづける</button>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // --- Canvas Setup ---
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // --- Color Palette (soft pastels) ---
+  const COLORS = [
+    '#ff8a80','#ff80ab','#ea80fc','#b388ff',
+    '#82b1ff','#80d8ff','#84ffff','#a7ffeb',
+    '#b9f6ca','#f4ff81','#ffe57f','#ffd180'
+  ];
+  let colorIndex = 0;
+  function nextColor() {
+    colorIndex = (colorIndex + 1) % COLORS.length;
+    return COLORS[colorIndex];
+  }
+  function randomColor() {
+    return COLORS[Math.floor(Math.random() * COLORS.length)];
+  }
+
+  // --- Musical Notes mapped to screen position ---
+  const NOTES_Y = ['C5','D5','E5','F5','G5','A5','B5','C4','D4','E4','F4','G4','A4','B4'];
+  const NOTES_X_SCALE = ['C','D','E','F','G','A','B'];
+
+  function getNoteForPosition(x, y) {
+    // Y: top = high, bottom = low
+    const yRatio = y / H;
+    // Map to octave: top -> 5, bottom -> 4
+    const octave = yRatio < 0.5 ? 5 : 4;
+    // X: cycle through scale
+    const xIndex = Math.floor((x / W) * NOTES_X_SCALE.length) % NOTES_X_SCALE.length;
+    return NOTES_X_SCALE[xIndex] + octave;
+  }
+
+  // --- State ---
+  let ripples = [];
+  let sparkles = [];
+  let touchCount = 0;
+  let audioReady = false;
+  let fireworks = [];
+  let bgColor = { r: 255, g: 224, b: 240 }; // soft pink start
+  let targetBg = { r: 255, g: 224, b: 240 };
+
+  // --- Emoji ---
+  const EMOJIS = ['⭐','🌸','🎵','💖','🌈','✨','🦋','🌺'];
+  function spawnEmoji(x, y) {
+    const el = document.createElement('div');
+    el.className = 'float-emoji';
+    el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    el.style.left = (x - 24) + 'px';
+    el.style.top = (y - 24) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+  }
+
+  // --- Ripple class ---
+  class Ripple {
+    constructor(x, y, color) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+      this.radius = 0;
+      this.maxRadius = Math.max(W, H) * 0.5 + Math.random() * 100;
+      this.opacity = 0.6;
+      this.speed = 4 + Math.random() * 3;
+      this.alive = true;
+    }
+    update() {
+      this.radius += this.speed;
+      // Start fading after reaching 30% of max
+      if (this.radius > this.maxRadius * 0.3) {
+        this.opacity -= 0.008;
+      }
+      if (this.opacity <= 0 || this.radius > this.maxRadius) {
+        this.alive = false;
+      }
+    }
+    draw(ctx) {
+      if (!this.alive) return;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.opacity);
+      const gradient = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, this.radius
+      );
+      gradient.addColorStop(0, this.color);
+      gradient.addColorStop(0.7, this.color);
+      gradient.addColorStop(1, 'transparent');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // --- Sparkle class ---
+  class Sparkle {
+    constructor(x, y, color) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 5;
+      this.vx = Math.cos(angle) * speed;
+      this.vy = Math.sin(angle) * speed;
+      this.radius = 2 + Math.random() * 4;
+      this.opacity = 1;
+      this.life = 0.6 + Math.random() * 0.6;
+      this.age = 0;
+      this.alive = true;
+    }
+    update(dt) {
+      this.age += dt;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.1; // gravity
+      this.opacity = 1 - (this.age / this.life);
+      if (this.age >= this.life) this.alive = false;
+    }
+    draw(ctx) {
+      if (!this.alive) return;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.opacity);
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * (1 + this.age * 0.5), 0, Math.PI * 2);
+      ctx.fill();
+      // Inner bright spot
+      ctx.globalAlpha = Math.max(0, this.opacity * 0.8);
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // --- Firework particle (for celebration) ---
+  class FireworkParticle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.color = randomColor();
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 3 + Math.random() * 8;
+      this.vx = Math.cos(angle) * speed;
+      this.vy = Math.sin(angle) * speed;
+      this.radius = 3 + Math.random() * 5;
+      this.opacity = 1;
+      this.life = 1 + Math.random() * 1;
+      this.age = 0;
+      this.alive = true;
+    }
+    update(dt) {
+      this.age += dt;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.15;
+      this.vx *= 0.98;
+      this.opacity = 1 - (this.age / this.life);
+      if (this.age >= this.life) this.alive = false;
+    }
+    draw(ctx) {
+      if (!this.alive) return;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.opacity);
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // --- Parse hex color to RGB ---
+  function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 255, g: 224, b: 240 };
+  }
+
+  // --- Touch handling ---
+  function handleTouch(x, y) {
+    // Init audio on first touch
+    if (!audioReady) {
+      geroAudio.init();
+      audioReady = true;
+    }
+    geroAudio.resume();
+
+    touchCount++;
+    const color = nextColor();
+
+    // Create ripple
+    ripples.push(new Ripple(x, y, color));
+
+    // Create sparkles
+    const sparkleCount = 8 + Math.floor(Math.random() * 6);
+    for (let i = 0; i < sparkleCount; i++) {
+      sparkles.push(new Sparkle(x, y, randomColor()));
+    }
+
+    // Spawn floating emoji
+    spawnEmoji(x, y);
+
+    // Play note based on position
+    const note = getNoteForPosition(x, y);
+    geroAudio.playNote(note, 0.4, 'sine');
+
+    // Update target background color
+    targetBg = hexToRgb(color);
+
+    // Special celebration every 15 touches
+    if (touchCount % 15 === 0) {
+      triggerCelebration();
+    }
+  }
+
+  function triggerCelebration() {
+    geroAudio.playCelebration();
+
+    // Spawn fireworks at multiple points
+    const points = [
+      { x: W * 0.2, y: H * 0.3 },
+      { x: W * 0.5, y: H * 0.2 },
+      { x: W * 0.8, y: H * 0.3 },
+      { x: W * 0.3, y: H * 0.5 },
+      { x: W * 0.7, y: H * 0.5 },
+    ];
+    points.forEach(p => {
+      for (let i = 0; i < 30; i++) {
+        fireworks.push(new FireworkParticle(p.x, p.y));
+      }
+    });
+
+    // Spawn extra emojis
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        spawnEmoji(
+          Math.random() * W,
+          H * 0.3 + Math.random() * H * 0.4
+        );
+      }, i * 100);
+    }
+  }
+
+  // --- Drag/swipe trail ---
+  let activeTouches = {};
+
+  function onPointerDown(e) {
+    e.preventDefault();
+    const x = e.clientX;
+    const y = e.clientY;
+    activeTouches[e.pointerId] = { x, y, lastTime: Date.now() };
+    handleTouch(x, y);
+  }
+
+  function onPointerMove(e) {
+    e.preventDefault();
+    if (!activeTouches[e.pointerId]) return;
+    const prev = activeTouches[e.pointerId];
+    const x = e.clientX;
+    const y = e.clientY;
+    const dx = x - prev.x;
+    const dy = y - prev.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    // Only create effects if moved enough
+    if (dist > 20) {
+      activeTouches[e.pointerId] = { x, y, lastTime: Date.now() };
+
+      // Create smaller ripple for drag
+      const color = nextColor();
+      const r = new Ripple(x, y, color);
+      r.maxRadius = Math.max(W, H) * 0.2;
+      r.opacity = 0.4;
+      ripples.push(r);
+
+      // Fewer sparkles for drag
+      for (let i = 0; i < 3; i++) {
+        sparkles.push(new Sparkle(x, y, randomColor()));
+      }
+
+      // Continuous sound (quieter/shorter)
+      if (audioReady) {
+        const note = getNoteForPosition(x, y);
+        geroAudio.playNote(note, 0.15, 'sine');
+      }
+    }
+  }
+
+  function onPointerUp(e) {
+    e.preventDefault();
+    delete activeTouches[e.pointerId];
+  }
+
+  canvas.addEventListener('pointerdown', onPointerDown, { passive: false });
+  canvas.addEventListener('pointermove', onPointerMove, { passive: false });
+  canvas.addEventListener('pointerup', onPointerUp, { passive: false });
+  canvas.addEventListener('pointercancel', onPointerUp, { passive: false });
+
+  // Prevent default touch behaviors on the whole document
+  document.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+  document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+  // --- Parent Exit ---
+  const parentExit = document.getElementById('parentExit');
+  const exitOverlay = document.getElementById('exitOverlay');
+  const closeOverlay = document.getElementById('closeOverlay');
+  let exitTaps = [];
+
+  parentExit.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const now = Date.now();
+    exitTaps.push(now);
+    // Keep only taps within last 2 seconds
+    exitTaps = exitTaps.filter(t => now - t < 2000);
+    if (exitTaps.length >= 3) {
+      exitOverlay.classList.add('show');
+      exitTaps = [];
+    }
+  });
+
+  closeOverlay.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    exitOverlay.classList.remove('show');
+  });
+
+  // Prevent exit overlay touches from reaching canvas
+  exitOverlay.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+  });
+
+  // --- Animation Loop ---
+  let lastTime = performance.now();
+
+  function animate(now) {
+    const dt = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime = now;
+
+    // Smoothly transition background
+    bgColor.r += (targetBg.r - bgColor.r) * 0.02;
+    bgColor.g += (targetBg.g - bgColor.g) * 0.02;
+    bgColor.b += (targetBg.b - bgColor.b) * 0.02;
+
+    // Clear with bg color
+    ctx.fillStyle = `rgb(${Math.round(bgColor.r)},${Math.round(bgColor.g)},${Math.round(bgColor.b)})`;
+    ctx.fillRect(0, 0, W, H);
+
+    // Update & draw ripples
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      ripples[i].update();
+      ripples[i].draw(ctx);
+      if (!ripples[i].alive) ripples.splice(i, 1);
+    }
+
+    // Update & draw sparkles
+    for (let i = sparkles.length - 1; i >= 0; i--) {
+      sparkles[i].update(dt);
+      sparkles[i].draw(ctx);
+      if (!sparkles[i].alive) sparkles.splice(i, 1);
+    }
+
+    // Update & draw fireworks
+    for (let i = fireworks.length - 1; i >= 0; i--) {
+      fireworks[i].update(dt);
+      fireworks[i].draw(ctx);
+      if (!fireworks[i].alive) fireworks.splice(i, 1);
+    }
+
+    // Cap arrays to prevent memory issues
+    if (ripples.length > 50) ripples.splice(0, ripples.length - 50);
+    if (sparkles.length > 200) sparkles.splice(0, sparkles.length - 200);
+    if (fireworks.length > 300) fireworks.splice(0, fireworks.length - 300);
+
+    requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+})();
+</script>
+</body>
+</html>

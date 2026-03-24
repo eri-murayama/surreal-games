@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>赤ちゃんに安全にスマホを渡す方法｜ゲロゲーロ学園</title>
+  <meta name="description" content="赤ちゃんや幼児にスマホ・タブレットを安全に渡す方法を解説。iPhoneのアクセスガイド、Androidの画面固定の設定手順をわかりやすく紹介。">
+  <meta name="keywords" content="赤ちゃん,スマホ,安全,アクセスガイド,画面の固定,幼児,タブレット,誤操作,防止,チャイルドロック">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐸</text></svg>">
+  <style>
+    .guide-container {
+      max-width: 800px; margin: 0 auto; padding: 30px 20px 60px;
+      position: relative; z-index: 1;
+    }
+    .guide-header {
+      text-align: center; margin-bottom: 40px;
+    }
+    .guide-header h1 {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.8rem; color: #2bbbad; margin: 10px 0;
+    }
+    .guide-header p {
+      color: #777; font-size: 0.95rem; line-height: 1.8;
+    }
+    .guide-section {
+      background: white; border-radius: 25px; padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 25px;
+      border: 3px solid #e0e0e0;
+    }
+    .guide-section.ios { border-color: #bbdefb; }
+    .guide-section.android { border-color: #c8e6c9; }
+    .guide-section.pwa { border-color: #ffe0b2; }
+    .guide-section.tips { border-color: #e1bee7; }
+    .guide-section h2 {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.3rem; margin-bottom: 15px; display: flex;
+      align-items: center; gap: 10px;
+    }
+    .guide-section.ios h2 { color: #1565c0; }
+    .guide-section.android h2 { color: #2e7d32; }
+    .guide-section.pwa h2 { color: #e65100; }
+    .guide-section.tips h2 { color: #6a1b9a; }
+    .guide-section p {
+      font-size: 0.9rem; color: #555; line-height: 1.8; margin-bottom: 10px;
+    }
+    .steps {
+      counter-reset: step;
+      list-style: none; padding: 0;
+    }
+    .steps li {
+      counter-increment: step;
+      display: flex; align-items: flex-start; gap: 15px;
+      margin-bottom: 15px; padding: 15px;
+      background: #fafafa; border-radius: 15px;
+    }
+    .steps li::before {
+      content: counter(step);
+      flex-shrink: 0; width: 36px; height: 36px;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-weight: 900; font-size: 1rem; color: white;
+    }
+    .ios .steps li::before { background: #42a5f5; }
+    .android .steps li::before { background: #66bb6a; }
+    .pwa .steps li::before { background: #ffa726; }
+    .steps li div { flex: 1; }
+    .steps li strong {
+      display: block; font-size: 0.95rem; margin-bottom: 3px; color: #333;
+    }
+    .steps li span {
+      font-size: 0.85rem; color: #777; line-height: 1.6;
+    }
+    .highlight-box {
+      background: #fff9c4; border-radius: 15px; padding: 15px 20px;
+      margin: 15px 0; border-left: 4px solid #ffd54f;
+    }
+    .highlight-box p {
+      margin: 0; font-size: 0.85rem; color: #666;
+    }
+    .highlight-box strong { color: #f57f17; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      text-decoration: none; color: #4ecdc4; font-weight: 700;
+      font-size: 0.9rem; margin-bottom: 20px;
+      padding: 8px 16px; border-radius: 20px; border: 2px solid #4ecdc4;
+      transition: all 0.3s ease;
+    }
+    .back-link:hover {
+      background: #4ecdc4; color: white;
+    }
+    .faq { margin-top: 10px; }
+    .faq-item { margin-bottom: 12px; }
+    .faq-q {
+      font-weight: 700; font-size: 0.9rem; color: #333;
+      margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px;
+    }
+    .faq-a {
+      font-size: 0.85rem; color: #666; line-height: 1.7;
+      padding-left: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐸</span>
+        <div>
+          <span class="logo-text">ゲロゲーロ学園</span>
+          <span class="logo-sub">あそんで まなんで 天才になろう！</span>
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <div class="guide-container">
+    <a href="index.html" class="back-link">← ゲームにもどる</a>
+
+    <div class="guide-header">
+      <div style="font-size: 3rem;">🔒📱</div>
+      <h1>赤ちゃんに安全にスマホを渡す方法</h1>
+      <p>
+        お子さまがゲームに集中できるよう、<br>
+        誤って電話をかけたり設定を変えたりしない方法をご紹介します。
+      </p>
+    </div>
+
+    <!-- PWA Section -->
+    <div class="guide-section pwa">
+      <h2>📱 まずはホーム画面に追加しよう（かんたん！）</h2>
+      <p>ホーム画面に追加すると、<strong>アプリのように</strong>ブラウザのボタンなしで遊べます。アドレスバーや戻るボタンが消えるので、誤タップが大幅に減ります。</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <strong>iPhone/iPad の場合</strong>
+            <span>Safariで開く → 下の共有ボタン（□↑）をタップ → 「ホーム画面に追加」</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Android の場合</strong>
+            <span>Chromeで開く → 右上の「⋮」メニュー → 「ホーム画面に追加」</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>追加完了！</strong>
+            <span>ホーム画面に🐸アイコンが表示されます。タップするとフルスクリーンでゲームが起動します。</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="highlight-box">
+        <p><strong>💡 ポイント：</strong>これだけでも誤タップの約70%を防げます。アドレスバーとブラウザボタンが消えるのが大きいです。</p>
+      </div>
+    </div>
+
+    <!-- iOS Section -->
+    <div class="guide-section ios">
+      <h2>🍎 iPhone / iPad：アクセスガイド</h2>
+      <p>アクセスガイドを使うと、<strong>画面を1つのアプリに完全ロック</strong>できます。ホームボタンやスワイプが無効になり、お子さまがゲーム以外を操作できなくなります。</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <strong>設定アプリを開く</strong>
+            <span>「設定」→「アクセシビリティ」→「アクセスガイド」をタップ</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>アクセスガイドをONにする</strong>
+            <span>スイッチをONにして、パスコードを設定します（お子さまが解除できないように）</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>ゲームを開く</strong>
+            <span>ゲロゲーロ学園のゲームをブラウザまたはホーム画面から開きます</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>アクセスガイドを開始</strong>
+            <span><strong>サイドボタン（電源ボタン）を3回素早く押す</strong> → 左上の「開始」をタップ</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>お子さまに渡す</strong>
+            <span>これで画面がロックされます！ホームに戻ったり他のアプリを開くことはできません。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>終わるとき</strong>
+            <span>サイドボタンを3回押す → パスコードを入力 → 左上の「終了」</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="highlight-box">
+        <p><strong>💡 上級者向け：</strong>アクセスガイド開始時に「オプション」をタップすると、タッチを無効にしたい画面の領域を指定できます（画面の端など）。また、時間制限も設定できます。</p>
+      </div>
+    </div>
+
+    <!-- Android Section -->
+    <div class="guide-section android">
+      <h2>🤖 Android：画面の固定</h2>
+      <p>画面の固定を使うと、<strong>現在のアプリから移動できなく</strong>なります。</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <strong>設定を開く</strong>
+            <span>「設定」→「セキュリティ」（または「セキュリティとプライバシー」）→「画面の固定」（または「アプリ固定」）</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>画面の固定をONにする</strong>
+            <span>スイッチをONに。「解除前にロック画面を表示」もONにすると安全です。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>ゲームを開く</strong>
+            <span>Chrome等でゲロゲーロ学園のゲームを開きます</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>画面を固定する</strong>
+            <span>画面下のナビゲーションバーの「最近のアプリ」ボタンをタップ → アプリ上部のアイコンをタップ → 「固定」</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>お子さまに渡す</strong>
+            <span>画面がロックされ、他のアプリに切り替えられません。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>終わるとき</strong>
+            <span>「戻る」と「最近のアプリ」ボタンを同時に長押し → ロック画面を解除</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="highlight-box">
+        <p><strong>💡 メーカーによる違い：</strong>Samsung、Xiaomi、OPPOなど機種によってメニューの名前が異なる場合があります。「画面固定」「アプリ固定」「ピン留め」等で検索してみてください。</p>
+      </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="guide-section tips">
+      <h2>💡 その他の安全のコツ</h2>
+
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">📵 機内モードにする</div>
+          <div class="faq-a">電話の着信や通知を完全にブロックできます。ゲロゲーロ学園のゲームはオフラインでも動くので（ホーム画面に追加済みの場合）、機内モードでも遊べます。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">🔕 おやすみモードにする</div>
+          <div class="faq-a">機内モードにしたくない場合は、「おやすみモード」（iOS）や「サイレントモード」（Android）にすると通知が来なくなります。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">🔋 充電しながら渡す</div>
+          <div class="faq-a">バッテリー残量の警告が出ると、ゲームが中断されることがあります。充電しながら渡すと安心です。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">🔊 音量を確認する</div>
+          <div class="faq-a">ゲームの音は大きすぎないよう設計していますが、環境に合わせて音量を事前に調整してください。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">⏰ 時間を決める</div>
+          <div class="faq-a">WHOは2歳未満のスクリーンタイムをできるだけ少なく、2〜5歳は1日1時間以内を推奨しています。タイマーを設定してから渡すのがおすすめです。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">🐸 ゲームの終わり方</div>
+          <div class="faq-a">すべての赤ちゃん向けゲームには、右上に小さなカエル（🐸）アイコンがあります。2秒以内に3回タップすると、トップページに戻るボタンが表示されます。</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="index.html" class="back-link" style="display: inline-flex;">🐸 ゲームにもどる</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-mascot">🐸</div>
+    <p>ゲロゲーロ学園｜1さいからあそべる子どもの無料知育ゲーム</p>
+    <p style="margin-top: 5px; font-size: 0.75rem; opacity: 0.7;">© 2026 ゲロゲーロ学園 All rights reserved.</p>
+  </footer>
+</body>
+</html>

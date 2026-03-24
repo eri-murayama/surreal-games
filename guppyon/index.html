@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ゲロゲーロ学園｜1さいからあそべる！子どもの無料知育ゲーム</title>
+  <meta name="description" content="1歳から遊べる無料知育ゲームサイト。赤ちゃん向けタッチ遊びから小学生の算数・国語・英語まで。広告なし・登録不要・完全無料。カエルのゲロゲーロといっしょにあそぼう！">
+  <meta name="keywords" content="知育,ゲーム,無料,1歳,2歳,3歳,赤ちゃん,幼児,子供,教育,算数,国語,英語,タッチ,ブラウザ">
+  <meta property="og:title" content="ゲロゲーロ学園｜1さいからあそべる！子どもの無料知育ゲーム">
+  <meta property="og:description" content="赤ちゃんから小学生まで、ぜんぶ無料であそべる知育ゲームがいっぱい！">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Kosugi+Maru&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐸</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ゲロゲーロ学園">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4ecdc4">
+  <style>
+    /* === Entrance / Age Gate === */
+    .entrance-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #a8e6cf 0%, #88d8b0 30%, #ffd54f 70%, #ffb74d 100%);
+      z-index: 10000; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      overflow: hidden;
+    }
+    .entrance-overlay.hide {
+      opacity: 0; transform: scale(1.1); pointer-events: none;
+    }
+    .entrance-overlay::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.3) 2px, transparent 2px);
+      background-size: 30px 30px; pointer-events: none;
+    }
+    /* Floating bubbles on entrance */
+    .entrance-bubble {
+      position: absolute; border-radius: 50%; pointer-events: none;
+      animation: entranceBubbleFloat 6s ease-in-out infinite;
+      opacity: 0.2;
+    }
+    @keyframes entranceBubbleFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-40px) scale(1.1); }
+    }
+    .entrance-mascot {
+      font-size: 8rem; animation: mascotBounce 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.15));
+      position: relative; z-index: 1;
+    }
+    .entrance-title {
+      font-family: 'Hachi Maru Pop', cursive; font-size: 3rem;
+      color: #2e7d32; text-shadow: 3px 3px 0 rgba(255,255,255,0.5);
+      margin: 10px 0 5px; position: relative; z-index: 1;
+    }
+    .entrance-sub {
+      font-size: 1.1rem; color: #4a4a4a; margin-bottom: 30px;
+      position: relative; z-index: 1;
+    }
+    .entrance-sub strong { color: #e65100; }
+    .age-select-title {
+      font-family: 'Hachi Maru Pop', cursive; font-size: 1.3rem;
+      color: #4a4a4a; margin-bottom: 15px; position: relative; z-index: 1;
+    }
+    .age-buttons {
+      display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 1;
+    }
+    .age-btn {
+      padding: 20px 30px; border: 4px solid white; border-radius: 25px;
+      font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      color: white; text-align: center; min-width: 140px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    .age-btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .age-btn:active { transform: translateY(0) scale(0.98); }
+    .age-btn-baby { background: linear-gradient(135deg, #ff8a80, #ff5252); }
+    .age-btn-toddler { background: linear-gradient(135deg, #ffb74d, #ff9800); }
+    .age-btn-kid { background: linear-gradient(135deg, #64b5f6, #42a5f5); }
+    .age-btn-all { background: linear-gradient(135deg, #ce93d8, #ab47bc); }
+    .age-btn .age-emoji { font-size: 2rem; display: block; margin-bottom: 5px; }
+    .age-btn .age-range { font-size: 0.8rem; opacity: 0.9; margin-top: 3px; display: block; }
+
+    /* === Sound Toggle === */
+    .sound-toggle {
+      position: fixed; top: 15px; right: 15px; z-index: 10001;
+      width: 50px; height: 50px; border-radius: 50%;
+      background: rgba(255,255,255,0.9); border: 3px solid var(--green-main);
+      font-size: 1.5rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: all 0.3s ease; box-shadow: var(--shadow-soft);
+    }
+    .sound-toggle:hover { transform: scale(1.1); }
+
+    /* === Age Badge on Header === */
+    .age-badge {
+      padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;
+      font-weight: 700; color: white; margin-left: 8px;
+    }
+    .age-badge-baby { background: #ff5252; }
+    .age-badge-toddler { background: #ff9800; }
+    .age-badge-kid { background: #42a5f5; }
+
+    /* === Enhanced Hero === */
+    .hero-speech {
+      background: white; border-radius: 25px; padding: 15px 25px;
+      position: relative; display: inline-block; margin-bottom: 20px;
+      box-shadow: var(--shadow-soft); max-width: 500px;
+      animation: speechPop 0.5s ease 0.3s both;
+    }
+    .hero-speech::after {
+      content: ''; position: absolute; bottom: -15px; left: 50%;
+      transform: translateX(-50%);
+      border-left: 15px solid transparent; border-right: 15px solid transparent;
+      border-top: 15px solid white;
+    }
+    .hero-speech p {
+      font-size: 1.05rem; color: var(--text-main); line-height: 1.8;
+    }
+    @keyframes speechPop {
+      0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* === Mascot with Arms === */
+    .hero-mascot-container {
+      position: relative; display: inline-block;
+    }
+    .mascot-left-hand, .mascot-right-hand {
+      position: absolute; font-size: 2rem; top: 50%;
+    }
+    .mascot-left-hand {
+      left: -30px; animation: waveLeft 2s ease-in-out infinite;
+    }
+    .mascot-right-hand {
+      right: -30px; animation: waveRight 2s ease-in-out infinite 0.5s;
+    }
+    @keyframes waveLeft {
+      0%, 100% { transform: translateY(-50%) rotate(0deg); }
+      50% { transform: translateY(-50%) rotate(-20deg); }
+    }
+    @keyframes waveRight {
+      0%, 100% { transform: translateY(-50%) rotate(0deg); }
+      50% { transform: translateY(-50%) rotate(20deg); }
+    }
+
+    /* === Baby-specific cards (larger, simpler) === */
+    .game-card[data-age="baby"] .card-thumbnail {
+      height: 200px;
+    }
+    .game-card[data-age="baby"] .card-thumbnail .thumb-emoji {
+      font-size: 5.5rem;
+    }
+    .game-card[data-age="baby"] .card-play-btn {
+      font-size: 1rem;
+      padding: 10px 24px;
+    }
+
+    /* === Age Tag on Cards === */
+    .card-age-tag {
+      position: absolute; bottom: 12px; right: 12px;
+      padding: 3px 10px; border-radius: 10px;
+      font-size: 0.7rem; font-weight: 700; color: white;
+    }
+    .card-age-tag.baby { background: #ff5252; }
+    .card-age-tag.toddler { background: #ff9800; }
+    .card-age-tag.kid { background: #42a5f5; }
+
+    /* === NEW badge === */
+    .card-new-badge {
+      position: absolute; top: -5px; left: -5px;
+      background: #ff1744; color: white; padding: 4px 10px;
+      border-radius: 0 0 12px 0; font-size: 0.7rem; font-weight: 700;
+      z-index: 2; animation: newPulse 2s ease-in-out infinite;
+    }
+    @keyframes newPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* === Stats Bar === */
+    .stats-bar {
+      position: relative; z-index: 1; max-width: 1200px;
+      margin: 0 auto 20px; padding: 0 20px;
+      display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .stat-item {
+      background: white; padding: 12px 24px; border-radius: 20px;
+      box-shadow: var(--shadow-soft); display: flex; align-items: center; gap: 8px;
+      font-weight: 600; font-size: 0.9rem;
+    }
+    .stat-number { color: var(--yellow-accent); font-size: 1.3rem; font-weight: 900; }
+
+    /* === Responsive entrance === */
+    @media (max-width: 768px) {
+      .entrance-mascot { font-size: 5rem; }
+      .entrance-title { font-size: 2rem; }
+      .entrance-sub { font-size: 0.9rem; }
+      .age-buttons { gap: 10px; }
+      .age-btn { padding: 15px 20px; min-width: 120px; font-size: 1rem; }
+      .age-btn .age-emoji { font-size: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .entrance-title { font-size: 1.6rem; }
+      .age-buttons { flex-direction: column; align-items: center; }
+      .age-btn { width: 80%; }
+      .stats-bar { gap: 10px; }
+      .stat-item { padding: 8px 16px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sound Toggle (always visible) -->
+  <button class="sound-toggle" id="soundToggle" aria-label="おと ON/OFF">🔊</button>
+
+  <!-- === ENTRANCE / AGE GATE === -->
+  <div class="entrance-overlay" id="entrance">
+    <!-- Floating bubbles -->
+    <div class="entrance-bubble" style="width:80px;height:80px;background:#ff8a80;top:10%;left:5%;animation-delay:-1s;"></div>
+    <div class="entrance-bubble" style="width:60px;height:60px;background:#64b5f6;top:20%;right:10%;animation-delay:-3s;"></div>
+    <div class="entrance-bubble" style="width:100px;height:100px;background:#ffd54f;bottom:15%;left:15%;animation-delay:-2s;"></div>
+    <div class="entrance-bubble" style="width:50px;height:50px;background:#ce93d8;bottom:25%;right:8%;animation-delay:-4s;"></div>
+    <div class="entrance-bubble" style="width:70px;height:70px;background:#a8e6cf;top:50%;left:50%;animation-delay:-1.5s;"></div>
+
+    <div class="entrance-mascot">🐸</div>
+    <h1 class="entrance-title">ゲロゲーロ学園</h1>
+    <p class="entrance-sub">あそんで まなんで <strong>天才</strong>になっちゃおう！</p>
+    <p class="age-select-title">きみは なんさい？</p>
+    <div class="age-buttons">
+      <button class="age-btn age-btn-baby" data-age="baby" onclick="enterSite('baby')">
+        <span class="age-emoji">👶</span>
+        おちびさん
+        <span class="age-range">1〜2さい</span>
+      </button>
+      <button class="age-btn age-btn-toddler" data-age="toddler" onclick="enterSite('toddler')">
+        <span class="age-emoji">🧒</span>
+        ちびっこ
+        <span class="age-range">3〜5さい</span>
+      </button>
+      <button class="age-btn age-btn-kid" data-age="kid" onclick="enterSite('kid')">
+        <span class="age-emoji">🎒</span>
+        しょうがくせい
+        <span class="age-range">6さい〜</span>
+      </button>
+      <button class="age-btn age-btn-all" onclick="enterSite('all')">
+        <span class="age-emoji">🌈</span>
+        ぜんぶみる
+        <span class="age-range">おとなもOK！</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating decorations -->
+  <div class="floating-deco">📚</div>
+  <div class="floating-deco">✏️</div>
+  <div class="floating-deco">🌟</div>
+  <div class="floating-deco">🎵</div>
+  <div class="floating-deco">🌈</div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐸</span>
+        <div>
+          <span class="logo-text">ゲロゲーロ学園</span>
+          <span class="logo-sub">あそんで まなんで 天才になろう！</span>
+        </div>
+      </a>
+      <button class="menu-toggle" aria-label="メニュー">☰</button>
+      <nav>
+        <ul>
+          <li><a href="#games"><span class="nav-emoji">🎮</span>ゲーム</a></li>
+          <li><a href="#about"><span class="nav-emoji">🐸</span>ゲロゲーロって？</a></li>
+          <li><a href="#parents"><span class="nav-emoji">👨‍👩‍👧</span>おうちの方へ</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-mascot-container">
+      <span class="mascot-left-hand">👋</span>
+      <div class="hero-mascot">🐸</div>
+      <span class="mascot-right-hand">✨</span>
+    </div>
+    <h1 class="fade-in-up">ゲロゲーロ学園</h1>
+    <div class="hero-speech fade-in-up delay-1">
+      <p>ゲロゲーロ！ぼくは<strong>ゲロゲーロ先生</strong>だよ！<br>
+      いっしょにあそんで、<em>天才</em>になっちゃおう！</p>
+    </div>
+    <div class="hero-badges fade-in-up delay-2">
+      <span class="badge badge-free">🆓 ぜんぶ無料</span>
+      <span class="badge badge-safe">🔒 あんしん設計</span>
+      <span class="badge badge-fun">👶 1さいからOK</span>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar fade-in-up delay-2">
+    <div class="stat-item">🎮 ゲーム <span class="stat-number">10</span>本</div>
+    <div class="stat-item">👶 対象 <span class="stat-number">1</span>さい〜</div>
+    <div class="stat-item">💰 りょうきん <span class="stat-number">0</span>円</div>
+  </div>
+
+  <!-- Subject Filter -->
+  <div class="subject-filter fade-in-up delay-3" id="filters">
+    <button class="filter-btn active" data-subject="all">🌈 ぜんぶ</button>
+    <button class="filter-btn" data-subject="touch">👶 タッチあそび</button>
+    <button class="filter-btn" data-subject="math">🔢 さんすう</button>
+    <button class="filter-btn" data-subject="japanese">📝 こくご</button>
+    <button class="filter-btn" data-subject="english">🔤 えいご</button>
+    <button class="filter-btn" data-subject="brain">🧠 のうトレ</button>
+  </div>
+
+  <!-- Games Grid -->
+  <section class="games-section" id="games">
+    <h2 class="fade-in-up delay-3">🎮 ゲームをえらぼう！</h2>
+    <div class="games-grid">
+
+      <!-- === BABY GAMES (1-2歳) === -->
+
+      <!-- Pop Bubbles -->
+      <a href="games/pop-bubbles/index.html" class="game-card fade-in-up delay-3" data-subject="touch" data-age="baby">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #ffcdd2, #f8bbd0);">
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">🫧</span>
+          <span class="card-age-tag baby">1〜2さい</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">ぽんぽんタッチ</h3>
+          <p class="card-desc">しゃぼんだまをタッチしてパーン！いろんなおとがするよ！</p>
+          <div class="card-meta">
+            <span class="card-grade">1〜2さい</span>
+            <span class="card-play-btn" style="background: #ff5252;">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Animal Sounds -->
+      <a href="games/animal-sounds/index.html" class="game-card fade-in-up delay-3" data-subject="touch" data-age="baby">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #c8e6c9, #a5d6a7);">
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">🐕</span>
+          <span class="card-age-tag baby">1〜3さい</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">どうぶつのこえ</h3>
+          <p class="card-desc">どうぶつをタッチすると、なきごえがきこえるよ！なんのどうぶつかな？</p>
+          <div class="card-meta">
+            <span class="card-grade">1〜3さい</span>
+            <span class="card-play-btn" style="background: #66bb6a;">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Color Touch -->
+      <a href="games/color-touch/index.html" class="game-card fade-in-up delay-4" data-subject="touch" data-age="baby">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #bbdefb, #90caf9);">
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">🎨</span>
+          <span class="card-age-tag baby">1〜2さい</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">いろいろタッチ</h3>
+          <p class="card-desc">がめんをタッチすると、きれいないろとおとがでるよ！</p>
+          <div class="card-meta">
+            <span class="card-grade">1〜2さい</span>
+            <span class="card-play-btn" style="background: #42a5f5;">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Peek-a-boo -->
+      <a href="games/peekaboo/index.html" class="game-card fade-in-up delay-4" data-subject="touch" data-age="baby">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #fff9c4, #fff176);">
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">🙈</span>
+          <span class="card-age-tag baby">1〜2さい</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">いないいないばあ！</h3>
+          <p class="card-desc">タッチすると、かわいいどうぶつがでてくるよ！いないいない…ばあ！</p>
+          <div class="card-meta">
+            <span class="card-grade">1〜2さい</span>
+            <span class="card-play-btn" style="background: #fdd835;">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Music Maker -->
+      <a href="games/music-maker/index.html" class="game-card fade-in-up delay-4" data-subject="touch" data-age="toddler">
+        <div class="card-new-badge">NEW!</div>
+        <div class="card-thumbnail" style="background: linear-gradient(135deg, #e1bee7, #ce93d8);">
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">🎹</span>
+          <span class="card-age-tag toddler">2〜4さい</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">おとであそぼ</h3>
+          <p class="card-desc">ピアノやたいこをタッチして、おんがくをつくっちゃおう！</p>
+          <div class="card-meta">
+            <span class="card-grade">2〜4さい</span>
+            <span class="card-play-btn" style="background: #ab47bc;">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- === EXISTING GAMES === -->
+
+      <!-- Math Battle -->
+      <a href="games/math-battle/index.html" class="game-card fade-in-up delay-5" data-subject="math" data-age="kid">
+        <div class="card-thumbnail">
+          <span class="card-badge">さんすう</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">⚔️</span>
+          <span class="card-age-tag kid">6さい〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">さんすうバトル</h3>
+          <p class="card-desc">モンスターとけいさんバトル！正しいこたえをえらんでたおそう！</p>
+          <div class="card-meta">
+            <span class="card-grade">小1〜小3</span>
+            <span class="card-play-btn">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Hiragana Touch -->
+      <a href="games/hiragana-touch/index.html" class="game-card fade-in-up delay-5" data-subject="japanese" data-age="kid">
+        <div class="card-thumbnail">
+          <span class="card-badge">こくご</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">あ</span>
+          <span class="card-age-tag kid">5さい〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">ひらがなタッチ</h3>
+          <p class="card-desc">きこえた「おと」のひらがなをタッチ！はやくただしくタッチできるかな？</p>
+          <div class="card-meta">
+            <span class="card-grade">年長〜小1</span>
+            <span class="card-play-btn">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- English Words -->
+      <a href="games/english-words/index.html" class="game-card fade-in-up delay-5" data-subject="english" data-age="kid">
+        <div class="card-thumbnail">
+          <span class="card-badge">えいご</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">🍎</span>
+          <span class="card-age-tag kid">6さい〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">えいごでGO!</h3>
+          <p class="card-desc">えをみて正しいえいごをえらぼう！どうぶつ・たべもの・いろがたくさん！</p>
+          <div class="card-meta">
+            <span class="card-grade">小1〜小4</span>
+            <span class="card-play-btn">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Memory Cards -->
+      <a href="games/memory-cards/index.html" class="game-card fade-in-up delay-5" data-subject="brain" data-age="toddler">
+        <div class="card-thumbnail">
+          <span class="card-badge">のうトレ</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+          </div>
+          <span class="thumb-emoji">🃏</span>
+          <span class="card-age-tag toddler">3さい〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">きおくカード</h3>
+          <p class="card-desc">カードをめくってペアをさがそう！きおく力がどんどんアップ！</p>
+          <div class="card-meta">
+            <span class="card-grade">3さい〜</span>
+            <span class="card-play-btn">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Shape Puzzle -->
+      <a href="games/shape-puzzle/index.html" class="game-card fade-in-up delay-5" data-subject="math" data-age="toddler">
+        <div class="card-thumbnail">
+          <span class="card-badge">さんすう</span>
+          <div class="card-difficulty">
+            <span class="star">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+            <span class="star" style="opacity:0.3">⭐</span>
+          </div>
+          <span class="thumb-emoji">🔷</span>
+          <span class="card-age-tag toddler">4さい〜</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">かたちパズル</h3>
+          <p class="card-desc">いろいろなかたちをくみあわせよう！まる・さんかく・しかく、きみはわかるかな？</p>
+          <div class="card-meta">
+            <span class="card-grade">年長〜小2</span>
+            <span class="card-play-btn">▶ あそぶ</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section" id="about">
+    <div class="about-card">
+      <h2>🐸 ゲロゲーロ学園って？</h2>
+      <p>
+        ゲロゲーロ！ここは<strong>1さいから</strong>あそべる、にほんでいちばんおもしろい知育ゲームサイトだよ！<br>
+        カエルの<strong>ゲロゲーロ先生</strong>といっしょに、あそびながら天才になっちゃおう！
+      </p>
+      <div class="about-features">
+        <div class="about-feature">
+          <div class="feature-icon">👶</div>
+          <h3>1さいからOK</h3>
+          <p>タッチするだけのかんたんゲームから、むずかしいもんだいまであるよ</p>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">🔊</div>
+          <h3>おとがいっぱい</h3>
+          <p>BGMやこうかおんで、もっとたのしくあそべるよ</p>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">🏆</div>
+          <h3>ごほうびいっぱい</h3>
+          <p>がんばるとスターがもらえる！たくさんあつめよう</p>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">🔒</div>
+          <h3>あんぜん設計</h3>
+          <p>こうこくなし、かきんなし。おうちの方もあんしん！</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Parents Section -->
+  <section class="about-section" id="parents">
+    <div class="about-card" style="border-color: var(--blue-light);">
+      <h2>👨‍👩‍👧 おうちの方へ</h2>
+      <p>
+        ゲロゲーロ学園は、<strong>1歳のお子さまから</strong>安心して遊べる無料の知育ゲームサイトです。<br>
+        ブラウザだけで遊べるので、アプリのインストールは不要です。
+      </p>
+      <div class="about-features">
+        <div class="about-feature">
+          <div class="feature-icon">🆓</div>
+          <h3>完全無料・広告なし</h3>
+          <p>すべてのゲームが無料。広告も課金要素も一切ありません。</p>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">🔐</div>
+          <h3>プライバシー保護</h3>
+          <p>個人情報の収集・ユーザー登録は不要。データは端末内にのみ保存されます。</p>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">📱</div>
+          <h3>アプリ不要</h3>
+          <p>ブラウザだけで動作。PC・タブレット・スマホ対応。オフラインでも遊べます。</p>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">👶</div>
+          <h3>年齢別ゲーム</h3>
+          <p>1〜2歳向けのタッチ遊びから小学校の学習内容まで、年齢に合ったゲームを提供。</p>
+        </div>
+      </div>
+      <div style="margin-top: 25px;">
+        <a href="safety-guide.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(135deg, #4ecdc4, #2bbbad); color: white; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(78,205,196,0.3); transition: all 0.3s ease;">
+          📖 赤ちゃんに安全にスマホを渡す方法
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-mascot">🐸</div>
+    <p>ゲロゲーロ学園｜1さいからあそべる子どもの無料知育ゲーム</p>
+    <p style="margin-top: 5px; font-size: 0.75rem; opacity: 0.7;">© 2026 ゲロゲーロ学園 All rights reserved.</p>
+    <div class="footer-links">
+      <a href="safety-guide.html">📖 安全ガイド</a>
+      <a href="../index.html">シュールゲームス</a>
+    </div>
+  </footer>
+
+  <script src="js/audio.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+  <script>
+    /* === Entrance / Age Gate === */
+    function enterSite(age) {
+      // Initialize audio on user interaction
+      geroAudio.init();
+      geroAudio.playCelebration();
+
+      // Save age preference
+      localStorage.setItem('gero-age', age);
+
+      // Hide entrance
+      const entrance = document.getElementById('entrance');
+      entrance.classList.add('hide');
+      setTimeout(() => entrance.style.display = 'none', 800);
+
+      // Filter games by age
+      filterByAge(age);
+
+      // Start BGM after a brief delay
+      setTimeout(() => {
+        geroAudio.startBGM(100, 'C');
+      }, 1000);
+    }
+
+    function filterByAge(age) {
+      const cards = document.querySelectorAll('.game-card');
+      // Show all games, but highlight recommended ones
+      cards.forEach(card => {
+        card.style.display = '';
+        card.style.opacity = '1';
+        card.style.order = '0';
+        const cardAge = card.dataset.age;
+        if (age === 'all' || age === 'kid') {
+          // Show everything normally
+        } else {
+          // Recommended games get priority order, others are slightly dimmed
+          const isRecommended =
+            (age === 'baby' && cardAge === 'baby') ||
+            (age === 'toddler' && (cardAge === 'baby' || cardAge === 'toddler'));
+          if (isRecommended) {
+            card.style.order = '-1';
+          } else {
+            card.style.opacity = '0.55';
+          }
+        }
+      });
+    }
+
+    // Check if age was already selected
+    const savedAge = localStorage.getItem('gero-age');
+    if (savedAge) {
+      const entrance = document.getElementById('entrance');
+      entrance.style.display = 'none';
+      filterByAge(savedAge);
+    }
+
+    // Sound toggle
+    document.getElementById('soundToggle').addEventListener('click', () => {
+      geroAudio.init();
+      const isOn = geroAudio.toggleMute();
+      document.getElementById('soundToggle').textContent = isOn ? '🔊' : '🔇';
+    });
+  </script>
+</body>
+</html>

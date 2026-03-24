@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>ぽんぽんタッチ｜ゲロゲーロ学園</title>
+  <meta name="baby-game" content="true">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/baby-launcher.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* === Full-screen baby game === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100dvh;
+      overflow: hidden;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+    }
+
+    #game-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100dvh;
+      overflow: hidden;
+      transition: background 3s ease;
+    }
+
+    /* === Background gradient animation === */
+    @keyframes bgShift {
+      0%   { background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%); }
+      16%  { background: linear-gradient(135deg, #fff3e0 0%, #fce4ec 50%, #f3e5f5 100%); }
+      33%  { background: linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 50%, #fff9c4 100%); }
+      50%  { background: linear-gradient(135deg, #f3e5f5 0%, #fff3e0 50%, #e8f5e9 100%); }
+      66%  { background: linear-gradient(135deg, #e3f2fd 0%, #fff9c4 50%, #fce4ec 100%); }
+      83%  { background: linear-gradient(135deg, #fff9c4 0%, #f3e5f5 50%, #e3f2fd 100%); }
+      100% { background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%); }
+    }
+
+    #game-canvas {
+      animation: bgShift 30s ease infinite;
+    }
+
+    /* === Bubble styles === */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      will-change: transform;
+      transition: none;
+    }
+
+    .bubble-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glossy highlight */
+    .bubble-inner::before {
+      content: '';
+      position: absolute;
+      top: 12%; left: 18%;
+      width: 35%; height: 30%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 100%);
+      border-radius: 50%;
+      transform: rotate(-30deg);
+    }
+
+    .bubble-inner::after {
+      content: '';
+      position: absolute;
+      bottom: 15%; right: 20%;
+      width: 15%; height: 12%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+      border-radius: 50%;
+    }
+
+    /* === Wobble float animation === */
+    @keyframes floatWobble {
+      0%   { transform: translate(0, 0) scale(1); }
+      25%  { transform: translate(8px, -12px) scale(1.03); }
+      50%  { transform: translate(-5px, -6px) scale(0.98); }
+      75%  { transform: translate(6px, 8px) scale(1.02); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    .bubble {
+      animation: floatWobble 4s ease-in-out infinite;
+    }
+
+    /* === Rainbow bubble === */
+    @keyframes rainbowHue {
+      0%   { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    @keyframes shimmer {
+      0%, 100% { box-shadow: 0 0 20px rgba(255,100,200,0.4), 0 0 40px rgba(100,200,255,0.3), inset 0 0 20px rgba(255,255,255,0.2); }
+      50%      { box-shadow: 0 0 30px rgba(100,255,200,0.5), 0 0 60px rgba(255,200,100,0.4), inset 0 0 30px rgba(255,255,255,0.3); }
+    }
+
+    .bubble.rainbow .bubble-inner {
+      animation: rainbowHue 2s linear infinite;
+      background: linear-gradient(135deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb, #d4fc79, #ffecd2) !important;
+    }
+
+    .bubble.rainbow {
+      animation: floatWobble 3s ease-in-out infinite, shimmer 1.5s ease-in-out infinite;
+    }
+
+    /* === Pop burst particles === */
+    .pop-particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    @keyframes burstOut {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* === Sparkle on empty tap === */
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 24px;
+      will-change: transform, opacity;
+      animation: sparkleUp 0.8s ease-out forwards;
+    }
+
+    @keyframes sparkleUp {
+      0%   { transform: scale(0) rotate(0deg); opacity: 1; }
+      50%  { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+      100% { transform: scale(0.5) translateY(-60px) rotate(360deg); opacity: 0; }
+    }
+
+    /* === Emoji particles from pops === */
+    .emoji-particle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 32px;
+      will-change: transform, opacity;
+      animation: emojiFloat 1.5s ease-out forwards;
+    }
+
+    @keyframes emojiFloat {
+      0%   { transform: translateY(0) scale(0); opacity: 1; }
+      30%  { transform: translateY(-30px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(-120px) scale(0.6); opacity: 0; }
+    }
+
+    /* === Celebration overlay === */
+    .celebration-particle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 40px;
+      will-change: transform, opacity;
+      animation: celebrationFall 2s ease-in forwards;
+      z-index: 100;
+    }
+
+    @keyframes celebrationFall {
+      0%   { transform: translateY(-50px) rotate(0deg) scale(0); opacity: 1; }
+      20%  { transform: translateY(0) rotate(72deg) scale(1.3); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+    }
+
+    /* === Parent exit button === */
+    #parent-exit {
+      position: fixed;
+      top: 8px; right: 8px;
+      width: 36px; height: 36px;
+      font-size: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.25;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #back-button {
+      position: fixed;
+      top: 8px; right: 50px;
+      padding: 8px 16px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      cursor: pointer;
+      z-index: 200;
+      display: none;
+      text-decoration: none;
+    }
+
+    #back-button:hover { background: rgba(0,0,0,0.7); }
+
+    /* === Pop scale animation on bubble === */
+    @keyframes popScale {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.3); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .bubble.popping {
+      animation: popScale 0.25s ease-out forwards !important;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-canvas"></div>
+  <button id="parent-exit" aria-label="Parent exit">🐸</button>
+  <a id="back-button" href="../../index.html">もどる ←</a>
+
+  <script src="../../js/audio.js"></script>
+  <script>
+    /* ============================================
+       ぽんぽんタッチ (Pop Pop Touch)
+       Baby Bubble Popping Game (ages 1-2)
+       ============================================ */
+
+    const canvas = document.getElementById('game-canvas');
+    const parentBtn = document.getElementById('parent-exit');
+    const backBtn = document.getElementById('back-button');
+
+    let audioInitialized = false;
+    let popCount = 0;
+    let bubbles = [];
+    const MAX_BUBBLES = 13;
+    const MIN_BUBBLES = 10;
+
+    /* === Pastel colors === */
+    const PASTEL_COLORS = [
+      'radial-gradient(circle at 35% 35%, #ffb3ba, #ff6f7a)',
+      'radial-gradient(circle at 35% 35%, #ffdfba, #ffb347)',
+      'radial-gradient(circle at 35% 35%, #ffffba, #ffe066)',
+      'radial-gradient(circle at 35% 35%, #baffc9, #66d98e)',
+      'radial-gradient(circle at 35% 35%, #bae1ff, #66b3ff)',
+      'radial-gradient(circle at 35% 35%, #e8baff, #c266ff)',
+      'radial-gradient(circle at 35% 35%, #ffbaf0, #ff66d9)',
+      'radial-gradient(circle at 35% 35%, #baffee, #66ffd0)',
+      'radial-gradient(circle at 35% 35%, #ffd4ba, #ff9966)',
+      'radial-gradient(circle at 35% 35%, #d4baff, #9966ff)',
+    ];
+
+    const FLAT_COLORS = [
+      '#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff',
+      '#e8baff', '#ffbaf0', '#baffee', '#ffd4ba', '#d4baff'
+    ];
+
+    const EMOJI_PARTICLES = ['⭐', '💖', '✨', '🌟', '💫', '🎀', '🌈', '🦋'];
+    const CELEBRATION_EMOJIS = ['🎉', '⭐', '🌈', '💖', '✨', '🎊', '🌟', '💫', '🦋', '🎀', '🌸'];
+
+    const MUSICAL_NOTES = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5'];
+
+    /* === Initialize audio on first touch === */
+    function ensureAudio() {
+      if (!audioInitialized && window.geroAudio) {
+        geroAudio.init();
+        geroAudio.resume();
+        audioInitialized = true;
+        // Start gentle BGM
+        setTimeout(() => {
+          geroAudio.startBGM(80, 'C');
+          geroAudio.setBGMVolume(0.15);
+        }, 300);
+      }
+    }
+
+    /* === Create a bubble === */
+    function createBubble(isRainbow = false) {
+      const size = isRainbow
+        ? 140 + Math.random() * 40
+        : 80 + Math.random() * 70;
+
+      const margin = size / 2;
+      const maxX = window.innerWidth - size - margin;
+      const maxY = window.innerHeight - size - margin;
+      const x = margin + Math.random() * Math.max(maxX, 0);
+      const y = margin + Math.random() * Math.max(maxY, 0);
+
+      const el = document.createElement('div');
+      el.className = 'bubble' + (isRainbow ? ' rainbow' : '');
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+
+      const colorIdx = Math.floor(Math.random() * PASTEL_COLORS.length);
+
+      const inner = document.createElement('div');
+      inner.className = 'bubble-inner';
+      if (!isRainbow) {
+        inner.style.background = PASTEL_COLORS[colorIdx];
+        inner.style.boxShadow = `0 4px 15px rgba(0,0,0,0.1), inset 0 -3px 8px rgba(0,0,0,0.05)`;
+      }
+      el.appendChild(inner);
+
+      // Randomize animation timing
+      const duration = 3 + Math.random() * 3;
+      const delay = Math.random() * -5;
+      el.style.animationDuration = isRainbow ? `${duration}s, 1.5s` : `${duration}s`;
+      el.style.animationDelay = `${delay}s`;
+
+      // Movement drift
+      const driftData = {
+        el,
+        x, y, size,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        isRainbow,
+        colorIdx,
+        alive: true
+      };
+
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        popBubble(driftData);
+      }, { passive: false });
+
+      canvas.appendChild(el);
+      bubbles.push(driftData);
+      return driftData;
+    }
+
+    /* === Pop a bubble === */
+    function popBubble(bubble) {
+      if (!bubble.alive) return;
+      bubble.alive = false;
+      ensureAudio();
+
+      popCount++;
+      const el = bubble.el;
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      // Play sound
+      if (bubble.isRainbow && window.geroAudio) {
+        geroAudio.playCelebration();
+      } else if (window.geroAudio) {
+        geroAudio.playPop();
+        // Also play a musical note
+        const note = MUSICAL_NOTES[Math.floor(Math.random() * MUSICAL_NOTES.length)];
+        geroAudio.playNote(note, 0.3, 'sine');
+      }
+
+      // Pop animation
+      el.classList.add('popping');
+
+      // Burst particles
+      createBurstParticles(cx, cy, bubble.colorIdx, bubble.isRainbow);
+
+      // Emoji particle (occasional)
+      if (Math.random() < 0.4 || bubble.isRainbow) {
+        createEmojiParticle(cx, cy);
+      }
+
+      // Rainbow celebration
+      if (bubble.isRainbow) {
+        createCelebration();
+      }
+
+      // Remove after animation
+      setTimeout(() => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+        const idx = bubbles.indexOf(bubble);
+        if (idx > -1) bubbles.splice(idx, 1);
+
+        // Spawn replacement
+        const shouldBeRainbow = popCount > 0 && popCount % 10 === 0;
+        createBubble(shouldBeRainbow);
+
+        // Keep bubble count up
+        while (bubbles.length < MIN_BUBBLES) {
+          createBubble(false);
+        }
+      }, 260);
+    }
+
+    /* === Burst particles === */
+    function createBurstParticles(cx, cy, colorIdx, isRainbow) {
+      const count = isRainbow ? 16 : 8;
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'pop-particle';
+        const pSize = isRainbow ? 10 + Math.random() * 14 : 6 + Math.random() * 10;
+        particle.style.width = pSize + 'px';
+        particle.style.height = pSize + 'px';
+
+        const color = isRainbow
+          ? FLAT_COLORS[Math.floor(Math.random() * FLAT_COLORS.length)]
+          : FLAT_COLORS[colorIdx] || FLAT_COLORS[0];
+        particle.style.background = color;
+
+        particle.style.left = cx + 'px';
+        particle.style.top = cy + 'px';
+
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+        const dist = isRainbow ? 60 + Math.random() * 80 : 40 + Math.random() * 50;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist;
+        const dur = 0.3 + Math.random() * 0.3;
+
+        particle.style.animation = `burstOut ${dur}s ease-out forwards`;
+        particle.style.setProperty('--tx', tx + 'px');
+        particle.style.setProperty('--ty', ty + 'px');
+
+        // Use inline keyframe via JS for dynamic values
+        particle.animate([
+          { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.2)`, opacity: 0 }
+        ], {
+          duration: dur * 1000,
+          easing: 'ease-out',
+          fill: 'forwards'
+        });
+
+        canvas.appendChild(particle);
+        setTimeout(() => {
+          if (particle.parentNode) particle.parentNode.removeChild(particle);
+        }, dur * 1000 + 50);
+      }
+    }
+
+    /* === Emoji particle === */
+    function createEmojiParticle(cx, cy) {
+      const el = document.createElement('div');
+      el.className = 'emoji-particle';
+      el.textContent = EMOJI_PARTICLES[Math.floor(Math.random() * EMOJI_PARTICLES.length)];
+      el.style.left = (cx - 16 + (Math.random() - 0.5) * 30) + 'px';
+      el.style.top = (cy - 16) + 'px';
+      canvas.appendChild(el);
+      setTimeout(() => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, 1600);
+    }
+
+    /* === Sparkle on empty tap === */
+    function createSparkle(x, y) {
+      const el = document.createElement('div');
+      el.className = 'sparkle';
+      const emojis = ['✨', '⭐', '💫', '🌟'];
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = (x - 12) + 'px';
+      el.style.top = (y - 12) + 'px';
+      canvas.appendChild(el);
+
+      if (window.geroAudio && audioInitialized) {
+        geroAudio.playBoop();
+      }
+
+      setTimeout(() => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, 850);
+    }
+
+    /* === Rainbow celebration === */
+    function createCelebration() {
+      const count = 20;
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'celebration-particle';
+          el.textContent = CELEBRATION_EMOJIS[Math.floor(Math.random() * CELEBRATION_EMOJIS.length)];
+          el.style.left = (Math.random() * window.innerWidth) + 'px';
+          el.style.top = '-50px';
+          el.style.fontSize = (28 + Math.random() * 24) + 'px';
+          document.body.appendChild(el);
+          setTimeout(() => {
+            if (el.parentNode) el.parentNode.removeChild(el);
+          }, 2100);
+        }, i * 80);
+      }
+    }
+
+    /* === Bubble movement loop === */
+    function updateBubbles() {
+      bubbles.forEach(b => {
+        if (!b.alive) return;
+        b.x += b.vx;
+        b.y += b.vy;
+
+        // Bounce off edges
+        const margin = 5;
+        if (b.x < margin) { b.x = margin; b.vx = Math.abs(b.vx); }
+        if (b.y < margin) { b.y = margin; b.vy = Math.abs(b.vy); }
+        if (b.x + b.size > window.innerWidth - margin) { b.x = window.innerWidth - b.size - margin; b.vx = -Math.abs(b.vx); }
+        if (b.y + b.size > window.innerHeight - margin) { b.y = window.innerHeight - b.size - margin; b.vy = -Math.abs(b.vy); }
+
+        // Slight random drift
+        b.vx += (Math.random() - 0.5) * 0.05;
+        b.vy += (Math.random() - 0.5) * 0.05;
+        // Clamp speed
+        const maxSpeed = 1.0;
+        b.vx = Math.max(-maxSpeed, Math.min(maxSpeed, b.vx));
+        b.vy = Math.max(-maxSpeed, Math.min(maxSpeed, b.vy));
+
+        b.el.style.left = b.x + 'px';
+        b.el.style.top = b.y + 'px';
+      });
+
+      requestAnimationFrame(updateBubbles);
+    }
+
+    /* === Canvas tap (empty space) === */
+    canvas.addEventListener('pointerdown', (e) => {
+      ensureAudio();
+      // Only sparkle if we didn't hit a bubble
+      if (e.target === canvas || e.target === document.body) {
+        createSparkle(e.clientX, e.clientY);
+      }
+    }, { passive: true });
+
+    /* === Parent exit (triple tap) === */
+    let parentTaps = 0;
+    let parentTimer = null;
+
+    parentBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      parentTaps++;
+
+      if (parentTaps === 1) {
+        parentTimer = setTimeout(() => {
+          parentTaps = 0;
+        }, 2000);
+      }
+
+      if (parentTaps >= 3) {
+        clearTimeout(parentTimer);
+        parentTaps = 0;
+        backBtn.style.display = backBtn.style.display === 'block' ? 'none' : 'block';
+      }
+    }, { passive: false });
+
+    /* === Prevent zoom/scroll === */
+    document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
+    document.addEventListener('touchmove', e => {
+      if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+
+    /* === Initialize === */
+    function init() {
+      // Spawn initial bubbles
+      for (let i = 0; i < MAX_BUBBLES; i++) {
+        createBubble(false);
+      }
+      // Start movement
+      requestAnimationFrame(updateBubbles);
+    }
+
+    init();
+  </script>
+</body>
+</html>

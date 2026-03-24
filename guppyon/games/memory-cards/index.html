@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>きおくカード - ぐっぴょん</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    /* ===== Purple Theme Overrides ===== */
+    :root {
+      --purple-deep: #7b1fa2;
+      --purple-main: #ab47bc;
+      --purple-light: #e1bee7;
+      --purple-pale: #f3e5f5;
+      --purple-glow: rgba(171, 71, 188, 0.4);
+      --gold-star: #ffd600;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 50%, #e8eaf6 100%);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    body::before {
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(171, 71, 188, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(123, 31, 162, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(186, 104, 200, 0.1) 0%, transparent 50%);
+    }
+
+    body::after {
+      background-image: radial-gradient(circle, rgba(171, 71, 188, 0.06) 2px, transparent 2px);
+      background-size: 40px 40px;
+    }
+
+    /* ===== Layout ===== */
+    .game-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* ===== Header ===== */
+    .game-header {
+      text-align: center;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .game-header h1 {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.8rem;
+      color: var(--purple-deep);
+      text-shadow: 2px 2px 0 rgba(171, 71, 188, 0.15);
+      margin-bottom: 2px;
+    }
+
+    .game-header .subtitle {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.85rem;
+      color: var(--purple-main);
+      font-weight: 500;
+    }
+
+    .header-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 4px;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ===== Start Screen ===== */
+    .screen {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .start-screen {
+      gap: 20px;
+      padding-top: 10px;
+    }
+
+    .difficulty-title {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.2rem;
+      color: var(--purple-deep);
+    }
+
+    .difficulty-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .difficulty-card {
+      background: white;
+      border: 3px solid var(--purple-light);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(123, 31, 162, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .difficulty-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(171, 71, 188, 0.05), rgba(123, 31, 162, 0.02));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .difficulty-card:hover,
+    .difficulty-card:active {
+      border-color: var(--purple-main);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(123, 31, 162, 0.18);
+    }
+
+    .difficulty-card:hover::before,
+    .difficulty-card:active::before {
+      opacity: 1;
+    }
+
+    .difficulty-card .diff-emoji {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .difficulty-card .diff-label {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.2rem;
+      color: var(--purple-deep);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .difficulty-card .diff-desc {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    /* ===== Game Screen ===== */
+    .game-screen {
+      gap: 12px;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 400px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      background: white;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(123, 31, 162, 0.08);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.85rem;
+      color: var(--purple-deep);
+      font-weight: 500;
+    }
+
+    .stat-item .stat-icon {
+      font-size: 1rem;
+    }
+
+    .stat-item .stat-value {
+      font-family: 'Kosugi Maru', sans-serif;
+      font-weight: 700;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* ===== Card Grid ===== */
+    .card-grid {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      max-width: 420px;
+      justify-items: center;
+      padding: 8px;
+    }
+
+    .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* ===== Card ===== */
+    .memory-card {
+      aspect-ratio: 1;
+      width: 100%;
+      max-width: 100px;
+      perspective: 600px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease;
+      transform-style: preserve-3d;
+    }
+
+    .memory-card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+    }
+
+    /* Card back */
+    .card-back {
+      background: linear-gradient(135deg, var(--purple-main), var(--purple-deep));
+      border: 3px solid var(--purple-light);
+      box-shadow: 0 4px 12px rgba(123, 31, 162, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-back::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+    }
+
+    .card-back::after {
+      content: '?';
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.8rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .card-back .back-emoji {
+      display: none;
+    }
+
+    /* Card front */
+    .card-front {
+      background: white;
+      border: 3px solid var(--purple-light);
+      transform: rotateY(180deg);
+      box-shadow: 0 4px 12px rgba(123, 31, 162, 0.1);
+    }
+
+    /* Matched state */
+    .memory-card.matched .card-front {
+      border-color: var(--gold-star);
+      box-shadow: 0 0 16px rgba(255, 214, 0, 0.4), 0 4px 12px rgba(123, 31, 162, 0.1);
+      animation: matchPulse 0.6s ease;
+    }
+
+    .memory-card.matched {
+      cursor: default;
+    }
+
+    @keyframes matchPulse {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.12); }
+      60% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+
+    /* Shake on mismatch */
+    .memory-card.shake .card-inner {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotateY(180deg) translateX(0); }
+      25% { transform: rotateY(180deg) translateX(-5px); }
+      75% { transform: rotateY(180deg) translateX(5px); }
+    }
+
+    /* ===== Result Screen ===== */
+    .result-screen {
+      gap: 16px;
+      padding-top: 16px;
+    }
+
+    .result-card {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(123, 31, 162, 0.12);
+      width: 100%;
+      max-width: 380px;
+      border: 3px solid var(--purple-light);
+    }
+
+    .result-title {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.6rem;
+      color: var(--purple-deep);
+      margin-bottom: 8px;
+    }
+
+    .result-stars {
+      font-size: 2.4rem;
+      margin: 12px 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .result-stars .star {
+      display: inline-block;
+      transition: transform 0.4s ease;
+    }
+
+    .result-stars .star.earned {
+      animation: starPop 0.5s ease both;
+    }
+
+    .result-stars .star:nth-child(1) { animation-delay: 0.2s; }
+    .result-stars .star:nth-child(2) { animation-delay: 0.4s; }
+    .result-stars .star:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes starPop {
+      0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+      60% { transform: scale(1.3) rotate(10deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .result-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .result-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      background: var(--purple-pale);
+      border-radius: var(--radius-sm);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.95rem;
+      color: var(--purple-deep);
+    }
+
+    .result-stat-row .rs-value {
+      font-weight: 700;
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    .result-message {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1rem;
+      color: var(--purple-main);
+      margin-top: 8px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .game-btn {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 12px 28px;
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-main), var(--purple-deep));
+      color: white;
+      box-shadow: 0 4px 15px rgba(123, 31, 162, 0.3);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(123, 31, 162, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--purple-deep);
+      border: 2px solid var(--purple-light);
+      box-shadow: 0 4px 12px rgba(123, 31, 162, 0.08);
+    }
+
+    .btn-secondary:hover,
+    .btn-secondary:active {
+      border-color: var(--purple-main);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(123, 31, 162, 0.15);
+    }
+
+    /* ===== Confetti Canvas ===== */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ===== Mobile Responsive ===== */
+    @media (max-width: 480px) {
+      .game-wrapper {
+        padding: 8px 10px 20px;
+      }
+
+      .game-header h1 {
+        font-size: 1.4rem;
+      }
+
+      .header-icon {
+        font-size: 1.6rem;
+      }
+
+      .card-grid {
+        gap: 8px;
+        padding: 4px;
+        max-width: 340px;
+      }
+
+      .card-face {
+        font-size: 1.6rem;
+        border-radius: 10px;
+      }
+
+      .card-back::before {
+        inset: 4px;
+      }
+
+      .card-back::after {
+        font-size: 1.4rem;
+      }
+
+      .stat-item {
+        padding: 5px 10px;
+        font-size: 0.78rem;
+      }
+
+      .stats-bar {
+        gap: 8px;
+      }
+
+      .difficulty-card {
+        padding: 14px 16px;
+      }
+
+      .difficulty-card .diff-emoji {
+        font-size: 1.6rem;
+      }
+
+      .difficulty-card .diff-label {
+        font-size: 1rem;
+      }
+
+      .result-card {
+        padding: 22px 18px;
+      }
+
+      .result-title {
+        font-size: 1.3rem;
+      }
+
+      .result-stars {
+        font-size: 2rem;
+      }
+
+      .game-btn {
+        padding: 10px 22px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .card-grid {
+        gap: 6px;
+        max-width: 300px;
+      }
+
+      .card-face {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* ===== Utility ===== */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="game-wrapper">
+    <!-- Header -->
+    <header class="game-header">
+      <span class="header-icon">🧠</span>
+      <h1>きおくカード</h1>
+      <p class="subtitle">カードをめくって おなじペアを みつけよう！</p>
+    </header>
+
+    <!-- ===== Start Screen ===== -->
+    <div id="start-screen" class="screen start-screen active">
+      <p class="difficulty-title">むずかしさを えらんでね</p>
+      <div class="difficulty-cards">
+        <div class="difficulty-card" data-difficulty="easy" role="button" tabindex="0">
+          <span class="diff-emoji">🌟</span>
+          <span class="diff-label">かんたん</span>
+          <span class="diff-desc">3×4 マス（6ペア）</span>
+        </div>
+        <div class="difficulty-card" data-difficulty="normal" role="button" tabindex="0">
+          <span class="diff-emoji">🌙</span>
+          <span class="diff-label">ふつう</span>
+          <span class="diff-desc">4×4 マス（8ペア）</span>
+        </div>
+        <div class="difficulty-card" data-difficulty="hard" role="button" tabindex="0">
+          <span class="diff-emoji">🔥</span>
+          <span class="diff-label">むずかしい</span>
+          <span class="diff-desc">4×5 マス（10ペア）</span>
+        </div>
+      </div>
+      <div class="btn-group" style="margin-top: 12px;">
+        <a href="../../index.html" class="game-btn btn-secondary">🏠 もどる</a>
+      </div>
+    </div>
+
+    <!-- ===== Game Screen ===== -->
+    <div id="game-screen" class="screen game-screen">
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-icon">🃏</span>
+          <span>ペア</span>
+          <span class="stat-value" id="pairs-found">0</span>
+          <span>/</span>
+          <span class="stat-value" id="pairs-total">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon">👆</span>
+          <span>かいすう</span>
+          <span class="stat-value" id="move-count">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon">⏱️</span>
+          <span class="stat-value" id="timer">0:00</span>
+        </div>
+      </div>
+      <div id="card-grid" class="card-grid"></div>
+      <div class="btn-group">
+        <button class="game-btn btn-secondary" id="btn-back-to-start">🏠 やめる</button>
+      </div>
+    </div>
+
+    <!-- ===== Result Screen ===== -->
+    <div id="result-screen" class="screen result-screen">
+      <div class="result-card">
+        <div class="result-title">🎉 おめでとう！</div>
+        <div class="result-stars" id="result-stars"></div>
+        <div class="result-stats">
+          <div class="result-stat-row">
+            <span>🃏 ペアすう</span>
+            <span class="rs-value" id="rs-pairs"></span>
+          </div>
+          <div class="result-stat-row">
+            <span>👆 かいすう</span>
+            <span class="rs-value" id="rs-moves"></span>
+          </div>
+          <div class="result-stat-row">
+            <span>⏱️ じかん</span>
+            <span class="rs-value" id="rs-time"></span>
+          </div>
+        </div>
+        <p class="result-message" id="result-message"></p>
+      </div>
+      <div class="btn-group">
+        <button class="game-btn btn-primary" id="btn-retry">🔄 もういちど</button>
+        <a href="../../index.html" class="game-btn btn-secondary">🏠 もどる</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================
+       きおくカード (Memory Cards) Game Logic
+       ============================================ */
+
+    const ALL_EMOJIS = ['🐸','🌸','🚀','🍰','⭐','🎵','🌈','🦄','🍕','🎀'];
+
+    const DIFFICULTY = {
+      easy:   { cols: 3, rows: 4, pairs: 6  },
+      normal: { cols: 4, rows: 4, pairs: 8  },
+      hard:   { cols: 4, rows: 5, pairs: 10 },
+    };
+
+    // State
+    let currentDifficulty = null;
+    let cards = [];
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let moves = 0;
+    let pairsFound = 0;
+    let totalPairs = 0;
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+
+    // DOM refs
+    const startScreen  = document.getElementById('start-screen');
+    const gameScreen   = document.getElementById('game-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const cardGrid     = document.getElementById('card-grid');
+    const pairsFoundEl = document.getElementById('pairs-found');
+    const pairsTotalEl = document.getElementById('pairs-total');
+    const moveCountEl  = document.getElementById('move-count');
+    const timerEl      = document.getElementById('timer');
+
+    // ===== Screen Management =====
+    function showScreen(screen) {
+      [startScreen, gameScreen, resultScreen].forEach(s => s.classList.remove('active'));
+      screen.classList.add('active');
+    }
+
+    // ===== Difficulty Selection =====
+    document.querySelectorAll('.difficulty-card').forEach(card => {
+      const handler = () => startGame(card.dataset.difficulty);
+      card.addEventListener('click', handler);
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }});
+    });
+
+    document.getElementById('btn-back-to-start').addEventListener('click', () => {
+      stopTimer();
+      showScreen(startScreen);
+    });
+
+    document.getElementById('btn-retry').addEventListener('click', () => {
+      startGame(currentDifficulty);
+    });
+
+    // ===== Start Game =====
+    function startGame(difficulty) {
+      currentDifficulty = difficulty;
+      const cfg = DIFFICULTY[difficulty];
+      totalPairs = cfg.pairs;
+      pairsFound = 0;
+      moves = 0;
+      elapsedSeconds = 0;
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+
+      // Update UI
+      pairsFoundEl.textContent = '0';
+      pairsTotalEl.textContent = totalPairs;
+      moveCountEl.textContent = '0';
+      timerEl.textContent = '0:00';
+
+      // Build cards array
+      const emojis = ALL_EMOJIS.slice(0, cfg.pairs);
+      const deck = [...emojis, ...emojis];
+      shuffle(deck);
+
+      // Set grid class
+      cardGrid.className = 'card-grid cols-' + cfg.cols;
+
+      // Create card elements
+      cardGrid.innerHTML = '';
+      cards = [];
+      deck.forEach((emoji, i) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'memory-card';
+        cardEl.dataset.emoji = emoji;
+        cardEl.dataset.index = i;
+        cardEl.setAttribute('role', 'button');
+        cardEl.setAttribute('tabindex', '0');
+        cardEl.setAttribute('aria-label', 'カード ' + (i + 1));
+
+        cardEl.innerHTML = `
+          <div class="card-inner">
+            <div class="card-face card-back"></div>
+            <div class="card-face card-front">${emoji}</div>
+          </div>
+        `;
+
+        cardEl.addEventListener('click', () => flipCard(cardEl));
+        cardEl.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flipCard(cardEl); }
+        });
+
+        cardGrid.appendChild(cardEl);
+        cards.push(cardEl);
+      });
+
+      showScreen(gameScreen);
+      startTimer();
+    }
+
+    // ===== Card Flip Logic =====
+    function flipCard(cardEl) {
+      if (lockBoard) return;
+      if (cardEl.classList.contains('flipped')) return;
+      if (cardEl.classList.contains('matched')) return;
+
+      cardEl.classList.add('flipped');
+
+      if (!firstCard) {
+        firstCard = cardEl;
+        return;
+      }
+
+      secondCard = cardEl;
+      moves++;
+      moveCountEl.textContent = moves;
+      lockBoard = true;
+
+      checkMatch();
+    }
+
+    function checkMatch() {
+      const isMatch = firstCard.dataset.emoji === secondCard.dataset.emoji;
+
+      if (isMatch) {
+        handleMatch();
+      } else {
+        handleMismatch();
+      }
+    }
+
+    function handleMatch() {
+      firstCard.classList.add('matched');
+      secondCard.classList.add('matched');
+      pairsFound++;
+      pairsFoundEl.textContent = pairsFound;
+
+      resetSelection();
+
+      if (pairsFound === totalPairs) {
+        setTimeout(endGame, 600);
+      }
+    }
+
+    function handleMismatch() {
+      firstCard.classList.add('shake');
+      secondCard.classList.add('shake');
+
+      setTimeout(() => {
+        firstCard.classList.remove('flipped', 'shake');
+        secondCard.classList.remove('flipped', 'shake');
+        resetSelection();
+      }, 1000);
+    }
+
+    function resetSelection() {
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+    }
+
+    // ===== Timer =====
+    function startTimer() {
+      stopTimer();
+      elapsedSeconds = 0;
+      timerInterval = setInterval(() => {
+        elapsedSeconds++;
+        const m = Math.floor(elapsedSeconds / 60);
+        const s = elapsedSeconds % 60;
+        timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    // ===== End Game =====
+    function endGame() {
+      stopTimer();
+
+      const stars = calcStars(moves, totalPairs);
+      const timeStr = formatTime(elapsedSeconds);
+
+      // Fill result UI
+      document.getElementById('rs-pairs').textContent = totalPairs + 'ペア';
+      document.getElementById('rs-moves').textContent = moves + 'かい';
+      document.getElementById('rs-time').textContent = timeStr;
+
+      const starsEl = document.getElementById('result-stars');
+      starsEl.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const span = document.createElement('span');
+        span.className = 'star' + (i < stars ? ' earned' : '');
+        span.textContent = i < stars ? '⭐' : '☆';
+        starsEl.appendChild(span);
+      }
+
+      const msgEl = document.getElementById('result-message');
+      if (stars === 3) {
+        msgEl.textContent = 'すごい！ きおくの てんさい！🎉';
+      } else if (stars === 2) {
+        msgEl.textContent = 'やったね！ とてもじょうず！😊';
+      } else {
+        msgEl.textContent = 'がんばったね！ またちょうせんしよう！💪';
+      }
+
+      showScreen(resultScreen);
+      launchConfetti();
+    }
+
+    function calcStars(moves, pairs) {
+      // Perfect = pairs moves. 3 stars if close to perfect, 2 if reasonable, 1 otherwise.
+      const ratio = moves / pairs;
+      if (ratio <= 1.5) return 3;
+      if (ratio <= 2.5) return 2;
+      return 1;
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    // ===== Shuffle (Fisher-Yates) =====
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // ===== Confetti =====
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#ab47bc','#7b1fa2','#ffd600','#ff8a80','#64b5f6','#4ecdc4','#ffb74d','#e1bee7'];
+
+      for (let i = 0; i < 120; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          w: Math.random() * 10 + 5,
+          h: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 3,
+          vy: Math.random() * 3 + 2,
+          rot: Math.random() * 360,
+          rotV: (Math.random() - 0.5) * 10,
+          opacity: 1,
+        });
+      }
+
+      let frame = 0;
+      const maxFrames = 180;
+
+      function animate() {
+        if (frame > maxFrames) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          return;
+        }
+        frame++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const fade = frame > maxFrames - 40 ? (maxFrames - frame) / 40 : 1;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.rotV;
+          p.vy += 0.04;
+          p.opacity = fade;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rot * Math.PI) / 180);
+          ctx.globalAlpha = p.opacity;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+
+    // Handle window resize for confetti canvas
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>

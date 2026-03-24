@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>さんすうバトル - ぐっぴょん</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    /* ====== BASE ====== */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: 'Zen Maru Gothic', 'Kosugi Maru', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .game-wrapper {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 500px;
+      height: 100%;
+      max-height: 800px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #1a1a3e 0%, #2d1b69 40%, #1a1a3e 100%);
+      border-radius: 0;
+    }
+
+    @media (min-width: 520px) {
+      .game-container {
+        border-radius: 24px;
+        height: 90vh;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+    }
+
+    /* ====== STARS BACKGROUND ====== */
+    .stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ====== SCREENS ====== */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1;
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.95);
+    }
+
+    /* ====== START SCREEN ====== */
+    .title {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2.4rem;
+      color: #ffd54f;
+      text-shadow: 0 0 20px rgba(255,213,79,0.5), 0 4px 8px rgba(0,0,0,0.3);
+      margin-bottom: 8px;
+      animation: titlePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .title-emoji {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 12px;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #b8b8ff;
+      margin-bottom: 30px;
+    }
+
+    .difficulty-label {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .difficulty-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 24px;
+    }
+
+    .diff-btn {
+      padding: 16px 24px;
+      border: none;
+      border-radius: 16px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diff-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .diff-btn:active {
+      transform: scale(0.95);
+    }
+
+    .diff-easy {
+      background: linear-gradient(135deg, #4ecdc4, #44b09e);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(78,205,196,0.4);
+    }
+
+    .diff-easy:hover { box-shadow: 0 6px 20px rgba(78,205,196,0.6); transform: translateY(-2px); }
+
+    .diff-normal {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(245,87,108,0.4);
+    }
+
+    .diff-normal:hover { box-shadow: 0 6px 20px rgba(245,87,108,0.6); transform: translateY(-2px); }
+
+    .diff-hard {
+      background: linear-gradient(135deg, #fa709a, #fee140);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(250,112,154,0.4);
+    }
+
+    .diff-hard:hover { box-shadow: 0 6px 20px rgba(250,112,154,0.6); transform: translateY(-2px); }
+
+    .diff-desc {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.9;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .back-link {
+      color: #b8b8ff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: #fff; }
+
+    /* ====== BATTLE SCREEN ====== */
+    #battle-screen {
+      justify-content: flex-start;
+      padding: 16px 16px 20px;
+      gap: 0;
+    }
+
+    /* HUD */
+    .hud {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    .hud-left, .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wave-badge {
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 4px 12px;
+      color: #ffd54f;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .score-display {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .combo-display {
+      color: #ff8a80;
+      font-size: 0.8rem;
+      font-weight: 700;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    .combo-display.active {
+      animation: comboPop 0.3s ease;
+    }
+
+    @keyframes comboPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); color: #ffd54f; }
+      100% { transform: scale(1); }
+    }
+
+    /* PLAYER HP */
+    .player-hp {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .player-label {
+      color: #4ecdc4;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .hearts {
+      display: flex;
+      gap: 4px;
+    }
+
+    .heart {
+      font-size: 1.4rem;
+      transition: all 0.3s;
+    }
+
+    .heart.lost {
+      filter: grayscale(1) opacity(0.3);
+      transform: scale(0.8);
+    }
+
+    .heart.damage {
+      animation: heartShake 0.5s ease;
+    }
+
+    @keyframes heartShake {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.3) rotate(-15deg); }
+      50% { transform: scale(0.7); filter: brightness(2); }
+      75% { transform: scale(1.1) rotate(15deg); }
+    }
+
+    /* MONSTER AREA */
+    .monster-area {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 0;
+    }
+
+    .monster-name {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1rem;
+      color: #ff8a80;
+      margin-bottom: 4px;
+    }
+
+    .monster-hp-bar {
+      width: 70%;
+      max-width: 250px;
+      height: 14px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .monster-hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff5252, #ff8a80);
+      border-radius: 10px;
+      transition: width 0.4s ease;
+      position: relative;
+    }
+
+    .monster-hp-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: rgba(255,255,255,0.3);
+      border-radius: 10px 10px 0 0;
+    }
+
+    .monster-emoji {
+      font-size: 5rem;
+      line-height: 1;
+      transition: transform 0.2s;
+      filter: drop-shadow(0 0 20px rgba(255,100,100,0.3));
+    }
+
+    .monster-emoji.hit {
+      animation: monsterHit 0.5s ease;
+    }
+
+    @keyframes monsterHit {
+      0% { transform: scale(1); filter: brightness(1); }
+      15% { transform: scale(1.2) rotate(-5deg); filter: brightness(3); }
+      30% { transform: scale(0.9) translateX(-10px); }
+      50% { transform: scale(0.9) translateX(10px); filter: brightness(0.5); }
+      70% { transform: scale(1.05) translateX(-5px); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+
+    .monster-emoji.dying {
+      animation: monsterDie 0.8s ease forwards;
+    }
+
+    @keyframes monsterDie {
+      0% { transform: scale(1); opacity: 1; }
+      30% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+      60% { transform: scale(0.5) rotate(-20deg); opacity: 0.5; }
+      100% { transform: scale(0) rotate(360deg); opacity: 0; }
+    }
+
+    .damage-number {
+      position: absolute;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #ffd54f;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(255,213,79,0.5);
+      pointer-events: none;
+      animation: damageFloat 1s ease forwards;
+      z-index: 10;
+    }
+
+    @keyframes damageFloat {
+      0% { transform: translateY(0) scale(0.5); opacity: 1; }
+      20% { transform: translateY(-20px) scale(1.3); opacity: 1; }
+      100% { transform: translateY(-80px) scale(0.8); opacity: 0; }
+    }
+
+    /* TIMER */
+    .timer-area {
+      width: 100%;
+      margin: 10px 0 8px;
+      flex-shrink: 0;
+    }
+
+    .timer-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .timer-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4ecdc4, #44b09e);
+      border-radius: 4px;
+      transition: width 0.1s linear;
+    }
+
+    .timer-bar-fill.warning {
+      background: linear-gradient(90deg, #ffd54f, #ffb300);
+    }
+
+    .timer-bar-fill.danger {
+      background: linear-gradient(90deg, #ff5252, #ff1744);
+      animation: timerPulse 0.5s ease-in-out infinite;
+    }
+
+    @keyframes timerPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* QUESTION */
+    .question-area {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .question-text {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2.2rem;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255,255,255,0.3);
+      padding: 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+
+    /* ANSWERS */
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .answer-btn {
+      padding: 16px 12px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.15s;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .answer-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .answer-btn:active {
+      transform: scale(0.93);
+    }
+
+    .answer-btn:hover {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .answer-btn.correct {
+      background: rgba(78,205,196,0.6) !important;
+      border-color: #4ecdc4 !important;
+      animation: correctPop 0.5s ease;
+    }
+
+    @keyframes correctPop {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .answer-btn.wrong {
+      background: rgba(255,82,82,0.6) !important;
+      border-color: #ff5252 !important;
+      animation: wrongShake 0.5s ease;
+    }
+
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .answer-btn:disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+
+    /* FEEDBACK OVERLAY */
+    .feedback-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .feedback-text {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2.5rem;
+      font-weight: 700;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .feedback-text.show-correct {
+      color: #4ecdc4;
+      text-shadow: 0 0 30px rgba(78,205,196,0.8);
+      animation: feedbackPop 0.8s ease forwards;
+    }
+
+    .feedback-text.show-wrong {
+      color: #ff5252;
+      text-shadow: 0 0 30px rgba(255,82,82,0.8);
+      animation: feedbackPop 0.8s ease forwards;
+    }
+
+    @keyframes feedbackPop {
+      0% { opacity: 0; transform: scale(0.5) translateY(20px); }
+      30% { opacity: 1; transform: scale(1.2) translateY(-10px); }
+      60% { opacity: 1; transform: scale(1) translateY(0); }
+      100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+    }
+
+    /* SCREEN SHAKE */
+    .shake {
+      animation: screenShake 0.4s ease;
+    }
+
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0); }
+      10% { transform: translate(-5px, -3px); }
+      20% { transform: translate(5px, 3px); }
+      30% { transform: translate(-3px, 5px); }
+      40% { transform: translate(3px, -5px); }
+      50% { transform: translate(-2px, 2px); }
+      60% { transform: translate(2px, -2px); }
+    }
+
+    /* PARTICLES */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 15;
+      font-size: 1.5rem;
+      animation: particleFly 1s ease-out forwards;
+    }
+
+    @keyframes particleFly {
+      0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0.3) rotate(var(--pr)); }
+    }
+
+    /* WAVE TRANSITION */
+    .wave-announce {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.7);
+      z-index: 25;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .wave-announce.show {
+      opacity: 1;
+    }
+
+    .wave-announce-text {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2rem;
+      color: #ffd54f;
+      text-shadow: 0 0 30px rgba(255,213,79,0.6);
+      animation: waveAnnounce 0.6s ease;
+    }
+
+    .wave-announce-sub {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-top: 8px;
+    }
+
+    @keyframes waveAnnounce {
+      0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+      60% { transform: scale(1.1) rotate(3deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* ====== RESULT SCREEN ====== */
+    #result-screen {
+      gap: 12px;
+    }
+
+    .result-title {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 2rem;
+      color: #ffd54f;
+      text-shadow: 0 0 20px rgba(255,213,79,0.5);
+    }
+
+    .result-emoji {
+      font-size: 4rem;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    .result-message {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.1rem;
+      color: #fff;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .result-stats {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .stat-label {
+      color: #b8b8ff;
+    }
+
+    .stat-value {
+      font-weight: 700;
+      color: #ffd54f;
+      font-size: 1.1rem;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 280px;
+      margin-top: 8px;
+    }
+
+    .result-btn {
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .result-btn:active { transform: scale(0.95); }
+
+    .btn-retry {
+      background: linear-gradient(135deg, #4ecdc4, #44b09e);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(78,205,196,0.4);
+    }
+
+    .btn-retry:hover { box-shadow: 0 6px 20px rgba(78,205,196,0.6); transform: translateY(-2px); }
+
+    .btn-back {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-back:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+    /* FLASH OVERLAY */
+    .flash-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+      opacity: 0;
+    }
+
+    .flash-overlay.flash-green {
+      background: radial-gradient(circle, rgba(78,205,196,0.4), transparent);
+      animation: flashAnim 0.4s ease forwards;
+    }
+
+    .flash-overlay.flash-red {
+      background: radial-gradient(circle, rgba(255,82,82,0.4), transparent);
+      animation: flashAnim 0.4s ease forwards;
+    }
+
+    @keyframes flashAnim {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* Small screen adjustments */
+    @media (max-height: 650px) {
+      .monster-emoji { font-size: 3.5rem; }
+      .question-text { font-size: 1.8rem; padding: 8px; }
+      .answer-btn { padding: 12px 8px; font-size: 1.3rem; }
+      .title { font-size: 1.8rem; }
+      .title-emoji { font-size: 2.2rem; }
+    }
+
+    @media (max-height: 550px) {
+      .monster-emoji { font-size: 2.8rem; }
+      .question-text { font-size: 1.5rem; }
+      .answer-btn { padding: 10px 6px; font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-wrapper">
+  <div class="game-container" id="game-container">
+
+    <!-- Stars -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Flash overlay -->
+    <div class="flash-overlay" id="flash-overlay"></div>
+
+    <!-- ===== START SCREEN ===== -->
+    <div class="screen" id="start-screen">
+      <span class="title-emoji">&#x2694;&#xFE0F;</span>
+      <h1 class="title">さんすうバトル</h1>
+      <p class="subtitle">もんだいを とって モンスターを たおそう！</p>
+      <p class="difficulty-label">むずかしさを えらんでね</p>
+      <div class="difficulty-buttons">
+        <button class="diff-btn diff-easy" onclick="startGame('easy')">
+          &#x2B50; かんたん
+          <span class="diff-desc">たしざん・ひきざん（10まで）</span>
+        </button>
+        <button class="diff-btn diff-normal" onclick="startGame('normal')">
+          &#x1F525; ふつう
+          <span class="diff-desc">たしざん・ひきざん（20まで）＋かけざん</span>
+        </button>
+        <button class="diff-btn diff-hard" onclick="startGame('hard')">
+          &#x1F4A5; むずかしい
+          <span class="diff-desc">＋−×÷（100まで）</span>
+        </button>
+      </div>
+      <a href="../../index.html" class="back-link">&#x2190; もどる</a>
+    </div>
+
+    <!-- ===== BATTLE SCREEN ===== -->
+    <div class="screen hidden" id="battle-screen">
+      <!-- HUD -->
+      <div class="hud">
+        <div class="hud-left">
+          <span class="wave-badge" id="wave-badge">WAVE 1/5</span>
+        </div>
+        <div class="hud-right">
+          <span class="score-display" id="score-display">&#x1F4AB; 0</span>
+          <span class="combo-display" id="combo-display"></span>
+        </div>
+      </div>
+
+      <!-- Player HP -->
+      <div class="player-hp">
+        <span class="player-label">じぶん</span>
+        <div class="hearts" id="player-hearts">
+          <span class="heart">&#x2764;&#xFE0F;</span>
+          <span class="heart">&#x2764;&#xFE0F;</span>
+          <span class="heart">&#x2764;&#xFE0F;</span>
+        </div>
+      </div>
+
+      <!-- Monster Area -->
+      <div class="monster-area" id="monster-area">
+        <p class="monster-name" id="monster-name">スライムん</p>
+        <div class="monster-hp-bar">
+          <div class="monster-hp-fill" id="monster-hp-fill" style="width:100%"></div>
+        </div>
+        <div class="monster-emoji" id="monster-emoji">&#x1F47E;</div>
+      </div>
+
+      <!-- Timer -->
+      <div class="timer-area">
+        <div class="timer-bar-bg">
+          <div class="timer-bar-fill" id="timer-fill" style="width:100%"></div>
+        </div>
+      </div>
+
+      <!-- Question -->
+      <div class="question-area">
+        <div class="question-text" id="question-text">3 + 5 = ?</div>
+      </div>
+
+      <!-- Answers -->
+      <div class="answers-grid" id="answers-grid">
+        <button class="answer-btn" onclick="selectAnswer(0)">8</button>
+        <button class="answer-btn" onclick="selectAnswer(1)">6</button>
+        <button class="answer-btn" onclick="selectAnswer(2)">9</button>
+        <button class="answer-btn" onclick="selectAnswer(3)">7</button>
+      </div>
+
+      <!-- Feedback -->
+      <div class="feedback-overlay">
+        <div class="feedback-text" id="feedback-text"></div>
+      </div>
+
+      <!-- Wave announce -->
+      <div class="wave-announce" id="wave-announce">
+        <div class="wave-announce-text" id="wave-announce-text"></div>
+        <div class="wave-announce-sub" id="wave-announce-sub"></div>
+      </div>
+    </div>
+
+    <!-- ===== RESULT SCREEN ===== -->
+    <div class="screen hidden" id="result-screen">
+      <div class="result-emoji" id="result-emoji">&#x1F389;</div>
+      <h2 class="result-title" id="result-title">すごい！</h2>
+      <p class="result-message" id="result-message"></p>
+      <div class="result-stats">
+        <div class="stat-row">
+          <span class="stat-label">スコア</span>
+          <span class="stat-value" id="stat-score">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">せいかいりつ</span>
+          <span class="stat-value" id="stat-accuracy">0%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">じかん</span>
+          <span class="stat-value" id="stat-time">0びょう</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">さいこうコンボ</span>
+          <span class="stat-value" id="stat-combo">0</span>
+        </div>
+      </div>
+      <div class="result-buttons">
+        <button class="result-btn btn-retry" onclick="goToStart()">&#x1F504; もういちど</button>
+        <a href="../../index.html" class="result-btn btn-back" style="text-align:center;text-decoration:none;">&#x2190; もどる</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== GAME STATE =====
+const state = {
+  difficulty: 'easy',
+  wave: 1,
+  maxWaves: 5,
+  score: 0,
+  combo: 0,
+  maxCombo: 0,
+  playerHP: 3,
+  maxPlayerHP: 3,
+  monsterHP: 0,
+  monsterMaxHP: 0,
+  totalQuestions: 0,
+  correctAnswers: 0,
+  startTime: 0,
+  timerInterval: null,
+  timeLeft: 10,
+  maxTime: 10,
+  currentAnswer: 0,
+  isAnswering: false,
+  currentMonster: null,
+};
+
+// ===== MONSTERS =====
+const monsters = [
+  { emoji: '\u{1F47E}', name: 'スライムん', baseHP: 3 },
+  { emoji: '\u{1F47B}', name: 'たしざんオバケ', baseHP: 3 },
+  { emoji: '\u{1F916}', name: 'カズモンスター', baseHP: 4 },
+  { emoji: '\u{1F479}', name: 'ひきざんオニ', baseHP: 4 },
+  { emoji: '\u{1F409}', name: 'ドラゴすう', baseHP: 5 },
+  { emoji: '\u{1F47E}', name: 'ナンバーキング', baseHP: 5 },
+  { emoji: '\u{1F47B}', name: 'わりざんゴースト', baseHP: 4 },
+  { emoji: '\u{1F916}', name: 'けいさんロボ', baseHP: 4 },
+  { emoji: '\u{1F479}', name: 'かけざんデーモン', baseHP: 5 },
+  { emoji: '\u{1F409}', name: 'すうじリュウ', baseHP: 6 },
+];
+
+// ===== INIT STARS =====
+function initStars() {
+  const container = document.getElementById('stars');
+  container.innerHTML = '';
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.width = (1 + Math.random() * 3) + 'px';
+    star.style.height = star.style.width;
+    star.style.animationDelay = (Math.random() * 3) + 's';
+    star.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    container.appendChild(star);
+  }
+}
+
+// ===== SCREEN MANAGEMENT =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function goToStart() {
+  clearInterval(state.timerInterval);
+  showScreen('start-screen');
+}
+
+// ===== START GAME =====
+function startGame(difficulty) {
+  state.difficulty = difficulty;
+  state.wave = 1;
+  state.score = 0;
+  state.combo = 0;
+  state.maxCombo = 0;
+  state.playerHP = 3;
+  state.totalQuestions = 0;
+  state.correctAnswers = 0;
+  state.startTime = Date.now();
+
+  showScreen('battle-screen');
+  updateHUD();
+  updateHearts();
+  spawnMonster();
+}
+
+// ===== SPAWN MONSTER =====
+function spawnMonster() {
+  const pool = monsters.filter((_, i) => {
+    if (state.difficulty === 'easy') return i < 4;
+    if (state.difficulty === 'normal') return i < 7;
+    return true;
+  });
+
+  const m = pool[Math.floor(Math.random() * pool.length)];
+  const hpBonus = state.wave - 1;
+  state.currentMonster = m;
+  state.monsterMaxHP = m.baseHP + hpBonus;
+  state.monsterHP = state.monsterMaxHP;
+
+  document.getElementById('monster-name').textContent = m.name;
+  document.getElementById('monster-emoji').textContent = m.emoji;
+  document.getElementById('monster-emoji').className = 'monster-emoji';
+  updateMonsterHP();
+
+  // Show wave announcement
+  const wa = document.getElementById('wave-announce');
+  document.getElementById('wave-announce-text').textContent = 'WAVE ' + state.wave;
+  document.getElementById('wave-announce-sub').textContent = m.name + ' があらわれた！';
+  wa.classList.add('show');
+
+  setTimeout(() => {
+    wa.classList.remove('show');
+    generateQuestion();
+  }, 1500);
+}
+
+// ===== GENERATE QUESTION =====
+function generateQuestion() {
+  if (state.playerHP <= 0) return;
+  state.isAnswering = true;
+
+  let a, b, op, answer;
+  const diff = state.difficulty;
+
+  if (diff === 'easy') {
+    op = Math.random() < 0.5 ? '+' : '-';
+    if (op === '+') {
+      a = Math.floor(Math.random() * 10) + 1;
+      b = Math.floor(Math.random() * (10 - a)) + 1;
+      answer = a + b;
+    } else {
+      a = Math.floor(Math.random() * 9) + 2;
+      b = Math.floor(Math.random() * a) + 1;
+      answer = a - b;
+    }
+  } else if (diff === 'normal') {
+    const r = Math.random();
+    if (r < 0.4) { op = '+'; }
+    else if (r < 0.8) { op = '-'; }
+    else { op = '\u00d7'; }
+
+    if (op === '+') {
+      a = Math.floor(Math.random() * 18) + 2;
+      b = Math.floor(Math.random() * (20 - a)) + 1;
+      answer = a + b;
+    } else if (op === '-') {
+      a = Math.floor(Math.random() * 18) + 3;
+      b = Math.floor(Math.random() * a) + 1;
+      answer = a - b;
+    } else {
+      a = Math.floor(Math.random() * 9) + 1;
+      b = Math.floor(Math.random() * 9) + 1;
+      answer = a * b;
+    }
+  } else {
+    const r = Math.random();
+    if (r < 0.3) { op = '+'; }
+    else if (r < 0.55) { op = '-'; }
+    else if (r < 0.8) { op = '\u00d7'; }
+    else { op = '\u00f7'; }
+
+    if (op === '+') {
+      a = Math.floor(Math.random() * 90) + 5;
+      b = Math.floor(Math.random() * (100 - a)) + 1;
+      answer = a + b;
+    } else if (op === '-') {
+      a = Math.floor(Math.random() * 90) + 10;
+      b = Math.floor(Math.random() * a) + 1;
+      answer = a - b;
+    } else if (op === '\u00d7') {
+      a = Math.floor(Math.random() * 12) + 1;
+      b = Math.floor(Math.random() * 12) + 1;
+      answer = a * b;
+    } else {
+      b = Math.floor(Math.random() * 11) + 2;
+      answer = Math.floor(Math.random() * 12) + 1;
+      a = b * answer;
+    }
+  }
+
+  state.currentAnswer = answer;
+  document.getElementById('question-text').textContent = a + ' ' + op + ' ' + b + ' = ?';
+
+  // Generate answer choices
+  const choices = [answer];
+  while (choices.length < 4) {
+    let wrong;
+    const offset = Math.floor(Math.random() * 10) + 1;
+    wrong = answer + (Math.random() < 0.5 ? offset : -offset);
+    if (wrong < 0) wrong = answer + offset + Math.floor(Math.random() * 5);
+    if (!choices.includes(wrong)) {
+      choices.push(wrong);
+    }
+  }
+
+  // Shuffle
+  for (let i = choices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [choices[i], choices[j]] = [choices[j], choices[i]];
+  }
+
+  const grid = document.getElementById('answers-grid');
+  const btns = grid.querySelectorAll('.answer-btn');
+  btns.forEach((btn, i) => {
+    btn.textContent = choices[i];
+    btn.className = 'answer-btn';
+    btn.disabled = false;
+    btn.dataset.value = choices[i];
+  });
+
+  startTimer();
+}
+
+// ===== TIMER =====
+function startTimer() {
+  state.timeLeft = state.maxTime;
+  clearInterval(state.timerInterval);
+  updateTimerBar();
+
+  state.timerInterval = setInterval(() => {
+    state.timeLeft -= 0.1;
+    if (state.timeLeft <= 0) {
+      state.timeLeft = 0;
+      clearInterval(state.timerInterval);
+      handleTimeout();
+    }
+    updateTimerBar();
+  }, 100);
+}
+
+function updateTimerBar() {
+  const fill = document.getElementById('timer-fill');
+  const pct = (state.timeLeft / state.maxTime) * 100;
+  fill.style.width = pct + '%';
+  fill.className = 'timer-bar-fill';
+  if (pct <= 20) fill.classList.add('danger');
+  else if (pct <= 50) fill.classList.add('warning');
+}
+
+function handleTimeout() {
+  state.isAnswering = false;
+  state.totalQuestions++;
+
+  // Highlight correct answer
+  const grid = document.getElementById('answers-grid');
+  const btns = grid.querySelectorAll('.answer-btn');
+  btns.forEach(btn => {
+    btn.disabled = true;
+    if (parseInt(btn.dataset.value) === state.currentAnswer) {
+      btn.classList.add('correct');
+    }
+  });
+
+  playerTakeDamage();
+  showFeedback('じかんぎれ！', false);
+
+  setTimeout(() => {
+    if (state.playerHP > 0) generateQuestion();
+  }, 1200);
+}
+
+// ===== SELECT ANSWER =====
+function selectAnswer(index) {
+  if (!state.isAnswering) return;
+  state.isAnswering = false;
+  clearInterval(state.timerInterval);
+  state.totalQuestions++;
+
+  const grid = document.getElementById('answers-grid');
+  const btns = grid.querySelectorAll('.answer-btn');
+  const selected = btns[index];
+  const value = parseInt(selected.dataset.value);
+  const isCorrect = value === state.currentAnswer;
+
+  btns.forEach(btn => {
+    btn.disabled = true;
+    if (parseInt(btn.dataset.value) === state.currentAnswer) {
+      btn.classList.add('correct');
+    }
+  });
+
+  if (isCorrect) {
+    handleCorrect(selected);
+  } else {
+    selected.classList.add('wrong');
+    handleWrong();
+  }
+}
+
+// ===== CORRECT =====
+function handleCorrect(btn) {
+  state.correctAnswers++;
+  state.combo++;
+  if (state.combo > state.maxCombo) state.maxCombo = state.combo;
+
+  const comboBonus = Math.min(state.combo - 1, 5) * 5;
+  state.score += 10 + comboBonus;
+
+  // Visual feedback
+  showFeedback(state.combo >= 3 ? state.combo + 'コンボ！すごい！' : 'せいかい！', true);
+  flashScreen('green');
+  spawnParticles(true);
+  shakeScreen();
+
+  // Monster takes damage
+  const me = document.getElementById('monster-emoji');
+  me.classList.add('hit');
+  setTimeout(() => me.classList.remove('hit'), 500);
+
+  showDamageNumber(10 + comboBonus);
+
+  state.monsterHP--;
+  updateMonsterHP();
+  updateHUD();
+
+  if (state.monsterHP <= 0) {
+    // Monster defeated
+    me.classList.add('dying');
+    setTimeout(() => {
+      if (state.wave >= state.maxWaves) {
+        endGame(true);
+      } else {
+        state.wave++;
+        spawnMonster();
+      }
+    }, 1200);
+  } else {
+    setTimeout(() => {
+      if (state.playerHP > 0) generateQuestion();
+    }, 1000);
+  }
+}
+
+// ===== WRONG =====
+function handleWrong() {
+  state.combo = 0;
+  showFeedback('ざんねん...', false);
+  flashScreen('red');
+  playerTakeDamage();
+  updateHUD();
+
+  setTimeout(() => {
+    if (state.playerHP > 0) generateQuestion();
+  }, 1200);
+}
+
+// ===== PLAYER DAMAGE =====
+function playerTakeDamage() {
+  state.playerHP--;
+  updateHearts();
+
+  if (state.playerHP <= 0) {
+    setTimeout(() => endGame(false), 800);
+  }
+}
+
+// ===== UPDATE FUNCTIONS =====
+function updateHUD() {
+  document.getElementById('wave-badge').textContent = 'WAVE ' + state.wave + '/' + state.maxWaves;
+  document.getElementById('score-display').textContent = '\u{1F4AB} ' + state.score;
+
+  const cd = document.getElementById('combo-display');
+  if (state.combo >= 2) {
+    cd.textContent = state.combo + ' COMBO';
+    cd.classList.remove('active');
+    void cd.offsetWidth;
+    cd.classList.add('active');
+  } else {
+    cd.textContent = '';
+  }
+}
+
+function updateHearts() {
+  const container = document.getElementById('player-hearts');
+  container.innerHTML = '';
+  for (let i = 0; i < state.maxPlayerHP; i++) {
+    const h = document.createElement('span');
+    h.className = 'heart' + (i >= state.playerHP ? ' lost' : '');
+    h.textContent = '\u2764\uFE0F';
+    if (i === state.playerHP && state.playerHP < state.maxPlayerHP) {
+      h.classList.add('damage');
+    }
+    container.appendChild(h);
+  }
+}
+
+function updateMonsterHP() {
+  const pct = (state.monsterHP / state.monsterMaxHP) * 100;
+  document.getElementById('monster-hp-fill').style.width = Math.max(0, pct) + '%';
+}
+
+// ===== VISUAL EFFECTS =====
+function showFeedback(text, isCorrect) {
+  const el = document.getElementById('feedback-text');
+  el.textContent = text;
+  el.className = 'feedback-text';
+  void el.offsetWidth;
+  el.classList.add(isCorrect ? 'show-correct' : 'show-wrong');
+}
+
+function flashScreen(color) {
+  const el = document.getElementById('flash-overlay');
+  el.className = 'flash-overlay';
+  void el.offsetWidth;
+  el.classList.add(color === 'green' ? 'flash-green' : 'flash-red');
+}
+
+function shakeScreen() {
+  const gc = document.getElementById('game-container');
+  gc.classList.remove('shake');
+  void gc.offsetWidth;
+  gc.classList.add('shake');
+  setTimeout(() => gc.classList.remove('shake'), 400);
+}
+
+function showDamageNumber(amount) {
+  const ma = document.getElementById('monster-area');
+  const dn = document.createElement('div');
+  dn.className = 'damage-number';
+  dn.textContent = '-' + amount;
+  dn.style.left = (40 + Math.random() * 20) + '%';
+  dn.style.top = '30%';
+  ma.appendChild(dn);
+  setTimeout(() => dn.remove(), 1000);
+}
+
+function spawnParticles(isCorrect) {
+  const container = document.getElementById('game-container');
+  const emojis = isCorrect
+    ? ['\u2B50', '\u2728', '\u{1F31F}', '\u{1F4AB}', '\u{1F389}']
+    : ['\u{1F4A2}', '\u2757', '\u{1F4A5}'];
+  const count = isCorrect ? 12 : 5;
+
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    p.style.left = (30 + Math.random() * 40) + '%';
+    p.style.top = (30 + Math.random() * 20) + '%';
+    p.style.setProperty('--px', (Math.random() * 200 - 100) + 'px');
+    p.style.setProperty('--py', (Math.random() * -150 - 50) + 'px');
+    p.style.setProperty('--pr', (Math.random() * 720 - 360) + 'deg');
+    p.style.animationDuration = (0.6 + Math.random() * 0.6) + 's';
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 1200);
+  }
+}
+
+// ===== END GAME =====
+function endGame(won) {
+  clearInterval(state.timerInterval);
+  const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+  const accuracy = state.totalQuestions > 0
+    ? Math.round((state.correctAnswers / state.totalQuestions) * 100) : 0;
+
+  document.getElementById('stat-score').textContent = state.score;
+  document.getElementById('stat-accuracy').textContent = accuracy + '%';
+  document.getElementById('stat-time').textContent = elapsed + 'びょう';
+  document.getElementById('stat-combo').textContent = state.maxCombo;
+
+  let title, emoji, message;
+
+  if (won) {
+    if (accuracy >= 90) {
+      title = 'かんぺき！';
+      emoji = '\u{1F3C6}';
+      message = 'すべてのモンスターを たおした！\nきみは さんすうマスターだ！';
+    } else if (accuracy >= 70) {
+      title = 'やったね！';
+      emoji = '\u{1F389}';
+      message = 'モンスターを ぜんぶ たおしたよ！\nとっても がんばったね！';
+    } else {
+      title = 'クリア！';
+      emoji = '\u{1F60A}';
+      message = 'よく がんばったね！\nもっと れんしゅうすると\nもっと つよくなれるよ！';
+    }
+  } else {
+    if (accuracy >= 50) {
+      title = 'おしい！';
+      emoji = '\u{1F4AA}';
+      message = 'いい せんいってたよ！\nもういちど ちょうせんしよう！';
+    } else {
+      title = 'ドンマイ！';
+      emoji = '\u{1F60A}';
+      message = 'さんすうは れんしゅうが たいせつ！\nまた ちょうせんしてね！';
+    }
+  }
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-message').textContent = message;
+
+  showScreen('result-screen');
+
+  // Victory particles
+  if (won) {
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => spawnParticles(true), i * 100);
+    }
+  }
+}
+
+// ===== INIT =====
+initStars();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ひらがなタッチ - ぐっぴょん</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    /* ===== Hiragana Touch Game Styles ===== */
+    :root {
+      --ht-pink: #ff6b8a;
+      --ht-pink-light: #ffcdd2;
+      --ht-pink-dark: #e91e63;
+      --ht-red: #f44336;
+      --ht-cream: #fff5f7;
+      --ht-correct: #4caf50;
+      --ht-wrong: #ef5350;
+    }
+
+    body {
+      background: var(--ht-cream);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(255, 107, 138, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(233, 30, 99, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(255, 205, 210, 0.15) 0%, transparent 50%);
+    }
+
+    body::after {
+      background-image: radial-gradient(circle, rgba(255, 107, 138, 0.06) 2px, transparent 2px);
+      background-size: 40px 40px;
+    }
+
+    .game-container {
+      max-width: 600px;
+      padding: 12px;
+    }
+
+    /* Header override for pink theme */
+    .game-header {
+      border: 3px solid var(--ht-pink-light);
+      margin-bottom: 12px;
+    }
+
+    .game-title {
+      color: var(--ht-pink-dark);
+      font-size: 1.1rem;
+    }
+
+    .game-back-btn:hover {
+      background: var(--ht-pink-light);
+      border-color: var(--ht-pink);
+    }
+
+    /* ===== Screens ===== */
+    .screen {
+      display: none;
+      width: 100%;
+    }
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ===== Start Screen ===== */
+    .start-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .start-mascot {
+      font-size: 5rem;
+      animation: mascotBounce 1.5s ease-in-out infinite;
+      margin-bottom: 8px;
+    }
+
+    .start-title {
+      font-family: var(--font-accent);
+      font-size: 2.2rem;
+      color: var(--ht-pink-dark);
+      text-shadow: 2px 2px 0 var(--ht-pink-light);
+      margin-bottom: 4px;
+    }
+
+    .start-subtitle {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
+
+    .mode-label {
+      font-family: var(--font-accent);
+      font-size: 1.2rem;
+      color: var(--ht-pink-dark);
+      margin-bottom: 14px;
+    }
+
+    .mode-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .mode-btn {
+      padding: 16px 24px;
+      border: 3px solid var(--ht-pink-light);
+      border-radius: var(--radius-md);
+      background: white;
+      font-family: var(--font-main);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .mode-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      border-color: var(--ht-pink);
+      box-shadow: 0 6px 20px rgba(255, 107, 138, 0.3);
+      background: var(--ht-cream);
+    }
+
+    .mode-btn:active {
+      transform: translateY(0) scale(0.97);
+    }
+
+    .mode-btn .mode-emoji {
+      font-size: 1.5rem;
+    }
+
+    .mode-btn .mode-range {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* ===== Play Screen ===== */
+    .play-screen {
+      gap: 10px;
+    }
+
+    /* Progress bar */
+    .progress-section {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .progress-bar-track {
+      flex: 1;
+      height: 14px;
+      background: #f0e0e4;
+      border-radius: 7px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--ht-pink), var(--ht-pink-dark));
+      border-radius: 7px;
+      transition: width 0.4s ease;
+      position: relative;
+    }
+
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      right: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.35);
+      border-radius: 2px;
+    }
+
+    .progress-text {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ht-pink-dark);
+      white-space: nowrap;
+      min-width: 45px;
+      text-align: right;
+    }
+
+    /* Score display */
+    .score-display {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ht-pink-dark);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Prompt area */
+    .prompt-area {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 18px 24px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-soft);
+      border: 3px solid var(--ht-pink-light);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .prompt-area::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--ht-pink), var(--ht-pink-dark), var(--ht-pink));
+    }
+
+    .prompt-text {
+      font-family: var(--font-accent);
+      font-size: 1.8rem;
+      color: var(--ht-pink-dark);
+      line-height: 1.4;
+    }
+
+    .prompt-char {
+      font-size: 2.8rem;
+      display: inline-block;
+      animation: promptPulse 1.5s ease-in-out infinite;
+      color: var(--ht-red);
+    }
+
+    @keyframes promptPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .speak-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: 2px solid var(--ht-pink-light);
+      border-radius: 50%;
+      background: white;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .speak-btn:hover {
+      background: var(--ht-pink-light);
+      transform: scale(1.1);
+    }
+
+    /* Hiragana grid */
+    .hiragana-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .hiragana-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.2rem;
+      font-family: var(--font-main);
+      font-weight: 700;
+      background: white;
+      border: 3px solid var(--ht-pink-light);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-soft);
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hiragana-cell:hover {
+      border-color: var(--ht-pink);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 138, 0.25);
+    }
+
+    .hiragana-cell:active {
+      transform: translateY(0) scale(0.95);
+    }
+
+    .hiragana-cell.correct {
+      background: #e8f5e9;
+      border-color: var(--ht-correct);
+      animation: correctBounce 0.6s ease;
+      color: var(--ht-correct);
+      font-size: 4rem;
+    }
+
+    .hiragana-cell.wrong {
+      animation: wrongShake 0.5s ease;
+      opacity: 0.4;
+      border-color: #ccc;
+      color: #bbb;
+      pointer-events: none;
+    }
+
+    .hiragana-cell.disabled {
+      pointer-events: none;
+    }
+
+    @keyframes correctBounce {
+      0% { transform: scale(1); }
+      20% { transform: scale(1.25); }
+      40% { transform: scale(0.95); }
+      60% { transform: scale(1.15); }
+      80% { transform: scale(0.98); }
+      100% { transform: scale(1.05); }
+    }
+
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-8px) rotate(-2deg); }
+      30% { transform: translateX(8px) rotate(2deg); }
+      45% { transform: translateX(-6px) rotate(-1deg); }
+      60% { transform: translateX(6px) rotate(1deg); }
+      75% { transform: translateX(-3px); }
+    }
+
+    /* Feedback popup */
+    .feedback-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-family: var(--font-accent);
+      font-size: 2.5rem;
+      font-weight: 700;
+      z-index: 500;
+      pointer-events: none;
+      opacity: 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .feedback-popup.show-correct {
+      animation: feedbackCorrectAnim 1s ease forwards;
+      color: var(--ht-correct);
+    }
+
+    .feedback-popup.show-wrong {
+      animation: feedbackWrongAnim 0.8s ease forwards;
+      color: var(--ht-wrong);
+    }
+
+    @keyframes feedbackCorrectAnim {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(-10deg); }
+      20% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(5deg); }
+      40% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+      80% { opacity: 1; transform: translate(-50%, -60%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -80%) scale(0.8); }
+    }
+
+    @keyframes feedbackWrongAnim {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+      15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    }
+
+    /* Sparkle effect */
+    .sparkle {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      pointer-events: none;
+      z-index: 400;
+    }
+
+    .sparkle::before, .sparkle::after {
+      content: '';
+      position: absolute;
+      background: var(--ht-correct);
+      border-radius: 50%;
+    }
+
+    .sparkle::before {
+      width: 100%;
+      height: 100%;
+      animation: sparkleFade 0.7s ease forwards;
+    }
+
+    @keyframes sparkleFade {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.8; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    /* ===== End Screen ===== */
+    .end-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .end-mascot {
+      font-size: 4rem;
+      margin-bottom: 8px;
+      animation: mascotBounce 1.5s ease-in-out infinite;
+    }
+
+    .end-title {
+      font-family: var(--font-accent);
+      font-size: 2rem;
+      color: var(--ht-pink-dark);
+      margin-bottom: 16px;
+    }
+
+    .stars-display {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .star-icon {
+      display: inline-block;
+      opacity: 0;
+      transform: scale(0) rotate(-180deg);
+    }
+
+    .star-icon.earned {
+      animation: starAppear 0.5s ease forwards;
+      color: #ffd700;
+      text-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+    }
+
+    .star-icon.empty {
+      animation: starAppear 0.5s ease forwards;
+      color: #ddd;
+      filter: grayscale(1);
+    }
+
+    .star-icon:nth-child(1) { animation-delay: 0.2s; }
+    .star-icon:nth-child(2) { animation-delay: 0.5s; }
+    .star-icon:nth-child(3) { animation-delay: 0.8s; }
+
+    @keyframes starAppear {
+      0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+      60% { opacity: 1; transform: scale(1.3) rotate(10deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .stats-card {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-soft);
+      border: 2px solid var(--ht-pink-light);
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #f0e0e4;
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ht-pink-dark);
+    }
+
+    .end-message {
+      font-family: var(--font-accent);
+      font-size: 1.15rem;
+      color: var(--ht-pink);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .end-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-retry {
+      background: var(--ht-pink);
+      color: white;
+    }
+
+    .btn-retry:hover {
+      background: var(--ht-pink-dark);
+    }
+
+    .btn-home {
+      background: white;
+      color: var(--ht-pink-dark);
+      border: 3px solid var(--ht-pink-light);
+    }
+
+    .btn-home:hover {
+      background: var(--ht-pink-light);
+    }
+
+    .btn-mode {
+      background: white;
+      color: var(--ht-pink-dark);
+      border: 3px solid var(--ht-pink-light);
+    }
+
+    .btn-mode:hover {
+      background: var(--ht-pink-light);
+    }
+
+    /* ===== Floating hearts decoration ===== */
+    .floating-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.08;
+      font-size: 2.5rem;
+      animation: floatHeart 18s ease-in-out infinite;
+    }
+
+    .floating-heart:nth-child(1) { top: 8%; left: 4%; animation-delay: 0s; }
+    .floating-heart:nth-child(2) { top: 25%; right: 6%; animation-delay: -4s; }
+    .floating-heart:nth-child(3) { bottom: 25%; left: 8%; animation-delay: -8s; }
+    .floating-heart:nth-child(4) { top: 55%; right: 4%; animation-delay: -12s; font-size: 2rem; }
+    .floating-heart:nth-child(5) { bottom: 8%; right: 12%; animation-delay: -2s; font-size: 1.8rem; }
+
+    @keyframes floatHeart {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-15px) rotate(8deg); }
+      50% { transform: translateY(8px) rotate(-5deg); }
+      75% { transform: translateY(-10px) rotate(3deg); }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 480px) {
+      .game-container {
+        padding: 8px;
+      }
+
+      .game-header {
+        padding: 10px 14px;
+        margin-bottom: 8px;
+      }
+
+      .game-title {
+        font-size: 0.95rem;
+      }
+
+      .start-title {
+        font-size: 1.8rem;
+      }
+
+      .start-mascot {
+        font-size: 4rem;
+      }
+
+      .prompt-text {
+        font-size: 1.4rem;
+      }
+
+      .prompt-char {
+        font-size: 2.2rem;
+      }
+
+      .prompt-area {
+        padding: 14px 18px;
+      }
+
+      .hiragana-grid {
+        gap: 8px;
+      }
+
+      .hiragana-cell {
+        font-size: 2.6rem;
+        border-radius: var(--radius-sm);
+      }
+
+      .hiragana-cell.correct {
+        font-size: 3.2rem;
+      }
+
+      .feedback-popup {
+        font-size: 2rem;
+      }
+
+      .end-title {
+        font-size: 1.6rem;
+      }
+
+      .stars-display {
+        font-size: 2.8rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .hiragana-cell {
+        font-size: 2.2rem;
+      }
+
+      .hiragana-cell.correct {
+        font-size: 2.8rem;
+      }
+
+      .prompt-char {
+        font-size: 2rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .hiragana-grid {
+        max-width: 450px;
+      }
+
+      .hiragana-cell {
+        font-size: 3.5rem;
+      }
+
+      .hiragana-cell.correct {
+        font-size: 4.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating decorations -->
+  <div class="floating-heart">&#x1F338;</div>
+  <div class="floating-heart">&#x1F49B;</div>
+  <div class="floating-heart">&#x2728;</div>
+  <div class="floating-heart">&#x1F338;</div>
+  <div class="floating-heart">&#x1F49D;</div>
+
+  <div class="game-container">
+    <!-- Header -->
+    <div class="game-header">
+      <a href="../../index.html" class="game-back-btn">&#x2B05;&#xFE0F; もどる</a>
+      <div class="game-title">&#x1F338; ひらがなタッチ</div>
+      <div class="score-display" id="headerScore" style="visibility: hidden;">
+        &#x2B50; <span id="headerScoreNum">0</span>
+      </div>
+    </div>
+
+    <!-- ===== Start Screen ===== -->
+    <div class="screen active" id="startScreen">
+      <div class="start-screen">
+        <div class="start-mascot">&#x1F338;</div>
+        <h1 class="start-title">ひらがなタッチ</h1>
+        <p class="start-subtitle">ひらがなを みつけて タッチしよう！</p>
+
+        <p class="mode-label">&#x1F3AF; もんだいの はんい</p>
+        <div class="mode-buttons">
+          <button class="mode-btn" data-mode="a-na" onclick="startGame('a-na')">
+            <span class="mode-emoji">&#x1F4D7;</span>
+            <span>
+              あ行〜な行
+              <br><span class="mode-range">あ い う え お 〜 な に ぬ ね の</span>
+            </span>
+          </button>
+          <button class="mode-btn" data-mode="ha-wa" onclick="startGame('ha-wa')">
+            <span class="mode-emoji">&#x1F4D8;</span>
+            <span>
+              は行〜わ行
+              <br><span class="mode-range">は ひ ふ へ ほ 〜 わ を ん</span>
+            </span>
+          </button>
+          <button class="mode-btn" data-mode="all" onclick="startGame('all')">
+            <span class="mode-emoji">&#x1F31F;</span>
+            <span>
+              ぜんぶ
+              <br><span class="mode-range">あ〜ん ぜんぶの ひらがな</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Play Screen ===== -->
+    <div class="screen" id="playScreen">
+      <div class="play-screen" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
+        <!-- Progress -->
+        <div class="progress-section">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text" id="progressText">0/15</div>
+        </div>
+
+        <!-- Prompt -->
+        <div class="prompt-area">
+          <div class="prompt-text">
+            「<span class="prompt-char" id="promptChar">あ</span>」をタッチ！
+            <button class="speak-btn" id="speakBtn" onclick="speakCharacter()" title="もういちど きく">&#x1F50A;</button>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="hiragana-grid" id="hiraganaGrid"></div>
+      </div>
+    </div>
+
+    <!-- ===== End Screen ===== -->
+    <div class="screen" id="endScreen">
+      <div class="end-screen" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="end-mascot" id="endMascot">&#x1F389;</div>
+        <h2 class="end-title" id="endTitle">おわり！</h2>
+
+        <div class="stars-display" id="starsDisplay"></div>
+
+        <div class="stats-card">
+          <div class="stat-row">
+            <span class="stat-label">&#x2705; せいかいすう</span>
+            <span class="stat-value" id="statCorrect">0 / 15</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">&#x1F3AF; いっぱつせいかい</span>
+            <span class="stat-value" id="statPerfect">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">&#x274C; まちがいかいすう</span>
+            <span class="stat-value" id="statWrong">0</span>
+          </div>
+        </div>
+
+        <p class="end-message" id="endMessage">がんばったね！</p>
+
+        <div class="end-buttons">
+          <button class="game-btn btn-retry" onclick="retryGame()">&#x1F504; もういちど</button>
+          <button class="game-btn btn-mode" onclick="showModeSelect()">&#x1F3AF; モードをえらぶ</button>
+          <a href="../../index.html" class="game-btn btn-home" style="text-decoration:none;">&#x1F3E0; トップへ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback popup -->
+  <div class="feedback-popup" id="feedbackPopup"></div>
+
+  <script>
+    // ===== Hiragana Data =====
+    const hiraganaGroups = {
+      'a':  ['あ','い','う','え','お'],
+      'ka': ['か','き','く','け','こ'],
+      'sa': ['さ','し','す','せ','そ'],
+      'ta': ['た','ち','つ','て','と'],
+      'na': ['な','に','ぬ','ね','の'],
+      'ha': ['は','ひ','ふ','へ','ほ'],
+      'ma': ['ま','み','む','め','も'],
+      'ya': ['や','ゆ','よ'],
+      'ra': ['ら','り','る','れ','ろ'],
+      'wa': ['わ','を','ん']
+    };
+
+    const modeMap = {
+      'a-na': ['a','ka','sa','ta','na'],
+      'ha-wa': ['ha','ma','ya','ra','wa'],
+      'all': ['a','ka','sa','ta','na','ha','ma','ya','ra','wa']
+    };
+
+    // ===== Game State =====
+    let currentMode = 'all';
+    let currentPool = [];
+    let roundChars = [];
+    let targetChar = '';
+    let round = 0;
+    let totalRounds = 15;
+    let score = 0;
+    let perfectCount = 0;
+    let totalWrong = 0;
+    let roundMistakes = 0;
+    let isProcessing = false;
+    let speechSupported = false;
+
+    // Check speech support
+    try {
+      speechSupported = 'speechSynthesis' in window;
+    } catch(e) {
+      speechSupported = false;
+    }
+
+    // ===== Screen Management =====
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // ===== Start Game =====
+    function startGame(mode) {
+      currentMode = mode;
+      currentPool = [];
+      modeMap[mode].forEach(group => {
+        currentPool = currentPool.concat(hiraganaGroups[group]);
+      });
+
+      round = 0;
+      score = 0;
+      perfectCount = 0;
+      totalWrong = 0;
+
+      document.getElementById('headerScore').style.visibility = 'visible';
+      updateScore();
+
+      showScreen('playScreen');
+      nextRound();
+    }
+
+    // ===== Next Round =====
+    function nextRound() {
+      if (round >= totalRounds) {
+        endGame();
+        return;
+      }
+
+      round++;
+      roundMistakes = 0;
+      isProcessing = false;
+
+      updateProgress();
+
+      // Pick target
+      targetChar = currentPool[Math.floor(Math.random() * currentPool.length)];
+
+      // Build choices: 1 correct + 8 distractors
+      let distractors = currentPool.filter(c => c !== targetChar);
+      shuffleArray(distractors);
+      distractors = distractors.slice(0, 8);
+
+      // If not enough distractors, fill from the full hiragana set
+      if (distractors.length < 8) {
+        const allChars = Object.values(hiraganaGroups).flat();
+        const extra = allChars.filter(c => c !== targetChar && !distractors.includes(c));
+        shuffleArray(extra);
+        distractors = distractors.concat(extra.slice(0, 8 - distractors.length));
+      }
+
+      roundChars = [targetChar, ...distractors.slice(0, 8)];
+      shuffleArray(roundChars);
+
+      // Update prompt
+      document.getElementById('promptChar').textContent = targetChar;
+
+      // Build grid
+      const grid = document.getElementById('hiraganaGrid');
+      grid.innerHTML = '';
+      roundChars.forEach(char => {
+        const cell = document.createElement('div');
+        cell.className = 'hiragana-cell';
+        cell.textContent = char;
+        cell.addEventListener('click', () => handleTap(char, cell));
+        // Prevent double-tap zoom on mobile
+        cell.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          handleTap(char, cell);
+        });
+        grid.appendChild(cell);
+      });
+
+      // Speak the character
+      speakCharacter();
+    }
+
+    // ===== Handle Tap =====
+    function handleTap(char, cell) {
+      if (isProcessing) return;
+      if (cell.classList.contains('wrong') || cell.classList.contains('correct')) return;
+
+      if (char === targetChar) {
+        // Correct!
+        isProcessing = true;
+        cell.classList.add('correct');
+
+        // Disable all cells
+        document.querySelectorAll('.hiragana-cell').forEach(c => c.classList.add('disabled'));
+
+        if (roundMistakes === 0) {
+          score++;
+          perfectCount++;
+          updateScore();
+        }
+
+        showFeedback('ピンポン！', true);
+        createSparkles(cell);
+        speakFeedback('ピンポン');
+
+        // Next round after delay
+        setTimeout(() => {
+          nextRound();
+        }, 1200);
+      } else {
+        // Wrong
+        roundMistakes++;
+        totalWrong++;
+        cell.classList.add('wrong');
+        showFeedback('ブッブー', false);
+        speakFeedback('ブッブー');
+      }
+    }
+
+    // ===== Feedback =====
+    function showFeedback(text, isCorrect) {
+      const popup = document.getElementById('feedbackPopup');
+      popup.textContent = text;
+      popup.className = 'feedback-popup';
+
+      // Force reflow
+      void popup.offsetWidth;
+
+      popup.classList.add(isCorrect ? 'show-correct' : 'show-wrong');
+
+      setTimeout(() => {
+        popup.className = 'feedback-popup';
+      }, isCorrect ? 1000 : 800);
+    }
+
+    // ===== Sparkle Effect =====
+    function createSparkles(cell) {
+      const rect = cell.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const colors = ['#4caf50', '#ffd700', '#ff6b8a', '#64b5f6', '#ab47bc'];
+
+      for (let i = 0; i < 10; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        const angle = (Math.PI * 2 / 10) * i;
+        const dist = 40 + Math.random() * 40;
+        const x = cx + Math.cos(angle) * dist;
+        const y = cy + Math.sin(angle) * dist;
+        sparkle.style.left = x + 'px';
+        sparkle.style.top = y + 'px';
+        sparkle.style.background = colors[i % colors.length];
+        sparkle.style.width = (6 + Math.random() * 8) + 'px';
+        sparkle.style.height = sparkle.style.width;
+        sparkle.style.borderRadius = '50%';
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 700);
+      }
+    }
+
+    // ===== Speech =====
+    function speakCharacter() {
+      if (!speechSupported) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(targetChar);
+        utter.lang = 'ja-JP';
+        utter.rate = 0.8;
+        utter.pitch = 1.2;
+        window.speechSynthesis.speak(utter);
+      } catch(e) {
+        // Silently fail
+      }
+    }
+
+    function speakFeedback(text) {
+      if (!speechSupported) return;
+      try {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'ja-JP';
+        utter.rate = 1.0;
+        utter.pitch = 1.1;
+        window.speechSynthesis.speak(utter);
+      } catch(e) {}
+    }
+
+    // ===== UI Updates =====
+    function updateScore() {
+      document.getElementById('headerScoreNum').textContent = score;
+    }
+
+    function updateProgress() {
+      const pct = ((round - 1) / totalRounds) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = (round - 1) + '/' + totalRounds;
+    }
+
+    // ===== End Game =====
+    function endGame() {
+      // Final progress update
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('progressText').textContent = totalRounds + '/' + totalRounds;
+
+      // Calculate stars
+      const pctCorrect = perfectCount / totalRounds;
+      let stars;
+      if (pctCorrect >= 0.93) stars = 3;       // 14/15 or 15/15
+      else if (pctCorrect >= 0.67) stars = 2;   // 10-13/15
+      else stars = 1;
+
+      // Delay to show end screen
+      setTimeout(() => {
+        showScreen('endScreen');
+
+        // Mascot & title
+        const mascots = ['&#x1F389;', '&#x1F31F;', '&#x1F338;'];
+        document.getElementById('endMascot').innerHTML = stars === 3 ? '&#x1F3C6;' : (stars === 2 ? '&#x1F31F;' : '&#x1F338;');
+
+        const titles = ['がんばったね！', 'すごいね！', 'かんぺき！！'];
+        document.getElementById('endTitle').textContent = titles[stars - 1];
+
+        // Stars
+        const starsEl = document.getElementById('starsDisplay');
+        starsEl.innerHTML = '';
+        for (let i = 0; i < 3; i++) {
+          const span = document.createElement('span');
+          span.className = 'star-icon ' + (i < stars ? 'earned' : 'empty');
+          span.innerHTML = '&#x2B50;';
+          starsEl.appendChild(span);
+        }
+
+        // Stats
+        document.getElementById('statCorrect').textContent = score + ' / ' + totalRounds;
+        document.getElementById('statPerfect').textContent = perfectCount + ' もん';
+        document.getElementById('statWrong').textContent = totalWrong + ' かい';
+
+        // Message
+        const messages = [
+          'つぎは もっと できるよ！\nいっしょに がんばろう！',
+          'とっても じょうず！\nもうすこしで かんぺき！',
+          'すばらしい！！\nひらがな マスター だね！'
+        ];
+        document.getElementById('endMessage').textContent = messages[stars - 1];
+
+        // Speak congratulation
+        if (speechSupported) {
+          try {
+            const msg = stars === 3 ? 'かんぺき！すごい！' : (stars === 2 ? 'すごいね！' : 'がんばったね！');
+            const utter = new SpeechSynthesisUtterance(msg);
+            utter.lang = 'ja-JP';
+            utter.rate = 0.9;
+            utter.pitch = 1.3;
+            window.speechSynthesis.speak(utter);
+          } catch(e) {}
+        }
+      }, 500);
+    }
+
+    // ===== Navigation =====
+    function retryGame() {
+      startGame(currentMode);
+    }
+
+    function showModeSelect() {
+      document.getElementById('headerScore').style.visibility = 'hidden';
+      showScreen('startScreen');
+    }
+
+    // ===== Utility =====
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+  </script>
+</body>
+</html>

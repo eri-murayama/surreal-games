@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>おとであそぼ｜ゲロゲーロ学園</title>
+  <meta name="baby-game" content="true">
+  <script src="../../js/baby-launcher.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    /* ===== Game-specific overrides ===== */
+    body {
+      background: linear-gradient(135deg, #f3e5f5 0%, #e8eaf6 50%, #fce4ec 100%);
+      overflow: hidden;
+      height: 100vh;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    body::before, body::after { display: none; }
+
+    .music-app {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* --- Mode Selector --- */
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(10px);
+      flex-shrink: 0;
+    }
+
+    .mode-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      border: 4px solid #e0e0e0;
+      background: white;
+      font-size: 2.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .mode-btn .mode-label {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #888;
+      line-height: 1;
+    }
+
+    .mode-btn.active {
+      border-color: #ab47bc;
+      background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+      box-shadow: 0 0 20px rgba(171, 71, 188, 0.4);
+      transform: scale(1.08);
+    }
+
+    .mode-btn.active .mode-label {
+      color: #7b1fa2;
+    }
+
+    .mode-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* --- Play Area --- */
+    .play-area {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-panel {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .mode-panel.active {
+      display: flex;
+    }
+
+    /* ===== MODE 1: PIANO ===== */
+    .piano-panel {
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .piano-key {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 20px;
+      cursor: pointer;
+      transition: filter 0.08s, transform 0.08s;
+      position: relative;
+      border-radius: 0 0 16px 16px;
+      border-right: 2px solid rgba(255,255,255,0.4);
+      min-height: 150px;
+      overflow: hidden;
+    }
+
+    .piano-key:last-child {
+      border-right: none;
+    }
+
+    .piano-key .key-label {
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .piano-key.pressed {
+      filter: brightness(1.4);
+      transform: scaleY(0.97);
+      transform-origin: top;
+    }
+
+    .piano-key:nth-child(1) { background: linear-gradient(180deg, #ef5350, #c62828); }
+    .piano-key:nth-child(2) { background: linear-gradient(180deg, #ff9800, #e65100); }
+    .piano-key:nth-child(3) { background: linear-gradient(180deg, #ffee58, #f9a825); }
+    .piano-key:nth-child(4) { background: linear-gradient(180deg, #66bb6a, #2e7d32); }
+    .piano-key:nth-child(5) { background: linear-gradient(180deg, #26c6da, #00838f); }
+    .piano-key:nth-child(6) { background: linear-gradient(180deg, #42a5f5, #1565c0); }
+    .piano-key:nth-child(7) { background: linear-gradient(180deg, #ab47bc, #6a1b9a); }
+    .piano-key:nth-child(8) { background: linear-gradient(180deg, #ec407a, #ad1457); }
+
+    /* ===== MODE 2: DRUMS ===== */
+    .drum-panel {
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .drum-pad {
+      width: calc(50% - 30px);
+      max-width: 180px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 1.1rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      transition: transform 0.08s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15), inset 0 -4px 8px rgba(0,0,0,0.15), inset 0 4px 8px rgba(255,255,255,0.2);
+      min-width: 120px;
+      min-height: 120px;
+    }
+
+    .drum-pad:active, .drum-pad.hit {
+      transform: scale(0.93);
+    }
+
+    .drum-pad.red { background: radial-gradient(circle at 35% 35%, #ef5350, #b71c1c); }
+    .drum-pad.blue { background: radial-gradient(circle at 35% 35%, #42a5f5, #0d47a1); }
+    .drum-pad.yellow { background: radial-gradient(circle at 35% 35%, #ffee58, #f57f17); }
+    .drum-pad.green { background: radial-gradient(circle at 35% 35%, #66bb6a, #1b5e20); }
+
+    .drum-ripple {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.6);
+      animation: rippleOut 0.6s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rippleOut {
+      0% { width: 30%; height: 30%; opacity: 1; }
+      100% { width: 150%; height: 150%; opacity: 0; }
+    }
+
+    /* ===== MODE 3: FOREST ===== */
+    .forest-panel {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #81d4fa 0%, #a5d6a7 50%, #66bb6a 100%);
+      position: relative;
+    }
+
+    /* Ground */
+    .forest-panel::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 25%;
+      background: linear-gradient(180deg, #66bb6a, #4caf50, #388e3c);
+      border-radius: 50% 50% 0 0 / 20% 20% 0 0;
+    }
+
+    .forest-element {
+      position: absolute;
+      cursor: pointer;
+      font-size: 3.5rem;
+      z-index: 2;
+      transition: transform 0.15s;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    .forest-element .element-label {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #555;
+      text-align: center;
+      display: block;
+      margin-top: -4px;
+      pointer-events: none;
+    }
+
+    .forest-element.idle {
+      animation: gentleBob 3s ease-in-out infinite;
+    }
+
+    .forest-element:nth-child(2) { animation-delay: -0.5s; }
+    .forest-element:nth-child(3) { animation-delay: -1s; }
+    .forest-element:nth-child(4) { animation-delay: -1.5s; }
+    .forest-element:nth-child(5) { animation-delay: -2s; }
+    .forest-element:nth-child(6) { animation-delay: -2.5s; }
+
+    @keyframes gentleBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .forest-element.tapped {
+      animation: forestTap 0.4s ease !important;
+    }
+
+    @keyframes forestTap {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.35) rotate(-5deg); }
+      60% { transform: scale(1.1) rotate(3deg); }
+      100% { transform: scale(1); }
+    }
+
+    /* ===== SPARKLES ===== */
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 1.2rem;
+      animation: sparkleRise 0.8s ease-out forwards;
+    }
+
+    @keyframes sparkleRise {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-80px) scale(0.3); }
+    }
+
+    .star-float {
+      position: absolute;
+      pointer-events: none;
+      z-index: 10;
+      font-size: 1.5rem;
+      animation: starFloat 1s ease-out forwards;
+    }
+
+    @keyframes starFloat {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-120px) scale(0.2) rotate(180deg); }
+    }
+
+    /* ===== PARENT CONTROLS ===== */
+    .parent-exit {
+      position: fixed;
+      top: 8px;
+      right: 8px;
+      z-index: 100;
+      font-size: 1.2rem;
+      opacity: 0.3;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 8px;
+      line-height: 1;
+    }
+
+    .back-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-overlay.show {
+      display: flex;
+    }
+
+    .back-card {
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .back-card p {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      color: #555;
+    }
+
+    .back-card a {
+      display: inline-block;
+      padding: 12px 32px;
+      background: #ab47bc;
+      color: white;
+      border-radius: 30px;
+      text-decoration: none;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 6px;
+    }
+
+    .back-card button {
+      display: inline-block;
+      padding: 12px 32px;
+      background: #e0e0e0;
+      color: #555;
+      border-radius: 30px;
+      border: none;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 6px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .mode-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+        border-radius: 16px;
+      }
+      .mode-btn .mode-label {
+        font-size: 0.55rem;
+      }
+      .piano-key .key-label {
+        font-size: 0.85rem;
+      }
+      .drum-pad {
+        min-width: 100px;
+        min-height: 100px;
+        font-size: 0.9rem;
+      }
+      .forest-element {
+        font-size: 2.8rem;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .drum-pad {
+        width: 180px;
+        max-width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="music-app">
+    <!-- Mode Selector -->
+    <div class="mode-selector">
+      <button class="mode-btn active" data-mode="piano" aria-label="ピアノ">
+        <span>🎹</span>
+        <span class="mode-label">ピアノ</span>
+      </button>
+      <button class="mode-btn" data-mode="drums" aria-label="たいこ">
+        <span>🥁</span>
+        <span class="mode-label">たいこ</span>
+      </button>
+      <button class="mode-btn" data-mode="forest" aria-label="もりのおと">
+        <span>🌳</span>
+        <span class="mode-label">もりのおと</span>
+      </button>
+    </div>
+
+    <!-- Play Area -->
+    <div class="play-area">
+      <!-- Piano Mode -->
+      <div class="mode-panel piano-panel active" id="panel-piano">
+        <div class="piano-key" data-note="C4"><span class="key-label">ど</span></div>
+        <div class="piano-key" data-note="D4"><span class="key-label">れ</span></div>
+        <div class="piano-key" data-note="E4"><span class="key-label">み</span></div>
+        <div class="piano-key" data-note="F4"><span class="key-label">ふぁ</span></div>
+        <div class="piano-key" data-note="G4"><span class="key-label">そ</span></div>
+        <div class="piano-key" data-note="A4"><span class="key-label">ら</span></div>
+        <div class="piano-key" data-note="B4"><span class="key-label">し</span></div>
+        <div class="piano-key" data-note="C5"><span class="key-label">ど</span></div>
+      </div>
+
+      <!-- Drums Mode -->
+      <div class="mode-panel drum-panel" id="panel-drums">
+        <div class="drum-pad red" data-drum="low">どん</div>
+        <div class="drum-pad blue" data-drum="mid">ぽん</div>
+        <div class="drum-pad yellow" data-drum="high">しゃん</div>
+        <div class="drum-pad green" data-drum="click">たっ</div>
+      </div>
+
+      <!-- Forest Mode -->
+      <div class="mode-panel forest-panel" id="panel-forest">
+        <div class="forest-element idle" data-sound="tree" style="left:12%;top:25%;">🌳<span class="element-label">き</span></div>
+        <div class="forest-element idle" data-sound="bird" style="right:18%;top:12%;">🐦<span class="element-label">とり</span></div>
+        <div class="forest-element idle" data-sound="water" style="left:50%;top:55%;">💧<span class="element-label">みず</span></div>
+        <div class="forest-element idle" data-sound="frog" style="left:22%;bottom:18%;">🐸<span class="element-label">かえる</span></div>
+        <div class="forest-element idle" data-sound="flower" style="right:25%;bottom:22%;">🌸<span class="element-label">はな</span></div>
+        <div class="forest-element idle" data-sound="cloud" style="left:42%;top:5%;">☁️<span class="element-label">くも</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Exit -->
+  <button class="parent-exit" id="parentExit" aria-label="おやよう">🐸</button>
+
+  <!-- Back Overlay -->
+  <div class="back-overlay" id="backOverlay">
+    <div class="back-card">
+      <p>おわりにする？</p>
+      <a href="../../index.html">うん</a>
+      <button onclick="document.getElementById('backOverlay').classList.remove('show')">まだあそぶ</button>
+    </div>
+  </div>
+
+  <script src="../../js/audio.js"></script>
+  <script>
+    /* ============================================
+       おとであそぼ - Music Maker Game
+       ============================================ */
+
+    // Initialize audio on first interaction
+    let audioReady = false;
+    function ensureAudio() {
+      if (!audioReady) {
+        geroAudio.init();
+        geroAudio.resume();
+        audioReady = true;
+      }
+    }
+
+    // ===== MODE SWITCHING =====
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    const panels = document.querySelectorAll('.mode-panel');
+
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        ensureAudio();
+        geroAudio.playPop();
+        const mode = btn.dataset.mode;
+        modeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        panels.forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-' + mode).classList.add('active');
+      });
+    });
+
+    // ===== SPARKLE HELPER =====
+    function spawnSparkle(x, y) {
+      const chars = ['✨', '⭐', '🌟', '💫', '✧'];
+      const el = document.createElement('div');
+      el.className = 'sparkle';
+      el.textContent = chars[Math.floor(Math.random() * chars.length)];
+      el.style.left = (x + (Math.random() - 0.5) * 40) + 'px';
+      el.style.top = (y + (Math.random() - 0.5) * 20) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 800);
+    }
+
+    function spawnSparkles(x, y, count) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => spawnSparkle(x, y), i * 50);
+      }
+    }
+
+    // ===== STAR FLOAT HELPER (for piano) =====
+    function spawnStar(parent) {
+      const star = document.createElement('div');
+      star.className = 'star-float';
+      star.textContent = '⭐';
+      star.style.left = (Math.random() * 60 + 20) + '%';
+      star.style.bottom = '30%';
+      parent.appendChild(star);
+      setTimeout(() => star.remove(), 1000);
+    }
+
+    // ===== MODE 1: PIANO =====
+    const pianoKeys = document.querySelectorAll('.piano-key');
+    const activePointers = new Map();
+
+    function pianoDown(key, e) {
+      ensureAudio();
+      e.preventDefault();
+      const note = key.dataset.note;
+      key.classList.add('pressed');
+      geroAudio.playNote(note, 0.5, 'sine');
+      spawnStar(key);
+
+      // Sparkles at touch point
+      const rect = key.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height * 0.3;
+      spawnSparkles(cx, cy, 3);
+    }
+
+    function pianoUp(key) {
+      key.classList.remove('pressed');
+    }
+
+    pianoKeys.forEach(key => {
+      // Pointer events for multi-touch support
+      key.addEventListener('pointerdown', (e) => {
+        activePointers.set(e.pointerId, key);
+        key.setPointerCapture(e.pointerId);
+        pianoDown(key, e);
+      });
+
+      key.addEventListener('pointerup', (e) => {
+        activePointers.delete(e.pointerId);
+        pianoUp(key);
+      });
+
+      key.addEventListener('pointercancel', (e) => {
+        activePointers.delete(e.pointerId);
+        pianoUp(key);
+      });
+
+      // Handle pointer moving to a different key
+      key.addEventListener('pointerenter', (e) => {
+        if (e.pressure > 0 || e.buttons > 0) {
+          pianoDown(key, e);
+        }
+      });
+
+      key.addEventListener('pointerleave', (e) => {
+        pianoUp(key);
+      });
+    });
+
+    // ===== MODE 2: DRUMS =====
+    const drumPads = document.querySelectorAll('.drum-pad');
+
+    const drumSounds = {
+      low: () => geroAudio.playTone(100, 0.4, 'triangle', 0.4),
+      mid: () => geroAudio.playTone(200, 0.3, 'triangle', 0.35),
+      high: () => geroAudio.playTone(800, 0.15, 'square', 0.2),
+      click: () => geroAudio.playTone(1200, 0.06, 'square', 0.25),
+    };
+
+    function drumHit(pad, e) {
+      ensureAudio();
+      e.preventDefault();
+      const drum = pad.dataset.drum;
+      pad.classList.add('hit');
+      drumSounds[drum]();
+
+      // Ripple effect
+      const ripple = document.createElement('div');
+      ripple.className = 'drum-ripple';
+      ripple.style.left = '50%';
+      ripple.style.top = '50%';
+      ripple.style.transform = 'translate(-50%,-50%)';
+      pad.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+
+      // Sparkles
+      const rect = pad.getBoundingClientRect();
+      spawnSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 4);
+
+      setTimeout(() => pad.classList.remove('hit'), 100);
+    }
+
+    drumPads.forEach(pad => {
+      pad.addEventListener('pointerdown', (e) => drumHit(pad, e));
+    });
+
+    // ===== MODE 3: FOREST =====
+    const forestElements = document.querySelectorAll('.forest-element');
+
+    const forestSounds = {
+      tree: () => {
+        // White noise burst for rustling leaves
+        if (!geroAudio.ctx) return;
+        const bufferSize = geroAudio.ctx.sampleRate * 0.3;
+        const buffer = geroAudio.ctx.createBuffer(1, bufferSize, geroAudio.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.15;
+        }
+        const source = geroAudio.ctx.createBufferSource();
+        source.buffer = buffer;
+        const gain = geroAudio.ctx.createGain();
+        gain.gain.value = 0.3;
+        gain.gain.exponentialRampToValueAtTime(0.001, geroAudio.ctx.currentTime + 0.3);
+        const filter = geroAudio.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 3000;
+        filter.Q.value = 0.5;
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(geroAudio.seGain);
+        source.start();
+      },
+      bird: () => geroAudio.playAnimalSound('bird'),
+      water: () => {
+        // High ping drip
+        geroAudio.playTone(1400, 0.08, 'sine', 0.25);
+        setTimeout(() => geroAudio.playTone(1800, 0.06, 'sine', 0.15), 80);
+      },
+      frog: () => geroAudio.playAnimalSound('frog'),
+      flower: () => {
+        // Gentle chime
+        [1047, 1319, 1568].forEach((f, i) => {
+          setTimeout(() => geroAudio.playTone(f, 0.4, 'sine', 0.12), i * 100);
+        });
+      },
+      cloud: () => {
+        // Soft whoosh with filtered noise
+        if (!geroAudio.ctx) return;
+        const bufferSize = geroAudio.ctx.sampleRate * 0.5;
+        const buffer = geroAudio.ctx.createBuffer(1, bufferSize, geroAudio.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.1;
+        }
+        const source = geroAudio.ctx.createBufferSource();
+        source.buffer = buffer;
+        const gain = geroAudio.ctx.createGain();
+        gain.gain.setValueAtTime(0.001, geroAudio.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.2, geroAudio.ctx.currentTime + 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001, geroAudio.ctx.currentTime + 0.5);
+        const filter = geroAudio.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 800;
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(geroAudio.seGain);
+        source.start();
+      },
+    };
+
+    forestElements.forEach(el => {
+      el.addEventListener('pointerdown', (e) => {
+        ensureAudio();
+        e.preventDefault();
+        const sound = el.dataset.sound;
+
+        // Remove idle, play tap anim
+        el.classList.remove('idle');
+        el.classList.remove('tapped');
+        // Force reflow
+        void el.offsetWidth;
+        el.classList.add('tapped');
+
+        forestSounds[sound]();
+
+        // Sparkles
+        const rect = el.getBoundingClientRect();
+        spawnSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 4);
+
+        // Restore idle after animation
+        setTimeout(() => {
+          el.classList.remove('tapped');
+          el.classList.add('idle');
+        }, 400);
+      });
+    });
+
+    // ===== PARENT CONTROLS =====
+    let parentTaps = [];
+    const parentBtn = document.getElementById('parentExit');
+    const backOverlay = document.getElementById('backOverlay');
+
+    parentBtn.addEventListener('click', () => {
+      const now = Date.now();
+      parentTaps.push(now);
+      // Keep only taps within last 2 seconds
+      parentTaps = parentTaps.filter(t => now - t < 2000);
+      if (parentTaps.length >= 3) {
+        backOverlay.classList.add('show');
+        parentTaps = [];
+      }
+    });
+
+    // Prevent default touch behaviors for smoother experience
+    document.addEventListener('touchmove', (e) => {
+      if (e.target.closest('.play-area')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+  </script>
+</body>
+</html>
