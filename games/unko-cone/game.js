@@ -125,39 +125,116 @@
     }
   }
 
-  // ---- Character image ----
-  const heroImg = new Image();
-  heroImg.src = 'character.png';
-  let heroImgLoaded = false;
-  heroImg.onload = () => { heroImgLoaded = true; };
-
+  // ---- Character drawing ----
   function drawHero(x, y) {
-    const imgSize = 56;
+    const headR = 22;
+    const bodyH = 28;
     const headX = x;
-    const headY = y - CONE_H - (stack.length * 14) - imgSize / 2 - 10;
+    const coneTopY = y - CONE_H;
+    const stackH = stack.length * 14;
+    const headY = coneTopY - stackH - headR - bodyH - 4;
+    const bodyY = headY + headR;
 
-    // Arms holding cone
-    ctx.strokeStyle = '#f5d6b8';
-    ctx.lineWidth = 5;
+    ctx.save();
+
+    // --- Body (orange shirt) ---
+    ctx.fillStyle = '#F06030';
+    ctx.beginPath();
+    ctx.moveTo(headX - 16, bodyY);
+    ctx.lineTo(headX - 18, bodyY + bodyH);
+    ctx.lineTo(headX + 18, bodyY + bodyH);
+    ctx.lineTo(headX + 16, bodyY);
+    ctx.closePath();
+    ctx.fill();
+    // Collar line
+    ctx.strokeStyle = '#D04820';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(headX, bodyY + 2, 8, 0, Math.PI);
+    ctx.stroke();
+
+    // --- Arms holding cone ---
+    ctx.strokeStyle = '#f5cdb0';
+    ctx.lineWidth = 6;
     ctx.lineCap = 'round';
+    // Left arm
     ctx.beginPath();
-    ctx.moveTo(headX - 18, headY + imgSize / 2);
-    ctx.lineTo(x - CONE_W / 2 + 5, y - CONE_H + 5);
+    ctx.moveTo(headX - 18, bodyY + 8);
+    ctx.quadraticCurveTo(headX - 26, bodyY + bodyH + 10, x - CONE_W / 2 + 8, coneTopY - stackH + 5);
     ctx.stroke();
+    // Right arm
     ctx.beginPath();
-    ctx.moveTo(headX + 18, headY + imgSize / 2);
-    ctx.lineTo(x + CONE_W / 2 - 5, y - CONE_H + 5);
+    ctx.moveTo(headX + 18, bodyY + 8);
+    ctx.quadraticCurveTo(headX + 26, bodyY + bodyH + 10, x + CONE_W / 2 - 8, coneTopY - stackH + 5);
     ctx.stroke();
 
-    // Draw character image
-    if (heroImgLoaded) {
-      ctx.save();
+    // --- Head ---
+    // Skin
+    ctx.fillStyle = '#f5cdb0';
+    ctx.beginPath();
+    ctx.arc(headX, headY, headR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ears
+    ctx.fillStyle = '#f5cdb0';
+    ctx.beginPath();
+    ctx.ellipse(headX - headR + 2, headY + 2, 5, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(headX + headR - 2, headY + 2, 5, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Buzz-cut hair (dark gray, covers top of head)
+    ctx.fillStyle = '#555';
+    ctx.beginPath();
+    ctx.arc(headX, headY - 2, headR - 1, Math.PI, 0);
+    ctx.closePath();
+    ctx.fill();
+    // Hair dots for buzz texture
+    ctx.fillStyle = '#444';
+    for (let i = 0; i < 12; i++) {
+      const angle = Math.PI + (Math.PI * i / 12);
+      const r = headR * (0.5 + Math.random() * 0.35);
+      const dx = Math.cos(angle) * r;
+      const dy = Math.sin(angle) * r - 2;
       ctx.beginPath();
-      ctx.arc(headX, headY, imgSize / 2, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(heroImg, headX - imgSize / 2, headY - imgSize / 2, imgSize, imgSize);
-      ctx.restore();
+      ctx.arc(headX + dx, headY + dy, 1.2, 0, Math.PI * 2);
+      ctx.fill();
     }
+
+    // Eyes (big round)
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.arc(headX - 8, headY + 2, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(headX + 8, headY + 2, 5, 0, Math.PI * 2);
+    ctx.fill();
+    // Eye highlights
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(headX - 6, headY, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(headX + 10, headY, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Mouth (open, happy)
+    ctx.fillStyle = '#e04030';
+    ctx.beginPath();
+    ctx.arc(headX, headY + 11, 6, 0, Math.PI);
+    ctx.fill();
+
+    // Cheeks (blush)
+    ctx.fillStyle = 'rgba(255, 130, 100, 0.35)';
+    ctx.beginPath();
+    ctx.ellipse(headX - 14, headY + 8, 5, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(headX + 14, headY + 8, 5, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
   }
 
   function drawPoop(x, y, size) {
@@ -267,10 +344,16 @@
     const dt = Math.min(time - lastTime, 50);
     lastTime = time;
 
-    update(dt);
-    render();
+    try {
+      update(dt);
+      if (!gameOver) render();
+    } catch (e) {
+      console.error('Game loop error:', e);
+    }
 
-    animationId = requestAnimationFrame(gameLoop);
+    if (!gameOver) {
+      animationId = requestAnimationFrame(gameLoop);
+    }
   }
 
   function update(dt) {
