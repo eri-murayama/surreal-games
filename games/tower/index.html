@@ -31,24 +31,33 @@
 
     <!-- タイトル画面 -->
     <div id="title-screen">
-      <div id="title-tower">🗼</div>
+      <div id="title-tower-scene">
+        <div id="title-tower">🗼</div>
+        <div id="title-stars"></div>
+      </div>
       <div id="title-catchphrase">「この塔の頂上を見た者はいない...」</div>
       <div id="highscore-display"></div>
       <button id="start-btn">塔に挑む</button>
       <button id="continue-btn" class="hidden">続きから</button>
-      <p id="title-hint">矢印キー / WASD / スワイプで移動<br>敵にぶつかって攻撃</p>
+      <div id="title-controls">
+        <p>矢印キー / WASD / スワイプで移動</p>
+        <p>敵にぶつかって攻撃 / [G]ガチャ / [E]装備 / [B]バッグ</p>
+        <p>5Fごとにボス出現 / 3Fごとにショップ</p>
+      </div>
     </div>
 
     <!-- ゲーム画面 -->
     <div id="game-screen" class="hidden">
       <div id="game-hud">
         <div id="hud-floor">🗼 1F</div>
-        <div id="hud-hp">❤️ 30/30</div>
+        <div id="hud-hp">❤️ 35/35</div>
         <div id="hud-atk">⚔️ 5</div>
         <div id="hud-def">🛡️ 2</div>
         <div id="hud-exp">✨ Lv1</div>
         <div id="hud-coin">🪙 0</div>
+        <div id="hud-equip">--</div>
       </div>
+      <div id="hud-status"></div>
       <div id="hud-popup"></div>
       <canvas id="game-canvas"></canvas>
       <div id="game-log"></div>
@@ -88,11 +97,56 @@
       </div>
     </div>
 
+    <!-- ショップ画面 -->
+    <div id="shop-screen" class="hidden">
+      <div id="shop-title">🏪 ショップ</div>
+      <div id="shop-coins">🪙 0</div>
+      <div id="shop-items"></div>
+      <button id="shop-close-btn" class="overlay-close-btn">閉じる</button>
+    </div>
+
+    <!-- 装備画面 -->
+    <div id="equip-screen" class="hidden">
+      <div id="equip-title">⚔️ 装備</div>
+      <div class="equip-slot">
+        <span class="equip-label">武器:</span>
+        <span id="equip-weapon">-- なし --</span>
+      </div>
+      <div class="equip-slot">
+        <span class="equip-label">防具:</span>
+        <span id="equip-armor">-- なし --</span>
+      </div>
+      <div class="equip-slot">
+        <span class="equip-label">装飾:</span>
+        <span id="equip-accessory">-- なし --</span>
+      </div>
+      <div id="equip-stats"></div>
+      <button id="equip-close-btn" class="overlay-close-btn">閉じる [E]</button>
+    </div>
+
+    <!-- バッグ画面 -->
+    <div id="bag-screen" class="hidden">
+      <div id="bag-title">🎒 バッグ <span id="bag-count">0/3</span></div>
+      <div id="bag-items"></div>
+      <button id="bag-close-btn" class="overlay-close-btn">閉じる [B]</button>
+    </div>
+
+    <!-- イベント画面 -->
+    <div id="event-screen" class="hidden">
+      <div id="event-emoji"></div>
+      <div id="event-title"></div>
+      <div id="event-desc"></div>
+      <div id="event-choices"></div>
+    </div>
+
     <!-- ゲームオーバー画面 -->
     <div id="gameover-screen" class="hidden">
       <div id="gameover-title">塔は崩れた...</div>
       <div id="gameover-stats"></div>
       <div id="gameover-epitaph"></div>
+      <button id="share-btn" class="share-btn hidden">
+        <span class="share-x-icon">𝕏</span> でシェア
+      </button>
       <div id="revive-section">
         <div id="revive-label">復活のチャンス！</div>
         <button id="revive-btn">

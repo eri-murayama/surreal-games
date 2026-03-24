@@ -2,42 +2,122 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-03-24</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://eri-murayama.github.io/surreal-games/prototypes.html</loc>
-    <lastmod>2026-03-11</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://eri-murayama.github.io/surreal-games/games/escape-room/index.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <loc>https://eri-murayama.github.io/surreal-games/characters.html</loc>
+    <lastmod>2026-03-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://eri-murayama.github.io/surreal-games/achievements.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/prototypes.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/drive/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/business-analysis/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/escape-room/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://eri-murayama.github.io/surreal-games/games/whack-kanikani/index.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/tower/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/rpg/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/games/party-game/index.html</loc>
-    <lastmod>2026-03-11</lastmod>
-    <priority>0.6</priority>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eri-murayama.github.io/surreal-games/games/rpg/index.html</loc>
-    <lastmod>2026-03-11</lastmod>
-    <priority>0.6</priority>
+    <loc>https://eri-murayama.github.io/surreal-games/games/pet/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/puzzle-2048/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/trivia-king/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/elite-english/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/cosmic-chain/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/holo-memory/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/holo-analysis/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/suisei-puzzle/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/fortune/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/games/dress-up/index.html</loc>
-    <lastmod>2026-03-11</lastmod>
-    <priority>0.6</priority>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/games/magic-trick/index.html</loc>
-    <lastmod>2026-03-11</lastmod>
-    <priority>0.6</priority>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/chaos-stream/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/unko-cone/index.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.7</priority>
   </url>
 </urlset>

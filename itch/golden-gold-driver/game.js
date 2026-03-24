@@ -104,8 +104,14 @@
       if (!preset) return;
       this.stopBgm();
       this.bgmPlaying = true;
+      this._nextBgmTime = 0;
       if (this.ctx.state === 'suspended') {
-        this.ctx.resume().then(() => { if (this.bgmPlaying) this._loopBgm(preset); });
+        const onRunning = () => {
+          this.ctx.removeEventListener('statechange', onRunning);
+          if (this.bgmPlaying) this._loopBgm(preset);
+        };
+        this.ctx.addEventListener('statechange', onRunning);
+        this.ctx.resume();
       } else {
         this._loopBgm(preset);
       }
@@ -115,11 +121,14 @@
       if (!this.bgmPlaying || !this.enabled || !this.ctx) return;
       const ctx = this.ctx;
       const bgmDest = this.bgmGain || ctx.destination;
-      const now = ctx.currentTime;
+      const now = (this._nextBgmTime && this._nextBgmTime > ctx.currentTime)
+        ? this._nextBgmTime
+        : ctx.currentTime;
       const baseBeat = 60 / preset.tempo;
       const vol = preset.volume;
 
       const totalDur = baseBeat * preset.melody.length;
+      this.bgmNodes = [];
 
       preset.melody.forEach((freq, i) => {
         if (!freq) return;
@@ -151,14 +160,17 @@
         this.bgmNodes.push(osc);
       });
 
+      this._nextBgmTime = now + totalDur;
+      const waitMs = Math.max(0, (this._nextBgmTime - ctx.currentTime - 0.1) * 1000);
       const timer = setTimeout(() => {
         if (this.bgmPlaying) this._loopBgm(preset);
-      }, totalDur * 1000);
+      }, waitMs);
       this.bgmTimers.push(timer);
     },
 
     stopBgm() {
       this.bgmPlaying = false;
+      this._nextBgmTime = 0;
       this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
       this.bgmNodes = [];
       this.bgmTimers.forEach(t => clearTimeout(t));
@@ -424,9 +436,9 @@
 
   // --- Text Data ---
   const INTROS = [
-    "Yoshinori\n  I'm Yoshinori.\n  Just came from the countryside.",
-    "Yoshinori\n  The Golden Gold Driver...\n  That's my dream.",
-    "Yoshinori\n  The Professor will help me.\n  Let's go!",
+    "Yoshinori\n\u3000I'm Yoshinori.\n\u3000Just came from the countryside.",
+    "Yoshinori\n\u3000The Golden Gold Driver...\n\u3000That's my dream.",
+    "Yoshinori\n\u3000The Professor will help me.\n\u3000Let's go!",
   ];
 
   const CONVERSATION = [
@@ -438,9 +450,9 @@
 
   const RESULT_COMMENTS = [
     'Yoshinori\n"Best machine ever, Prof!"\nThe Professor passed out.\nGood job.',
-    'Yoshinori\n"The machine was bad...\n  Hey Prof, fix your running!"\nThe Professor turned pale!',
-    'Yoshinori\n"Tch... Prof,\n  can\'t you run faster?!"\nProf: "I\'m a human, you know...?"',
-    'Yoshinori\n"PROFESSOR!!\n  Don\'t sleep before the goal!!"\nThe Professor isn\'t moving.\nCall an ambulance.',
+    'Yoshinori\n"The machine was bad...\n\u3000Hey Prof, fix your running!"\nThe Professor turned pale!',
+    'Yoshinori\n"Tch... Prof,\n\u3000can\'t you run faster?!"\nProf: "I\'m a human, you know...?"',
+    'Yoshinori\n"PROFESSOR!!\n\u3000Don\'t sleep before the goal!!"\nThe Professor isn\'t moving.\nCall an ambulance.',
   ];
 
   // --- High Score Display ---
@@ -615,7 +627,7 @@
   function updateConversation() {
     const dialogueEl = document.getElementById('conv-dialogue');
     const line = CONVERSATION[convStep];
-    const indented = line.text.split('\n').map(l => `  ${l}`).join('\n');
+    const indented = line.text.split('\n').map(l => `\u3000${l}`).join('\n');
     dialogueEl.textContent = `${line.speaker}\n${indented}`;
   }
 
@@ -624,7 +636,7 @@
     SoundSystem.stopBgm();
     SoundSystem.play('dramatic');
     const lineEl = document.getElementById('yoshinori-line');
-    lineEl.innerHTML = 'Yoshinori<br>"YOU will<br>  become the machine."';
+    lineEl.innerHTML = 'Yoshinori<br>"YOU will<br>\u3000become the machine."';
   }
 
   function showMountScene() {
@@ -1305,6 +1317,8 @@
 
   // --- Events ---
   startBtn.addEventListener('click', () => {
+    SoundSystem.play('start');
+    SoundSystem.playBgm('race');
     showIntroScreen();
   });
 
