@@ -741,43 +741,6 @@
           });
           break;
         }
-        case 'door_open': {
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(300, now);
-          osc.frequency.linearRampToValueAtTime(500, now + 0.3);
-          osc.frequency.linearRampToValueAtTime(400, now + 0.5);
-          gain.gain.value = this.volume * 0.2;
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-          osc.connect(gain);
-          osc.start(now);
-          osc.stop(now + 0.6);
-          break;
-        }
-        case 'modal_open': {
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(440, now);
-          osc.frequency.exponentialRampToValueAtTime(660, now + 0.08);
-          gain.gain.value = this.volume * 0.2;
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-          osc.connect(gain);
-          osc.start(now);
-          osc.stop(now + 0.12);
-          break;
-        }
-        case 'modal_close': {
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(660, now);
-          osc.frequency.exponentialRampToValueAtTime(440, now + 0.08);
-          gain.gain.value = this.volume * 0.15;
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-          osc.connect(gain);
-          osc.start(now);
-          osc.stop(now + 0.1);
-          break;
-        }
         case 'sparkle_click': {
           // PV風スパークルアルペジオ（BGMより高い音域でしゃらららーん）
           // BGMメロディ帯域(330-784Hz)を避けて高音域(1047Hz〜)で鳴らす

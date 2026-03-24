@@ -464,7 +464,7 @@ body {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.4);
   text-decoration: none;
-  z-index: 300;
+  z-index: 50;
   transition: color 0.2s;
 }
 .back-to-top-link:hover {

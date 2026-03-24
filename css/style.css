@@ -17,6 +17,102 @@
   --font-body: 'Zen Kaku Gothic New', sans-serif;
 }
 
+/* ========================================
+   ローディング画面
+   ======================================== */
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: var(--bg-primary);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-screen.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-logo {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 6vw, 3.5rem);
+  color: var(--text-primary);
+  position: relative;
+  animation: loadingGlitch 2s steps(1) infinite;
+}
+
+.loading-logo::before,
+.loading-logo::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-logo::before {
+  color: var(--accent-pink);
+  animation: loadingGlitch1 0.8s steps(1) infinite;
+}
+
+.loading-logo::after {
+  color: var(--accent-cyan);
+  animation: loadingGlitch2 0.8s steps(1) infinite;
+}
+
+@keyframes loadingGlitch {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.98; }
+}
+
+@keyframes loadingGlitch1 {
+  0% { clip-path: inset(40% 0 50% 0); transform: translateX(-4px); }
+  20% { clip-path: inset(10% 0 80% 0); transform: translateX(3px); }
+  40% { clip-path: inset(60% 0 20% 0); transform: translateX(-2px); }
+  60% { clip-path: inset(20% 0 60% 0); transform: translateX(4px); }
+  80% { clip-path: inset(70% 0 5% 0); transform: translateX(-3px); }
+  100% { clip-path: inset(30% 0 50% 0); transform: translateX(2px); }
+}
+
+@keyframes loadingGlitch2 {
+  0% { clip-path: inset(60% 0 20% 0); transform: translateX(3px); }
+  20% { clip-path: inset(30% 0 50% 0); transform: translateX(-4px); }
+  40% { clip-path: inset(5% 0 70% 0); transform: translateX(2px); }
+  60% { clip-path: inset(50% 0 30% 0); transform: translateX(-3px); }
+  80% { clip-path: inset(15% 0 65% 0); transform: translateX(4px); }
+  100% { clip-path: inset(45% 0 35% 0); transform: translateX(-2px); }
+}
+
+.loading-bar {
+  width: min(300px, 60vw);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.loading-bar__fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan));
+  border-radius: 3px;
+  animation: loadingFill 1.2s ease-out forwards;
+}
+
+@keyframes loadingFill {
+  0% { width: 0%; }
+  60% { width: 70%; }
+  100% { width: 100%; }
+}
+
 /* リセット */
 *,
 *::before,
@@ -387,7 +483,7 @@ section {
 }
 
 .game-card:hover .card-chara--kanikani {
-  transform: scale(3) translateY(-25%) rotate(10deg);
+  transform: scale(1.8) translateY(-18%) rotate(8deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
 
@@ -451,7 +547,7 @@ section {
 }
 
 .game-card:hover .card-chara--atsushi {
-  transform: scale(2.5) translateY(-25%) rotate(-8deg);
+  transform: scale(1.6) translateY(-15%) rotate(-5deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
 
@@ -516,7 +612,7 @@ section {
 }
 
 .game-card:hover .card-chara--sakuranbo {
-  transform: scale(2.5) translateY(-20%) rotate(-5deg);
+  transform: scale(1.6) translateY(-12%) rotate(-3deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
 }
 
@@ -580,7 +676,7 @@ section {
 }
 
 .game-card:hover .card-chara--yoshinori {
-  transform: scale(2.8) translateY(-22%) rotate(8deg);
+  transform: scale(1.6) translateY(-15%) rotate(5deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
 
@@ -666,6 +762,7 @@ section {
   font-size: 1.3rem;
   margin-bottom: 0.5rem;
   color: var(--accent-yellow);
+  overflow-wrap: break-word;
 }
 
 .game-card__desc {
@@ -673,6 +770,7 @@ section {
   color: var(--text-muted);
   margin-bottom: 1.2rem;
   line-height: 1.8;
+  overflow-wrap: break-word;
 }
 
 /* ストアボタン */
@@ -1143,7 +1241,7 @@ footer {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
-  z-index: 300;
+  z-index: 50;
   transition: color 0.2s;
 }
 

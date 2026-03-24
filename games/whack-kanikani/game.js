@@ -337,10 +337,10 @@ function spawnMissText(x, y) {
 }
 
 function shakeScreen() {
-  const wrapper = document.getElementById('game-wrapper');
-  wrapper.classList.remove('screen-shake');
-  void wrapper.offsetWidth;
-  wrapper.classList.add('screen-shake');
+  // body に適用（game-wrapper の transform: scale() と競合しないように）
+  document.body.classList.remove('screen-shake');
+  void document.body.offsetWidth;
+  document.body.classList.add('screen-shake');
 }
 
 // ===== ゲーム終了 =====

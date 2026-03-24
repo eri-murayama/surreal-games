@@ -2,99 +2,253 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>OGP画像生成ツール</title>
+  <title>OGP画像生成ツール - シュールゲームス</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 20px; font-family: sans-serif; color: #fff; }
-    canvas { border: 2px solid #666; max-width: 90vw; height: auto; }
-    button { padding: 12px 32px; font-size: 18px; cursor: pointer; border: none; border-radius: 8px; background: #6c5ce7; color: #fff; }
+    body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; font-family: 'Zen Kaku Gothic New', sans-serif; color: #fff; }
+    h1 { font-size: 1.3rem; margin-bottom: 8px; color: #ff6ec7; }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; align-items: center; justify-content: center; }
+    label { font-size: 0.85rem; color: #b0a8c8; }
+    select, input[type="text"], input[type="file"] { padding: 6px 10px; border-radius: 8px; border: 1px solid #444; background: #2a2a4a; color: #fff; font-size: 0.9rem; }
+    select { cursor: pointer; }
+
+    canvas { border: 2px solid #444; margin: 16px 0; max-width: 90vw; height: auto; border-radius: 8px; }
+
+    .btn-row { display: flex; gap: 8px; }
+    button { padding: 10px 28px; font-size: 1rem; cursor: pointer; border: none; border-radius: 8px; background: #6c5ce7; color: #fff; transition: background 0.2s; }
     button:hover { background: #5a4bd1; }
-    .info { font-size: 14px; color: #aaa; }
+    button.secondary { background: #444; }
+    button.secondary:hover { background: #555; }
+
+    .info { font-size: 0.8rem; color: #666; margin-top: 8px; }
+    .preset-info { font-size: 0.85rem; color: #b0a8c8; margin: 8px 0; text-align: center; }
+
+    .field-group { display: flex; flex-direction: column; gap: 4px; }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <p class="info">1200 × 630px — OGP画像プレビュー</p>
+  <h1>OGP画像生成ツール</h1>
+  <p class="info">1200 x 630px — SNSシェア用OGP画像を生成</p>
+
+  <div class="controls">
+    <div class="field-group">
+      <label>プリセット</label>
+      <select id="preset">
+        <option value="site">サイト全体</option>
+        <option value="drive">黄金の金色ドライバー</option>
+        <option value="business-analysis">経営分析ゲーム</option>
+        <option value="escape-room">かわいい部屋からの脱出</option>
+        <option value="whack-kanikani">かにかにパニック！</option>
+        <option value="custom">カスタム</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>タイトル</label>
+      <input type="text" id="title" value="シュールゲームス" style="width:200px">
+    </div>
+    <div class="field-group">
+      <label>サブタイトル</label>
+      <input type="text" id="subtitle" value="かわいいキャラクターと過ごす、素敵な時間" style="width:260px">
+    </div>
+    <div class="field-group">
+      <label>キャラ画像</label>
+      <input type="file" id="charaFile" accept="image/*">
+    </div>
+  </div>
+
   <canvas id="canvas" width="1200" height="630"></canvas>
-  <button id="download">PNGをダウンロード</button>
-  <p class="info">ダウンロード後 assets/images/ogp.png に上書き保存してください</p>
+
+  <div class="btn-row">
+    <button id="redraw">再描画</button>
+    <button id="download">PNGダウンロード</button>
+  </div>
+  <p class="info">ダウンロード後、各ゲームフォルダまたは assets/images/ に配置してください</p>
 
   <script>
     const W = 1200, H = 630;
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    const charaImg = new Image();
-    charaImg.src = '../assets/images/illust9.png';
+    const presets = {
+      site: {
+        title: 'シュール\nゲームス',
+        subtitle: 'かわいいキャラクターと過ごす、\n素敵な時間',
+        charaPath: '../assets/images/illust9.png',
+        bgColors: ['#0d0221', '#1a0a3e', '#2d1b69'],
+        glowColor1: 'rgba(255, 110, 199, 0.18)',
+        glowColor2: 'rgba(0, 255, 247, 0.12)',
+        filename: 'ogp.png'
+      },
+      drive: {
+        title: '黄金の金色\nドライバー',
+        subtitle: '博士のせなかでGO！\nシュールゲームス',
+        charaPath: '../games/drive/yoshinori.png',
+        bgColors: ['#3d1c00', '#cc6600', '#f5e6c8'],
+        glowColor1: 'rgba(255, 153, 0, 0.25)',
+        glowColor2: 'rgba(255, 230, 150, 0.15)',
+        filename: 'drive-ogp.png'
+      },
+      'business-analysis': {
+        title: '経営分析ゲーム',
+        subtitle: '天才たちの戯れ\nシュールゲームス',
+        charaPath: '../assets/images/atsushi.png',
+        bgColors: ['#0d0221', '#1a0533', '#c471ed'],
+        glowColor1: 'rgba(196, 113, 237, 0.2)',
+        glowColor2: 'rgba(123, 47, 247, 0.15)',
+        filename: 'business-analysis-ogp.png'
+      },
+      'escape-room': {
+        title: 'かわいい部屋\nからの脱出',
+        subtitle: 'シュールゲームス',
+        charaPath: '../assets/images/illust9.png',
+        bgColors: ['#2a1545', '#d8c8f0', '#b8a0e0'],
+        glowColor1: 'rgba(216, 200, 240, 0.2)',
+        glowColor2: 'rgba(184, 160, 224, 0.15)',
+        filename: 'escape-room-ogp.png'
+      },
+      'whack-kanikani': {
+        title: 'かにかに\nパニック！',
+        subtitle: 'ヤクザ蟹を叩きまくれ！\nシュールゲームス',
+        charaPath: '../assets/images/kanikani.png',
+        bgColors: ['#4a0020', '#ff69b4', '#ffb6c1'],
+        glowColor1: 'rgba(255, 105, 180, 0.25)',
+        glowColor2: 'rgba(255, 182, 193, 0.15)',
+        filename: 'whack-kanikani-ogp.png'
+      }
+    };
 
-    charaImg.onload = draw;
-    charaImg.onerror = draw;
+    let currentChara = new Image();
+    let customChara = null;
+
+    function getConfig() {
+      const presetKey = document.getElementById('preset').value;
+      const preset = presets[presetKey] || presets.site;
+      return {
+        title: document.getElementById('title').value || preset.title,
+        subtitle: document.getElementById('subtitle').value || preset.subtitle,
+        bgColors: preset.bgColors,
+        glowColor1: preset.glowColor1,
+        glowColor2: preset.glowColor2,
+        filename: preset.filename || 'ogp.png'
+      };
+    }
 
     function draw() {
-      // --- 背景グラデーション ---
+      const cfg = getConfig();
+      const titleLines = cfg.title.split('\n');
+      const subLines = cfg.subtitle.split('\n');
+
+      // 背景グラデーション
       const bg = ctx.createLinearGradient(0, 0, W, H);
-      bg.addColorStop(0, '#0d0221');
-      bg.addColorStop(0.5, '#1a0a3e');
-      bg.addColorStop(1, '#2d1b69');
+      cfg.bgColors.forEach((c, i) => bg.addColorStop(i / (cfg.bgColors.length - 1), c));
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
-      // --- 光の演出 ---
+      // 光の演出
       const g1 = ctx.createRadialGradient(W * 0.2, H * 0.3, 0, W * 0.2, H * 0.3, 350);
-      g1.addColorStop(0, 'rgba(255, 110, 199, 0.18)');
+      g1.addColorStop(0, cfg.glowColor1);
       g1.addColorStop(1, 'transparent');
       ctx.fillStyle = g1;
       ctx.fillRect(0, 0, W, H);
 
       const g2 = ctx.createRadialGradient(W * 0.8, H * 0.7, 0, W * 0.8, H * 0.7, 350);
-      g2.addColorStop(0, 'rgba(0, 255, 247, 0.12)');
+      g2.addColorStop(0, cfg.glowColor2);
       g2.addColorStop(1, 'transparent');
       ctx.fillStyle = g2;
       ctx.fillRect(0, 0, W, H);
 
-      // --- キャラクター画像 ---
-      if (charaImg.complete && charaImg.naturalWidth > 0) {
+      // キャラクター画像
+      const img = customChara || currentChara;
+      if (img.complete && img.naturalWidth > 0) {
         ctx.save();
-        const cw = 340, ch = cw * (charaImg.naturalHeight / charaImg.naturalWidth);
+        const cw = 340, ch = cw * (img.naturalHeight / img.naturalWidth);
         const cx = 160, cy = (H - ch) / 2 + 10;
         ctx.translate(cx + cw / 2, cy + ch / 2);
         ctx.rotate(-3 * Math.PI / 180);
         ctx.shadowColor = 'rgba(0,0,0,0.4)';
         ctx.shadowBlur = 30;
         ctx.shadowOffsetY = 8;
-        ctx.drawImage(charaImg, -cw / 2, -ch / 2, cw, ch);
+        ctx.drawImage(img, -cw / 2, -ch / 2, cw, ch);
         ctx.restore();
       }
 
-      // --- タイトル文字（グラデーション） ---
+      // タイトル（グラデーション）
       ctx.save();
-      ctx.font = '700 72px "Hachi Maru Pop", "Zen Maru Gothic", "Hiragino Maru Gothic Pro", sans-serif';
+      const fontSize = titleLines.some(l => l.length > 6) ? 56 : 72;
+      ctx.font = `700 ${fontSize}px "Hachi Maru Pop", "Zen Maru Gothic", sans-serif`;
       ctx.textBaseline = 'top';
-
       const titleGrad = ctx.createLinearGradient(560, 0, 1050, 0);
       titleGrad.addColorStop(0, '#ff6ec7');
       titleGrad.addColorStop(1, '#00fff7');
       ctx.fillStyle = titleGrad;
-
-      ctx.fillText('シュール', 580, 170);
-      ctx.fillText('ゲームス', 580, 260);
+      const titleStartY = 170;
+      titleLines.forEach((line, i) => {
+        ctx.fillText(line, 580, titleStartY + i * (fontSize + 16));
+      });
       ctx.restore();
 
-      // --- サブタイトル ---
+      // サブタイトル
       ctx.save();
-      ctx.font = '400 28px "Zen Kaku Gothic New", "Hiragino Kaku Gothic Pro", sans-serif';
+      ctx.font = '400 28px "Zen Kaku Gothic New", sans-serif';
       ctx.fillStyle = '#b0a8c8';
       ctx.textBaseline = 'top';
-      ctx.fillText('かわいいキャラクターと過ごす、', 580, 370);
-      ctx.fillText('素敵な時間', 580, 410);
+      const subStartY = titleStartY + titleLines.length * (fontSize + 16) + 30;
+      subLines.forEach((line, i) => {
+        ctx.fillText(line, 580, subStartY + i * 40);
+      });
       ctx.restore();
     }
 
+    // プリセット変更
+    document.getElementById('preset').addEventListener('change', function () {
+      const preset = presets[this.value];
+      if (preset) {
+        document.getElementById('title').value = preset.title.replace(/\n/g, '');
+        document.getElementById('subtitle').value = preset.subtitle.replace(/\n/g, '');
+        customChara = null;
+        currentChara = new Image();
+        currentChara.crossOrigin = 'anonymous';
+        currentChara.onload = draw;
+        currentChara.src = preset.charaPath;
+      }
+    });
+
+    // カスタム画像
+    document.getElementById('charaFile').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        customChara = new Image();
+        customChara.onload = draw;
+        customChara.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('redraw').addEventListener('click', draw);
+
     document.getElementById('download').addEventListener('click', () => {
+      const cfg = getConfig();
       const a = document.createElement('a');
-      a.download = 'ogp.png';
+      a.download = cfg.filename;
       a.href = canvas.toDataURL('image/png');
       a.click();
     });
+
+    // テキスト入力でリアルタイム更新
+    document.getElementById('title').addEventListener('input', draw);
+    document.getElementById('subtitle').addEventListener('input', draw);
+
+    // 初期描画
+    currentChara.crossOrigin = 'anonymous';
+    currentChara.onload = draw;
+    currentChara.onerror = draw;
+    currentChara.src = '../assets/images/illust9.png';
   </script>
 </body>
 </html>

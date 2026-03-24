@@ -35,6 +35,12 @@
 </head>
 <body>
 
+  <!-- ローディング画面 -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-logo" data-text="シュールゲームス">シュールゲームス</div>
+    <div class="loading-bar"><div class="loading-bar__fill"></div></div>
+  </div>
+
   <!-- 固定ナビゲーション -->
   <nav id="fixed-nav" class="fixed-nav">
     <a href="#hero" class="fixed-nav__link">トップ</a>
@@ -42,6 +48,7 @@
     <a href="#gallery" class="fixed-nav__link">ギャラリー</a>
     <a href="characters.html" class="fixed-nav__link">キャラクター</a>
     <a href="#news" class="fixed-nav__link">お知らせ</a>
+    <a href="achievements.html" class="fixed-nav__link">実績</a>
     <a href="#about" class="fixed-nav__link">スタジオ</a>
     <a href="#contact" class="fixed-nav__link">つながる</a>
   </nav>
@@ -73,6 +80,7 @@
         <a href="#gallery" class="nav-link">ギャラリー</a>
         <a href="characters.html" class="nav-link">キャラクター</a>
         <a href="#news" class="nav-link">お知らせ</a>
+        <a href="achievements.html" class="nav-link">実績</a>
         <a href="#about" class="nav-link">このスタジオとは</a>
         <a href="#contact" class="nav-link">つながる</a>
       </nav>
@@ -203,32 +211,8 @@
     <section id="news">
       <h2 class="section-title fade-in">お知らせ</h2>
       <p class="section-subtitle fade-in">最新のシュール情報</p>
-      <div class="news-list fade-in">
-        <article class="news-item">
-          <time class="news-date">2026.03.23</time>
-          <span class="news-tag news-tag--new">新ゲーム</span>
-          <p class="news-text">新ゲーム「黄金の金色ドライバー」を公開しました！ヨシノリと一緒にドライバー界の頂点を目指そう</p>
-        </article>
-        <article class="news-item">
-          <time class="news-date">2026.03.22</time>
-          <span class="news-tag news-tag--update">更新</span>
-          <p class="news-text">サイトリニューアル！サウンド・実績システムを追加しました</p>
-        </article>
-        <article class="news-item">
-          <time class="news-date">2026.03.22</time>
-          <span class="news-tag news-tag--new">新機能</span>
-          <p class="news-text">キャラクター図鑑ページを公開しました</p>
-        </article>
-        <article class="news-item">
-          <time class="news-date">2026.03.22</time>
-          <span class="news-tag news-tag--new">新機能</span>
-          <p class="news-text">PWA対応！ホーム画面に追加してアプリのように遊べます</p>
-        </article>
-        <article class="news-item">
-          <time class="news-date">2026.03.10</time>
-          <span class="news-tag news-tag--update">更新</span>
-          <p class="news-text">シェアボタンの多言語対応（かにかにパニック・脱出ゲーム）</p>
-        </article>
+      <div class="news-list fade-in" id="news-list">
+        <!-- data/news.json から動的に読み込み -->
       </div>
     </section>
 
