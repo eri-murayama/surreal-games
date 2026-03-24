@@ -608,6 +608,7 @@ body::after {
   top: 12px;
   right: 12px;
   display: flex;
+  align-items: center;
   gap: 4px;
   z-index: 300;
   pointer-events: auto;
@@ -619,7 +620,9 @@ body::after {
   width: auto;
   min-width: 0;
   max-width: 48px;
+  height: auto;
   font-size: 11px;
+  line-height: 1.2;
   font-family: 'Zen Maru Gothic', sans-serif;
   font-weight: 700;
   background: rgba(180, 60, 100, 0.4);
@@ -634,6 +637,10 @@ body::after {
   touch-action: manipulation;
   -webkit-appearance: none;
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .lang-btn:hover {

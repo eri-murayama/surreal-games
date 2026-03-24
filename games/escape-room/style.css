@@ -1434,9 +1434,10 @@ body {
   }
 
   .item-slot {
-    width: 42px;
-    height: 42px;
-    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    font-size: 18px;
   }
 
   #selected-item-name {
