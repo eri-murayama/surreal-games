@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA Pro | ワイヤレスイヤホン 新商品LP</title>
+  <meta name="description" content="ノイズキャンセリング搭載ワイヤレスイヤホン AURA Pro。静寂の中に、音楽だけを。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="AURA Pro | ワイヤレスイヤホン">
+  <meta property="og:description" content="静寂の中に、音楽だけを。ノイズキャンセリング搭載ワイヤレスイヤホン。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      color: #fff;
+      background: #0a0a0a;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    :root {
+      --accent: #6c5ce7;
+      --accent-light: #a29bfe;
+      --accent-glow: rgba(108, 92, 231, 0.3);
+      --dark: #0a0a0a;
+      --dark-card: #141414;
+      --dark-border: #222;
+      --text: #fff;
+      --text-dim: rgba(255,255,255,0.5);
+      --text-mid: rgba(255,255,255,0.7);
+    }
+
+    /* ===== Sample badge ===== */
+    .sample-badge {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 200;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 6px 16px;
+      border-radius: 20px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== Navigation ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.4s;
+    }
+    .nav.scrolled {
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .nav-logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: var(--accent-light); }
+    .nav-cta {
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .nav-cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(108, 92, 231, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(162, 155, 254, 0.08) 0%, transparent 40%);
+    }
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-light);
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.1; }
+      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(108, 92, 231, 0.15);
+      border: 1px solid rgba(108, 92, 231, 0.3);
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--accent-light);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-title .gradient {
+      background: linear-gradient(135deg, var(--accent-light), #74b9ff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 300;
+      color: var(--text-mid);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-image {
+      width: clamp(250px, 50vw, 450px);
+      margin: 0 auto 40px;
+      border-radius: 20px;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .hero-image img {
+      width: 100%;
+      display: block;
+      transition: transform 0.6s;
+    }
+    .hero-image:hover img {
+      transform: scale(1.05);
+    }
+    .hero-price {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+    .hero-price strong {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .hero-cta {
+      display: inline-block;
+      padding: 18px 48px;
+      background: linear-gradient(135deg, var(--accent), #7c6cf0);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.2s forwards;
+    }
+    .hero-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+    .hero-note {
+      margin-top: 16px;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      opacity: 0;
+      animation: fadeUp 0.8s 1.4s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Features ===== */
+    .features {
+      padding: 100px 24px;
+      position: relative;
+    }
+    .features::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--dark-border), transparent);
+    }
+    .section-label {
+      text-align: center;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--accent-light);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 60px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .feature-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 20px;
+      padding: 36px 28px;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s, transform 0.6s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .feature-card:hover {
+      border-color: rgba(108, 92, 231, 0.3);
+      box-shadow: 0 8px 40px rgba(108, 92, 231, 0.1);
+      transform: translateY(-4px);
+    }
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: rgba(108, 92, 231, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .feature-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+    .feature-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+
+    /* ===== Specs ===== */
+    .specs {
+      padding: 100px 24px;
+      background: var(--dark-card);
+    }
+    .specs-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .specs-content { grid-template-columns: 1fr; }
+    }
+    .specs-image {
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .specs-image img {
+      width: 100%;
+      display: block;
+      border-radius: 20px;
+    }
+    .specs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .spec-item {
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .spec-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--accent-light);
+      margin-bottom: 6px;
+    }
+    .spec-value {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .spec-note {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* ===== Reviews ===== */
+    .reviews {
+      padding: 100px 24px;
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .review-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      padding: 28px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .review-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .review-stars {
+      color: #ffd700;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+    .review-text {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .review-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .review-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .review-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .review-role {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    /* ===== CTA Section ===== */
+    .cta-section {
+      padding: 100px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(108, 92, 231, 0.12) 0%, transparent 70%);
+    }
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+    .cta-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .cta-desc {
+      font-size: 1rem;
+      color: var(--text-dim);
+      margin-bottom: 36px;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 20px 56px;
+      background: linear-gradient(135deg, var(--accent), #7c6cf0);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+    }
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 40px var(--accent-glow);
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      border-top: 1px solid var(--dark-border);
+      padding: 40px 24px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== Fade-in ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s, transform 0.8s;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sample-badge">SAMPLE</div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">AURA<span>.</span></a>
+    <a href="#cta" class="nav-cta">購入する</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles" id="particles"></div>
+    <div class="hero-content">
+      <div class="hero-badge">NEW RELEASE 2025</div>
+      <h1 class="hero-title">
+        <span class="gradient">AURA Pro</span>
+      </h1>
+      <p class="hero-subtitle">静寂の中に、音楽だけを。</p>
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=900&h=500&fit=crop" alt="AURA Pro ワイヤレスイヤホン">
+      </div>
+      <div class="hero-price">
+        税込 <strong>&yen;24,800</strong>
+      </div>
+      <a href="#cta" class="hero-cta">今すぐ購入する</a>
+      <p class="hero-note">送料無料 / 30日間返品保証</p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <p class="section-label fade-in">FEATURES</p>
+    <h2 class="section-title fade-in">選ばれる3つの理由</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=120&h=120&fit=crop" alt="ノイズキャンセリング">
+        </div>
+        <h3 class="feature-name">次世代ノイズキャンセリング</h3>
+        <p class="feature-desc">AIが環境音をリアルタイム解析。電車内でも、カフェでも、あなただけの静寂を作り出します。最大-45dBの遮音性能。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=120&h=120&fit=crop" alt="高音質">
+        </div>
+        <h3 class="feature-name">ハイレゾ対応の原音再生</h3>
+        <p class="feature-desc">10mm大口径ドライバーと独自の音響設計で、スタジオマスター品質のサウンドをそのまま耳元に届けます。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <img src="https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=120&h=120&fit=crop" alt="バッテリー">
+        </div>
+        <h3 class="feature-name">36時間のロングバッテリー</h3>
+        <p class="feature-desc">ケース込みで最大36時間の連続再生。10分の急速充電で3時間使用可能。出張や旅行でも安心です。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specs -->
+  <section class="specs" id="specs">
+    <p class="section-label fade-in">SPECIFICATIONS</p>
+    <h2 class="section-title fade-in">スペック</h2>
+    <div class="specs-content fade-in">
+      <div class="specs-image">
+        <img src="https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600&h=600&fit=crop" alt="AURA Pro 詳細" loading="lazy">
+      </div>
+      <div class="specs-list">
+        <div class="spec-item">
+          <div class="spec-label">DRIVER</div>
+          <div class="spec-value">10mm ダイナミックドライバー</div>
+          <div class="spec-note">チタンコーティング振動板採用</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">BATTERY</div>
+          <div class="spec-value">最大36時間</div>
+          <div class="spec-note">イヤホン単体 8時間 + ケース 28時間</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">NOISE CANCELLING</div>
+          <div class="spec-value">-45dB アクティブNC</div>
+          <div class="spec-note">外音取り込みモード搭載</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">CONNECTIVITY</div>
+          <div class="spec-value">Bluetooth 5.3</div>
+          <div class="spec-note">マルチポイント接続対応</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">WATERPROOF</div>
+          <div class="spec-value">IPX5 防水</div>
+          <div class="spec-note">雨天やワークアウトにも対応</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="reviews" id="reviews">
+    <p class="section-label fade-in">REVIEWS</p>
+    <h2 class="section-title fade-in">ユーザーの声</h2>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="review-text">電車の中でも驚くほど静か。音質もこの価格帯では間違いなくトップクラス。毎日の通勤が楽しくなりました。</p>
+        <div class="review-author">
+          <img class="review-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="田中さん">
+          <div>
+            <div class="review-name">田中 健一</div>
+            <div class="review-role">会社員・30代</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="review-text">フィット感が素晴らしくて長時間つけても疲れない。リモートワークの集中力が格段に上がりました。</p>
+        <div class="review-author">
+          <img class="review-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" alt="鈴木さん">
+          <div>
+            <div class="review-name">鈴木 美咲</div>
+            <div class="review-role">デザイナー・20代</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+        <p class="review-text">バッテリーの持ちが本当にすごい。海外出張でもケースだけで3日は余裕。充電の心配が消えました。</p>
+        <div class="review-author">
+          <img class="review-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" alt="山田さん">
+          <div>
+            <div class="review-name">山田 誠</div>
+            <div class="review-role">マーケター・40代</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="cta">
+    <div class="cta-content fade-in">
+      <h2 class="cta-title">あなたの音楽体験を<br>次のレベルへ。</h2>
+      <p class="cta-desc">送料無料 / 30日間返品保証 / 1年間メーカー保証</p>
+      <a href="#" class="cta-button" onclick="handlePurchase(event)">今すぐ購入する &mdash; &yen;24,800</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 AURA Audio Inc. All Rights Reserved.</p>
+    <p style="margin-top:8px;">※これはサンプルサイトです。実在の商品ではありません。</p>
+  </footer>
+
+  <script>
+    /* Navbar scroll */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    /* Particles */
+    const particlesEl = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (6 + Math.random() * 10) + 's';
+      p.style.animationDelay = Math.random() * 8 + 's';
+      p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+      particlesEl.appendChild(p);
+    }
+
+    /* Fade-in on scroll */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in, .feature-card, .review-card').forEach(el => observer.observe(el));
+
+    /* Purchase button */
+    function handlePurchase(e) {
+      e.preventDefault();
+      alert('ご購入ありがとうございます！\n（サンプルのため実際には購入されません）');
+    }
+  </script>
+</body>
+</html>

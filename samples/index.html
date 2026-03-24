@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポートフォリオ | サンプルサイト一覧</title>
+  <meta name="description" content="制作実績・サンプルサイト一覧ページ。カフェ、結婚式、LP等のWebサイト制作例をご覧いただけます。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta property="og:title" content="ポートフォリオ | サンプルサイト一覧">
+  <meta property="og:description" content="制作実績・サンプルサイト一覧">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      padding: 60px 24px 40px;
+      text-align: center;
+    }
+    .header-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+    }
+    .header-sub {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+    }
+    .header-line {
+      width: 40px;
+      height: 2px;
+      background: #fff;
+      margin: 24px auto 0;
+    }
+
+    /* Grid */
+    .portfolio-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 32px;
+    }
+
+    /* Card */
+    .card {
+      background: #1a1a1a;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.4s, box-shadow 0.4s;
+      text-decoration: none;
+      color: #fff;
+      display: block;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .card-thumbnail {
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-thumbnail::after {
+      content: 'VIEW';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card:hover .card-thumbnail::after {
+      opacity: 1;
+    }
+    .card-body {
+      padding: 20px 24px 24px;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .card-desc {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+    }
+
+    /* Card color themes */
+    .card-cafe .card-thumbnail { background: linear-gradient(135deg, #3a2e2a, #8b6f5e); }
+    .card-cafe .card-tag { background: #5c3d2e; color: #e0c98f; }
+
+    .card-wedding .card-thumbnail { background: linear-gradient(135deg, #f5e6d3, #e8d5c4); color: #8b6f5e; }
+    .card-wedding .card-tag { background: #f0e0d0; color: #8b6f5e; }
+
+    .card-product .card-thumbnail { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+    .card-product .card-tag { background: #0d7377; color: #fff; }
+
+    /* Coming soon */
+    .card-coming {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .card-coming .card-thumbnail::after {
+      content: 'COMING SOON';
+      opacity: 1;
+      background: rgba(0,0,0,0.4);
+      font-size: 0.75rem;
+    }
+
+    /* Back link */
+    .back-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="../index.html" class="back-link">&larr; トップに戻る</a>
+
+  <header class="header">
+    <h1 class="header-title">PORTFOLIO</h1>
+    <p class="header-sub">制作実績・サンプルサイト</p>
+    <div class="header-line"></div>
+  </header>
+
+  <main class="portfolio-grid">
+
+    <!-- Cafe -->
+    <a href="cafe/index.html" class="card card-cafe">
+      <div class="card-thumbnail">&#9749;</div>
+      <div class="card-body">
+        <span class="card-tag">CAFE</span>
+        <h2 class="card-title">珈琲と時間 COFFEE & TIME</h2>
+        <p class="card-desc">自家焙煎カフェのサイト。ナビゲーション・メニュー表・ギャラリー・アクセス情報を含むフルページ構成。</p>
+      </div>
+    </a>
+
+    <!-- Wedding (coming soon) -->
+    <a href="wedding/index.html" class="card card-wedding">
+      <div class="card-thumbnail">&#128141;</div>
+      <div class="card-body">
+        <span class="card-tag">WEDDING</span>
+        <h2 class="card-title">結婚式 招待ページ</h2>
+        <p class="card-desc">Web招待状。カウントダウン・出欠回答フォーム・会場案内を含むエレガントなデザイン。</p>
+      </div>
+    </a>
+
+    <!-- Product LP (coming soon) -->
+    <a href="product/index.html" class="card card-product">
+      <div class="card-thumbnail">&#128640;</div>
+      <div class="card-body">
+        <span class="card-tag">LANDING PAGE</span>
+        <h2 class="card-title">新商品PRページ</h2>
+        <p class="card-desc">新商品のプロモーション用LP。インパクトのあるビジュアルとCTAボタンで訴求する構成。</p>
+      </div>
+    </a>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2024 Portfolio
+  </footer>
+
+</body>
+</html>
