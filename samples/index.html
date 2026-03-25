@@ -74,18 +74,19 @@
       color: #fff;
       display: block;
     }
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
     .card-thumbnail {
       aspect-ratio: 16/9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
       position: relative;
       overflow: hidden;
+    }
+    .card-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+    .card:hover .card-thumbnail img {
+      transform: scale(1.08);
     }
     .card-thumbnail::after {
       content: 'VIEW';
@@ -103,6 +104,21 @@
     }
     .card:hover .card-thumbnail::after {
       opacity: 1;
+    }
+
+    /* Card entry animation */
+    .card {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s, transform 0.6s, box-shadow 0.4s;
+    }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     }
     .card-body {
       padding: 20px 24px 24px;
@@ -128,13 +144,8 @@
     }
 
     /* Card color themes */
-    .card-cafe .card-thumbnail { background: linear-gradient(135deg, #3a2e2a, #8b6f5e); }
     .card-cafe .card-tag { background: #5c3d2e; color: #e0c98f; }
-
-    .card-wedding .card-thumbnail { background: linear-gradient(135deg, #f5e6d3, #e8d5c4); color: #8b6f5e; }
     .card-wedding .card-tag { background: #f0e0d0; color: #8b6f5e; }
-
-    .card-product .card-thumbnail { background: linear-gradient(135deg, #1a1a2e, #16213e); }
     .card-product .card-tag { background: #0d7377; color: #fff; }
 
     /* Coming soon */
@@ -185,7 +196,7 @@
 
     <!-- Cafe -->
     <a href="cafe/index.html" class="card card-cafe">
-      <div class="card-thumbnail">&#9749;</div>
+      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&h=340&fit=crop" alt="カフェサイト" loading="lazy"></div>
       <div class="card-body">
         <span class="card-tag">CAFE</span>
         <h2 class="card-title">珈琲と時間 COFFEE & TIME</h2>
@@ -195,7 +206,7 @@
 
     <!-- Wedding (coming soon) -->
     <a href="wedding/index.html" class="card card-wedding">
-      <div class="card-thumbnail">&#128141;</div>
+      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=340&fit=crop" alt="結婚式招待ページ" loading="lazy"></div>
       <div class="card-body">
         <span class="card-tag">WEDDING</span>
         <h2 class="card-title">結婚式 招待ページ</h2>
@@ -205,7 +216,7 @@
 
     <!-- Product LP (coming soon) -->
     <a href="product/index.html" class="card card-product">
-      <div class="card-thumbnail">&#128640;</div>
+      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=600&h=340&fit=crop" alt="新商品LP" loading="lazy"></div>
       <div class="card-body">
         <span class="card-tag">LANDING PAGE</span>
         <h2 class="card-title">新商品PRページ</h2>
@@ -216,8 +227,18 @@
   </main>
 
   <footer class="footer">
-    &copy; 2024 Portfolio
+    &copy; 2025 Portfolio
   </footer>
 
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 150);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.card').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>

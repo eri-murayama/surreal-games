@@ -52,9 +52,24 @@
       pointer-events: none;
       z-index: 0;
     }
-    .leaf-1 { top: 5%; left: -20px; transform: rotate(-30deg); color: var(--green); }
-    .leaf-2 { top: 40%; right: -30px; transform: rotate(150deg); color: var(--rose); }
-    .leaf-3 { bottom: 10%; left: -10px; transform: rotate(20deg); color: var(--green); }
+    .leaf-1 { top: 5%; left: -20px; transform: rotate(-30deg); }
+
+    /* ===== Back link ===== */
+    .back-to-portfolio {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 200;
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      transition: background 0.3s;
+    }
+    .back-to-portfolio:hover { background: rgba(255,255,255,0.9); }
 
     /* ===== Sample badge ===== */
     .sample-badge {
@@ -568,6 +583,7 @@
 </head>
 <body>
 
+  <a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
   <div class="sample-badge">SAMPLE</div>
 
   <!-- Decorative corners -->
@@ -593,7 +609,7 @@
         Sakura
       </h1>
       <p class="hero-names-jp">悠斗 & 咲良</p>
-      <p class="hero-date">2025.11.22 SAT</p>
+      <p class="hero-date">2026.11.21 SAT</p>
       <p class="hero-venue-name">Garden Terrace Tokyo</p>
     </div>
     <div class="scroll-hint">
@@ -753,12 +769,12 @@
 
   <!-- Footer -->
   <footer class="footer">
-    &copy; 2025 Yuto & Sakura Wedding
+    &copy; 2026 Yuto & Sakura Wedding
   </footer>
 
   <script>
     /* Countdown timer - target: 2025-11-22 14:00 JST */
-    const weddingDate = new Date('2025-11-22T14:00:00+09:00');
+    const weddingDate = new Date('2026-11-21T14:00:00+09:00');
 
     function updateCountdown() {
       const now = new Date();

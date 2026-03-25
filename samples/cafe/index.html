@@ -486,6 +486,23 @@
       transform: translateY(0);
     }
 
+    /* ===== Back link ===== */
+    .back-to-portfolio {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 200;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+      transition: background 0.3s;
+    }
+    .back-to-portfolio:hover { background: rgba(0,0,0,0.6); }
+
     /* ===== Sample badge ===== */
     .sample-badge {
       position: fixed;
@@ -504,6 +521,7 @@
 </head>
 <body>
 
+  <a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
   <div class="sample-badge">SAMPLE</div>
 
   <!-- Navigation -->
@@ -729,7 +747,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-logo">COFFEE & TIME</div>
-    <p class="footer-copy">&copy; 2024 珈琲と時間 All Rights Reserved.</p>
+    <p class="footer-copy">&copy; 2025 珈琲と時間 All Rights Reserved.</p>
   </footer>
 
   <script>
