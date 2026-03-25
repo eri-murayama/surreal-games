@@ -582,7 +582,7 @@ body::after {
   .hud-value { font-size: 16px; }
   #hud { gap: 8px; }
   #overlay-content { padding: 20px 16px; }
-  #lang-switch { top: auto; bottom: 12px; right: 12px; }
+  #lang-switch { top: 12px; right: 12px; }
 }
 
 /* ===== トップに戻るリンク ===== */

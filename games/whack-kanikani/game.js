@@ -105,6 +105,13 @@ function setLang(lang) {
   updateHighScoreDisplay();
 }
 
+// ===== モバイル AudioContext 初期化 =====
+// モバイルでは pointerdown でも AudioContext を初期化する必要がある
+document.addEventListener('pointerdown', function initAudioOnPointer() {
+  SurrealGames.SoundSystem._ensureCtx();
+  document.removeEventListener('pointerdown', initAudioOnPointer);
+}, { once: true });
+
 // ===== カスタムカーソル =====
 const customCursor = document.getElementById('custom-cursor');
 
