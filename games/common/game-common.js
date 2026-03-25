@@ -32,6 +32,11 @@
     { id: 'tower', title: 'シュールの塔', emoji: '🏰', genre: 'ローグライク', desc: '終わりなき階段の先へ。' },
     { id: 'trivia-king', title: '雑学キング決定戦', emoji: '👑', genre: 'クイズ', desc: '無駄な知識で天下を取れ！' },
     { id: 'unko-cone', title: 'うんコーンキャッチャー', emoji: '🦄', genre: 'アクション', desc: 'うんコーンを積み上げろ！' },
+    { id: 'solitaire', title: 'ソリティア', titleEn: 'Solitaire', emoji: '♠', genre: 'カード', genreEn: 'Card', desc: 'クラシックなクロンダイクソリティア。' },
+    { id: 'sudoku', title: '数独', titleEn: 'Sudoku', emoji: '🔢', genre: 'パズル', genreEn: 'Puzzle', desc: '3段階の難易度で遊べる本格数独。' },
+    { id: 'minesweeper', title: 'マインスイーパー', titleEn: 'Minesweeper', emoji: '💣', genre: 'パズル', genreEn: 'Puzzle', desc: '地雷を避けてマスを開けろ。' },
+    { id: 'reversi', title: 'リバーシ', titleEn: 'Reversi', emoji: '⚫', genre: 'ボード', genreEn: 'Board', desc: 'CPU対戦3段階。石をひっくり返せ。' },
+    { id: 'slide-puzzle', title: 'スライドパズル', titleEn: 'Slide Puzzle', emoji: '🧩', genre: 'パズル', genreEn: 'Puzzle', desc: 'タイルをスライドして揃えろ。' },
   ];
 
   // ===== 実績定義 =====
