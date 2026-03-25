@@ -1180,7 +1180,7 @@ footer {
 }
 
 /* メインコンテンツはパーティクルの上に */
-#hero, main, footer, .fixed-nav, .back-to-top {
+#hero, main, footer {
   position: relative;
   z-index: 1;
 }
