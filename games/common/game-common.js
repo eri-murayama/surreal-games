@@ -13,7 +13,7 @@
   // ===== ゲームカタログ =====
   const GAME_CATALOG = [
     { id: 'escape-room', title: 'かわいい部屋からの脱出', titleEn: 'Escape Room', emoji: '🚪', genre: 'パズル', genreEn: 'Puzzle', desc: '気付いたらかわいい部屋にいた。脱出せよ。' },
-    { id: 'whack-kanikani', title: 'かにかにパニック！', titleEn: 'Kani-Kani Panic!', emoji: '🦀', genre: 'アクション', genreEn: 'Action', desc: 'ヤクザ蟹を叩きまくれ！30秒の激闘。' },
+    { id: 'whack-kanikani', title: 'かにかにパニック！ ‐カニみそが飛び出ちゃう‐', titleEn: 'Kani-Kani Panic!', emoji: '🦀', genre: 'アクション', genreEn: 'Action', desc: 'ヤクザ蟹を叩きまくれ！30秒の激闘。' },
     { id: 'business-analysis', title: '経営分析ゲーム', titleEn: 'Business Analysis', emoji: '📊', genre: 'アドベンチャー', genreEn: 'Adventure', desc: '天才たちの戯れ。数字に愛されろ。' },
     { id: 'chaos-stream', title: 'カオス配信シミュレーター', emoji: '📺', genre: 'シミュレーション', desc: 'あなたの配信、カオスです。' },
     { id: 'cosmic-chain', title: 'コズミック・チェイン', emoji: '🌟', genre: 'パズル', desc: '星々の連鎖反応を起こせ。' },
@@ -27,7 +27,7 @@
     { id: 'party-game', title: 'ぱーてぃーげーむ', emoji: '🎉', genre: 'パーティー', desc: '連打バトルで友達と対戦。' },
     { id: 'pet', title: 'シュールペット', emoji: '🐣', genre: '育成', desc: 'ナゾの生きもの育成記。' },
     { id: 'puzzle-2048', title: 'シュール進化論', emoji: '🧬', genre: 'パズル', desc: '合体せよ、その先の未知へ。' },
-    { id: 'rpg', title: 'ドットクエスト', emoji: '⚔️', genre: 'RPG', desc: '冒険の旅に出よう。' },
+    { id: 'rpg', title: 'お散歩日和', emoji: '⚔️', genre: 'RPG', desc: '冒険の旅に出よう。' },
     { id: 'suisei-puzzle', title: 'すいすいパズル', emoji: '☄️', genre: 'パズル', desc: '彗星のごとくブロックを消せ。' },
     { id: 'tower', title: 'シュールの塔', emoji: '🏰', genre: 'ローグライク', desc: '終わりなき階段の先へ。' },
     { id: 'trivia-king', title: '雑学キング決定戦', emoji: '👑', genre: 'クイズ', desc: '無駄な知識で天下を取れ！' },

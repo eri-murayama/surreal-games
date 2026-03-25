@@ -6,12 +6,12 @@ let currentLang = (function() {
 
 const LANG = {
   ja: {
-    title: '🦀 かにかにパニック！ 🦀',
+    title: '🦀 かにかにパニック！ 🦀\n‐カニみそが飛び出ちゃう‐',
     subtitle: '夢の中のヤクザ「かにかに」を叩け！腹筋は毎日換気するよ！',
     score: 'スコア',
     timeLeft: '残り時間',
     combo: 'コンボ',
-    startTitle: 'かにかにパニック！',
+    startTitle: 'かにかにパニック！\n‐カニみそが飛び出ちゃう‐',
     startDesc: '穴から出てくる「かにかに」を<br>叩きまくれ！制限時間30秒！',
     startBtn: 'ゲームスタート',
     endTitle: '終了〜！',
@@ -67,7 +67,7 @@ function setLang(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
   try { localStorage.setItem('sg_lang', lang); } catch(e) {}
-  document.title = lang === 'ja' ? 'かにかにパニック！ - もぐらたたき' : 'Kani-Kani Panic! - Whack-a-Crab';
+  document.title = lang === 'ja' ? 'かにかにパニック！ ‐カニみそが飛び出ちゃう‐' : 'Kani-Kani Panic! - Whack-a-Crab';
   window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
   // タイトル
@@ -392,7 +392,7 @@ function endGame() {
   shareBtn.addEventListener('click', () => {
     const gameURL = window.location.href;
     const shareText = currentLang === 'ja'
-      ? `🦀 かにかにパニック！\nスコア: ${score}点（最大コンボ: ${maxCombo}）\nランク: ${matched.rank}\n\n#シュールゲームス\n${gameURL}`
+      ? `🦀 かにかにパニック！ ‐カニみそが飛び出ちゃう‐\nスコア: ${score}点（最大コンボ: ${maxCombo}）\nランク: ${matched.rank}\n\n#シュールゲームス\n${gameURL}`
       : `🦀 Kani-Kani Panic!\nScore: ${score} pts (Max Combo: ${maxCombo})\nRank: ${matched.rank}\n\n#SurrealGames\n${gameURL}`;
     const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(twitterURL, '_blank');
