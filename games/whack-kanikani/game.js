@@ -6,12 +6,12 @@ let currentLang = (function() {
 
 const LANG = {
   ja: {
-    title: '🦀 かにかにパニック！ 🦀\n‐カニみそが飛び出ちゃう‐',
+    title: '🦀 かにかにパニック！ 🦀<br><span style="font-size:0.5em;opacity:0.8;">‐カニみそが飛び出ちゃう‐</span>',
     subtitle: '夢の中のヤクザ「かにかに」を叩け！腹筋は毎日換気するよ！',
     score: 'スコア',
     timeLeft: '残り時間',
     combo: 'コンボ',
-    startTitle: 'かにかにパニック！\n‐カニみそが飛び出ちゃう‐',
+    startTitle: 'かにかにパニック！<br><span style="font-size:0.6em;opacity:0.8;">‐カニみそが飛び出ちゃう‐</span>',
     startDesc: '穴から出てくる「かにかに」を<br>叩きまくれ！制限時間30秒！',
     startBtn: 'ゲームスタート',
     endTitle: '終了〜！',
@@ -71,7 +71,7 @@ function setLang(lang) {
   window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
   // タイトル
-  document.querySelector('.game-title').textContent = t('title');
+  document.querySelector('.game-title').innerHTML = t('title');
   document.querySelector('.game-subtitle').textContent = t('subtitle');
 
   // HUD
@@ -81,7 +81,7 @@ function setLang(lang) {
   hudLabels[2].textContent = t('combo');
 
   // オーバーレイ
-  document.querySelector('#start-screen h2').textContent = t('startTitle');
+  document.querySelector('#start-screen h2').innerHTML = t('startTitle');
   document.querySelector('#start-screen p').innerHTML = t('startDesc');
   document.getElementById('start-btn').textContent = t('startBtn');
   document.querySelector('#result-screen h2').textContent = t('endTitle');
