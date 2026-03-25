@@ -223,7 +223,17 @@
   box-sizing: border-box;
 }
 
-/* --- レスポンシブ --- */
+/* --- レスポンシブ（タブレット） --- */
+@media (max-width: 1024px) {
+  /* 音量ボタンが他の固定要素と被らないよう左下に統一 */
+  .sg-sound-toggle {
+    left: 16px;
+    right: auto;
+    bottom: 16px;
+  }
+}
+
+/* --- レスポンシブ（スマホ） --- */
 @media (max-width: 400px) {
   .sg-recommend {
     padding: 12px 8px;

@@ -49,13 +49,12 @@ body {
   100% { opacity: 1; }
 }
 
-/* ===== トップに戻るリンク（画面下中央） ===== */
+/* ===== トップに戻るリンク（左上固定） ===== */
 
 .back-to-top-link {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed;
+  top: 12px;
+  left: 12px;
   color: rgba(255, 255, 255, 0.4);
   text-decoration: none;
   font-size: 12px;

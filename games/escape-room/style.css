@@ -1678,10 +1678,10 @@ body {
     max-width: 90vw;
   }
 
-  /* 音量ボタンを右下に移動（アイテムラベルとの被り回避） */
+  /* 音量ボタンを左下に配置（アイテムボックス・言語切替との被り回避） */
   .sg-sound-toggle {
-    left: auto;
-    right: 16px;
+    left: 16px;
+    right: auto;
     bottom: 16px;
   }
 

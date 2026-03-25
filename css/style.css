@@ -1222,6 +1222,39 @@ footer {
    レスポンシブ
    ======================================== */
 
+/* --- タブレット（iPad）対応 --- */
+@media (max-width: 1024px) {
+  .hero-chara {
+    width: clamp(60px, 10vw, 120px);
+    top: 8%;
+    opacity: 0.5;
+  }
+
+  .hero-nav {
+    gap: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 0.5rem 1.2rem;
+  }
+
+  .fixed-nav {
+    gap: 0.3rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .fixed-nav__link {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .game-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .tagline {
     width: auto !important;
