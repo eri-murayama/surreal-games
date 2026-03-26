@@ -589,16 +589,45 @@
           break;
         }
         case 'hit': {
-          // ドン！ — 重い打撃音
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(150, now);
-          osc.frequency.exponentialRampToValueAtTime(40, now + 0.12);
-          gain.gain.value = this.volume * 0.7;
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-          osc.connect(gain);
-          osc.start(now);
-          osc.stop(now + 0.16);
+          // パコッ！ — スマホでも聞こえる打撃音
+          // 高音アタック（パチッという衝撃感）
+          const oscHigh = ctx.createOscillator();
+          const gainHigh = ctx.createGain();
+          oscHigh.type = 'square';
+          oscHigh.frequency.setValueAtTime(800, now);
+          oscHigh.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+          gainHigh.gain.setValueAtTime(this.volume * 0.5, now);
+          gainHigh.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+          oscHigh.connect(gainHigh);
+          gainHigh.connect(ctx.destination);
+          oscHigh.start(now);
+          oscHigh.stop(now + 0.07);
+          // 中音ボディ（ドンという厚み）
+          const oscMid = ctx.createOscillator();
+          const gainMid = ctx.createGain();
+          oscMid.type = 'triangle';
+          oscMid.frequency.setValueAtTime(400, now);
+          oscMid.frequency.exponentialRampToValueAtTime(150, now + 0.1);
+          gainMid.gain.setValueAtTime(this.volume * 0.6, now);
+          gainMid.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          oscMid.connect(gainMid);
+          gainMid.connect(ctx.destination);
+          oscMid.start(now);
+          oscMid.stop(now + 0.13);
+          // ノイズ成分（バシッという質感）
+          const bufSize = ctx.sampleRate * 0.05;
+          const noiseBuf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+          const data = noiseBuf.getChannelData(0);
+          for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * 0.6;
+          const noise = ctx.createBufferSource();
+          const noiseGain = ctx.createGain();
+          noise.buffer = noiseBuf;
+          noiseGain.gain.setValueAtTime(this.volume * 0.4, now);
+          noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+          noise.connect(noiseGain);
+          noiseGain.connect(ctx.destination);
+          noise.start(now);
+          noise.stop(now + 0.05);
           break;
         }
         case 'combo': {
