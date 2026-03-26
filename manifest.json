@@ -1,7 +1,7 @@
 {
   "name": "シュールゲームス",
   "short_name": "シュールゲームス",
-  "description": "シュールでかわいいキャラクターが登場するゲームスタジオ。おいでよ小童ども",
+  "description": "シュールでかわいいキャラのゲームスタジオ。おいでよ小童ども",
   "start_url": "/surreal-games/",
   "scope": "/surreal-games/",
   "display": "standalone",
