@@ -354,14 +354,16 @@
         if (!this.ctx) {
           this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        if (this.ctx.state === 'suspended') {
+        if (this.ctx.state !== 'running') {
           this.ctx.resume();
         }
         document.removeEventListener('click', initAudio);
         document.removeEventListener('touchstart', initAudio);
+        document.removeEventListener('pointerdown', initAudio);
       };
       document.addEventListener('click', initAudio);
       document.addEventListener('touchstart', initAudio);
+      document.addEventListener('pointerdown', initAudio);
 
       const saved = localStorage.getItem('sg_sound_enabled');
       if (saved !== null) this.enabled = saved === 'true';
@@ -385,7 +387,7 @@
         this.bgmGain = this.ctx.createGain();
         this.bgmGain.connect(this.ctx.destination);
       }
-      if (this.ctx.state === 'suspended') {
+      if (this.ctx.state !== 'running') {
         this.ctx.resume();
       }
       return this.ctx;
@@ -411,8 +413,8 @@
       this.stopBgm();
       this.currentBgmPreset = presetName;
       this.bgmPlaying = true;
-      // contextがsuspendedの場合、resume完了を待ってから再生開始
-      if (this.ctx.state === 'suspended') {
+      // contextが未稼働の場合、resume完了を待ってから再生開始
+      if (this.ctx.state !== 'running') {
         this.ctx.resume().then(() => {
           if (this.bgmPlaying) this._loopBgm(preset);
         });
@@ -537,7 +539,7 @@
       if (!this.enabled) return;
       this._ensureCtx();
       if (!this.ctx) return;
-      if (this.ctx.state === 'suspended') {
+      if (this.ctx.state !== 'running') {
         this.ctx.resume().then(() => this._playSound(type));
         return;
       }
