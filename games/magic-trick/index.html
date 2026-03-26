@@ -11,14 +11,14 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>マジックみやぶり - シュールゲームス</title>
+  <title>協力者 - シュールゲームス</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../common/game-common.css">
   <link rel="stylesheet" href="style.css">
-  <meta property="og:title" content="マジックみやぶり | シュールゲームス">
-  <meta property="og:description" content="マジシャンのトリックを見破れ！推理ゲーム。">
+  <meta property="og:title" content="協力者 | シュールゲームス">
+  <meta property="og:description" content="テーブルの下からマジックを手伝え！イカサマ協力ゲーム。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/magic-trick/index.html">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
@@ -29,21 +29,13 @@
   <a href="../../index.html" class="back-to-top-link">&larr; トップに戻る</a>
 
   <div id="game-wrapper" data-sg-scale="480x750">
-    <h1 class="game-title">マジックみやぶり</h1>
-    <p class="game-subtitle">あやしいマジシャンのタネを見抜け！</p>
 
-    <!-- ステージ表示 -->
-    <div id="stage-indicator">
-      <span class="stage-dot active" data-stage="0"></span>
-      <span class="stage-dot" data-stage="1"></span>
-      <span class="stage-dot" data-stage="2"></span>
-      <span class="stage-dot" data-stage="3"></span>
-      <span class="stage-dot" data-stage="4"></span>
-    </div>
+    <!-- ===== フェーズ1: テーブル上（シャッフル） ===== -->
+    <div id="phase-table" class="phase">
+      <h1 class="game-title">協力者</h1>
+      <p class="game-subtitle">マジシャンのイカサマを手伝え！</p>
 
-    <!-- ステージエリア -->
-    <div id="stage-area">
-      <!-- マジシャン表示 -->
+      <!-- マジシャン -->
       <div id="magician">
         <div class="magician-hat">
           <div class="hat-brim"></div>
@@ -56,54 +48,95 @@
           </div>
           <div class="magician-mustache">🥸</div>
         </div>
-        <div class="magician-body">
-          <div class="cape"></div>
-          <div class="magician-hands">
-            <span id="hand-left" class="hand">🤚</span>
-            <span id="hand-right" class="hand">✋</span>
+      </div>
+
+      <div id="speech-bubble" class="speech-bubble">
+        <span id="speech-text">さぁ、ショーの始まりだ！</span>
+      </div>
+
+      <!-- コップエリア -->
+      <div id="cups-area">
+        <div class="cup-slot" data-index="0">
+          <div class="coin-indicator hidden">🪙</div>
+          <div class="cup">🥤</div>
+        </div>
+        <div class="cup-slot" data-index="1">
+          <div class="coin-indicator hidden">🪙</div>
+          <div class="cup">🥤</div>
+        </div>
+        <div class="cup-slot" data-index="2">
+          <div class="coin-indicator hidden">🪙</div>
+          <div class="cup">🥤</div>
+        </div>
+      </div>
+
+      <!-- テーブル -->
+      <div id="table-surface">
+        <div class="table-cloth"></div>
+      </div>
+
+      <p id="tap-instruction" class="tap-instruction hidden">コインが入っているコップをタップ！</p>
+    </div>
+
+    <!-- ===== フェーズ2: テーブル下（イライラ棒） ===== -->
+    <div id="phase-under" class="phase hidden">
+      <div id="under-table-scene">
+        <div id="under-instruction" class="under-instruction">
+          <p class="instruction-main">イカサマを手伝え！</p>
+          <p class="instruction-sub" id="instruction-detail">壁に触れずにコインを運べ！</p>
+        </div>
+
+        <!-- イライラ棒キャンバス -->
+        <div id="maze-container">
+          <canvas id="maze-canvas" width="440" height="380"></canvas>
+        </div>
+
+        <!-- 協力者 -->
+        <div id="collaborator">
+          <div class="collaborator-body">
+            <div class="collaborator-face">
+              <div class="collaborator-eyes">
+                <span class="c-eye">👁</span>
+                <span class="c-eye">👁</span>
+              </div>
+              <div class="collaborator-mouth">😏</div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- マジック演出エリア -->
-      <div id="trick-area">
-        <div id="trick-visual"></div>
-        <div id="speech-bubble" class="speech-bubble">
-          <span id="speech-text">さぁ、ショーの始まりだ！</span>
-        </div>
+    <!-- ===== 結果表示 ===== -->
+    <div id="phase-result" class="phase hidden">
+      <div id="result-content">
+        <div id="result-icon" class="result-icon"></div>
+        <h2 id="result-title" class="result-title"></h2>
+        <p id="result-text" class="result-text"></p>
       </div>
     </div>
 
-    <!-- 選択肢エリア -->
-    <div id="choices-area">
-      <h3 id="question-text" class="question-text">タネを見抜けるかな？</h3>
-      <div id="choices" class="choices"></div>
-    </div>
-
-    <!-- 結果フィードバック -->
-    <div id="feedback" class="feedback hidden">
-      <div id="feedback-icon"></div>
-      <p id="feedback-text"></p>
-      <button id="next-btn">次のマジックへ →</button>
-    </div>
-
-    <!-- スタート画面 -->
+    <!-- ===== スタート / リザルトオーバーレイ ===== -->
     <div id="overlay" class="overlay">
       <div id="start-screen" class="overlay-content">
         <div class="overlay-icon">🎩</div>
-        <h2>マジックみやぶり</h2>
-        <p>あやしいマジシャン「ミスター・シュール」が<br>5つのマジックを披露するよ。</p>
-        <p>タネを見抜いてインチキを暴こう！</p>
-        <button id="start-btn">ショーを見る</button>
+        <h2>協力者</h2>
+        <p>あなたはマジシャンの<br><strong>テーブルの下に隠れた協力者</strong>。</p>
+        <p>マジシャンがコップにコインを入れて<br>シャッフルするよ。位置を覚えて、<br>テーブル下からイカサマを手伝おう！</p>
+        <button id="start-btn">イカサマ開始</button>
       </div>
       <div id="result-screen" class="overlay-content hidden">
-        <div class="overlay-icon" id="result-icon">🔍</div>
-        <h2 id="result-title">鑑定結果</h2>
-        <div id="result-score"></div>
-        <p id="result-rank"></p>
-        <p id="result-comment"></p>
-        <button id="retry-btn">もう一回見る</button>
+        <div class="overlay-icon" id="final-icon">🎩</div>
+        <h2 id="final-title">結果</h2>
+        <div id="final-score"></div>
+        <p id="final-rank"></p>
+        <p id="final-comment"></p>
+        <button id="retry-btn">もう1回やる</button>
       </div>
+    </div>
+
+    <!-- ラウンド表示 -->
+    <div id="round-indicator" class="round-indicator hidden">
+      <span id="round-text">ROUND 1 / 5</span>
     </div>
   </div>
 

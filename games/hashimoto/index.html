@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>橋本さん | シュールゲームス</title>
+  <meta name="description" content="あなたは橋本さん。二人の苗字を見比べて、自分より人口が少ない方を当てろ！苗字ランキングバトル。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+  <meta property="og:title" content="橋本さん | シュールゲームス">
+  <meta property="og:description" content="あなたは橋本さん。苗字の人口ランキングで勝負だ！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/hashimoto/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- ===== タイトル画面 ===== -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="title-icon">👤</div>
+      <h1 class="title-main">橋本さん</h1>
+      <p class="title-subtitle">〜苗字ランキングバトル〜</p>
+      <div class="title-rules">
+        <p>あなたは<strong>橋本さん</strong>（全国約44万人）</p>
+        <p>二人の人物が登場！</p>
+        <p>自分より<strong>人口が少ない</strong>方を選べ！</p>
+      </div>
+      <button id="start-btn" class="btn-start">スタート</button>
+      <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ===== ゲーム画面 ===== -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-item">
+        <span class="hud-label">スコア</span>
+        <span id="score-display" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">連続</span>
+        <span id="streak-display" class="hud-value">0</span>
+      </div>
+    </div>
+
+    <div class="player-info">
+      <div class="player-badge">あなた：橋本さん（約44万人）</div>
+    </div>
+
+    <p class="question-text">どっちが橋本さんより<br><strong>人口が少ない</strong>？</p>
+
+    <div class="choices">
+      <button id="choice-left" class="choice-card">
+        <div class="choice-emoji">👤</div>
+        <div class="choice-name" id="name-left">田中さん</div>
+      </button>
+      <div class="vs-badge">VS</div>
+      <button id="choice-right" class="choice-card">
+        <div class="choice-emoji">👤</div>
+        <div class="choice-name" id="name-right">山本さん</div>
+      </button>
+    </div>
+
+    <div id="result-overlay" class="result-overlay hidden">
+      <div id="result-icon" class="result-icon"></div>
+      <div id="result-message" class="result-message"></div>
+      <div id="result-detail" class="result-detail"></div>
+    </div>
+  </div>
+
+  <!-- ===== ゲームオーバー画面 ===== -->
+  <div id="gameover-screen" class="screen">
+    <div class="gameover-container">
+      <div class="gameover-icon">😱</div>
+      <h2 class="gameover-title">ゲームオーバー</h2>
+      <div id="final-score" class="final-score">0</div>
+      <div class="final-label">問正解</div>
+      <div id="final-detail" class="final-detail"></div>
+      <div class="gameover-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="max-streak">0</div>
+          <div class="stat-label">最大連続正解</div>
+        </div>
+      </div>
+      <div id="history-section" class="history-section">
+        <h3 class="history-title">出てきた苗字ランキング</h3>
+        <div class="history-player">👤 橋本さん … 第24位（約44万人）</div>
+        <div id="history-list" class="history-list"></div>
+      </div>
+      <button id="retry-btn" class="btn-start">もう一度挑戦</button>
+      <button id="oya-btn" class="btn-oya">おや…？</button>
+    </div>
+  </div>
+
+  <!-- ===== 行部澤 登場演出 ===== -->
+  <div id="reveal-screen" class="screen">
+    <div class="reveal-container">
+      <div class="reveal-icon">🌀</div>
+      <div id="reveal-text" class="reveal-text"></div>
+      <button id="reveal-start-btn" class="btn-start" style="display:none;">挑戦する</button>
+    </div>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

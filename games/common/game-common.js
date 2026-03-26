@@ -30,7 +30,7 @@
     { id: 'fortune', title: 'シュール前世占い', emoji: '🔮', genre: '占い', desc: 'あなたの前世は何だった？' },
     { id: 'holo-analysis', title: 'ホロメン経営分析', emoji: '📈', genre: 'クイズ', desc: '鼻毛たちの戯れ。' },
     { id: 'holo-memory', title: 'ホロメンおぼえてますか？', emoji: '🃏', genre: '記憶', desc: '神経衰弱でホロメンを覚えろ。' },
-    { id: 'magic-trick', title: 'マジックみやぶり', emoji: '🎩', genre: 'クイズ', desc: 'トリックを見破れ！' },
+    { id: 'magic-trick', title: '協力者', emoji: '🤝', genre: 'アクション', desc: 'テーブル下からイカサマを手伝え！' },
     { id: 'party-game', title: 'ぱーてぃーげーむ', emoji: '🎉', genre: 'パーティー', desc: '連打バトルで友達と対戦。' },
     { id: 'pet', title: 'シュールペット', emoji: '🐣', genre: '育成', desc: 'ナゾの生きもの育成記。' },
     { id: 'puzzle-2048', title: 'シュール進化論', emoji: '🧬', genre: 'パズル', desc: '合体せよ、その先の未知へ。' },
@@ -44,6 +44,8 @@
     { id: 'minesweeper', title: 'マインスイーパー', titleEn: 'Minesweeper', emoji: '💣', genre: 'パズル', genreEn: 'Puzzle', desc: '地雷を避けてマスを開けろ。' },
     { id: 'reversi', title: 'リバーシ', titleEn: 'Reversi', emoji: '⚫', genre: 'ボード', genreEn: 'Board', desc: 'CPU対戦3段階。石をひっくり返せ。' },
     { id: 'slide-puzzle', title: 'スライドパズル', titleEn: 'Slide Puzzle', emoji: '🧩', genre: 'パズル', genreEn: 'Puzzle', desc: 'タイルをスライドして揃えろ。' },
+    { id: 'hashimoto', title: '橋本さん', titleEn: 'Hashimoto-san', emoji: '👤', genre: 'クイズ', genreEn: 'Quiz', desc: '苗字ランキングで勝負だ！' },
+    { id: 'ireland', title: 'アイルランドゲーム', titleEn: 'Ireland Game', emoji: '☘️', genre: 'クイズ', genreEn: 'Quiz', desc: '似ているものの中からアイルランドを探せ！' },
   ];
 
   // ===== 実績定義 =====
@@ -325,7 +327,7 @@
     'fortune': 'cute',
     'holo-analysis': 'quiz',
     'holo-memory': 'calm',
-    'magic-trick': 'mystery',
+    'magic-trick': 'action',
     'party-game': 'action',
     'pet': 'calm',
     'puzzle-2048': 'retro',

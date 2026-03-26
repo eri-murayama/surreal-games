@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>アイルランドゲーム | シュールゲームス</title>
+  <meta name="description" content="似ているものの中からアイルランドを見つけろ！文字・国旗・国の形…紛らわしいものだらけの間違い探し。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="アイルランドゲーム | シュールゲームス">
+  <meta property="og:description" content="似ているものの中からアイルランドを見つけろ！紛らわしいものだらけの間違い探し。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/ireland/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- Background -->
+  <div class="bg-shamrocks" aria-hidden="true">
+    <span class="shamrock" style="--x:5%;--y:10%;--delay:0s;--dur:6s">☘️</span>
+    <span class="shamrock" style="--x:20%;--y:60%;--delay:1.2s;--dur:5s">☘️</span>
+    <span class="shamrock" style="--x:40%;--y:20%;--delay:0.5s;--dur:7s">☘️</span>
+    <span class="shamrock" style="--x:65%;--y:45%;--delay:2s;--dur:4.5s">☘️</span>
+    <span class="shamrock" style="--x:80%;--y:75%;--delay:0.8s;--dur:6.5s">☘️</span>
+    <span class="shamrock" style="--x:15%;--y:85%;--delay:3s;--dur:5.5s">☘️</span>
+    <span class="shamrock" style="--x:90%;--y:15%;--delay:1.5s;--dur:4s">☘️</span>
+    <span class="shamrock" style="--x:50%;--y:90%;--delay:2.5s;--dur:7.5s">☘️</span>
+  </div>
+
+  <!-- Flash overlay -->
+  <div id="flash-overlay" class="flash-overlay" aria-hidden="true"></div>
+
+  <!-- ===== TITLE SCREEN ===== -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="title-icon">🇮🇪</div>
+      <h1 class="title-main">アイルランド<br>ゲーム</h1>
+      <p class="title-subtitle">似ているものの中から見つけ出せ！</p>
+      <div class="title-rules">
+        <p>🔍 ごちゃごちゃの中からアイルランドを探せ！</p>
+        <p>⏱️ 1問8秒の制限時間</p>
+        <p>🔥 全10ラウンド・連続正解でボーナス！</p>
+      </div>
+      <button id="start-btn" class="btn-start">スタート</button>
+      <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-left">
+        <div class="hud-label">SCORE</div>
+        <div id="score-display" class="hud-value">0</div>
+      </div>
+      <div class="hud-center">
+        <div id="round-number" class="round-number">1 / 10</div>
+        <div id="round-type" class="round-type">文字</div>
+      </div>
+      <div class="hud-right">
+        <div class="hud-label">STREAK</div>
+        <div id="streak-display" class="hud-value">
+          <span id="streak-count">0</span>
+          <span id="streak-fire" class="streak-fire"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timer-bar-container">
+      <div id="timer-bar" class="timer-bar"></div>
+    </div>
+
+    <div class="question-area">
+      <div id="question-text" class="question-text">アイルランドを探せ！</div>
+    </div>
+
+    <div id="field-area" class="field-area">
+      <!-- Scattered items injected by JS -->
+    </div>
+
+    <div id="feedback-area" class="feedback-area hidden">
+      <div id="feedback-icon" class="feedback-icon"></div>
+      <div id="feedback-text" class="feedback-text"></div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT SCREEN ===== -->
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <div id="result-icon" class="result-icon">🇮🇪</div>
+      <h2 id="result-rank" class="result-rank">アイルランドマスター</h2>
+      <div id="result-score" class="result-score">0</div>
+      <div class="result-label">ポイント</div>
+      <div class="result-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="result-correct">0</div>
+          <div class="stat-label">正解数</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="result-max-streak">0</div>
+          <div class="stat-label">最大連続</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="result-accuracy">0%</div>
+          <div class="stat-label">正解率</div>
+        </div>
+      </div>
+      <button id="retry-btn" class="btn-start">もう一度挑戦</button>
+    </div>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -258,6 +258,33 @@ if (logo) {
 })();
 
 // ========================================
+// タッチ端末: 画像タップでカード演出トグル
+// ========================================
+(function initCardTouch() {
+  // マウスがある端末ではスキップ（PCはCSSホバーで動く）
+  if (window.matchMedia('(hover: hover)').matches) return;
+
+  var cards = document.querySelectorAll('.game-card');
+  cards.forEach(function(card) {
+    var imageArea = card.querySelector('.game-card__image');
+    if (!imageArea) return;
+
+    imageArea.addEventListener('click', function(e) {
+      // ボタンやリンクのクリックは邪魔しない
+      if (e.target.closest('a, button')) return;
+
+      // 他のカードのactiveを外す
+      cards.forEach(function(c) {
+        if (c !== card) c.classList.remove('card-active');
+      });
+
+      // このカードのactiveをトグル
+      card.classList.toggle('card-active');
+    });
+  });
+})();
+
+// ========================================
 // セクション間にグロー区切り線を自動挿入
 // ========================================
 (function insertDividers() {
