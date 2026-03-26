@@ -5,6 +5,13 @@
 (function () {
   'use strict';
 
+  // ===== ピンチズーム防止（iOS Safari対応） =====
+  document.addEventListener('touchmove', function (e) {
+    if (e.touches.length > 1) { e.preventDefault(); }
+  }, { passive: false });
+  document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+  document.addEventListener('gesturechange', function (e) { e.preventDefault(); });
+
   const SITE_BASE = '../../';
 
   // ===== 正式リリース済みゲームID =====
