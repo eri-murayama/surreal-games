@@ -1,5 +1,10 @@
 /* ===== シュールゲームス 共通スタイル ===== */
 
+/* --- ズーム防止（スマホ・タブレット） --- */
+html, body {
+  touch-action: manipulation;
+}
+
 /* --- サウンドトグル --- */
 .sg-sound-toggle {
   position: fixed;
