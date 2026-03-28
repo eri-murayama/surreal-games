@@ -539,6 +539,10 @@ section {
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
 
+.game-card.card-active .kanikani-speech {
+  top: 8px;
+}
+
 .kanikani-speech {
   position: absolute;
   top: -45px;
@@ -609,6 +613,10 @@ section {
 .game-card.card-active .card-chara--atsushi {
   transform: scale(1.3) translateY(-8%) rotate(-3deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
+}
+
+.game-card.card-active .atsushi-speech {
+  bottom: 8px;
 }
 
 .atsushi-speech {
@@ -684,6 +692,10 @@ section {
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
 }
 
+.game-card.card-active .sakuranbo-speech {
+  top: 8px;
+}
+
 .sakuranbo-speech {
   position: absolute;
   top: -45px;
@@ -754,6 +766,10 @@ section {
 .game-card.card-active .card-chara--yoshinori {
   transform: scale(1.3) translateY(-8%) rotate(3deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
+}
+
+.game-card.card-active .yoshinori-speech {
+  top: 8px;
 }
 
 .yoshinori-speech {
