@@ -262,7 +262,7 @@ if (logo) {
 // ========================================
 (function initCardTouch() {
   // マウスがある端末ではスキップ（PCはCSSホバーで動く）
-  if (window.matchMedia('(hover: hover)').matches) return;
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
   var cards = document.querySelectorAll('.game-card');
   cards.forEach(function(card) {

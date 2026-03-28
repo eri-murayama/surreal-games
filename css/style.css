@@ -514,7 +514,7 @@ section {
   position: relative;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--kanikani {
     transform: scale(1.8) translateY(-18%) rotate(8deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
@@ -590,7 +590,7 @@ section {
   position: relative;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--atsushi {
     transform: scale(1.6) translateY(-15%) rotate(-5deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
@@ -667,7 +667,7 @@ section {
   position: relative;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--sakuranbo {
     transform: scale(1.6) translateY(-12%) rotate(-3deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
@@ -743,7 +743,7 @@ section {
   position: relative;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--yoshinori {
     transform: scale(1.6) translateY(-15%) rotate(5deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
