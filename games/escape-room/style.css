@@ -19,19 +19,17 @@ body {
 /* ===== レイアウト ===== */
 #game-wrapper {
   display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  max-width: 980px;
-  width: 100%;
-  max-height: 100vh;
-  max-height: 100dvh;
-  padding: 10px;
+  flex-direction: column;
+  width: 480px;
+  height: 700px;
+  padding: 6px 10px;
   overflow: hidden;
 }
 
 #game-container {
-  width: 780px;
-  flex-shrink: 0;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -39,17 +37,17 @@ body {
 .game-title {
   text-align: center;
   color: #e0d0f8;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 900;
-  margin-bottom: 8px;
-  letter-spacing: 6px;
+  margin-bottom: 4px;
+  letter-spacing: 4px;
   text-shadow: 0 0 15px rgba(210, 180, 248, 0.5);
 }
 
 /* ===== 部屋 ===== */
 #room {
   width: 100%;
-  height: 380px;
+  aspect-ratio: 780 / 380;
   position: relative;
   overflow: hidden;
   border: 3px solid #7a5a8a;
@@ -118,17 +116,17 @@ body {
 /* ===== 扉 ===== */
 #door {
   position: absolute;
-  left: 50px; top: 20px;
-  width: 130px; height: 210px;
+  left: 5%; top: 4%;
+  width: 17%; height: 55%;
   z-index: 10;
 }
 
 #door-frame {
   width: 100%; height: 100%;
   background: #d0c0e8;
-  border: 5px solid #a890c0;
+  border: 3px solid #a890c0;
   border-radius: 6px 6px 0 0;
-  padding: 7px;
+  padding: 4px;
 }
 
 #door-panel {
@@ -150,8 +148,8 @@ body {
 
 #doorknob {
   position: absolute;
-  right: 12px; top: 44%;
-  width: 15px; height: 15px;
+  right: 10%; top: 44%;
+  width: 18%; height: 9%;
   background: radial-gradient(circle at 35% 30%, #f8e080, #d0a040);
   border-radius: 50%;
   border: 1px solid #b89030;
@@ -160,8 +158,8 @@ body {
 
 #keyhole {
   position: absolute;
-  right: 14px; top: 54%;
-  width: 8px; height: 13px;
+  right: 12%; top: 54%;
+  width: 10%; height: 8%;
 }
 
 #keyhole::before {
@@ -169,7 +167,7 @@ body {
   position: absolute;
   top: 0; left: 50%;
   transform: translateX(-50%);
-  width: 7px; height: 7px;
+  width: 5px; height: 5px;
   background: #40305a;
   border-radius: 50%;
 }
@@ -179,7 +177,7 @@ body {
   position: absolute;
   bottom: 0; left: 50%;
   transform: translateX(-50%);
-  width: 3px; height: 7px;
+  width: 2px; height: 5px;
   background: #40305a;
 }
 
@@ -209,17 +207,17 @@ body {
 /* ===== 絵画 ===== */
 #painting {
   position: absolute;
-  left: 240px; top: 15px;
-  width: 130px; height: 90px;
+  left: 28%; top: 3%;
+  width: 18%; height: 25%;
   z-index: 5;
 }
 
 #painting-frame {
   width: 100%; height: 100%;
   background: #f0d0b8;
-  border: 5px solid #d8a890;
+  border: 3px solid #d8a890;
   border-radius: 3px;
-  padding: 5px;
+  padding: 3px;
   box-shadow: 2px 3px 8px rgba(0,0,0,0.2);
 }
 
@@ -272,8 +270,8 @@ body {
 /* ===== 時計 ===== */
 #clock {
   position: absolute;
-  right: 120px; top: 10px;
-  width: 76px; height: 76px;
+  right: 14%; top: 2%;
+  width: 10%; height: 20%;
   z-index: 5;
 }
 
@@ -281,7 +279,7 @@ body {
   width: 100%; height: 100%;
   background: radial-gradient(circle, #fff8f0 60%, #f0e0d0 100%);
   border-radius: 50%;
-  border: 4px solid #b8a8d8;
+  border: 2px solid #b8a8d8;
   position: relative;
   box-shadow: 2px 3px 8px rgba(0,0,0,0.2);
 }
@@ -289,7 +287,7 @@ body {
 #clock-center {
   position: absolute;
   top: 50%; left: 50%;
-  width: 5px; height: 5px;
+  width: 3px; height: 3px;
   background: #7868a0;
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -299,7 +297,7 @@ body {
 #clock-hand-hour {
   position: absolute;
   top: 50%; left: 50%;
-  width: 13px; height: 3px;
+  width: 7px; height: 2px;
   background: #7868a0;
   transform-origin: 0% 50%;
   transform: rotate(0deg);
@@ -310,7 +308,7 @@ body {
 #clock-hand-minute {
   position: absolute;
   top: 50%; left: 50%;
-  width: 18px; height: 2px;
+  width: 10px; height: 1px;
   background: #a088c0;
   transform-origin: 0% 50%;
   transform: rotate(-90deg);
@@ -321,10 +319,10 @@ body {
 /* ===== 窓 ===== */
 #window {
   position: absolute;
-  left: 420px; top: 15px;
-  width: 130px; height: 100px;
+  left: 52%; top: 3%;
+  width: 18%; height: 26%;
   background: #2a3a5a;
-  border: 6px solid #b8a8d8;
+  border: 3px solid #b8a8d8;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -358,12 +356,12 @@ body {
 /* ===== 窓の外からのセリフ ===== */
 #window-speech {
   position: absolute;
-  top: 115px;
-  left: 475px;
+  top: 30.3%;
+  left: 60.9%;
   transform: translateX(-50%);
   background: #fff;
   color: #333;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 10px;
@@ -405,15 +403,15 @@ body {
 /* ===== テーブル＋金庫 ===== */
 #table {
   position: absolute;
-  right: 50px; bottom: 30px;
-  width: 140px; height: 90px;
+  right: 6.4%; bottom: 7.9%;
+  width: 17.9%; height: 23.7%;
   z-index: 5;
 }
 
 #table-top {
   position: absolute;
-  top: 0; left: -10px;
-  width: 160px; height: 12px;
+  top: 0; left: -7%;
+  width: 114%; height: 13%;
   background: linear-gradient(180deg, #e8c0a8 0%, #d8b098 100%);
   border-radius: 4px;
   border: 2px solid #c8a088;
@@ -421,52 +419,52 @@ body {
 
 .table-leg {
   position: absolute;
-  top: 12px;
-  width: 10px; height: 78px;
+  top: 13%;
+  width: 7%; height: 87%;
   background: linear-gradient(90deg, #c8a888, #d8b898, #c8a888);
   border: 1px solid #b89878;
   border-radius: 0 0 3px 3px;
 }
 
-.table-leg-left { left: 15px; }
-.table-leg-right { right: 15px; }
+.table-leg-left { left: 11%; }
+.table-leg-right { right: 11%; }
 
 #safe {
   position: absolute;
-  right: 70px; bottom: 122px;
-  width: 76px; height: 50px;
+  right: 9%; bottom: 32.1%;
+  width: 9.7%; height: 13.2%;
   z-index: 8;
 }
 
 #safe-body {
   width: 100%; height: 100%;
   background: linear-gradient(180deg, #b8c8b8 0%, #90a890 100%);
-  border: 3px solid #708870;
-  border-radius: 6px;
+  border: 2px solid #708870;
+  border-radius: 4px;
   position: relative;
   box-shadow: 1px 2px 6px rgba(0,0,0,0.3);
 }
 
 #safe-display {
   position: absolute;
-  top: 7px; left: 50%;
+  top: 4px; left: 50%;
   transform: translateX(-50%);
   background: #1a2a1a;
   color: #4aea4a;
   font-family: 'Courier New', monospace;
-  font-size: 13px;
+  font-size: 8px;
   font-weight: bold;
-  padding: 2px 10px;
+  padding: 1px 5px;
   border-radius: 3px;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
   border: 1px solid #2a3a2a;
 }
 
 #safe-handle {
   position: absolute;
-  right: 7px; bottom: 6px;
-  width: 16px; height: 16px;
-  border: 3px solid #a8b8a8;
+  right: 4px; bottom: 3px;
+  width: 10px; height: 10px;
+  border: 2px solid #a8b8a8;
   border-radius: 50%;
 }
 
@@ -513,23 +511,23 @@ body {
 .floor-item.hidden { display: none; }
 
 #memo-on-floor {
-  left: 320px; bottom: 55px;
-  width: 46px; height: 46px;
+  left: 41%; bottom: 14.5%;
+  width: 5.9%; height: 12.1%;
 }
 
 .memo-shape {
-  font-size: 28px;
+  font-size: 22px;
   text-align: center;
   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
 }
 
 #flashlight-on-floor {
-  left: 500px; bottom: 70px;
-  width: 46px; height: 46px;
+  left: 64.1%; bottom: 18.4%;
+  width: 5.9%; height: 12.1%;
 }
 
 .flashlight-shape {
-  font-size: 26px;
+  font-size: 20px;
   text-align: center;
   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
 }
@@ -538,7 +536,7 @@ body {
   position: absolute;
   top: -4px; right: -2px;
   color: #ffe0a0;
-  font-size: 15px;
+  font-size: 11px;
   animation: sparkle 1.5s ease-in-out infinite;
 }
 
@@ -547,23 +545,23 @@ body {
 .sparkle4 { animation-delay: 1.1s; }
 
 #dust-on-floor {
-  left: 180px; bottom: 40px;
-  width: 46px; height: 46px;
+  left: 23.1%; bottom: 10.5%;
+  width: 5.9%; height: 12.1%;
 }
 
 .dust-shape {
-  font-size: 26px;
+  font-size: 20px;
   text-align: center;
   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
 }
 
 #bento-on-floor {
-  left: 430px; bottom: 35px;
-  width: 46px; height: 46px;
+  left: 55.1%; bottom: 9.2%;
+  width: 5.9%; height: 12.1%;
 }
 
 .bento-shape {
-  font-size: 26px;
+  font-size: 20px;
   text-align: center;
   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
 }
@@ -576,9 +574,9 @@ body {
 /* ===== 隠しメッセージ ===== */
 #hidden-message {
   position: absolute;
-  left: 220px; top: 130px;
+  left: 28.2%; top: 34.2%;
   color: transparent;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
   z-index: 4;
@@ -594,11 +592,12 @@ body {
 /* ===== セリフボックス ===== */
 #dialog-box {
   width: 100%;
-  height: 126px;
+  min-height: 100px;
+  max-height: 130px;
   background: linear-gradient(180deg, rgba(60, 30, 50, 0.96) 0%, rgba(40, 20, 35, 0.98) 100%);
   border: 2px solid #b0789a;
   border-radius: 14px;
-  margin-top: 10px;
+  margin-top: 6px;
   padding: 0;
   display: flex;
   align-items: stretch;
@@ -609,7 +608,7 @@ body {
 }
 
 #dialog-portrait {
-  width: 72px;
+  width: 56px;
   background: linear-gradient(135deg, #3e2a4a 0%, #301a3a 100%);
   display: flex;
   align-items: center;
@@ -626,7 +625,7 @@ body {
 
 #dialog-content {
   flex: 1;
-  padding: 12px 18px;
+  padding: 8px 12px;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -634,7 +633,7 @@ body {
 
 #dialog-name {
   color: #f0a0c0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   margin-bottom: 4px;
   letter-spacing: 3px;
@@ -642,8 +641,8 @@ body {
 
 #dialog-text {
   color: #f8f0f4;
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.6;
   overflow-y: auto;
   flex: 1;
 }
@@ -663,40 +662,45 @@ body {
 
 /* ===== アイテムボックス ===== */
 #item-box {
-  width: 150px;
+  width: 100%;
   background: linear-gradient(180deg, rgba(60, 30, 50, 0.95) 0%, rgba(40, 20, 35, 0.97) 100%);
   border: 2px solid #b0789a;
   border-radius: 14px;
-  padding: 12px 8px;
+  padding: 8px 8px 2px;
   flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(200, 150, 180, 0.2);
-  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
 }
 
 #item-box-label {
   color: #f0a0c0;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;
   letter-spacing: 4px;
+  white-space: nowrap;
 }
 
 #item-slots {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
+  display: flex;
+  gap: 4px;
+  flex: 1;
 }
 
 .item-slot {
-  width: 56px; height: 56px;
+  width: 36px; height: 36px;
+  flex-shrink: 0;
   background: rgba(80, 40, 60, 0.5);
   border: 2px solid #6a4a5e;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 18px;
   cursor: default;
   transition: all 0.2s;
 }
@@ -726,12 +730,18 @@ body {
 }
 
 #selected-item-name {
-  color: #f8d060;
-  font-size: 11px;
+  color: #f5c6d0;
+  font-size: 12px;
   text-align: center;
-  margin-top: 8px;
-  min-height: 16px;
+  margin-top: 4px;
+  width: 100%;
+  min-height: 18px;
   letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+#selected-item-name:empty {
+  visibility: hidden;
 }
 
 /* ===== 言語切替ボタン ===== */
@@ -787,8 +797,9 @@ body {
   background: linear-gradient(180deg, #2a3a2a 0%, #1a2a1a 100%);
   border: 3px solid #5a8a5a;
   border-radius: 18px;
-  padding: 28px;
+  padding: 18px;
   text-align: center;
+  max-width: 320px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   min-width: 280px;
 }
@@ -923,8 +934,8 @@ body {
 #window-peek-frame {
   position: relative;
   border-radius: 50%;
-  width: 360px;
-  height: 360px;
+  width: 260px;
+  height: 260px;
   overflow: hidden;
   margin: 0 auto;
   border: 8px solid #b8a8d8;
@@ -1182,9 +1193,9 @@ body {
 }
 
 .clear-title {
-  font-size: 56px;
+  font-size: 32px;
   font-weight: 900;
-  letter-spacing: 14px;
+  letter-spacing: 6px;
   color: transparent;
   background: linear-gradient(135deg, #f06090 0%, #f0a040 25%, #a060f0 50%, #40b0f0 75%, #f06090 100%);
   background-size: 300% 300%;
@@ -1252,7 +1263,7 @@ body {
 }
 
 .clear-rank {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 900;
   color: #e0d0f8;
   margin-top: 8px;
@@ -1265,7 +1276,7 @@ body {
 }
 
 .clear-rank-comment {
-  font-size: 14px;
+  font-size: 13px;
   color: #c0a0b0;
   font-style: italic;
   text-align: center;
@@ -1274,8 +1285,8 @@ body {
 }
 
 .clear-dialog {
-  max-width: 600px;
-  width: 90%;
+  max-width: 420px;
+  width: 95%;
   margin-top: 28px;
   background: linear-gradient(180deg, rgba(60, 30, 50, 0.96) 0%, rgba(40, 20, 35, 0.98) 100%);
   border: 2px solid #b0789a;
@@ -1368,396 +1379,20 @@ body {
   100% { opacity: 0; transform: scale(0) translateY(-200px); }
 }
 
-/* ===== モバイル対応 ===== */
-@media screen and (max-width: 980px) {
-  body {
-    align-items: stretch;
-    overflow: hidden;
-  }
-
-  #game-wrapper {
-    flex-direction: column-reverse;
-    align-items: center;
-    max-width: 100%;
-    height: 100dvh;
-    max-height: 100dvh;
-    padding: 4px;
-    overflow: hidden;
-  }
-
-  #game-container {
-    width: 100%;
-    max-width: 100%;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  #room {
-    flex: 1;
-    min-height: 0;
-    height: auto;
-    aspect-ratio: 780 / 380;
-    max-height: calc(100dvh - 240px);
-  }
-
-  .game-title {
-    font-size: 16px;
-    letter-spacing: 3px;
-    margin-bottom: 4px;
-  }
-
-  /* アイテムボックスを横並びに */
-  #item-box {
-    width: 100%;
-    margin-top: 0;
-    margin-bottom: 2px;
-    padding: 8px 8px 2px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px 8px;
-  }
-
-  #item-box-label {
-    margin-bottom: 0;
-    white-space: nowrap;
-    font-size: 12px;
-  }
-
-  #item-slots {
-    display: flex;
-    gap: 4px;
-    flex: 1;
-  }
-
-  .item-slot {
-    width: 36px;
-    height: 36px;
-    flex-shrink: 0;
-    font-size: 18px;
-  }
-
-  #selected-item-name {
-    position: static;
-    transform: none;
-    margin-top: 4px;
-    width: 100%;
-    text-align: center;
-    white-space: nowrap;
-    font-size: 12px;
-    background: none;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    z-index: auto;
-    min-height: 18px;
-    color: #f5c6d0;
-  }
-
-  #selected-item-name:empty {
-    visibility: hidden;
-  }
-
-  #lang-switch {
-    position: static;
-    transform: none;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-
-  /* セリフボックス */
-  #dialog-box {
-    margin-top: 4px;
-    height: auto;
-    min-height: 100px;
-    max-height: 130px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  #dialog-portrait {
-    width: 56px;
-  }
-
-  #dialog-content {
-    padding: 8px 12px;
-  }
-
-  #dialog-text {
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  #dialog-name {
-    font-size: 12px;
-  }
-
-  /* 部屋内の要素をスケーリング */
-  #room {
-    font-size: clamp(8px, 1.3vw, 16px);
-  }
-
-  #door {
-    left: 5%;
-    top: 4%;
-    width: 17%;
-    height: 55%;
-  }
-
-  #door-frame {
-    border-width: 3px;
-    padding: 4px;
-  }
-
-  #doorknob {
-    right: 10%;
-    top: 44%;
-    width: 18%;
-    height: 9%;
-  }
-
-  #keyhole {
-    right: 12%;
-    top: 54%;
-    width: 10%;
-    height: 8%;
-  }
-
-  #keyhole::before {
-    width: 5px;
-    height: 5px;
-  }
-
-  #keyhole::after {
-    width: 2px;
-    height: 5px;
-  }
-
-  #painting {
-    left: 28%;
-    top: 3%;
-    width: 18%;
-    height: 25%;
-  }
-
-  #painting-frame {
-    border-width: 3px;
-    padding: 3px;
-  }
-
-  #clock {
-    right: 14%;
-    top: 2%;
-    width: 10%;
-    height: 20%;
-  }
-
-  #clock-face {
-    border-width: 2px;
-  }
-
-  #clock-center {
-    width: 3px;
-    height: 3px;
-  }
-
-  #clock-hand-hour {
-    width: 7px;
-    height: 2px;
-  }
-
-  #clock-hand-minute {
-    width: 10px;
-    height: 1px;
-  }
-
-  #window {
-    left: 52%;
-    top: 3%;
-    width: 18%;
-    height: 26%;
-  }
-
-  #window-speech {
-    top: 30.3%;
-    left: 60.9%;
-    font-size: 9px;
-  }
-
-  #table {
-    right: 6.4%;
-    bottom: 7.9%;
-    width: 17.9%;
-    height: 23.7%;
-  }
-
-  #safe {
-    right: 9%;
-    bottom: 32.1%;
-    width: 8.5%;
-    height: 11.5%;
-  }
-
-  #safe-body {
-    border-width: 2px;
-    border-radius: 4px;
-  }
-
-  #safe-display {
-    font-size: 8px;
-    padding: 1px 5px;
-    letter-spacing: 2px;
-    top: 4px;
-  }
-
-  #safe-handle {
-    width: 10px;
-    height: 10px;
-    border-width: 2px;
-    right: 4px;
-    bottom: 3px;
-  }
-
-  #memo-on-floor {
-    left: 41%;
-    bottom: 14.5%;
-    width: 5.9%;
-    height: 12.1%;
-  }
-
-  #flashlight-on-floor {
-    left: 64.1%;
-    bottom: 18.4%;
-    width: 5.9%;
-    height: 12.1%;
-  }
-
-  #dust-on-floor {
-    left: 23.1%;
-    bottom: 10.5%;
-    width: 5.9%;
-    height: 12.1%;
-  }
-
-  #bento-on-floor {
-    left: 55.1%;
-    bottom: 9.2%;
-    width: 5.9%;
-    height: 12.1%;
-  }
-
-  #hidden-message {
-    left: 28.2%;
-    top: 34.2%;
-    font-size: 10px;
-  }
-
-  .memo-shape { font-size: 22px; }
-  .flashlight-shape { font-size: 20px; }
-  .dust-shape { font-size: 20px; }
-  .bento-shape { font-size: 20px; }
-  .item-sparkle { font-size: 11px; }
-
-  /* モーダル調整 */
-  #safe-modal-content {
-    min-width: auto;
-    width: 90vw;
-    max-width: 320px;
-    padding: 18px;
-  }
-
-  #window-peek-frame {
-    width: 260px;
-    height: 260px;
-  }
-
-  #memo-paper {
-    max-width: 90vw;
-  }
-
-  /* 音量ボタンを左下に配置（アイテムボックス・言語切替との被り回避） */
-  .sg-sound-toggle {
-    left: 16px;
-    right: auto;
-    bottom: 16px;
-  }
-
-  /* クリア画面 */
-  .clear-title { font-size: 32px; letter-spacing: 6px; }
-  .clear-rank { font-size: 22px; letter-spacing: 2px; }
-  .clear-rank-comment { font-size: 13px; line-height: 1.6; }
-  .clear-dialog { width: 95%; }
-  .clear-buttons { flex-direction: column; align-items: center; gap: 10px; }
-  .clear-back-link { font-size: 14px; padding: 10px 24px; }
-}
-
-/* スマホ横向き時の微調整 */
-@media screen and (max-height: 500px) and (orientation: landscape) {
-  body {
-    padding: 0;
-  }
-
-  .game-title {
-    font-size: 14px;
-    margin-bottom: 2px;
-  }
-
-  #dialog-box {
-    height: auto;
-    min-height: 80px;
-    max-height: 100px;
-    margin-top: 4px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  #dialog-portrait {
-    width: 48px;
-  }
-
-  #dialog-text {
-    font-size: 12px;
-  }
-
-  #item-box {
-    padding: 4px 8px;
-  }
-
-  .item-slot {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
-  }
-}
-
 /* ===== トップに戻るリンク ===== */
 .back-to-top-link {
-  position: fixed;
-  top: 12px;
-  left: 12px;
   font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
+  text-align: center;
+  display: block;
+  padding: 2px 0;
   z-index: 50;
   transition: color 0.2s;
 }
 .back-to-top-link:hover {
   color: #fff;
-}
-
-@media screen and (max-width: 980px) {
-  .back-to-top-link {
-    position: static;
-    display: block;
-    text-align: center;
-    padding: 4px 0;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
-  }
 }
 
 /* ===== クリア画面のボタン ===== */

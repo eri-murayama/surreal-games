@@ -25,26 +25,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
-  <div id="game-wrapper">
-    <!-- アイテムボックス -->
-    <div id="item-box">
-      <div id="item-box-label">アイテム</div>
-      <div id="item-slots">
-        <div class="item-slot" data-slot="0"></div>
-        <div class="item-slot" data-slot="1"></div>
-        <div class="item-slot" data-slot="2"></div>
-        <div class="item-slot" data-slot="3"></div>
-        <div class="item-slot" data-slot="4"></div>
-        <div class="item-slot" data-slot="5"></div>
-      </div>
-      <div id="selected-item-name"></div>
-      <div id="lang-switch">
-        <button class="lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
-        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-      </div>
-    </div>
-
+  <div id="game-wrapper" data-sg-scale="480x700">
+    <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
     <div id="game-container">
       <h1 class="game-title">かわいい部屋からの脱出</h1>
 
@@ -150,6 +132,24 @@
           <div id="dialog-text">……ん？ここは…？ あてもなく歩いていたら知らない部屋に入っちゃった。<br>さあて、どうしようかな♪</div>
         </div>
         <div id="dialog-indicator">&#9660;</div>
+      </div>
+    </div>
+
+    <!-- アイテムボックス -->
+    <div id="item-box">
+      <div id="item-box-label">アイテム</div>
+      <div id="item-slots">
+        <div class="item-slot" data-slot="0"></div>
+        <div class="item-slot" data-slot="1"></div>
+        <div class="item-slot" data-slot="2"></div>
+        <div class="item-slot" data-slot="3"></div>
+        <div class="item-slot" data-slot="4"></div>
+        <div class="item-slot" data-slot="5"></div>
+      </div>
+      <div id="selected-item-name"></div>
+      <div id="lang-switch">
+        <button class="lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
       </div>
     </div>
   </div>
