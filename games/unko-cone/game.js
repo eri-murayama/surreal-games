@@ -12,6 +12,7 @@
   // ---- DOM ----
   const $ = id => document.getElementById(id);
   const titleScreen  = $('title-screen');
+  const storyScreen  = $('story-screen');
   const gameScreen   = $('game-screen');
   const resultScreen = $('result-screen');
   const canvas = $('game-canvas');
@@ -77,6 +78,81 @@
     ]
   };
 
+  // ---- Character image for in-game ----
+  const heroImg = new Image();
+  heroImg.src = 'character.png';
+
+  // ---- Story screen logic ----
+  const STORY_LINES = [
+    'やあ、僕はうん…チョコ味のソフトクリーム！',
+    'お腹を空かせた貧しい君たちに食べてもらいたい…。そんな気持ちでたっくさんのソフトクリームを作ったよ！',
+    '今から踏ん張ってねじり出していくから残さずキャッチしてね！'
+  ];
+  let storyStep = 0;
+
+  // トイレの流れる音（Web Audio APIで生成）
+  function playFlushSE() {
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      const duration = 1.8;
+      const sampleRate = ac.sampleRate;
+      const len = sampleRate * duration;
+      const buf = ac.createBuffer(1, len, sampleRate);
+      const data = buf.getChannelData(0);
+      // ノイズベースのフラッシュ音
+      for (let i = 0; i < len; i++) {
+        const t = i / sampleRate;
+        const env = Math.max(0, 1 - t / duration) * (0.5 + 0.5 * Math.sin(t * 3));
+        const noise = (Math.random() * 2 - 1);
+        const rumble = Math.sin(t * 80 * Math.PI * 2) * 0.3;
+        const swoosh = Math.sin(t * 200 * Math.PI * 2 * (1 - t / duration)) * 0.2;
+        data[i] = (noise * 0.4 + rumble + swoosh) * env * 0.3;
+      }
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+      src.connect(ac.destination);
+      src.start();
+      src.onended = () => ac.close();
+    } catch (e) {
+      // 音が出なくてもゲームは続行
+    }
+  }
+
+  function showStoryScreen() {
+    storyStep = 0;
+    showScreen(storyScreen);
+    showStoryLine();
+  }
+
+  function showStoryLine() {
+    const bubble = $('story-bubble');
+    const text = $('story-text');
+    const hint = $('story-tap-hint');
+
+    if (storyStep < STORY_LINES.length) {
+      bubble.classList.remove('visible');
+      setTimeout(() => {
+        text.textContent = STORY_LINES[storyStep];
+        bubble.classList.add('visible');
+      }, 200);
+      hint.textContent = storyStep < STORY_LINES.length - 1 ? 'タップして次へ' : 'タップしてゲーム開始！';
+    }
+  }
+
+  function advanceStory() {
+    storyStep++;
+    if (storyStep < STORY_LINES.length) {
+      showStoryLine();
+    } else {
+      // 最後のセリフ後：SE再生してゲーム開始
+      playFlushSE();
+      setTimeout(() => startGame(), 800);
+    }
+  }
+
+  // ストーリー画面のクリック/タップで進行
+  storyScreen.addEventListener('click', advanceStory);
+
   // ---- Game State ----
   let playerX, playerY;
   let poops = [];      // falling poops: { x, y, speed, wobble }
@@ -125,116 +201,17 @@
     }
   }
 
-  // ---- Character drawing ----
+  // ---- Character drawing (character.png) ----
   function drawHero(x, y) {
-    const headR = 22;
-    const bodyH = 28;
-    const headX = x;
+    if (!heroImg.complete) return;
     const coneTopY = y - CONE_H;
     const stackH = stack.length * 14;
-    const headY = coneTopY - stackH - headR - bodyH - 4;
-    const bodyY = headY + headR;
+    const imgW = 48;
+    const imgH = 48;
+    const drawX = x - imgW / 2;
+    const drawY = coneTopY - stackH - imgH - 4;
 
-    ctx.save();
-
-    // --- Body (orange shirt) ---
-    ctx.fillStyle = '#F06030';
-    ctx.beginPath();
-    ctx.moveTo(headX - 16, bodyY);
-    ctx.lineTo(headX - 18, bodyY + bodyH);
-    ctx.lineTo(headX + 18, bodyY + bodyH);
-    ctx.lineTo(headX + 16, bodyY);
-    ctx.closePath();
-    ctx.fill();
-    // Collar line
-    ctx.strokeStyle = '#D04820';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(headX, bodyY + 2, 8, 0, Math.PI);
-    ctx.stroke();
-
-    // --- Arms holding cone ---
-    ctx.strokeStyle = '#f5cdb0';
-    ctx.lineWidth = 6;
-    ctx.lineCap = 'round';
-    // Left arm
-    ctx.beginPath();
-    ctx.moveTo(headX - 18, bodyY + 8);
-    ctx.quadraticCurveTo(headX - 26, bodyY + bodyH + 10, x - CONE_W / 2 + 8, coneTopY - stackH + 5);
-    ctx.stroke();
-    // Right arm
-    ctx.beginPath();
-    ctx.moveTo(headX + 18, bodyY + 8);
-    ctx.quadraticCurveTo(headX + 26, bodyY + bodyH + 10, x + CONE_W / 2 - 8, coneTopY - stackH + 5);
-    ctx.stroke();
-
-    // --- Head ---
-    // Skin
-    ctx.fillStyle = '#f5cdb0';
-    ctx.beginPath();
-    ctx.arc(headX, headY, headR, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Ears
-    ctx.fillStyle = '#f5cdb0';
-    ctx.beginPath();
-    ctx.ellipse(headX - headR + 2, headY + 2, 5, 7, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(headX + headR - 2, headY + 2, 5, 7, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Buzz-cut hair (dark gray, covers top of head)
-    ctx.fillStyle = '#555';
-    ctx.beginPath();
-    ctx.arc(headX, headY - 2, headR - 1, Math.PI, 0);
-    ctx.closePath();
-    ctx.fill();
-    // Hair dots for buzz texture
-    ctx.fillStyle = '#444';
-    for (let i = 0; i < 12; i++) {
-      const angle = Math.PI + (Math.PI * i / 12);
-      const r = headR * (0.5 + Math.random() * 0.35);
-      const dx = Math.cos(angle) * r;
-      const dy = Math.sin(angle) * r - 2;
-      ctx.beginPath();
-      ctx.arc(headX + dx, headY + dy, 1.2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Eyes (big round)
-    ctx.fillStyle = '#222';
-    ctx.beginPath();
-    ctx.arc(headX - 8, headY + 2, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(headX + 8, headY + 2, 5, 0, Math.PI * 2);
-    ctx.fill();
-    // Eye highlights
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(headX - 6, headY, 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(headX + 10, headY, 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Mouth (open, happy)
-    ctx.fillStyle = '#e04030';
-    ctx.beginPath();
-    ctx.arc(headX, headY + 11, 6, 0, Math.PI);
-    ctx.fill();
-
-    // Cheeks (blush)
-    ctx.fillStyle = 'rgba(255, 130, 100, 0.35)';
-    ctx.beginPath();
-    ctx.ellipse(headX - 14, headY + 8, 5, 3, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(headX + 14, headY + 8, 5, 3, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
+    ctx.drawImage(heroImg, drawX, drawY, imgW, imgH);
   }
 
   function drawPoop(x, y, size) {
@@ -530,7 +507,7 @@
   }
 
   function showScreen(screen) {
-    [titleScreen, gameScreen, resultScreen].forEach(s => s.classList.remove('active'));
+    [titleScreen, storyScreen, gameScreen, resultScreen].forEach(s => s.classList.remove('active'));
     screen.classList.add('active');
   }
 
@@ -619,7 +596,7 @@
   }
 
   // ---- Button events ----
-  $('start-btn').addEventListener('click', startGame);
+  $('start-btn').addEventListener('click', showStoryScreen);
   $('retry-btn').addEventListener('click', startGame);
   $('title-btn').addEventListener('click', () => { showScreen(titleScreen); showHighScore(); });
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>うんコーンキャッチャー | シュールゲームス</title>
-  <meta name="description" content="主人公がソフトクリームのコーンで落ちてくるうんこをキャッチ！何段積めるかな？">
+  <meta name="description" content="空から落ちてくるうん…ソフトクリームをキャッチ！何段積めるかな？">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
   <script>
@@ -45,7 +45,9 @@
       <div class="title-icon">💩🍦</div>
       <h1 class="game-title">うんコーン<br>キャッチャー</h1>
       <div class="character-preview" aria-hidden="true">
-        <img src="character.png" alt="主人公" class="character-img">
+        <div class="character-preview-frame">
+          <img src="unko-char.png" alt="うんちキャラ" class="character-img">
+        </div>
       </div>
       <div id="highscore-display" class="highscore-display"></div>
       <button id="start-btn" class="btn-primary">💩 ゲームスタート 💩</button>
@@ -54,6 +56,17 @@
         <p>PC：← → キーで主人公を左右に移動</p>
         <p>スマホ：画面の左半分/右半分をタッチで移動</p>
       </div>
+    </div>
+  </div>
+
+  <!-- Story Screen (ゲームスタート後、ゲーム開始前の演出) -->
+  <div id="story-screen" class="screen">
+    <div class="story-container">
+      <div class="story-poop-icon"><img src="unko-char.png" alt="うんちキャラ" class="story-poop-img"></div>
+      <div class="story-bubble" id="story-bubble">
+        <p id="story-text"></p>
+      </div>
+      <p class="story-tap-hint" id="story-tap-hint">タップして次へ</p>
     </div>
   </div>
 

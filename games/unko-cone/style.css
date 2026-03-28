@@ -81,9 +81,11 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100dvh;
   position: relative;
   z-index: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .screen.active {
@@ -95,13 +97,13 @@ body {
 /* ===== Title Screen ===== */
 .title-container {
   text-align: center;
-  padding: 40px 20px;
+  padding: 20px 20px;
   max-width: 500px;
 }
 
 .title-icon {
-  font-size: 4rem;
-  margin-bottom: 10px;
+  font-size: 3rem;
+  margin-bottom: 6px;
   animation: iconBounce 2s infinite ease-in-out;
 }
 
@@ -112,14 +114,14 @@ body {
 
 .game-title {
   font-family: 'Dela Gothic One', sans-serif;
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   background: linear-gradient(135deg, var(--gold), var(--brown-light), #fff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 20px rgba(139, 69, 19, 0.5));
-  margin-bottom: 8px;
-  line-height: 1.3;
+  margin-bottom: 6px;
+  line-height: 1.2;
 }
 
 .game-subtitle {
@@ -134,16 +136,27 @@ body {
 .character-preview {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
+}
+
+.character-preview-frame {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .character-img {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  border-radius: 50%;
-  border: 3px solid var(--gold);
-  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  width: 200%;
+  height: auto;
+  object-fit: cover;
+  margin-top: -5%;
+  margin-left: 30%;
 }
 
 /* ===== Buttons ===== */
@@ -211,6 +224,75 @@ body {
   color: var(--text-dim);
   line-height: 1.6;
   opacity: 0.7;
+}
+
+/* ===== Story Screen ===== */
+.story-container {
+  text-align: center;
+  padding: 20px 20px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.story-poop-icon {
+  animation: storyBounce 1.5s infinite ease-in-out;
+}
+
+.story-poop-img {
+  width: 500px;
+  height: 500px;
+  object-fit: contain;
+}
+
+@keyframes storyBounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.story-bubble {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border-radius: 20px;
+  padding: 20px 24px;
+  position: relative;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  min-height: 60px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.story-bubble.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.story-bubble::after {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-bottom-color: rgba(255, 255, 255, 0.95);
+}
+
+.story-tap-hint {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  opacity: 0;
+  animation: hintBlink 1.5s 0.8s infinite;
+}
+
+@keyframes hintBlink {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
 
 /* ===== Game Screen ===== */
@@ -418,35 +500,154 @@ body {
   white-space: pre-wrap;
 }
 
-/* ===== Responsive ===== */
+/* ===== Responsive: スマホ ===== */
 @media (max-width: 500px) {
   .back-to-top-link {
     font-size: 0.75rem;
     padding: 4px 10px;
   }
 
-  .game-title {
+  .title-container {
+    padding: 12px 16px;
+  }
+
+  .title-icon {
     font-size: 2.2rem;
+    margin-bottom: 4px;
   }
 
-  .game-subtitle {
-    font-size: 0.95rem;
+  .game-title {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
   }
 
-  .character-img {
-    width: 96px;
-    height: 96px;
+  .character-preview-frame {
+    width: 200px;
+    height: 200px;
+  }
+
+  .character-preview {
+    margin-bottom: 8px;
+  }
+
+  .btn-primary {
+    padding: 12px 32px;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  .controls-help {
+    padding: 10px;
+    margin-bottom: 12px;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .story-poop-img {
+    width: 360px;
+    height: 360px;
+  }
+
+  .story-container {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .story-bubble {
+    padding: 14px 18px;
+    font-size: 0.9rem;
   }
 
   .result-container {
-    padding: 20px 16px;
+    padding: 16px 12px;
+  }
+
+  .result-icon {
+    font-size: 2rem;
+    margin-bottom: 4px;
+  }
+
+  .result-title {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .result-stats {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .result-rank {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
   }
 
   .character-comment-box {
-    padding: 12px;
+    padding: 10px;
+    margin-bottom: 12px;
   }
 
   .character-text {
     font-size: 0.8rem;
+  }
+}
+
+/* ===== Responsive: 小さなスマホ（iPhone SE等） ===== */
+@media (max-height: 600px) {
+  .title-icon {
+    font-size: 1.8rem;
+    margin-bottom: 2px;
+  }
+
+  .game-title {
+    font-size: 1.5rem;
+  }
+
+  .character-preview-frame {
+    width: 140px;
+    height: 140px;
+  }
+
+  .character-preview {
+    margin-bottom: 6px;
+  }
+
+  .btn-primary {
+    padding: 10px 28px;
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .controls-help {
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 0.7rem;
+  }
+
+  .story-poop-img {
+    width: 280px;
+    height: 280px;
+  }
+
+  .story-bubble {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ===== Responsive: iPad縦向き ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .title-container {
+    padding: 30px 20px;
+  }
+
+  .character-preview-frame {
+    width: 300px;
+    height: 300px;
+  }
+
+  .story-poop-img {
+    width: 500px;
+    height: 500px;
   }
 }
