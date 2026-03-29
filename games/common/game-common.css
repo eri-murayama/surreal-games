@@ -1,8 +1,56 @@
 /* ===== シュールゲームス 共通スタイル ===== */
 
-/* --- ズーム防止（スマホ・タブレット） --- */
+/* --- 共通CSS変数 --- */
+:root {
+  /* ブランドカラー */
+  --sg-brand-pink: #ff6ec7;
+  --sg-brand-cyan: #00fff7;
+  --sg-brand-green: #39ff14;
+  --sg-brand-yellow: #ffff00;
+
+  /* 共通ダークテーマ */
+  --sg-bg-dark: #0d0221;
+  --sg-bg-deep: #1a0a3e;
+  --sg-text-light: #f0f0f0;
+  --sg-text-muted: #b0a8c8;
+
+  /* 共通フォント */
+  --sg-font-heading: 'Hachi Maru Pop', cursive;
+  --sg-font-body: 'Zen Maru Gothic', 'Zen Kaku Gothic New', sans-serif;
+
+  /* 共通レイアウト */
+  --sg-game-max-width: 500px;
+  --sg-radius-sm: 8px;
+  --sg-radius-md: 12px;
+  --sg-radius-lg: 16px;
+  --sg-radius-pill: 999px;
+
+  /* ブレークポイント（参照用: CSS変数はmedia queryに使えないためコメント）
+     スマホ:   480px 以下
+     タブレット: 768px 以下
+     PC:       769px 以上
+  */
+}
+
+/* --- ユニバーサルリセット --- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- タップハイライト無効化 & ズーム防止 --- */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 html, body {
   touch-action: manipulation;
+}
+
+/* --- ユーティリティ --- */
+.hidden {
+  display: none !important;
 }
 
 /* --- サウンドトグル --- */
@@ -239,7 +287,7 @@ html, body {
 }
 
 /* --- レスポンシブ（スマホ） --- */
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .sg-recommend {
     padding: 12px 8px;
   }
@@ -254,5 +302,16 @@ html, body {
     min-width: 220px;
     max-width: 280px;
     padding: 10px 12px;
+  }
+}
+
+/* --- アクセシビリティ: アニメーション低減 --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

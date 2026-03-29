@@ -1,6 +1,3 @@
-/* ===== Reset & Base ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --pink: #ff69b4;
   --pink-light: #ffb7c5;

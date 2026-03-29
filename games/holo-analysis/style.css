@@ -3,12 +3,6 @@
    シュールゲームス - Holographic Cute Edition
    ========================================== */
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 /* ---------- Animated Background ---------- */
 body {
   font-family: 'M PLUS Rounded 1c', 'Zen Maru Gothic', sans-serif;

@@ -1,11 +1,5 @@
 /* ===== 経営分析ゲーム スタイル ===== */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 html, body {
   height: 100%;
   overflow: hidden;
@@ -22,10 +16,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.hidden {
-  display: none !important;
 }
 
 #game-wrapper {

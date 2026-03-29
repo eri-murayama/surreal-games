@@ -1,7 +1,5 @@
 /* === 黄金の金色ドライバー - 昭和レトロ風レースゲーム === */
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
 html, body {
   height: 100%;
   overflow: hidden;
@@ -835,8 +833,6 @@ body {
 #mount-screen {
   position: relative;
 }
-
-.hidden { display: none !important; }
 
 /* === レスポンシブ === */
 @media (max-width: 480px) {

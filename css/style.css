@@ -525,429 +525,196 @@ section {
   transform: scale(1.15) rotate(5deg);
 }
 
-/* かにかにカード: ホバーで飛び出し＆セリフ */
-.card-chara--kanikani {
+/* ===== キャラカード共通: ホバーで飛び出し ===== */
+.card-chara--popup {
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
   z-index: 10;
   position: relative;
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .game-card:has(.card-chara--popup) {
+    overflow: visible;
+  }
+  .game-card:has(.card-chara--popup) .game-card__image {
+    overflow: visible;
+  }
+  .game-card:has(.card-chara--popup) .placeholder-art {
+    overflow: visible;
+    position: relative;
+  }
+}
+
+.game-card.card-active:has(.card-chara--popup),
+.game-card.card-active:has(.card-chara--popup) .game-card__image,
+.game-card.card-active:has(.card-chara--popup) .placeholder-art {
+  overflow: visible;
+}
+
+/* ===== 吹き出し共通ベース ===== */
+.card-speech {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px) scale(0.8);
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 10px 16px;
+  border-radius: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+  border: 2px solid currentColor;
+  z-index: 20;
+}
+
+/* 吹き出しの矢印（下向き = 上に表示） */
+.card-speech::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #fff;
+}
+
+/* 吹き出しの矢印（上向き = 下に表示） */
+.card-speech--arrow-up::after {
+  bottom: auto;
+  top: -10px;
+  border-top: none;
+  border-bottom: 10px solid #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .game-card:hover .card-speech {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.game-card.card-active .card-speech {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* --- かにかに --- */
+.card-chara--kanikani { /* width はデフォルト55% */ }
 
 @media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--kanikani {
     transform: scale(1.8) translateY(-18%) rotate(8deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
   }
-
-  .game-card:has(.card-chara--kanikani) {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--kanikani) .game-card__image {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--kanikani) .placeholder-art {
-    overflow: visible;
-    position: relative;
-  }
 }
-
 .game-card.card-active .card-chara--kanikani {
   transform: scale(1.3) translateY(-10%) rotate(5deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
-
-.game-card.card-active:has(.card-chara--kanikani),
-.game-card.card-active:has(.card-chara--kanikani) .game-card__image,
-.game-card.card-active:has(.card-chara--kanikani) .placeholder-art {
-  overflow: visible;
-}
-
 .kanikani-speech {
-  position: absolute;
-  top: -45px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px) scale(0.8);
-  background: #fff;
   color: #d63384;
-  font-size: 0.85rem;
-  font-weight: 900;
-  padding: 10px 16px;
-  border-radius: 16px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
   box-shadow: 0 4px 20px rgba(214, 51, 132, 0.3);
-  border: 2px solid #ff69b4;
-  z-index: 20;
+  border-color: #ff69b4;
 }
 
-.kanikani-speech::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #fff;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .kanikani-speech {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-  }
-}
-
-.game-card.card-active .kanikani-speech {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
-/* 篤カード: ホバーで飛び出し＆セリフ */
-.card-chara--atsushi {
-  width: 85%;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  z-index: 10;
-  position: relative;
-}
+/* --- 篤 --- */
+.card-chara--atsushi { width: 85%; }
 
 @media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--atsushi {
     transform: scale(1.6) translateY(-15%) rotate(-5deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
   }
-
-  .game-card:has(.card-chara--atsushi) {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--atsushi) .game-card__image {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--atsushi) .placeholder-art {
-    overflow: visible;
-    position: relative;
-  }
 }
-
 .game-card.card-active .card-chara--atsushi {
   transform: scale(1.3) translateY(-8%) rotate(-3deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
-
-.game-card.card-active:has(.card-chara--atsushi),
-.game-card.card-active:has(.card-chara--atsushi) .game-card__image,
-.game-card.card-active:has(.card-chara--atsushi) .placeholder-art {
-  overflow: visible;
-}
-
 .atsushi-speech {
-  position: absolute;
+  top: auto;
   bottom: -15px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px) scale(0.8);
-  background: #fff;
   color: #7b2ff7;
-  font-size: 0.85rem;
-  font-weight: 900;
-  padding: 10px 16px;
-  border-radius: 16px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
   box-shadow: 0 4px 20px rgba(123, 47, 247, 0.3);
-  border: 2px solid #c471ed;
-  z-index: 20;
+  border-color: #c471ed;
 }
 
-.atsushi-speech::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #fff;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .atsushi-speech {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-  }
-}
-
-.game-card.card-active .atsushi-speech {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
-/* さくらんぼカード: ホバーで飛び出し＆セリフ */
-.card-chara--sakuranbo {
-  width: 75%;
-  border-radius: 12px;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  z-index: 10;
-  position: relative;
-}
+/* --- さくらんぼ --- */
+.card-chara--sakuranbo { width: 75%; border-radius: 12px; }
 
 @media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--sakuranbo {
     transform: scale(1.6) translateY(-12%) rotate(-3deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
   }
-
-  .game-card:has(.card-chara--sakuranbo) {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--sakuranbo) .game-card__image {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--sakuranbo) .placeholder-art {
-    overflow: visible;
-    position: relative;
-  }
 }
-
 .game-card.card-active .card-chara--sakuranbo {
   transform: scale(1.3) translateY(-8%) rotate(-2deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
 }
-
-.game-card.card-active:has(.card-chara--sakuranbo),
-.game-card.card-active:has(.card-chara--sakuranbo) .game-card__image,
-.game-card.card-active:has(.card-chara--sakuranbo) .placeholder-art {
-  overflow: visible;
-}
-
 .sakuranbo-speech {
-  position: absolute;
-  top: -45px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px) scale(0.8);
-  background: #fff;
   color: #8b2252;
-  font-size: 0.85rem;
-  font-weight: 900;
-  padding: 10px 16px;
-  border-radius: 16px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
   box-shadow: 0 4px 20px rgba(139, 34, 82, 0.3);
-  border: 2px solid #c06080;
-  z-index: 20;
+  border-color: #c06080;
 }
 
-.sakuranbo-speech::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #fff;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .sakuranbo-speech {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-  }
-}
-
-.game-card.card-active .sakuranbo-speech {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
-/* ヨシノリカード: ホバーで飛び出し＆セリフ */
-.card-chara--yoshinori {
-  width: 70%;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  z-index: 10;
-  position: relative;
-}
+/* --- ヨシノリ --- */
+.card-chara--yoshinori { width: 70%; }
 
 @media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--yoshinori {
     transform: scale(1.6) translateY(-15%) rotate(5deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
   }
-
-  .game-card:has(.card-chara--yoshinori) {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--yoshinori) .game-card__image {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--yoshinori) .placeholder-art {
-    overflow: visible;
-    position: relative;
-  }
 }
-
 .game-card.card-active .card-chara--yoshinori {
   transform: scale(1.3) translateY(-8%) rotate(3deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
-
-.game-card.card-active:has(.card-chara--yoshinori),
-.game-card.card-active:has(.card-chara--yoshinori) .game-card__image,
-.game-card.card-active:has(.card-chara--yoshinori) .placeholder-art {
-  overflow: visible;
-}
-
 .yoshinori-speech {
-  position: absolute;
-  top: -45px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px) scale(0.8);
-  background: #fff;
   color: #cc3300;
-  font-size: 0.85rem;
-  font-weight: 900;
-  padding: 10px 16px;
-  border-radius: 16px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
   box-shadow: 0 4px 20px rgba(204, 51, 0, 0.3);
-  border: 2px solid #ff6633;
-  z-index: 20;
+  border-color: #ff6633;
 }
 
-.yoshinori-speech::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #fff;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .yoshinori-speech {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-  }
-}
-
-.game-card.card-active .yoshinori-speech {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
-/* うんちカード: ホバーで飛び出し＆セリフ */
-.card-chara--unko {
-  width: 120%;
-  max-width: none;
-  margin-left: 15%;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  z-index: 10;
-  position: relative;
-}
+/* --- うんち --- */
+.card-chara--unko { width: 120%; max-width: none; margin-left: 15%; }
 
 @media (hover: hover) and (pointer: fine) {
   .game-card:hover .card-chara--unko {
     transform: scale(1.6) translateY(-12%) rotate(8deg);
     filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
   }
-
-  .game-card:has(.card-chara--unko) {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--unko) .game-card__image {
-    overflow: visible;
-  }
-
-  .game-card:has(.card-chara--unko) .placeholder-art {
-    overflow: visible;
-    position: relative;
-  }
 }
-
 .game-card.card-active .card-chara--unko {
   transform: scale(1.3) translateY(-10%) rotate(5deg);
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
-
-.game-card.card-active:has(.card-chara--unko),
-.game-card.card-active:has(.card-chara--unko) .game-card__image,
-.game-card.card-active:has(.card-chara--unko) .placeholder-art {
-  overflow: visible;
-}
-
 .unko-speech {
-  position: absolute;
+  top: auto;
   bottom: 12px;
   left: 12px;
-  right: auto;
-  top: auto;
   transform: translateY(10px) scale(0.8);
-  background: #fff;
   color: #8B4513;
-  font-size: 0.85rem;
-  font-weight: 900;
   padding: 8px 14px;
-  border-radius: 16px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
   box-shadow: 0 4px 20px rgba(139, 69, 19, 0.3);
-  border: 2px solid #d4a050;
-  z-index: 20;
+  border-color: #d4a050;
 }
-
 .unko-speech::after {
-  content: '';
-  position: absolute;
-  top: -10px;
   left: 20px;
-  right: auto;
-  bottom: auto;
   transform: none;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #fff;
 }
-
 @media (hover: hover) and (pointer: fine) {
   .game-card:hover .unko-speech {
-    opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
-
 .game-card.card-active .unko-speech {
-  opacity: 1;
   transform: translateY(0) scale(1);
 }
 
@@ -1322,6 +1089,26 @@ footer {
   opacity: 0.6;
 }
 
+.footer-privacy {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.7;
+  font-size: 0.8em;
+  margin-right: 1em;
+}
+
+/* ゲームカード別の背景 */
+.placeholder-art--drive { background: linear-gradient(135deg, #f5e6c8, #ff9933, #cc6600); }
+.placeholder-art--analysis { background: linear-gradient(135deg, #1a0533, #c471ed); }
+.placeholder-art--escape { background: linear-gradient(135deg, #d8c8f0, #b8a0e0); }
+.placeholder-art--kanikani { background: linear-gradient(135deg, #ffb6c1, #ff69b4); }
+
+/* ゲームカードのサブタイトル */
+.game-card__subtitle {
+  font-size: 0.6em;
+  opacity: 0.8;
+}
+
 /* ========================================
    フェードインアニメーション
    ======================================== */
@@ -1551,6 +1338,14 @@ footer {
   }
 }
 
+.proto-main {
+  padding-top: 50px;
+}
+
+.placeholder-emoji {
+  font-size: 64px;
+}
+
 /* ========================================
    トップに戻るリンク（試作品ページ等）
    ======================================== */
@@ -1569,4 +1364,29 @@ footer {
 
 .back-to-top-link:hover {
   color: #fff;
+}
+
+/* ========================================
+   アクセシビリティ: アニメーション低減
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .loading-screen {
+    transition: none;
+  }
+
+  .fade-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

@@ -2,12 +2,6 @@
    カオス配信シミュレーター - style.css
    ======================================== */
 
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 :root {
   --green: #00ff41;
   --magenta: #ff00ff;

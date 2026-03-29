@@ -21,15 +21,15 @@
 <body>
 
   <!-- 固定ナビゲーション -->
-  <nav class="page-fixed-nav" style="position:fixed;top:0;left:0;width:100%;display:flex;justify-content:center;gap:0.5rem;padding:0.6rem 1rem;background:rgba(13,2,33,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);z-index:1000;">
-    <a href="index.html" style="color:#b0a8c8;text-decoration:none;font-size:0.85rem;padding:0.3rem 0.8rem;border-radius:999px;transition:all 0.3s;">トップ</a>
-    <a href="index.html#games" style="color:#b0a8c8;text-decoration:none;font-size:0.85rem;padding:0.3rem 0.8rem;border-radius:999px;transition:all 0.3s;">ゲーム</a>
-    <a href="characters.html" style="color:#b0a8c8;text-decoration:none;font-size:0.85rem;padding:0.3rem 0.8rem;border-radius:999px;transition:all 0.3s;">キャラクター</a>
-    <a href="achievements.html" style="color:#b0a8c8;text-decoration:none;font-size:0.85rem;padding:0.3rem 0.8rem;border-radius:999px;transition:all 0.3s;">実績</a>
-    <a href="index.html#contact" style="color:#b0a8c8;text-decoration:none;font-size:0.85rem;padding:0.3rem 0.8rem;border-radius:999px;transition:all 0.3s;">つながる</a>
+  <nav class="fixed-nav visible">
+    <a href="index.html" class="fixed-nav__link">トップ</a>
+    <a href="index.html#games" class="fixed-nav__link">ゲーム</a>
+    <a href="characters.html" class="fixed-nav__link">キャラクター</a>
+    <a href="achievements.html" class="fixed-nav__link">実績</a>
+    <a href="index.html#contact" class="fixed-nav__link">つながる</a>
   </nav>
 
-  <main style="padding-top: 50px;">
+  <main class="proto-main">
     <section id="prototypes">
       <h2 class="section-title fade-in">試作品</h2>
       <p class="section-subtitle fade-in">まだ作りかけだけど遊べるよ</p>
@@ -40,7 +40,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #1a0a3e, #ffd700);">
-              <span style="font-size:64px;">👤</span>
+              <span class="placeholder-emoji">👤</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -59,7 +59,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #ffe066, #ff9933);">
-              <span style="font-size:64px;">🎉</span>
+              <span class="placeholder-emoji">🎉</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -78,7 +78,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #2d5016, #4a8c2a);">
-              <span style="font-size:64px;">⚔️</span>
+              <span class="placeholder-emoji">⚔️</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -97,7 +97,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #e8d5f5, #c9a5e0);">
-              <span style="font-size:64px;">👗</span>
+              <span class="placeholder-emoji">👗</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -116,7 +116,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #1a0a2e, #4a0e8f);">
-              <span style="font-size:64px;">🤝</span>
+              <span class="placeholder-emoji">🤝</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -135,7 +135,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #1a0a3e, #b388ff);">
-              <span style="font-size:64px;">🗼</span>
+              <span class="placeholder-emoji">🗼</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -154,7 +154,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #0a2e0a, #76ff03);">
-              <span style="font-size:64px;">🧬</span>
+              <span class="placeholder-emoji">🧬</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -173,7 +173,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #7c4dff, #e0c3ff);">
-              <span style="font-size:64px;">🥚</span>
+              <span class="placeholder-emoji">🥚</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -192,7 +192,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #0a0520, #7c3aed, #60a5fa);">
-              <span style="font-size:64px;">💫</span>
+              <span class="placeholder-emoji">💫</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -211,7 +211,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #00bfff, #ff69b4);">
-              <span style="font-size:64px;">📊</span>
+              <span class="placeholder-emoji">📊</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -230,7 +230,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #ff69b4, #8a2be2);">
-              <span style="font-size:64px;">🃏</span>
+              <span class="placeholder-emoji">🃏</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -249,7 +249,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #ff69b4, #ffb7c5);">
-              <span style="font-size:64px;">🌸</span>
+              <span class="placeholder-emoji">🌸</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -268,7 +268,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #1a0a3e, #60a5fa);">
-              <span style="font-size:64px;">☄️</span>
+              <span class="placeholder-emoji">☄️</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -287,7 +287,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #0a0a2e, #ffd700);">
-              <span style="font-size:64px;">👑</span>
+              <span class="placeholder-emoji">👑</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -306,7 +306,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #0a0a0a, #00ff41, #ff00ff);">
-              <span style="font-size:64px;">📡</span>
+              <span class="placeholder-emoji">📡</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -325,8 +325,8 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #8B4513, #d4a050, #f5d6b8);">
-              <img src="games/unko-cone/unko-char.png" alt="うんちキャラ" class="card-chara card-chara--unko">
-              <div class="unko-speech">僕をお食べ！</div>
+              <img src="games/unko-cone/unko-char.png" alt="うんちキャラ" class="card-chara card-chara--popup card-chara--unko">
+              <div class="card-speech card-speech--arrow-up unko-speech">僕をお食べ！</div>
             </div>
           </div>
           <div class="game-card__body">
@@ -345,7 +345,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #0d0221, #7c3aed, #e879f9);">
-              <span style="font-size:64px;">🔮</span>
+              <span class="placeholder-emoji">🔮</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -383,7 +383,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #0a1628, #1a3a6e);">
-              <span style="font-size:64px;">🔢</span>
+              <span class="placeholder-emoji">🔢</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -402,7 +402,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #1a1a2e, #3a3a5c);">
-              <span style="font-size:64px;">💣</span>
+              <span class="placeholder-emoji">💣</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -421,7 +421,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #2a1a0a, #4a3a2a);">
-              <span style="font-size:64px;">⚫⚪</span>
+              <span class="placeholder-emoji">⚫⚪</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -440,7 +440,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #4a1942, #c24e00);">
-              <span style="font-size:64px;">🧩</span>
+              <span class="placeholder-emoji">🧩</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -459,7 +459,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #0d0221, #7c3aed, #ffd700);">
-              <span style="font-size:64px;">👤</span>
+              <span class="placeholder-emoji">👤</span>
             </div>
           </div>
           <div class="game-card__body">
@@ -478,7 +478,7 @@
         <article class="game-card fade-in">
           <div class="game-card__image">
             <div class="placeholder-art" style="background: linear-gradient(135deg, #169b62, #fff, #ff883e);">
-              <span style="font-size:64px;">☘️</span>
+              <span class="placeholder-emoji">☘️</span>
             </div>
           </div>
           <div class="game-card__body">

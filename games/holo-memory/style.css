@@ -3,12 +3,6 @@
    シュールゲームス - Holographic Edition
    ============================== */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 :root {
   --holo-blue: #00b8ff;
   --holo-pink: #e84080;
