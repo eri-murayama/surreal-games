@@ -235,8 +235,10 @@ body {
 }
 
 .story-poop-img {
-  width: 500px;
-  height: 500px;
+  width: 1500px;
+  height: 1500px;
+  max-width: 90vw;
+  max-height: 60vh;
   object-fit: contain;
 }
 
@@ -259,6 +261,10 @@ body {
   opacity: 0;
   transform: scale(0.8);
   transition: opacity 0.4s, transform 0.4s;
+}
+
+#story-text {
+  white-space: pre-wrap;
 }
 
 .story-bubble.visible {
@@ -391,23 +397,31 @@ body {
 }
 
 /* ===== Result Screen ===== */
+#result-screen {
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0;
+}
+
 .result-container {
   text-align: center;
-  padding: 30px 20px;
+  padding: 20px 20px;
   max-width: 420px;
+  width: 100%;
 }
 
 .result-icon {
-  font-size: 3rem;
-  margin-bottom: 8px;
+  font-size: 2.5rem;
+  margin-bottom: 4px;
   animation: iconBounce 2s infinite ease-in-out;
 }
 
 .result-title {
   font-family: 'Dela Gothic One', sans-serif;
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: var(--brown-light);
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .result-stats {
@@ -469,7 +483,9 @@ body {
 .character-result-img {
   width: 60px;
   height: 60px;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center 20%;
+  transform: scale(1.4);
   border-radius: 50%;
   border: 2px solid var(--gold);
 }
@@ -537,8 +553,8 @@ body {
   }
 
   .story-poop-img {
-    width: 360px;
-    height: 360px;
+    width: 1080px;
+    height: 1080px;
   }
 
   .story-container {
@@ -552,32 +568,32 @@ body {
   }
 
   .result-container {
-    padding: 16px 12px;
+    padding: 10px 12px;
   }
 
   .result-icon {
-    font-size: 2rem;
-    margin-bottom: 4px;
+    font-size: 1.8rem;
+    margin-bottom: 2px;
   }
 
   .result-title {
-    font-size: 1.5rem;
-    margin-bottom: 12px;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
   }
 
   .result-stats {
-    padding: 12px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
   }
 
   .result-rank {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
   }
 
   .character-comment-box {
     padding: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .character-text {
@@ -618,8 +634,8 @@ body {
   }
 
   .story-poop-img {
-    width: 280px;
-    height: 280px;
+    width: 840px;
+    height: 840px;
   }
 
   .story-bubble {
@@ -640,7 +656,7 @@ body {
   }
 
   .story-poop-img {
-    width: 500px;
-    height: 500px;
+    width: 1500px;
+    height: 1500px;
   }
 }

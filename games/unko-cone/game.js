@@ -35,46 +35,41 @@
 
   // ---- 主人公のリアクション ----
   const HERO_CATCH = [
-    'よっしゃ！', 'ナイスキャッチ！', 'うまい！',
-    'のってきた！', 'まだまだ！', 'いけるいける！',
-    'うん…ソフトクリームの匂いがする！', 'もっとちょうだい！',
-    '最高の気分！', 'うんち…じゃなくてソフトクリーム！'
+    'いいね～', '過去にやってた？', 'エクスタシー！',
+    'もっとくれよ！', 'ハイになっちまうぜえ？', 'きたきたきたあ！',
+    'ふうううう！', 'いい匂い！', 'この形！この艶！',
+    'これだからたまんねえよ！'
   ];
 
   const HERO_MILESTONE = [
-    '5段！ソフトクリームっぽくなってきた！',
-    '10段！もはや芸術だね！',
-    '15段！東京タワー超えた！',
-    '20段！宇宙まで届け！',
-    '25段！神の領域だ！'
+    '５段！ひよっこうんコーン技師！',
+    '１０段！うんコーンバイトリーダー！',
+    '１５段！よっ、うんコーン部長！',
+    '２０段！イケメンうんコーン実業家！',
+    '２５段！うんコーンタワー建設！',
+    '３０段！神のうんコーン生誕！',
+    '３５段！宇宙を超えたうんコーン！'
   ];
 
   // ---- 主人公のリザルトコメント ----
   const HERO_COMMENTS = {
     terrible: [
-      'え…{score}点？\nうん…ソフトクリームだよね、あれ。\n絶対ソフトクリームだったのに…。',
-      '{stack}段しか積めなかった…。\nもっとうんち…ソフトクリームが\n欲しかったのに！',
-      '{score}点かぁ…。\nソフトクリーム、全然キャッチできなかった。\n…あ、今ソフトクリームって言ったよね？',
+      'え…{stack}段？そっか…そうだよね、君みたいな人間にこんな難しいことできるわけないか…。僕こそごめんね…謝るよ。',
     ],
     bad: [
-      '{stack}段！まだまだだなぁ。\nもっとうん…ソフトクリームを\n積み上げたかった！',
-      '{score}点か。\nソフトクリームの匂い、\nもっと嗅ぎたかったなぁ…。',
-      'うんち…じゃなくてソフトクリーム{stack}段！\n次はもっといけるはず！',
+      '{stack}段か。うんうんうん大丈夫大丈夫！生まれながらにして劣っている人っているもんね。気にしないで。もう休んでいいよ！',
     ],
     ok: [
-      '{stack}段！いい感じ！\nこのソフトクリーム…じゃなくて\nうん…ソフトクリームタワー、最高！',
-      '{score}点！なかなかだね！\nもっとソフトクリーム積みたいなぁ。\nあの形、たまらないよね…。',
-      '{stack}段も積めた！\nうんち…ソフトクリームの山、\n見てるだけで幸せだよ！',
+      '{stack}段！わあ、君なりに頑張ってくれたんだね。形はきっったないけど。でも嬉しいよ。ありがとうね。',
     ],
     good: [
-      '{stack}段！すごくない！？\nこのソフトクリームタワー、\n世界一だよ絶対！…たぶん！',
-      '{score}点！やったぁ！\nうんち…ソフトクリームのキャッチ、\n僕って天才かも！',
-      '{stack}段のソフトクリームタワー！\nもう食べき…いや、見切れないよ！\n最高の眺めだなぁ！',
+      '{stack}段！？！？！？きみ、きみきみ、す、すす、すごいよ！わああ、拝みたい！君に入信したい！！',
     ],
     amazing: [
-      '{stack}段！？\nこれもうソフトクリームの神だよね！？\n…あ、今うんちって言いそうに\nなったけど言ってないからね！',
-      '{score}点…！\nソフトクリームへの愛が止まらない！\nうんち…違う！ソフトクリーム！\nソフトクリームが大好きなだけ！',
-      '{stack}段の超巨大ソフトクリーム！\nこれはもう芸術だよ！\nうんちって言った人いる？\n僕は言ってないよ！絶対！',
+      '{stack}段！？！？！？きみ、きみきみ、す、すす、すごいよ！わああ、拝みたい！君に入信したい！！',
+    ],
+    godlike: [
+      '{stack}段…。そうだね、君にだけ教えよう…。僕はうんちなんだ…。共にうんちになろう。',
     ]
   };
 
@@ -84,9 +79,9 @@
 
   // ---- Story screen logic ----
   const STORY_LINES = [
-    'やあ、僕はうん…チョコ味のソフトクリーム！',
-    'お腹を空かせた貧しい君たちに食べてもらいたい…。そんな気持ちでたっくさんのソフトクリームを作ったよ！',
-    '今から踏ん張ってねじり出していくから残さずキャッチしてね！'
+    'やあ、僕はうん…\nチョコ味のソフトクリーム！',
+    'お腹を空かせた貧しい君たちに\n食べてもらいたい…。\nそんな気持ちでたっくさんの\nソフトクリームを作ったよ！',
+    '今から踏ん張って\nねじり出していくから\n残さずキャッチしてね！'
   ];
   let storyStep = 0;
 
@@ -306,12 +301,14 @@
     setTimeout(() => comboText.classList.remove('active'), 1000);
   }
 
+  let nishidaTimer = null;
   function showNishidaComment(text) {
+    if (nishidaTimer) clearTimeout(nishidaTimer);
     nishidaComment.textContent = text;
     nishidaComment.classList.remove('active');
     void nishidaComment.offsetWidth;
     nishidaComment.classList.add('active');
-    setTimeout(() => nishidaComment.classList.remove('active'), 1500);
+    nishidaTimer = setTimeout(() => nishidaComment.classList.remove('active'), 1500);
   }
 
   // ---- Game Loop ----
@@ -393,9 +390,7 @@
     if (stackCount % 5 === 0) {
       const idx = Math.min(Math.floor(stackCount / 5) - 1, HERO_MILESTONE.length - 1);
       showCombo(HERO_MILESTONE[idx]);
-    } else if (combo >= 3 && combo % 3 === 0) {
-      showCombo('💩×' + combo + ' コンボ！');
-    } else if (Math.random() < 0.25) {
+    } else {
       const msg = HERO_CATCH[Math.floor(Math.random() * HERO_CATCH.length)];
       showNishidaComment(msg);
     }
@@ -473,7 +468,8 @@
 
     // 主人公のコメント
     let tier;
-    if (maxStack >= 25) tier = 'amazing';
+    if (maxStack >= 35) tier = 'godlike';
+    else if (maxStack >= 25) tier = 'amazing';
     else if (maxStack >= 15) tier = 'good';
     else if (maxStack >= 10) tier = 'ok';
     else if (maxStack >= 5) tier = 'bad';
