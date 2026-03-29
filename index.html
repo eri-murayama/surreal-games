@@ -113,13 +113,43 @@
 
       <div class="game-grid">
 
-        <!-- ゲームカード: 黄金の金色ドライバー（NEW） -->
-        <article class="game-card fade-in">
-          <div class="game-card__image">
-            <div class="placeholder-art placeholder-art--drive">
-              <span class="new-badge">NEW</span>
-              <img src="games/drive/yoshinori.png" alt="ヨシノリ" class="card-chara card-chara--popup card-chara--yoshinori">
-              <div class="card-speech yoshinori-speech">勝つべくして勝つ</div>
+        <!-- ゲームカード: うんコーンキャッチャー（NEW） -->
+        <article class="game-card game-card--flip fade-in">
+          <div class="game-card__image card-flip-zone">
+            <div class="card-flip-inner">
+              <div class="card-flip-front placeholder-art" style="background: linear-gradient(135deg, #8B4513, #d4a050, #f5d6b8);">
+                <span class="new-badge">NEW</span>
+                <img src="games/unko-cone/unko-char.png" alt="うんちキャラ" class="card-chara card-chara--unko">
+              </div>
+              <div class="card-flip-back" style="background: linear-gradient(135deg, #8B4513, #d4a050, #f5d6b8);">
+                <img src="games/unko-cone/unko-char.png" alt="うんちキャラ" class="card-flip-back__img card-flip-back__img--unko">
+                <div class="card-flip-back__speech unko-speech">僕をお食べ！</div>
+              </div>
+            </div>
+          </div>
+          <div class="game-card__body">
+            <h3 class="game-card__title">うんコーンキャッチャー</h3>
+            <p class="game-card__desc">空から落ちてくるうん…ソフトクリームをキャッチ！何段積めるかな？</p>
+            <div class="store-links">
+              <a href="games/unko-cone/index.html" class="store-btn" aria-label="ブラウザでプレイ">
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                ブラウザでプレイ
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ゲームカード: 黄金の金色ドライバー -->
+        <article class="game-card game-card--flip fade-in">
+          <div class="game-card__image card-flip-zone">
+            <div class="card-flip-inner">
+              <div class="card-flip-front placeholder-art placeholder-art--drive">
+                <img src="games/drive/yoshinori.png" alt="ヨシノリ" class="card-chara card-chara--yoshinori">
+              </div>
+              <div class="card-flip-back placeholder-art--drive">
+                <img src="games/drive/yoshinori.png" alt="ヨシノリ" class="card-flip-back__img card-flip-back__img--yoshinori">
+                <div class="card-flip-back__speech yoshinori-speech">勝つべくして勝つ</div>
+              </div>
             </div>
           </div>
           <div class="game-card__body">
@@ -135,11 +165,16 @@
         </article>
 
         <!-- ゲームカード 2: 経営分析ゲーム -->
-        <article class="game-card fade-in">
-          <div class="game-card__image">
-            <div class="placeholder-art placeholder-art--analysis">
-              <img src="assets/images/atsushi.png" alt="篤" class="card-chara card-chara--popup card-chara--atsushi">
-              <div class="card-speech card-speech--arrow-up atsushi-speech">数字に愛されるオレ……！！</div>
+        <article class="game-card game-card--flip fade-in">
+          <div class="game-card__image card-flip-zone">
+            <div class="card-flip-inner">
+              <div class="card-flip-front placeholder-art placeholder-art--analysis">
+                <img src="assets/images/atsushi.png" alt="篤" class="card-chara card-chara--atsushi">
+              </div>
+              <div class="card-flip-back placeholder-art--analysis">
+                <img src="assets/images/atsushi.png" alt="篤" class="card-flip-back__img card-flip-back__img--atsushi">
+                <div class="card-flip-back__speech atsushi-speech">数字に愛されるオレ……！！</div>
+              </div>
             </div>
           </div>
           <div class="game-card__body">
@@ -155,11 +190,16 @@
         </article>
 
         <!-- ゲームカード 3: かわいい部屋からの脱出 -->
-        <article class="game-card fade-in">
-          <div class="game-card__image">
-            <div class="placeholder-art placeholder-art--escape">
-              <img src="assets/images/illust9.png" alt="脱出ゲームキャラ" class="card-chara card-chara--popup card-chara--sakuranbo">
-              <div class="card-speech sakuranbo-speech">ヴぅおおおお！！</div>
+        <article class="game-card game-card--flip fade-in">
+          <div class="game-card__image card-flip-zone">
+            <div class="card-flip-inner">
+              <div class="card-flip-front placeholder-art placeholder-art--escape">
+                <img src="assets/images/illust9.png" alt="脱出ゲームキャラ" class="card-chara card-chara--sakuranbo">
+              </div>
+              <div class="card-flip-back placeholder-art--escape">
+                <img src="assets/images/illust9.png" alt="脱出ゲームキャラ" class="card-flip-back__img card-flip-back__img--sakuranbo">
+                <div class="card-flip-back__speech sakuranbo-speech">ヴぅおおおお！！</div>
+              </div>
             </div>
           </div>
           <div class="game-card__body">
@@ -175,11 +215,16 @@
         </article>
 
         <!-- ゲームカード 4: かにかにパニック！ -->
-        <article class="game-card fade-in">
-          <div class="game-card__image">
-            <div class="placeholder-art placeholder-art--kanikani">
-              <img src="assets/images/kanikani.png" alt="かにかに" class="card-chara card-chara--popup card-chara--kanikani">
-              <div class="card-speech kanikani-speech">よう、はさみがないと何もできない愚かな動物！</div>
+        <article class="game-card game-card--flip fade-in">
+          <div class="game-card__image card-flip-zone">
+            <div class="card-flip-inner">
+              <div class="card-flip-front placeholder-art placeholder-art--kanikani">
+                <img src="assets/images/kanikani.png" alt="かにかに" class="card-chara card-chara--kanikani">
+              </div>
+              <div class="card-flip-back placeholder-art--kanikani">
+                <img src="assets/images/kanikani.png" alt="かにかに" class="card-flip-back__img card-flip-back__img--kanikani">
+                <div class="card-flip-back__speech kanikani-speech">よう、はさみがないと何もできない愚かな動物！</div>
+              </div>
             </div>
           </div>
           <div class="game-card__body">

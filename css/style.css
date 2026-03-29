@@ -461,7 +461,7 @@ section {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .game-card:hover {
+  .game-card:not(.game-card--flip):hover {
     transform: perspective(800px) rotateY(-3deg) rotateX(2deg) translateY(-8px);
     box-shadow:
       0 20px 40px rgba(0, 0, 0, 0.3),
@@ -469,7 +469,7 @@ section {
   }
 }
 
-.game-card.card-active {
+.game-card:not(.game-card--flip).card-active {
   transform: perspective(800px) rotateY(-3deg) rotateX(2deg) translateY(-8px);
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.3),
@@ -523,32 +523,6 @@ section {
 
 .game-card.card-active .card-chara {
   transform: scale(1.15) rotate(5deg);
-}
-
-/* ===== キャラカード共通: ホバーで飛び出し ===== */
-.card-chara--popup {
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  z-index: 10;
-  position: relative;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:has(.card-chara--popup) {
-    overflow: visible;
-  }
-  .game-card:has(.card-chara--popup) .game-card__image {
-    overflow: visible;
-  }
-  .game-card:has(.card-chara--popup) .placeholder-art {
-    overflow: visible;
-    position: relative;
-  }
-}
-
-.game-card.card-active:has(.card-chara--popup),
-.game-card.card-active:has(.card-chara--popup) .game-card__image,
-.game-card.card-active:has(.card-chara--popup) .placeholder-art {
-  overflow: visible;
 }
 
 /* ===== 吹き出し共通ベース ===== */
@@ -607,38 +581,129 @@ section {
 /* --- かにかに --- */
 .card-chara--kanikani { /* width はデフォルト55% */ }
 
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .card-chara--kanikani {
-    transform: scale(1.8) translateY(-18%) rotate(8deg);
-    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
-  }
-}
-.game-card.card-active .card-chara--kanikani {
-  transform: scale(1.3) translateY(-10%) rotate(5deg);
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
-}
 .kanikani-speech {
   color: #d63384;
   box-shadow: 0 4px 20px rgba(214, 51, 132, 0.3);
   border-color: #ff69b4;
 }
 
-/* --- 篤 --- */
-.card-chara--atsushi { width: 85%; }
+/* ===== カードフリップ共通 ===== */
+
+/* preserve-3dを壊す原因を無効化 */
+.game-card--flip {
+  overflow: visible;
+  backdrop-filter: none;
+}
+
+/* フリップ領域（画像部分だけ） */
+.card-flip-zone {
+  perspective: 1000px;
+  overflow: visible;
+  aspect-ratio: 16 / 9;
+}
+
+.card-flip-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d;
+}
 
 @media (hover: hover) and (pointer: fine) {
-  .game-card:hover .card-chara--atsushi {
-    transform: scale(1.6) translateY(-15%) rotate(-5deg);
-    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
+  .game-card--flip:hover .card-flip-inner {
+    transform: rotateY(180deg);
   }
 }
-.game-card.card-active .card-chara--atsushi {
-  transform: scale(1.3) translateY(-8%) rotate(-3deg);
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
+.game-card--flip.card-active .card-flip-inner {
+  transform: rotateY(180deg);
 }
+
+.card-flip-front,
+.card-flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card-flip-front {
+  z-index: 2;
+}
+
+.card-flip-back {
+  transform: rotateY(180deg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, hsl(var(--hue, 0), 70%, 15%), hsl(calc(var(--hue, 0) + 60), 80%, 25%));
+  border-radius: 16px 16px 0 0;
+}
+
+.card-flip-back__img {
+  max-width: none;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+  position: absolute;
+}
+
+/* --- 裏面キャラ別位置調整 --- */
+
+/* かにかに: 目のツノ〜口あたりの上半身アップ */
+.card-flip-back__img--kanikani {
+  width: 280%;
+  top: -35%;
+  left: -70%;
+}
+
+/* うんち: 顔が体の上部中央にある */
+.card-flip-back__img--unko {
+  width: 250%;
+  top: -100%;
+  left: -55%;
+}
+
+/* ヨシノリ: 元から上半身アップ構図、帽子〜口元 */
+.card-flip-back__img--yoshinori {
+  width: 220%;
+  top: -90%;
+  left: -60%;
+}
+
+/* 篤: 顔だけの小さい画像、大きめに表示 */
+.card-flip-back__img--atsushi {
+  width: 350%;
+  top: -170%;
+  left: -125%;
+}
+
+/* さくらんぼ: 横長の体、3つの顔が下部に並んでいる */
+.card-flip-back__img--sakuranbo {
+  width: 180%;
+  top: -120%;
+  left: -40%;
+}
+
+.card-flip-back__speech {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 10px 16px;
+  border-radius: 16px;
+  white-space: nowrap;
+  border: 2px solid currentColor;
+  z-index: 20;
+}
+
+/* --- 篤 --- */
+.card-chara--atsushi { width: 85%; }
 .atsushi-speech {
-  top: auto;
-  bottom: -15px;
   color: #7b2ff7;
   box-shadow: 0 4px 20px rgba(123, 47, 247, 0.3);
   border-color: #c471ed;
@@ -646,17 +711,6 @@ section {
 
 /* --- さくらんぼ --- */
 .card-chara--sakuranbo { width: 75%; border-radius: 12px; }
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .card-chara--sakuranbo {
-    transform: scale(1.6) translateY(-12%) rotate(-3deg);
-    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
-  }
-}
-.game-card.card-active .card-chara--sakuranbo {
-  transform: scale(1.3) translateY(-8%) rotate(-2deg);
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
-}
 .sakuranbo-speech {
   color: #8b2252;
   box-shadow: 0 4px 20px rgba(139, 34, 82, 0.3);
@@ -665,17 +719,6 @@ section {
 
 /* --- ヨシノリ --- */
 .card-chara--yoshinori { width: 70%; }
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .card-chara--yoshinori {
-    transform: scale(1.6) translateY(-15%) rotate(5deg);
-    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
-  }
-}
-.game-card.card-active .card-chara--yoshinori {
-  transform: scale(1.3) translateY(-8%) rotate(3deg);
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
-}
 .yoshinori-speech {
   color: #cc3300;
   box-shadow: 0 4px 20px rgba(204, 51, 0, 0.3);
@@ -684,38 +727,10 @@ section {
 
 /* --- うんち --- */
 .card-chara--unko { width: 120%; max-width: none; margin-left: 15%; }
-
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .card-chara--unko {
-    transform: scale(1.6) translateY(-12%) rotate(8deg);
-    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
-  }
-}
-.game-card.card-active .card-chara--unko {
-  transform: scale(1.3) translateY(-10%) rotate(5deg);
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
-}
 .unko-speech {
-  top: auto;
-  bottom: 12px;
-  left: 12px;
-  transform: translateY(10px) scale(0.8);
   color: #8B4513;
-  padding: 8px 14px;
   box-shadow: 0 4px 20px rgba(139, 69, 19, 0.3);
   border-color: #d4a050;
-}
-.unko-speech::after {
-  left: 20px;
-  transform: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover .unko-speech {
-    transform: translateY(0) scale(1);
-  }
-}
-.game-card.card-active .unko-speech {
-  transform: translateY(0) scale(1);
 }
 
 /* NEW バッジ */

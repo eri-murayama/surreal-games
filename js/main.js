@@ -237,7 +237,7 @@ if (logo) {
 // マウス追従3Dティルト（ゲームカード）
 // ========================================
 (function initCardTilt() {
-  var cards = document.querySelectorAll('.game-card');
+  var cards = document.querySelectorAll('.game-card:not(.game-card--flip)');
   cards.forEach(function(card) {
     card.addEventListener('mousemove', function(e) {
       var rect = card.getBoundingClientRect();
@@ -264,21 +264,28 @@ if (logo) {
   // マウスがある端末ではスキップ（PCはCSSホバーで動く）
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  var cards = document.querySelectorAll('.game-card');
+  // 通常カード
+  var cards = document.querySelectorAll('.game-card:not(.card-flip-front)');
   cards.forEach(function(card) {
     var imageArea = card.querySelector('.game-card__image');
     if (!imageArea) return;
 
     imageArea.addEventListener('click', function(e) {
-      // ボタンやリンクのクリックは邪魔しない
       if (e.target.closest('a, button')) return;
-
-      // 他のカードのactiveを外す
       cards.forEach(function(c) {
         if (c !== card) c.classList.remove('card-active');
       });
+      card.classList.toggle('card-active');
+    });
+  });
 
-      // このカードのactiveをトグル
+  // フリップカード
+  var flipCards = document.querySelectorAll('.game-card--flip');
+  flipCards.forEach(function(card) {
+    var flipZone = card.querySelector('.card-flip-zone');
+    if (!flipZone) return;
+    flipZone.addEventListener('click', function(e) {
+      if (e.target.closest('a, button')) return;
       card.classList.toggle('card-active');
     });
   });
