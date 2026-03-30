@@ -117,6 +117,8 @@
     storyStep = 0;
     showScreen(storyScreen);
     showStoryLine();
+    // のほほんBGM開始
+    sg.sound.playBgm('nohohon');
   }
 
   function showStoryLine() {
@@ -139,7 +141,8 @@
     if (storyStep < STORY_LINES.length) {
       showStoryLine();
     } else {
-      // 最後のセリフ後：SE再生してゲーム開始
+      // 最後のセリフ後：のほほんBGM停止→SE再生→ゲーム開始
+      sg.sound.stopBgm();
       playFlushSE();
       setTimeout(() => startGame(), 800);
     }
@@ -365,6 +368,7 @@
 
       // Missed - fell past player
       if (p.y > GAME_H + POOP_SIZE) {
+        sg.sound.play('splat');
         endGame();
         return;
       }
@@ -381,6 +385,22 @@
     // Score: more points for higher stacks
     const pts = 10 + stackCount * 5 + combo * 3;
     score += pts;
+
+    // SE: キャッチ時はボトッ＋おなら、コンボ3以上でブブブー
+    if (combo >= 3) {
+      sg.sound.play('fart_long');
+    } else {
+      sg.sound.play('plop');
+      if (Math.random() < 0.4) {
+        setTimeout(() => sg.sound.play('fart'), 80);
+      }
+    }
+
+    // コンボ5ごとにBGMテンポアップ
+    if (combo > 0 && combo % 5 === 0) {
+      const newSpeed = Math.min(1.0 + combo * 0.05, 1.8);
+      sg.sound.setBgmSpeed(newSpeed);
+    }
 
     // Increase difficulty
     fallSpeed += SPEED_INCREMENT * 0.3;

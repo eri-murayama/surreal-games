@@ -232,6 +232,51 @@
         131, 131, 165, 165, 131, 131, 165, 165,
       ]
     },
+    // のほほん系（うんコーンキャッチャー ストーリー画面）— ゆるくてかわいい自己紹介BGM
+    nohohon: {
+      tempo: 80, key: 'C', wave: 'sine', volume: 0.09,
+      melody: [
+        523, 0, 659, 0, 587, 523, 0, 494,
+        523, 0, 659, 784, 0, 659, 0, 523,
+        440, 0, 523, 0, 494, 440, 0, 392,
+        440, 0, 523, 587, 0, 523, 0, 440,
+      ],
+      bass: [
+        262, 0, 262, 0, 294, 0, 294, 0,
+        262, 0, 262, 0, 330, 0, 262, 0,
+        220, 0, 220, 0, 247, 0, 247, 0,
+        220, 0, 220, 0, 262, 0, 220, 0,
+      ],
+      swing: [
+        1.2, 0.8, 1.2, 0.8, 1.3, 1.0, 0.8, 0.9,
+        1.2, 0.8, 1.0, 1.3, 0.8, 1.0, 0.8, 1.2,
+        1.2, 0.8, 1.2, 0.8, 1.3, 1.0, 0.8, 0.9,
+        1.2, 0.8, 1.0, 1.3, 0.8, 1.0, 0.8, 1.2,
+      ]
+    },
+    // マーチ・行進曲風（うんコーンキャッチャー）— おなら＆うんち音入りハイテンション行進
+    march: {
+      tempo: 140, key: 'C', wave: 'triangle', volume: 0.10,
+      melody: [
+        523, 523, 659, 784, 784, 659, 523, 784,
+        880, 880, 784, 659, 523, 659, 784, 1047,
+        698, 698, 880, 1047, 1047, 880, 698, 880,
+        784, 659, 523, 659, 784, 1047, 880, 784,
+      ],
+      bass: [
+        131, 196, 131, 196, 131, 196, 131, 196,
+        175, 262, 175, 262, 131, 196, 131, 262,
+        175, 262, 175, 262, 196, 294, 196, 294,
+        131, 196, 131, 196, 196, 262, 196, 131,
+      ],
+      // おなら＆うんちパーカッション（0=なし、1=短いおなら、2=ボトッ、3=長いおなら）
+      farts: [
+        0, 0, 0, 1, 0, 0, 2, 0,
+        0, 0, 1, 0, 0, 2, 0, 3,
+        0, 0, 0, 1, 0, 0, 2, 0,
+        1, 0, 0, 2, 0, 1, 0, 3,
+      ]
+    },
     // きらきら・PV風（経営分析ゲーム通常BGM）
     // PV紹介動画のピアノ+スパークルアルペジオ風
     sparkle: {
@@ -335,7 +380,7 @@
     'suisei-puzzle': 'cosmic',
     'tower': 'retro',
     'trivia-king': 'quiz',
-    'unko-cone': 'action',
+    'unko-cone': 'march',
   };
 
   // ===== サウンドシステム（Web Audio API） =====
@@ -511,6 +556,112 @@
             osc2.start(startTime);
             osc2.stop(startTime + 0.3);
             this.bgmNodes.push(osc2);
+          }
+        });
+      }
+
+      // おなら＆うんちパーカッション層（リアル版）
+      if (preset.farts) {
+        preset.farts.forEach((type, i) => {
+          if (!type) return;
+          const st = now + offsets[i];
+          if (type === 1) {
+            // 短いリアルおなら「ブッ」— 唇振動+空気
+            const dur = 0.18;
+            const len = ctx.sampleRate * dur;
+            const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+            const d = buf.getChannelData(0);
+            const tight = 40 + Math.random() * 25;
+            for (let j = 0; j < len; j++) {
+              const tt = j / ctx.sampleRate;
+              const env = Math.min(1, tt / 0.015) * Math.max(0, 1 - tt / dur);
+              const lip = Math.tanh(Math.sin(tt * tight * Math.PI * 2) * 3) * 0.5;
+              const air = (Math.random() * 2 - 1) * 0.2;
+              d[j] = (lip + air) * env * (0.6 + 0.4 * Math.sin(tt * 10 * Math.PI * 2));
+            }
+            const src = ctx.createBufferSource();
+            src.buffer = buf;
+            const flt = ctx.createBiquadFilter();
+            flt.type = 'lowpass';
+            flt.frequency.value = 300;
+            flt.Q.value = 2;
+            const g = ctx.createGain();
+            g.gain.value = vol * 4;
+            src.connect(flt);
+            flt.connect(g);
+            g.connect(bgmDest);
+            src.start(st);
+            src.stop(st + dur);
+            this.bgmNodes.push(src);
+          } else if (type === 2) {
+            // リアルうんち落下「ボトッ」— 水ポチャン+泡
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(350, st);
+            osc.frequency.exponentialRampToValueAtTime(70, st + 0.08);
+            g.gain.setValueAtTime(vol * 5, st);
+            g.gain.exponentialRampToValueAtTime(0.001, st + 0.1);
+            osc.connect(g);
+            g.connect(bgmDest);
+            osc.start(st);
+            osc.stop(st + 0.1);
+            this.bgmNodes.push(osc);
+            // 泡（FM合成ブクッ）
+            const bOsc = ctx.createOscillator();
+            const bMod = ctx.createOscillator();
+            const bModG = ctx.createGain();
+            const bG = ctx.createGain();
+            bMod.frequency.value = 22;
+            bModG.gain.value = 60;
+            bMod.connect(bModG);
+            bModG.connect(bOsc.frequency);
+            bOsc.type = 'sine';
+            bOsc.frequency.setValueAtTime(120, st + 0.04);
+            bOsc.frequency.exponentialRampToValueAtTime(50, st + 0.15);
+            bG.gain.setValueAtTime(vol * 3, st + 0.04);
+            bG.gain.exponentialRampToValueAtTime(0.001, st + 0.18);
+            bOsc.connect(bG);
+            bG.connect(bgmDest);
+            bMod.start(st + 0.04);
+            bOsc.start(st + 0.04);
+            bMod.stop(st + 0.18);
+            bOsc.stop(st + 0.18);
+            this.bgmNodes.push(bOsc);
+            this.bgmNodes.push(bMod);
+          } else if (type === 3) {
+            // リアル長おなら「ブブブブー」— 音程変化+断続震え
+            const dur = 0.4;
+            const len = ctx.sampleRate * dur;
+            const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+            const d = buf.getChannelData(0);
+            const bp = 32 + Math.random() * 15;
+            for (let j = 0; j < len; j++) {
+              const tt = j / ctx.sampleRate;
+              const pitch = bp + tt * 30 + Math.sin(tt * 4) * 6;
+              const stut = 0.3 + 0.7 * Math.abs(Math.sin(tt * 10 * Math.PI * 2));
+              const env = Math.min(1, tt / 0.03) * Math.max(0, 1 - Math.pow(tt / dur, 2)) * stut;
+              const lip = Math.tanh(Math.sin(tt * pitch * Math.PI * 2) * 4) * 0.4;
+              const sub = Math.sin(tt * pitch * 0.5 * Math.PI * 2) * 0.25;
+              const air = (Math.random() * 2 - 1) * (0.1 + tt * 0.25);
+              d[j] = (lip + sub + air) * env;
+            }
+            const src = ctx.createBufferSource();
+            src.buffer = buf;
+            const flt = ctx.createBiquadFilter();
+            flt.type = 'lowpass';
+            flt.frequency.setValueAtTime(250, st);
+            flt.frequency.linearRampToValueAtTime(400, st + 0.25);
+            flt.frequency.linearRampToValueAtTime(160, st + dur);
+            flt.Q.value = 2.5;
+            const g = ctx.createGain();
+            g.gain.value = vol * 4.5;
+            src.connect(flt);
+            flt.connect(g);
+            g.connect(bgmDest);
+            src.start(st);
+            src.stop(st + dur);
+            this.bgmNodes.push(src);
           }
         });
       }
@@ -965,6 +1116,225 @@
             osc.start(now + i * 0.06);
             osc.stop(now + i * 0.06 + 0.35);
           });
+          break;
+        }
+        case 'fart': {
+          // ブッ！ — リアルおなら（唇振動シミュレーション＋空気ノイズ＋共鳴）
+          this._duckBgm(0.3);
+          const fDur = 0.3;
+          const fLen = ctx.sampleRate * fDur;
+          const fBuf = ctx.createBuffer(1, fLen, ctx.sampleRate);
+          const fd = fBuf.getChannelData(0);
+          // ランダムな「唇の締まり具合」で毎回違う音に
+          const tightness = 40 + Math.random() * 30; // 基本振動周波数
+          const flutter = 8 + Math.random() * 10;    // ブルブル震え速度
+          for (let i = 0; i < fLen; i++) {
+            const t = i / ctx.sampleRate;
+            // エンベロープ：急に始まって途中で膨らんで消える
+            const attack = Math.min(1, t / 0.02);
+            const decay = Math.max(0, 1 - (t - 0.05) / (fDur - 0.05));
+            const env = attack * decay * (0.6 + 0.4 * Math.sin(t * flutter * Math.PI * 2));
+            // 唇振動（非線形クリッピングでブチブチ感）
+            const lip = Math.tanh(Math.sin(t * tightness * Math.PI * 2) * 3) * 0.5;
+            // 空気の乱流ノイズ
+            const air = (Math.random() * 2 - 1) * 0.25;
+            // 低音の共鳴（腸の共鳴管シミュレーション）
+            const resonance = Math.sin(t * (tightness * 0.5) * Math.PI * 2) * 0.3;
+            // 高調波（ビリビリ感）
+            const harmonic = Math.sin(t * tightness * 3 * Math.PI * 2) * 0.1 * decay;
+            fd[i] = (lip + air + resonance + harmonic) * env;
+          }
+          const fSrc = ctx.createBufferSource();
+          fSrc.buffer = fBuf;
+          // ローパス＋バンドパスのダブルフィルタでこもった感じに
+          const fLp = ctx.createBiquadFilter();
+          fLp.type = 'lowpass';
+          fLp.frequency.setValueAtTime(350, now);
+          fLp.frequency.linearRampToValueAtTime(200, now + fDur);
+          fLp.Q.value = 2;
+          const fBp = ctx.createBiquadFilter();
+          fBp.type = 'bandpass';
+          fBp.frequency.value = 120;
+          fBp.Q.value = 1.5;
+          const fG = ctx.createGain();
+          fG.gain.value = this.volume * 2.0;
+          fSrc.connect(fLp);
+          fLp.connect(fG);
+          // バンドパスを並列で混ぜる（共鳴感強化）
+          const fSrc2 = ctx.createBufferSource();
+          fSrc2.buffer = fBuf;
+          const fG2 = ctx.createGain();
+          fG2.gain.value = this.volume * 1.0;
+          fSrc2.connect(fBp);
+          fBp.connect(fG2);
+          fG.connect(ctx.destination);
+          fG2.connect(ctx.destination);
+          fSrc.start(now);
+          fSrc.stop(now + fDur);
+          fSrc2.start(now);
+          fSrc2.stop(now + fDur);
+          break;
+        }
+        case 'fart_long': {
+          // ブブブブブーーッ！ — リアル長おなら（音程変化＋途切れ＋加速）
+          this._duckBgm(0.6);
+          const flDur = 0.7;
+          const flLen = ctx.sampleRate * flDur;
+          const flBuf = ctx.createBuffer(1, flLen, ctx.sampleRate);
+          const fld = flBuf.getChannelData(0);
+          const basePitch = 35 + Math.random() * 20;
+          for (let i = 0; i < flLen; i++) {
+            const t = i / ctx.sampleRate;
+            // 徐々に音程が上がって最後にキュッと締まる
+            const pitchCurve = basePitch + t * 40 + Math.sin(t * 5) * 8;
+            // 断続的な震え（途切れ途切れ感）
+            const stutter = 0.3 + 0.7 * Math.abs(Math.sin(t * 12 * Math.PI * 2));
+            // エンベロープ：ゆっくり始まって盛り上がって急に切れる
+            const env = Math.min(1, t / 0.05) * Math.max(0, 1 - Math.pow((t - 0.5) / 0.2, 4)) * stutter;
+            // 唇振動（歪みあり）
+            const lip = Math.tanh(Math.sin(t * pitchCurve * Math.PI * 2) * 4) * 0.4;
+            // サブハーモニクス（ドロドロ感）
+            const sub = Math.sin(t * pitchCurve * 0.5 * Math.PI * 2) * 0.3;
+            // 空気ノイズ（後半増加）
+            const air = (Math.random() * 2 - 1) * (0.15 + t * 0.3);
+            // バブル感（ブクブク）
+            const bubble = Math.sin(t * 7 * Math.PI * 2) * Math.sin(t * pitchCurve * 1.5 * Math.PI * 2) * 0.15;
+            fld[i] = (lip + sub + air + bubble) * env;
+          }
+          const flSrc = ctx.createBufferSource();
+          flSrc.buffer = flBuf;
+          const flLp = ctx.createBiquadFilter();
+          flLp.type = 'lowpass';
+          flLp.frequency.setValueAtTime(300, now);
+          flLp.frequency.linearRampToValueAtTime(500, now + 0.4);
+          flLp.frequency.linearRampToValueAtTime(180, now + flDur);
+          flLp.Q.value = 3;
+          const flG = ctx.createGain();
+          flG.gain.value = this.volume * 2.5;
+          flSrc.connect(flLp);
+          flLp.connect(flG);
+          flG.connect(ctx.destination);
+          flSrc.start(now);
+          flSrc.stop(now + flDur);
+          break;
+        }
+        case 'plop': {
+          // ボトッ！ — リアルうんち着弾音（水面ポチャン＋泡＋衝撃）
+          // 1) 水滴インパクト（ポチャッ）
+          const plOsc1 = ctx.createOscillator();
+          const plG1 = ctx.createGain();
+          plOsc1.type = 'sine';
+          plOsc1.frequency.setValueAtTime(400, now);
+          plOsc1.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+          plG1.gain.setValueAtTime(this.volume * 1.2, now);
+          plG1.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          plOsc1.connect(plG1);
+          plG1.connect(ctx.destination);
+          plOsc1.start(now);
+          plOsc1.stop(now + 0.1);
+          // 2) 泡立ち（ブクッ）— FM合成で気泡感
+          const plOsc2 = ctx.createOscillator();
+          const plMod = ctx.createOscillator();
+          const plModG = ctx.createGain();
+          const plG2 = ctx.createGain();
+          plMod.frequency.value = 25;
+          plModG.gain.value = 80;
+          plMod.connect(plModG);
+          plModG.connect(plOsc2.frequency);
+          plOsc2.type = 'sine';
+          plOsc2.frequency.setValueAtTime(150, now + 0.05);
+          plOsc2.frequency.exponentialRampToValueAtTime(60, now + 0.2);
+          plG2.gain.setValueAtTime(this.volume * 0.8, now + 0.05);
+          plG2.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          plOsc2.connect(plG2);
+          plG2.connect(ctx.destination);
+          plMod.start(now + 0.05);
+          plOsc2.start(now + 0.05);
+          plMod.stop(now + 0.25);
+          plOsc2.stop(now + 0.25);
+          // 3) 水しぶきノイズ
+          const plBufLen = ctx.sampleRate * 0.06;
+          const plBuf = ctx.createBuffer(1, plBufLen, ctx.sampleRate);
+          const plD = plBuf.getChannelData(0);
+          for (let i = 0; i < plBufLen; i++) {
+            const t = i / ctx.sampleRate;
+            plD[i] = (Math.random() * 2 - 1) * Math.max(0, 1 - t / 0.06) * 0.8;
+          }
+          const plNoise = ctx.createBufferSource();
+          plNoise.buffer = plBuf;
+          const plFlt = ctx.createBiquadFilter();
+          plFlt.type = 'bandpass';
+          plFlt.frequency.value = 2000;
+          plFlt.Q.value = 0.5;
+          const plNG = ctx.createGain();
+          plNG.gain.value = this.volume * 0.6;
+          plNoise.connect(plFlt);
+          plFlt.connect(plNG);
+          plNG.connect(ctx.destination);
+          plNoise.start(now);
+          plNoise.stop(now + 0.06);
+          break;
+        }
+        case 'splat': {
+          // ビチャッ！ — リアルうんち地面激突（ベチャ＋飛散＋残響）
+          this._duckBgm(0.5);
+          // 1) 衝突インパクト（ドベシャッ）
+          const spLen = ctx.sampleRate * 0.4;
+          const spBuf = ctx.createBuffer(1, spLen, ctx.sampleRate);
+          const spD = spBuf.getChannelData(0);
+          for (let i = 0; i < spLen; i++) {
+            const t = i / ctx.sampleRate;
+            const impact = Math.max(0, 1 - t / 0.03) * 0.8;
+            const spread = Math.max(0, (t - 0.02) / 0.1) * Math.max(0, 1 - t / 0.4);
+            const env = impact + spread;
+            // 重い着弾感
+            const thud = Math.sin(t * 60 * Math.PI * 2) * Math.max(0, 1 - t / 0.1) * 0.5;
+            // 飛び散り（高周波ノイズの粒々感）
+            const splatter = (Math.random() * 2 - 1) * (0.4 + 0.3 * Math.sin(t * 20));
+            // ベチャッのネバネバ感
+            const sticky = Math.sin(t * 150 * Math.PI * 2 * (1 - t * 1.5)) * spread * 0.3;
+            spD[i] = (thud + splatter + sticky) * env;
+          }
+          const spSrc = ctx.createBufferSource();
+          spSrc.buffer = spBuf;
+          const spLp = ctx.createBiquadFilter();
+          spLp.type = 'lowpass';
+          spLp.frequency.setValueAtTime(3000, now);
+          spLp.frequency.exponentialRampToValueAtTime(300, now + 0.3);
+          const spG = ctx.createGain();
+          spG.gain.value = this.volume * 2.0;
+          spSrc.connect(spLp);
+          spLp.connect(spG);
+          spG.connect(ctx.destination);
+          spSrc.start(now);
+          spSrc.stop(now + 0.4);
+          // 2) 低音の地鳴り
+          const spOsc = ctx.createOscillator();
+          const spOG = ctx.createGain();
+          spOsc.type = 'sine';
+          spOsc.frequency.setValueAtTime(80, now);
+          spOsc.frequency.exponentialRampToValueAtTime(25, now + 0.3);
+          spOG.gain.setValueAtTime(this.volume * 1.2, now);
+          spOG.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          spOsc.connect(spOG);
+          spOG.connect(ctx.destination);
+          spOsc.start(now);
+          spOsc.stop(now + 0.35);
+          // 3) 飛散粒（ピチピチピチ）
+          for (let k = 0; k < 4; k++) {
+            const delay = 0.05 + Math.random() * 0.15;
+            const dropOsc = ctx.createOscillator();
+            const dropG = ctx.createGain();
+            dropOsc.type = 'sine';
+            dropOsc.frequency.setValueAtTime(300 + Math.random() * 500, now + delay);
+            dropOsc.frequency.exponentialRampToValueAtTime(60, now + delay + 0.06);
+            dropG.gain.setValueAtTime(this.volume * 0.4, now + delay);
+            dropG.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.07);
+            dropOsc.connect(dropG);
+            dropG.connect(ctx.destination);
+            dropOsc.start(now + delay);
+            dropOsc.stop(now + delay + 0.07);
+          }
           break;
         }
       }
