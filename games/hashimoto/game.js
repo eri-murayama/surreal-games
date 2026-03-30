@@ -364,10 +364,7 @@
     // おや…？ボタンは橋本モードのみ表示
     oyaBtn.style.display = (gameMode === 'hashimoto') ? 'inline-block' : 'none';
 
-    if (window.SurrealGames) {
-      SurrealGames.HighScore.update('hashimoto', score);
-      SurrealGames.Stats.record('hashimoto');
-    }
+    if (sg) sg.onGameEnd(score);
   }
 
   function updateUI() {
@@ -393,6 +390,7 @@
     updateUI();
     showScreen(gameScreen);
     showQuestion();
+    if (sg) sg.onGameStart();
   }
 
   // ===== 行部澤 登場演出 =====
@@ -446,8 +444,9 @@
     startGame();
   });
 
+  var sg = null;
   if (window.SurrealGames) {
-    SurrealGames.init('hashimoto');
+    sg = SurrealGames.init('hashimoto');
 
     var hs = SurrealGames.HighScore.get('hashimoto');
     if (hs > 0) {

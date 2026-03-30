@@ -341,6 +341,68 @@
         139, 139, 156, 156, 139, 139, 156, 156,
       ]
     },
+    // クイズバトル・ゲームショー系（橋本さん）— テレビ番組風ファンファーレ
+    gameshow: {
+      tempo: 155, key: 'Bb', wave: 'triangle', volume: 0.10,
+      melody: [
+        466, 523, 587, 698, 784, 698, 587, 523,
+        587, 698, 784, 932, 784, 698, 587, 698,
+        466, 587, 698, 784, 698, 587, 466, 392,
+        523, 587, 698, 932, 784, 698, 587, 466,
+      ],
+      bass: [
+        233, 233, 294, 294, 349, 349, 294, 294,
+        233, 233, 349, 349, 392, 392, 233, 233,
+        233, 233, 294, 294, 349, 349, 294, 294,
+        262, 262, 294, 294, 349, 349, 233, 233,
+      ]
+    },
+    // ケルト風ジグ（アイルランドゲーム）— 踊るようなアイリッシュダンス
+    celtic: {
+      tempo: 165, key: 'D', wave: 'triangle', volume: 0.09,
+      melody: [
+        587, 659, 740, 880, 740, 659, 587, 494,
+        440, 494, 587, 659, 740, 659, 587, 494,
+        587, 740, 880, 988, 880, 740, 587, 659,
+        740, 659, 587, 494, 440, 494, 587, 587,
+      ],
+      bass: [
+        294, 294, 370, 370, 440, 440, 294, 294,
+        220, 220, 294, 294, 370, 370, 294, 294,
+        294, 294, 370, 370, 440, 440, 330, 330,
+        370, 370, 294, 294, 220, 220, 294, 294,
+      ],
+      // ジグ風スウィング（短-短-長のリズム）
+      swing: [
+        0.7, 0.7, 1.3, 0.7, 0.7, 1.3, 0.7, 1.3,
+        0.7, 0.7, 1.3, 0.7, 0.7, 1.3, 0.7, 1.3,
+        0.7, 0.7, 1.3, 0.7, 0.7, 1.3, 0.7, 1.3,
+        0.7, 0.7, 1.3, 0.7, 0.7, 1.3, 0.7, 1.3,
+      ]
+    },
+    // マジックショー風（協力者）— 怪しくて不思議なワルツ調
+    magic: {
+      tempo: 100, key: 'Bbm', wave: 'sine', volume: 0.10,
+      melody: [
+        466, 415, 370, 349, 370, 415, 466, 523,
+        466, 415, 370, 311, 277, 311, 370, 349,
+        233, 277, 311, 349, 370, 349, 311, 277,
+        311, 349, 415, 466, 415, 370, 349, 311,
+      ],
+      bass: [
+        233, 233, 185, 185, 175, 175, 208, 208,
+        233, 233, 185, 185, 139, 139, 175, 175,
+        117, 117, 139, 139, 175, 175, 139, 139,
+        156, 156, 175, 175, 208, 208, 156, 156,
+      ],
+      // ワルツ風スウィング（強-弱-弱のリズム）
+      swing: [
+        1.4, 0.8, 0.8, 1.4, 0.8, 0.8, 1.4, 0.8,
+        0.8, 1.4, 0.8, 0.8, 1.4, 0.8, 0.8, 1.4,
+        0.8, 0.8, 1.4, 0.8, 0.8, 1.4, 0.8, 0.8,
+        1.4, 0.8, 0.8, 1.4, 0.8, 0.8, 1.4, 0.8,
+      ]
+    },
     // パズル・宇宙系（コズミック、すいすいパズル）
     cosmic: {
       tempo: 100, key: 'Bb', wave: 'triangle', volume: 0.10,
@@ -372,7 +434,9 @@
     'fortune': 'cute',
     'holo-analysis': 'quiz',
     'holo-memory': 'calm',
-    'magic-trick': 'action',
+    'hashimoto': 'gameshow',
+    'ireland': 'celtic',
+    'magic-trick': 'magic',
     'party-game': 'action',
     'pet': 'calm',
     'puzzle-2048': 'retro',
@@ -1591,10 +1655,78 @@
     }
   }
 
+  // ===== Xシェアボタン =====
+  function createShareButton(gameId) {
+    // 既存のシェアボタンがある場合はスキップ（各ゲーム独自実装を優先）
+    if (document.getElementById('share-btn') || document.querySelector('.sg-share-btn')) return;
+    var game = GAME_CATALOG.find(function (g) { return g.id === gameId; });
+    var title = game ? game.title : 'シュールゲームス';
+    var btn = document.createElement('a');
+    btn.className = 'sg-share-btn';
+    btn.setAttribute('aria-label', 'Xでシェア');
+    btn.href = '#';
+    btn.textContent = '𝕏';
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var text = '【' + title + '】を遊んだよ！\n#シュールゲームス';
+      var url = window.location.href;
+      window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
+    });
+    document.body.appendChild(btn);
+  }
+
+  // ===== 言語切り替えボタン =====
+  function createLangToggle() {
+    // 既存の言語トグルがある場合はスキップ
+    if (document.getElementById('lang-toggle') || document.getElementById('lang-switch') ||
+        document.querySelector('.sg-lang-toggle') || document.querySelector('.lang-btn')) return;
+
+    var container = document.createElement('div');
+    container.className = 'sg-lang-toggle';
+    container.id = 'sg-lang-toggle';
+
+    var jpBtn = document.createElement('button');
+    jpBtn.className = 'sg-lang-btn active';
+    jpBtn.textContent = 'JP';
+    jpBtn.dataset.lang = 'ja';
+
+    var enBtn = document.createElement('button');
+    enBtn.className = 'sg-lang-btn';
+    enBtn.textContent = 'EN';
+    enBtn.dataset.lang = 'en';
+
+    function setLang(lang) {
+      jpBtn.classList.toggle('active', lang === 'ja');
+      enBtn.classList.toggle('active', lang === 'en');
+      if (window.SurrealI18n) {
+        SurrealI18n.setLang(lang);
+      }
+      window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang: lang } }));
+    }
+
+    jpBtn.addEventListener('click', function () { setLang('ja'); });
+    enBtn.addEventListener('click', function () { setLang('en'); });
+
+    // 保存された言語設定を復元
+    try {
+      var saved = localStorage.getItem('sg_lang');
+      if (saved === 'en') {
+        jpBtn.classList.remove('active');
+        enBtn.classList.add('active');
+      }
+    } catch (e) { /* localStorage unavailable */ }
+
+    container.appendChild(jpBtn);
+    container.appendChild(enBtn);
+    document.body.appendChild(container);
+  }
+
   // ===== 初期化 =====
   function init(gameId) {
     SoundSystem.init();
     createSoundToggle();
+    createShareButton(gameId);
+    createLangToggle();
     initScaling();
 
     // ゲーム間導線をリザルト画面に挿入
