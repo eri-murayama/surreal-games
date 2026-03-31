@@ -305,6 +305,63 @@ html, body {
   }
 }
 
+/* --- Xシェアボタン（固定・右下） --- */
+.sg-share-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: transform 0.15s, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+}
+.sg-share-btn:hover {
+  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* --- 言語切り替え（固定・右上） --- */
+.sg-lang-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+  display: flex;
+  gap: 4px;
+}
+.sg-lang-toggle .sg-lang-btn {
+  padding: 6px 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s, border-color 0.2s;
+}
+.sg-lang-toggle .sg-lang-btn:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+.sg-lang-toggle .sg-lang-btn.active {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+
 /* --- アクセシビリティ: アニメーション低減 --- */
 @media (prefers-reduced-motion: reduce) {
   *,
