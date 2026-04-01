@@ -477,13 +477,16 @@
     $('final-score').textContent = score;
     $('final-stack').textContent = maxStack;
 
-    // Rank
+    // Rank（HERO_MILESTONEと一致）
     let rank = '';
-    if (maxStack >= 25) rank = '💩👑 うんこの神 👑💩';
-    else if (maxStack >= 15) rank = '💩 うんこマスター 💩';
-    else if (maxStack >= 10) rank = '🍦 うんコーン職人 🍦';
-    else if (maxStack >= 5) rank = '✨ 見習いキャッチャー ✨';
-    else rank = '😢 うんこ初心者 😢';
+    if (maxStack >= 35) rank = '🌌 宇宙を超えたうんコーン 🌌';
+    else if (maxStack >= 30) rank = '👑 神のうんコーン生誕 👑';
+    else if (maxStack >= 25) rank = '🏗️ うんコーンタワー建設 🏗️';
+    else if (maxStack >= 20) rank = '💼 イケメンうんコーン実業家 💼';
+    else if (maxStack >= 15) rank = '🎩 よっ、うんコーン部長 🎩';
+    else if (maxStack >= 10) rank = '🍦 うんコーンバイトリーダー 🍦';
+    else if (maxStack >= 5) rank = '🐣 ひよっこうんコーン技師 🐣';
+    else rank = '😢 うんコーン以下の存在 😢';
     $('result-rank').textContent = rank;
 
     // 主人公のコメント
