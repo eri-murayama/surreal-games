@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ヤンデレ学園 ～どこにいても、あなたのそばに～ | シュールゲームス</title>
+  <meta name="description" content="学園恋愛シミュレーション。ヒロインを選んで話しかけたいのに…なぜかいつも同じ人が割り込んでくる。逃げられない恋の行方は？">
+  <link rel="icon" type="image/png" href="../../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+  <meta property="og:title" content="ヤンデレ学園 | シュールゲームス">
+  <meta property="og:description" content="誰と話しても割り込んでくるあの子。逃げられない学園ラブストーリー。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/yandere-gakuen/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 桜パーティクル -->
+  <div class="sakura-container" id="sakura-container"></div>
+
+  <!-- グリッチエフェクト -->
+  <div class="glitch-overlay" id="glitch-overlay"></div>
+
+  <!-- 好感度ゲージ -->
+  <div class="affection-bar" id="affection-bar">
+    <span class="affection-heart">💗</span>
+    <span class="affection-label">あいり</span>
+    <div class="affection-track">
+      <div class="affection-fill" id="affection-fill"></div>
+    </div>
+  </div>
+
+  <!-- 日数バッジ -->
+  <div class="day-badge" id="day-badge"></div>
+
+  <!-- ===== タイトル画面 ===== -->
+  <div id="title-screen" class="screen active">
+    <div class="title-wrap">
+      <div class="title-icon">💘</div>
+      <h1 class="title-main">ヤンデレ学園</h1>
+      <p class="title-sub">～どこにいても、あなたのそばに～</p>
+      <p class="title-desc">学園の女の子と仲良くなろう！<br>…でも、なぜかいつも同じ子が現れる。</p>
+      <button class="btn-start" id="btn-start">はじめる</button>
+    </div>
+  </div>
+
+  <!-- ===== 日付イントロ ===== -->
+  <div id="day-intro" class="screen">
+    <div class="day-intro-text" id="day-intro-text"></div>
+    <div class="day-intro-sub" id="day-intro-sub"></div>
+  </div>
+
+  <!-- ===== 場所選択画面 ===== -->
+  <div id="location-screen" class="screen">
+    <div class="location-header" id="location-header"></div>
+    <div class="location-sub">話しかける相手がいる場所を選ぼう</div>
+    <div class="location-grid" id="location-grid"></div>
+  </div>
+
+  <!-- ===== 会話画面 ===== -->
+  <div id="dialogue-screen" class="screen">
+    <div class="dialogue-scene">
+      <div class="scene-location" id="scene-location"></div>
+      <div class="character-area" id="character-area"></div>
+      <div class="dialogue-box">
+        <div class="dialogue-inner">
+          <div class="dialogue-name" id="dialogue-name"></div>
+          <div class="dialogue-text" id="dialogue-text"></div>
+          <div class="choices-container hidden" id="choices-container"></div>
+          <div class="dialogue-advance" id="dialogue-advance">タップで次へ ▼</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== エンディング画面 ===== -->
+  <div id="ending-screen" class="screen">
+    <div class="ending-wrap">
+      <div class="ending-type">ENDING</div>
+      <div class="ending-icon" id="ending-icon"></div>
+      <h2 class="ending-title" id="ending-title"></h2>
+      <p class="ending-desc" id="ending-desc"></p>
+      <div class="ending-affection">
+        <span class="ending-affection-label">あいりの好感度：</span>
+        <span class="ending-hearts" id="ending-hearts"></span>
+      </div>
+      <div class="ending-actions">
+        <a class="btn-share-ending" id="share-btn" target="_blank" rel="noopener noreferrer">𝕏 でシェアする</a>
+        <button class="btn-retry" id="btn-retry">もう一度遊ぶ</button>
+      </div>
+    </div>
+  </div>
+
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

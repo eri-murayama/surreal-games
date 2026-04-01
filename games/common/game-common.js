@@ -46,6 +46,7 @@
     { id: 'slide-puzzle', title: 'スライドパズル', titleEn: 'Slide Puzzle', emoji: '🧩', genre: 'パズル', genreEn: 'Puzzle', desc: 'タイルをスライドして揃えろ。' },
     { id: 'hashimoto', title: '橋本さん', titleEn: 'Hashimoto-san', emoji: '👤', genre: 'クイズ', genreEn: 'Quiz', desc: '苗字ランキングで勝負だ！' },
     { id: 'ireland', title: 'アイルランドゲーム', titleEn: 'Ireland Game', emoji: '☘️', genre: 'クイズ', genreEn: 'Quiz', desc: '似ているものの中からアイルランドを探せ！' },
+    { id: 'yandere-gakuen', title: 'ヤンデレ学園', titleEn: 'Yandere Academy', emoji: '💘', genre: '恋愛SLG', genreEn: 'Romance', desc: '逃げられない学園ラブストーリー。' },
   ];
 
   // ===== 実績定義 =====
