@@ -11,12 +11,12 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>お散歩日和</title>
+  <title>お散歩日和 〜じゅまんどぅに届け〜</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
-  <meta property="og:title" content="お散歩日和 | シュールゲームス">
-  <meta property="og:description" content="冒険の旅に出よう。ドット絵RPG。">
+  <meta property="og:title" content="お散歩日和 〜じゅまんどぅに届け〜 | シュールゲームス">
+  <meta property="og:description" content="恋愛経験値をためて本命に告白！シュールな恋愛RPG。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/rpg/index.html">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
@@ -26,7 +26,7 @@
 </head>
 <body>
   <div id="game-wrapper" data-sg-scale="480x750">
-    <h1 class="game-title">お散歩日和</h1>
+    <h1 class="game-title">お散歩日和 〜じゅまんどぅに届け〜</h1>
 
     <!-- ゲーム画面 -->
     <div id="screen">
@@ -35,8 +35,9 @@
       <!-- ステータスバー -->
       <div id="status-bar">
         <span id="stat-name">ゆうしゃ Lv.1</span>
-        <span id="stat-hp">HP 30/30</span>
-        <span id="stat-mp">MP 10/10</span>
+        <span id="stat-hp">精神力 30/30</span>
+        <span id="stat-mp">経済力 10/10</span>
+        <span id="stat-gf">彼女 0人</span>
       </div>
 
       <!-- メッセージボックス -->
@@ -54,29 +55,29 @@
         </div>
         <div id="battle-log"></div>
         <div id="battle-player-status">
-          <span id="battle-hp">HP 30/30</span>
-          <span id="battle-mp">MP 10/10</span>
-          <span id="battle-items">くすり x3</span>
+          <span id="battle-hp">精神力 30/30</span>
+          <span id="battle-mp">経済力 10/10</span>
+          <span id="battle-gf">彼女 0人</span>
         </div>
         <div id="battle-menu">
-          <button class="battle-btn" data-action="attack">たたかう</button>
-          <button class="battle-btn" data-action="magic">まほう</button>
-          <button class="battle-btn" data-action="item">くすり</button>
-          <button class="battle-btn" data-action="run">にげる</button>
+          <button class="battle-btn" data-action="confess">告白する</button>
+          <button class="battle-btn" data-action="praise">褒める</button>
+          <button class="battle-btn" data-action="gift">プレゼント</button>
+          <button class="battle-btn" data-action="run">逃げる</button>
         </div>
       </div>
 
       <!-- タイトル画面 -->
       <div id="title-screen">
         <div id="title-logo">お散歩日和</div>
-        <div id="title-sub">- シュールな冒険のはじまり -</div>
-        <button id="start-btn">ぼうけんをはじめる</button>
+        <div id="title-sub">- じゅまんどぅに届け -</div>
+        <button id="start-btn">恋の旅にでる</button>
         <p id="title-hint">矢印キーで移動 / スペースで調べる</p>
       </div>
 
       <!-- 勝利画面 -->
       <div id="victory-screen" class="hidden">
-        <div id="victory-title">魔王を倒した！</div>
+        <div id="victory-title">じゅまんどぅと両想い！</div>
         <div id="victory-sub"></div>
         <button id="victory-btn">タイトルに戻る</button>
       </div>

@@ -1,5 +1,5 @@
 // ============================================================
-//  お散歩日和 - ミニRPG
+//  お散歩日和 〜じゅまんどぅに届け〜 - 恋愛RPG
 // ============================================================
 
 // ===== 共通モジュール初期化 =====
@@ -28,6 +28,7 @@ const C = {
   red: '#cc4444', green: '#44aa44',
   white: '#eeeeee', black: '#222222',
   gray: '#888888', darkGray: '#555555',
+  pink: '#ff69b4', pinkD: '#cc5599', pinkL: '#ffaacc',
 };
 
 // ===== タイルサイズ =====
@@ -68,7 +69,7 @@ const MAPS = [
     '......p........#',
     '######D#########',
   ],
-  // マップ2: 魔王城
+  // マップ2: 魔王城（じゅまんどぅの城）
   [
     '#########D######',
     '#___#__________#',
@@ -86,33 +87,34 @@ const MAPS = [
 ];
 
 // マップ名
-const MAP_NAMES = ['ワールドマップ', 'はじまりの町', '魔王城'];
+const MAP_NAMES = ['ワールドマップ', 'はじまりの町', 'じゅまんどぅの城'];
 
-// NPCデータ: { x, y, map, lines[], color }
+// NPCデータ
 const NPCS = [
-  { x: 3, y: 2, map: 1, color: '#e66', name: 'むらびとA',
-    lines: ['勇者よ！南に魔王城が\nあるらしいよ！', 'がんばってね〜。\nぼくは寝るから。'] },
-  { x: 3, y: 5, map: 1, color: '#6ae', name: 'むらびとB',
-    lines: ['この村のパン屋は\nなぜか魚しか売ってない。', 'しかも全部タコ。'] },
+  { x: 3, y: 2, map: 1, color: '#e66', name: 'おじさんA',
+    lines: ['南の城に超かわいい\n「じゅまんどぅ」がいるらしいよ！', '恋愛経験値をためないと\n相手にしてもらえないかもね〜。'] },
+  { x: 3, y: 5, map: 1, color: '#6ae', name: 'おじさんB',
+    lines: ['この村のコンビニは\nなぜかプレゼントだけ売ってる。', 'しかも全部高い。'] },
   { x: 10, y: 4, map: 1, color: '#ea6', name: 'ネコ',
-    lines: ['にゃーん。（回復してあげる）', '＊HPとMPが回復した！＊'] },
-  { x: 7, y: 5, map: 2, color: '#f6f', name: '魔王',
-    lines: ['よくぞ来たな勇者よ！\nここで終わりだ！'] },
+    lines: ['にゃーん。（元気が出てきた）', '＊精神力と経済力が回復した！＊'] },
+  { x: 7, y: 5, map: 2, color: '#f6f', name: 'じゅまんどぅ',
+    lines: ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'] },
 ];
 
-// 敵データ
+// 敵データ（女の子たち）— ハートゲージの最大値がmaxHeart
 const ENEMIES = {
-  slime: { name: 'スライム', hp: 12, atk: 4, def: 1, exp: 6, color: '#4c8' },
-  bat:   { name: 'コウモリ', hp: 18, atk: 7, def: 2, exp: 10, color: '#86a' },
-  goblin:{ name: 'ゴブリン', hp: 28, atk: 11, def: 5, exp: 18, color: '#a84' },
-  skel:  { name: 'ガイコツ', hp: 35, atk: 14, def: 7, exp: 25, color: '#bba' },
-  boss:  { name: '魔王さま', hp: 90, atk: 18, def: 10, exp: 0, color: '#f4a' },
+  busunko:   { name: 'ぶすんこ',   maxHeart: 10, charm: 3, resist: 1, exp: 6,  color: '#8a7' },
+  futsunnu:  { name: 'ふつうんぬ', maxHeart: 16, charm: 5, resist: 2, exp: 10, color: '#7ad' },
+  choikawami:{ name: 'ちょいかわみ', maxHeart: 24, charm: 8, resist: 4, exp: 18, color: '#e8a' },
+  modekawa:  { name: 'もできゃわ', maxHeart: 32, charm: 11, resist: 6, exp: 25, color: '#f8c' },
+  takanen:   { name: 'たかねん',   maxHeart: 40, charm: 14, resist: 8, exp: 35, color: '#da6' },
+  boss:      { name: 'じゅまんどぅ', maxHeart: 80, charm: 18, resist: 10, exp: 0, color: '#f4a' },
 };
 
 // エンカウントテーブル（マップ別）
 const ENCOUNTERS = {
-  0: ['slime', 'slime', 'slime', 'bat', 'bat'],
-  2: ['goblin', 'goblin', 'skel', 'skel', 'bat'],
+  0: ['busunko', 'busunko', 'busunko', 'futsunnu', 'futsunnu'],
+  2: ['choikawami', 'choikawami', 'modekawa', 'modekawa', 'takanen'],
 };
 
 // ===== ゲーム状態 =====
@@ -124,16 +126,16 @@ function initState() {
     map: 0,
     px: 4, py: 2, // ワールドマップの村の近く
     dir: 0, // 0=下,1=左,2=右,3=上
-    hp: 30, maxHp: 30,
-    mp: 10, maxMp: 10,
-    atk: 8, def: 4,
+    hp: 30, maxHp: 30,       // 精神力
+    mp: 10, maxMp: 10,       // 経済力
+    atk: 8, def: 4,          // 口説き力, メンタル防御
     level: 1, exp: 0, nextExp: 20,
-    items: 3, // やくそうの数
+    girlfriends: 0,          // 彼女の数
     steps: 0,
     msgQueue: [],
     msgCallback: null,
     battle: null,
-    battleCursor: 0, // バトルメニューカーソル位置
+    battleCursor: 0,
     defeatedBoss: false,
   };
 }
@@ -206,35 +208,27 @@ function drawTile(tx, ty, ch) {
       break;
     case 'M': // 山
       drawRect(x, y, T, T, C.mtn);
-      // 山の三角形
       drawRect(x+2, y+8, 12, 8, C.mtnD);
       drawRect(x+4, y+4, 8, 6, C.mtn);
       drawRect(x+6, y+1, 4, 5, C.mtnL);
-      // 雪
       drawRect(x+6, y+1, 4, 2, C.white);
       break;
     case 'B': // 橋
       drawRect(x, y, T, T, C.water);
-      // 橋の板
       drawRect(x+1, y+2, 14, 12, C.bridge);
       drawRect(x+1, y+2, 14, 2, C.bridgeD);
       drawRect(x+1, y+12, 14, 2, C.bridgeD);
-      // 板目
       drawRect(x+4, y+4, 1, 8, C.bridgeD);
       drawRect(x+8, y+4, 1, 8, C.bridgeD);
       drawRect(x+12, y+4, 1, 8, C.bridgeD);
       break;
     case 'V': // 村（ワールドマップ上）
       drawRect(x, y, T, T, C.grass1);
-      // 家のアイコン
       drawRect(x+3, y+7, 10, 8, C.wall);
       drawRect(x+3, y+7, 10, 2, C.wallL);
-      // 屋根
       drawRect(x+2, y+4, 12, 4, C.roof);
       drawRect(x+4, y+2, 8, 3, C.roofD);
-      // ドア
       drawRect(x+6, y+10, 4, 5, C.door);
-      // 点滅マーカー
       {
         const blink = Math.floor(Date.now() / 400) % 2 === 0;
         if (blink) {
@@ -243,35 +237,27 @@ function drawTile(tx, ty, ch) {
         }
       }
       break;
-    case 'K': // 魔王城（ワールドマップ上）
+    case 'K': // じゅまんどぅの城（ワールドマップ上）
       drawRect(x, y, T, T, C.grass1);
-      // 城本体
       drawRect(x+2, y+6, 12, 10, '#443');
-      // 塔
       drawRect(x+2, y+2, 4, 6, '#554');
       drawRect(x+10, y+2, 4, 6, '#554');
-      // 塔の先端
       drawRect(x+3, y+0, 2, 3, '#665');
       drawRect(x+11, y+0, 2, 3, '#665');
-      // 門
       drawRect(x+6, y+9, 4, 7, '#222');
-      // 窓（赤く光る）
+      // ハートマーク点滅
       {
         const glow = Math.floor(Date.now() / 600) % 2 === 0;
-        ctx.fillStyle = glow ? '#f44' : '#a22';
+        ctx.fillStyle = glow ? '#f4a' : '#a22';
         ctx.fillRect(x+3, y+3, 2, 2);
         ctx.fillRect(x+11, y+3, 2, 2);
       }
       break;
     case 'D': // 扉
-      // 背景（マップに合わせた色）
       drawRect(x, y, T, T, C.wall);
-      // 扉本体
       drawRect(x+3, y+1, 10, 14, C.door);
       drawRect(x+3, y+1, 10, 2, '#aa8844');
-      // ドアノブ
       drawRect(x+10, y+7, 2, 2, '#ffcc44');
-      // 点滅する矢印インジケーター
       {
         const blink = Math.floor(Date.now() / 500) % 2 === 0;
         if (blink) {
@@ -315,90 +301,178 @@ function drawNPC(x, y, color) {
   drawRect(x+9, y+13, 3, 3, C.darkGray);
 }
 
-// 敵スプライト描画（64x64 enemyCanvas用）
+// 敵スプライト描画（64x64 enemyCanvas用）— 女の子キャラ
 function drawEnemySprite(enemy) {
   enemyCtx.clearRect(0, 0, 64, 64);
   const c = enemy.color;
   const s = enemyCtx;
 
-  if (enemy.name === 'スライム') {
-    s.fillStyle = c;
-    s.beginPath();
-    s.ellipse(32, 38, 22, 18, 0, 0, Math.PI * 2);
-    s.fill();
-    s.fillRect(12, 30, 40, 20);
-    s.fillStyle = '#fff';
-    s.fillRect(22, 30, 6, 6);
-    s.fillRect(36, 30, 6, 6);
-    s.fillStyle = '#222';
-    s.fillRect(24, 32, 3, 3);
-    s.fillRect(38, 32, 3, 3);
-    s.fillRect(28, 40, 8, 2);
-  } else if (enemy.name === 'コウモリ') {
-    s.fillStyle = c;
-    s.fillRect(4, 20, 20, 4);
-    s.fillRect(40, 20, 20, 4);
-    s.fillRect(8, 16, 12, 6);
-    s.fillRect(44, 16, 12, 6);
-    s.fillRect(22, 18, 20, 18);
-    s.fillRect(26, 36, 12, 6);
-    s.fillStyle = '#f44';
-    s.fillRect(26, 24, 4, 4);
-    s.fillRect(34, 24, 4, 4);
-    s.fillStyle = '#fff';
-    s.fillRect(28, 34, 2, 4);
-    s.fillRect(34, 34, 2, 4);
-  } else if (enemy.name === 'ゴブリン') {
-    s.fillStyle = c;
-    s.fillRect(20, 16, 24, 28);
-    s.fillRect(16, 22, 32, 16);
-    s.fillRect(22, 8, 20, 14);
-    s.fillRect(16, 10, 8, 6);
-    s.fillRect(40, 10, 8, 6);
-    s.fillStyle = '#ff0';
-    s.fillRect(26, 14, 4, 4);
-    s.fillRect(34, 14, 4, 4);
-    s.fillStyle = '#222';
-    s.fillRect(28, 15, 2, 2);
-    s.fillRect(36, 15, 2, 2);
-    s.fillStyle = '#753';
-    s.fillRect(22, 44, 8, 8);
-    s.fillRect(34, 44, 8, 8);
-  } else if (enemy.name === 'ガイコツ') {
-    s.fillStyle = c;
-    s.fillRect(20, 6, 24, 20);
-    s.fillRect(24, 4, 16, 4);
+  if (enemy.name === 'ぶすんこ') {
+    // ボサボサ髪
+    s.fillStyle = '#654';
+    s.fillRect(16, 4, 32, 16);
+    s.fillRect(12, 8, 40, 10);
+    // 顔
+    s.fillStyle = '#fdb';
+    s.fillRect(18, 16, 28, 22);
+    // 目（ジト目）
     s.fillStyle = '#333';
-    s.fillRect(24, 12, 6, 6);
-    s.fillRect(34, 12, 6, 6);
+    s.fillRect(22, 24, 8, 3);
+    s.fillRect(36, 24, 8, 3);
+    // 口（への字）
+    s.fillRect(28, 32, 10, 2);
+    // 体
     s.fillStyle = c;
-    s.fillRect(26, 26, 4, 20);
-    s.fillRect(34, 26, 4, 20);
-    s.fillRect(22, 28, 20, 3);
-    s.fillRect(22, 34, 20, 3);
-    s.fillRect(22, 40, 20, 3);
-    s.fillRect(22, 46, 6, 8);
-    s.fillRect(36, 46, 6, 8);
+    s.fillRect(18, 38, 28, 18);
+    // 足
+    s.fillStyle = '#864';
+    s.fillRect(22, 52, 8, 8);
+    s.fillRect(34, 52, 8, 8);
+  } else if (enemy.name === 'ふつうんぬ') {
+    // 髪
+    s.fillStyle = '#543';
+    s.fillRect(18, 4, 28, 14);
+    s.fillRect(14, 10, 36, 8);
+    // 顔
+    s.fillStyle = '#fdc';
+    s.fillRect(18, 16, 28, 22);
+    // 目
+    s.fillStyle = '#333';
+    s.fillRect(24, 22, 5, 5);
+    s.fillRect(36, 22, 5, 5);
+    s.fillStyle = '#fff';
+    s.fillRect(25, 23, 2, 2);
+    s.fillRect(37, 23, 2, 2);
+    // 口
+    s.fillStyle = '#e88';
+    s.fillRect(29, 32, 6, 2);
+    // 体
+    s.fillStyle = c;
+    s.fillRect(18, 38, 28, 18);
+    s.fillRect(14, 40, 36, 4);
+    // 足
+    s.fillStyle = '#654';
+    s.fillRect(22, 52, 8, 8);
+    s.fillRect(34, 52, 8, 8);
+  } else if (enemy.name === 'ちょいかわみ') {
+    // ロングヘア
+    s.fillStyle = '#864';
+    s.fillRect(16, 2, 32, 16);
+    s.fillRect(12, 8, 8, 30);
+    s.fillRect(44, 8, 8, 30);
+    // 顔
+    s.fillStyle = '#fed';
+    s.fillRect(18, 14, 28, 24);
+    // 目（キラキラ）
+    s.fillStyle = '#48c';
+    s.fillRect(24, 22, 6, 6);
+    s.fillRect(36, 22, 6, 6);
+    s.fillStyle = '#fff';
+    s.fillRect(26, 23, 3, 3);
+    s.fillRect(38, 23, 3, 3);
+    // 口（にっこり）
+    s.fillStyle = '#f88';
+    s.fillRect(28, 33, 8, 2);
+    s.fillRect(30, 35, 4, 1);
+    // 体
+    s.fillStyle = c;
+    s.fillRect(18, 38, 28, 18);
+    // 足
+    s.fillStyle = '#c98';
+    s.fillRect(22, 52, 8, 8);
+    s.fillRect(34, 52, 8, 8);
+  } else if (enemy.name === 'もできゃわ') {
+    // ツインテール
+    s.fillStyle = '#f8a';
+    s.fillRect(18, 2, 28, 14);
+    s.fillRect(8, 4, 12, 34);
+    s.fillRect(44, 4, 12, 34);
+    // リボン
+    s.fillStyle = '#f44';
+    s.fillRect(10, 6, 8, 4);
+    s.fillRect(46, 6, 8, 4);
+    // 顔
+    s.fillStyle = '#fee';
+    s.fillRect(18, 14, 28, 24);
+    // 目（大きめ・キラキラ）
+    s.fillStyle = '#e4a';
+    s.fillRect(22, 20, 8, 8);
+    s.fillRect(34, 20, 8, 8);
+    s.fillStyle = '#fff';
+    s.fillRect(24, 21, 4, 4);
+    s.fillRect(36, 21, 4, 4);
+    // まつ毛
+    s.fillStyle = '#333';
+    s.fillRect(22, 19, 8, 1);
+    s.fillRect(34, 19, 8, 1);
+    // 口
+    s.fillStyle = '#f66';
+    s.fillRect(28, 33, 8, 3);
+    // 体
+    s.fillStyle = c;
+    s.fillRect(18, 38, 28, 18);
+    // 足
+    s.fillStyle = '#fcc';
+    s.fillRect(22, 52, 8, 8);
+    s.fillRect(34, 52, 8, 8);
+  } else if (enemy.name === 'たかねん') {
+    // エレガントヘア
+    s.fillStyle = '#fb4';
+    s.fillRect(14, 0, 36, 18);
+    s.fillRect(10, 6, 8, 34);
+    s.fillRect(46, 6, 8, 34);
+    // ティアラ
+    s.fillStyle = '#ff0';
+    s.fillRect(22, 0, 20, 3);
+    s.fillRect(30, -2, 4, 4);
+    // 顔
+    s.fillStyle = '#fef';
+    s.fillRect(18, 14, 28, 24);
+    // 目（クール）
+    s.fillStyle = '#84f';
+    s.fillRect(24, 22, 6, 5);
+    s.fillRect(36, 22, 6, 5);
+    s.fillStyle = '#fff';
+    s.fillRect(26, 23, 2, 2);
+    s.fillRect(38, 23, 2, 2);
+    // 口
+    s.fillStyle = '#c66';
+    s.fillRect(30, 33, 4, 2);
+    // 体
+    s.fillStyle = c;
+    s.fillRect(16, 38, 32, 18);
+    // ネックレス
+    s.fillStyle = '#ff0';
+    s.fillRect(28, 38, 8, 2);
+    s.fillRect(31, 40, 2, 2);
+    // 足
+    s.fillStyle = '#da6';
+    s.fillRect(22, 52, 8, 8);
+    s.fillRect(34, 52, 8, 8);
   } else {
-    // 魔王
+    // じゅまんどぅ（ラスボス）
     s.fillStyle = '#222';
     s.fillRect(12, 8, 40, 44);
     s.fillStyle = c;
     s.fillRect(16, 12, 32, 36);
-    s.fillStyle = '#a44';
+    // 角（ハート型の飾り）
+    s.fillStyle = '#f4a';
     s.fillRect(16, 2, 6, 14);
     s.fillRect(42, 2, 6, 14);
+    // 目（魅惑的）
     s.fillStyle = '#ff0';
     s.fillRect(22, 22, 6, 6);
     s.fillRect(36, 22, 6, 6);
     s.fillStyle = '#f00';
     s.fillRect(24, 24, 3, 3);
     s.fillRect(38, 24, 3, 3);
-    s.fillStyle = '#400';
-    s.fillRect(26, 34, 12, 6);
+    // 口（妖艶）
+    s.fillStyle = '#f06';
+    s.fillRect(26, 34, 12, 4);
     s.fillStyle = '#fff';
     s.fillRect(28, 34, 3, 3);
     s.fillRect(33, 34, 3, 3);
+    // マント
     s.fillStyle = '#606';
     s.fillRect(8, 20, 6, 32);
     s.fillRect(50, 20, 6, 32);
@@ -430,7 +504,6 @@ function canWalk(mx, my) {
   if (mx < 0 || mx >= MW || my < 0 || my >= MH) return false;
   const ch = MAPS[state.map][my][mx];
   if (ch === '#' || ch === '~' || ch === 'T' || ch === 'M') return false;
-  // NPC判定
   if (NPCS.some(n => n.map === state.map && n.x === mx && n.y === my)) return false;
   return true;
 }
@@ -438,8 +511,9 @@ function canWalk(mx, my) {
 // ===== ステータス更新 =====
 function updateStatus() {
   document.getElementById('stat-name').textContent = `ゆうしゃ Lv.${state.level}`;
-  document.getElementById('stat-hp').textContent = `HP ${state.hp}/${state.maxHp}`;
-  document.getElementById('stat-mp').textContent = `MP ${state.mp}/${state.maxMp}`;
+  document.getElementById('stat-hp').textContent = `精神力 ${state.hp}/${state.maxHp}`;
+  document.getElementById('stat-mp').textContent = `経済力 ${state.mp}/${state.maxMp}`;
+  document.getElementById('stat-gf').textContent = `彼女 ${state.girlfriends}人`;
 }
 
 // ===== メッセージ表示 =====
@@ -456,7 +530,6 @@ function closeMsg() {
   state.phase = 'map';
 }
 
-// 複数メッセージを順番に表示
 function showMsgQueue(msgs, finalCallback) {
   if (msgs.length === 0) {
     if (finalCallback) finalCallback();
@@ -480,7 +553,7 @@ function interactFacing() {
       state.mp = state.maxMp;
       updateStatus();
     }
-    if (npc.name === '魔王') {
+    if (npc.name === 'じゅまんどぅ') {
       showMsg(npc.lines[0], () => {
         closeMsg();
         startBattle('boss');
@@ -491,7 +564,6 @@ function interactFacing() {
     return;
   }
 
-  // 扉・ロケーション
   const ch = MAPS[state.map]?.[fy]?.[fx];
   if (ch === 'D' || ch === 'V' || ch === 'K') {
     enterLocation(fx, fy, ch);
@@ -501,21 +573,17 @@ function interactFacing() {
 // ===== マップ遷移 =====
 function enterLocation(_tx, _ty, ch) {
   if (ch === 'V' && state.map === 0) {
-    // ワールドマップ → 町
     state.map = 1; state.px = 6; state.py = 9;
     showMsg('はじまりの町に やってきた。');
   } else if (ch === 'K' && state.map === 0) {
-    // ワールドマップ → 魔王城
     state.map = 2; state.px = 9; state.py = 1;
-    showMsg('魔王城に 足をふみいれた……！');
+    showMsg('じゅまんどぅの城に\n足をふみいれた……！');
   } else if (ch === 'D' && state.map === 1) {
-    // 町 → ワールドマップ（村の位置の下）
     state.map = 0; state.px = 3; state.py = 4;
     showMsg('ワールドマップに でた。');
   } else if (ch === 'D' && state.map === 2) {
-    // 魔王城 → ワールドマップ（城の位置の上）
     state.map = 0; state.px = 13; state.py = 8;
-    showMsg('魔王城から でた。');
+    showMsg('じゅまんどぅの城から でた。');
   }
   updateStatus();
 }
@@ -535,12 +603,12 @@ function checkEncounter() {
   }
 }
 
-// ===== バトルシステム =====
+// ===== バトルシステム（恋愛版） =====
 function startBattle(enemyKey) {
   const def = ENEMIES[enemyKey];
   state.battle = {
     enemy: { ...def },
-    enemyMaxHp: def.hp,
+    heartFilled: 0,       // 現在のハートゲージ充填量
     key: enemyKey,
     turn: 'player',
     ended: false,
@@ -550,7 +618,7 @@ function startBattle(enemyKey) {
   const overlay = document.getElementById('battle-overlay');
   overlay.classList.remove('hidden');
   document.getElementById('enemy-name').textContent = def.name;
-  updateEnemyHp();
+  updateEnemyHeart();
   drawEnemySprite(def);
   setBattleLog(`${def.name}が あらわれた！`);
   state.battleCursor = 0;
@@ -558,9 +626,10 @@ function startBattle(enemyKey) {
   setBattleButtons(true);
 }
 
-function updateEnemyHp() {
+function updateEnemyHeart() {
   const b = state.battle;
-  const pct = Math.max(0, b.enemy.hp / b.enemyMaxHp * 100);
+  // ハートゲージは充填していく（0%→100%）
+  const pct = Math.min(100, b.heartFilled / b.enemy.maxHeart * 100);
   document.getElementById('enemy-hp-fill').style.width = `${pct}%`;
 }
 
@@ -576,9 +645,9 @@ function setBattleButtons(enabled) {
 }
 
 function updateBattleStatus() {
-  document.getElementById('battle-hp').textContent = `HP ${state.hp}/${state.maxHp}`;
-  document.getElementById('battle-mp').textContent = `MP ${state.mp}/${state.maxMp}`;
-  document.getElementById('battle-items').textContent = `くすり x${state.items}`;
+  document.getElementById('battle-hp').textContent = `精神力 ${state.hp}/${state.maxHp}`;
+  document.getElementById('battle-mp').textContent = `経済力 ${state.mp}/${state.maxMp}`;
+  document.getElementById('battle-gf').textContent = `彼女 ${state.girlfriends}人`;
 }
 
 function updateBattleCursor() {
@@ -616,41 +685,37 @@ function playerAction(action) {
   const b = state.battle;
   setBattleButtons(false);
 
-  if (action === 'attack') {
-    const dmg = Math.max(1, state.atk - Math.floor(b.enemy.def / 2) + Math.floor(Math.random() * 4));
-    b.enemy.hp -= dmg;
+  if (action === 'confess') {
+    // 告白する — 口説き力ベースのハート充填
+    const fill = Math.max(1, state.atk - Math.floor(b.enemy.resist / 2) + Math.floor(Math.random() * 4));
+    b.heartFilled += fill;
     shakeScreen();
-    setBattleLog(`ゆうしゃの こうげき！\n${b.enemy.name}に ${dmg}ダメージ！`);
-    updateEnemyHp();
-  } else if (action === 'magic') {
-    if (state.mp < 5) {
-      setBattleLog('MPが たりない！');
+    setBattleLog(`ゆうしゃは 告白した！\n${b.enemy.name}のハートが ${fill}たまった！`);
+    updateEnemyHeart();
+  } else if (action === 'praise') {
+    // 褒める — 中程度のハート充填（MP不要）
+    const fill = Math.max(1, Math.floor(state.atk * 0.7) + Math.floor(Math.random() * 3));
+    b.heartFilled += fill;
+    setBattleLog(`ゆうしゃは ${b.enemy.name}を褒めた！\nハートが ${fill}たまった！`);
+    updateEnemyHeart();
+  } else if (action === 'gift') {
+    // プレゼントする — 効果大だが経済力を消費
+    if (state.mp < 4) {
+      setBattleLog('経済力が たりない！');
       setTimeout(() => setBattleButtons(true), 800);
       return;
     }
-    state.mp -= 5;
+    state.mp -= 4;
     updateStatus();
     updateBattleStatus();
-    const dmg = Math.max(1, Math.floor(state.atk * 1.5) - Math.floor(b.enemy.def / 3) + Math.floor(Math.random() * 6));
-    b.enemy.hp -= dmg;
+    const fill = Math.max(1, Math.floor(state.atk * 1.8) - Math.floor(b.enemy.resist / 3) + Math.floor(Math.random() * 6));
+    b.heartFilled += fill;
     shakeScreen();
-    setBattleLog(`ゆうしゃは ファイアを となえた！\n${b.enemy.name}に ${dmg}ダメージ！`);
-    updateEnemyHp();
-  } else if (action === 'item') {
-    if (state.items <= 0) {
-      setBattleLog('くすりが ない！');
-      setTimeout(() => setBattleButtons(true), 800);
-      return;
-    }
-    state.items--;
-    const heal = 15;
-    state.hp = Math.min(state.maxHp, state.hp + heal);
-    updateStatus();
-    updateBattleStatus();
-    setBattleLog(`くすりを つかった！\nHPが ${heal}かいふく！`);
+    setBattleLog(`ゆうしゃは プレゼントを渡した！\n${b.enemy.name}のハートが ${fill}たまった！`);
+    updateEnemyHeart();
   } else if (action === 'run') {
     if (b.key === 'boss') {
-      setBattleLog('魔王からは にげられない！');
+      setBattleLog('じゅまんどぅからは にげられない！');
       setTimeout(() => setBattleButtons(true), 800);
       return;
     }
@@ -662,9 +727,9 @@ function playerAction(action) {
     setBattleLog('にげられなかった！');
   }
 
-  // 敵HP確認
+  // ハートゲージMAX確認
   setTimeout(() => {
-    if (b.enemy.hp <= 0) {
+    if (b.heartFilled >= b.enemy.maxHeart) {
       battleVictory();
       return;
     }
@@ -674,13 +739,22 @@ function playerAction(action) {
 
 function enemyTurn() {
   const b = state.battle;
-  const dmg = Math.max(1, b.enemy.atk - Math.floor(state.def / 2) + Math.floor(Math.random() * 3));
+  // 相手のリアクション — 精神力にダメージ
+  const dmg = Math.max(1, b.enemy.charm - Math.floor(state.def / 2) + Math.floor(Math.random() * 3));
   state.hp -= dmg;
   if (state.hp < 0) state.hp = 0;
   updateStatus();
   updateBattleStatus();
   shakeScreen();
-  setBattleLog(`${b.enemy.name}の こうげき！\nゆうしゃは ${dmg}ダメージ！`);
+
+  // リアクション台詞ランダム
+  const reactions = [
+    `${b.enemy.name}は つめたい視線を\nむけてきた！精神力 -${dmg}`,
+    `${b.enemy.name}に「キモい」と\n言われた！精神力 -${dmg}`,
+    `${b.enemy.name}は スマホを\nいじりだした！精神力 -${dmg}`,
+    `${b.enemy.name}に ため息を\nつかれた！精神力 -${dmg}`,
+  ];
+  setBattleLog(reactions[Math.floor(Math.random() * reactions.length)]);
 
   setTimeout(() => {
     if (state.hp <= 0) {
@@ -697,17 +771,19 @@ function battleVictory() {
   const exp = b.enemy.exp;
 
   if (b.key === 'boss') {
-    setBattleLog('魔王を たおした！');
+    setBattleLog('じゅまんどぅが デレた！');
     setTimeout(() => {
       endBattle();
       state.defeatedBoss = true;
+      state.girlfriends++;
       showVictory();
     }, 1500);
     return;
   }
 
+  state.girlfriends++;
   state.exp += exp;
-  setBattleLog(`${b.enemy.name}を たおした！\n${exp}けいけんち を てにいれた！`);
+  setBattleLog(`${b.enemy.name}が 彼女になった！\n恋愛経験値 +${exp}！`);
 
   setTimeout(() => {
     if (state.exp >= state.nextExp) {
@@ -731,20 +807,19 @@ function levelUp() {
   updateStatus();
   updateBattleStatus();
 
-  setBattleLog(`レベルアップ！ Lv.${state.level}！\nつよくなった！`);
+  setBattleLog(`恋愛レベルアップ！ Lv.${state.level}！\nモテ力が上がった！`);
   setTimeout(() => endBattle(), 1500);
 }
 
 function battleDefeat() {
-  setBattleLog('ゆうしゃは たおれた……');
+  setBattleLog('ゆうしゃは 心が折れた……');
   setTimeout(() => {
     endBattle();
-    // 町に戻してHP回復
     state.map = 1; state.px = 6; state.py = 9;
     state.hp = Math.floor(state.maxHp / 2);
     state.mp = Math.floor(state.maxMp / 2);
     updateStatus();
-    showMsg('目が覚めた……\nどうやら村に運ばれたようだ。');
+    showMsg('目が覚めた……\n精神力が回復して町に戻っていた。');
   }, 1500);
 }
 
@@ -754,7 +829,7 @@ function showVictory() {
   sg.onGameEnd(state.level);
   document.getElementById('victory-screen').classList.remove('hidden');
   document.getElementById('victory-sub').textContent =
-    `Lv.${state.level}で クリア！\nこの世界に平和がおとずれた……\nたぶん。`;
+    `Lv.${state.level}、彼女${state.girlfriends}人でクリア！\nじゅまんどぅとラブラブだ！\n……たぶん。`;
 }
 
 // ===== マップ移動 =====
@@ -772,7 +847,6 @@ function updateMap() {
   if (dx !== 0 || dy !== 0) {
     const nx = state.px + dx, ny = state.py + dy;
     const ch = MAPS[state.map]?.[ny]?.[nx];
-    // ロケーションタイル（V/K/D）は踏んで遷移
     if (ch === 'V' || ch === 'K' || ch === 'D') {
       enterLocation(nx, ny, ch);
       moveDelay = 10;
@@ -791,7 +865,6 @@ function updateMap() {
 
 // ===== ゲームループ =====
 function gameLoop() {
-  // 画面クリア
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, 256, 192);
 
@@ -808,7 +881,6 @@ function gameLoop() {
       }
     }
   } else if (state.phase === 'battle') {
-    // バトルメニューのキーボード操作（2x2グリッド）
     if (state.battle && state.battle.turn === 'player') {
       const btns = document.querySelectorAll('.battle-btn');
       if (!btns[0].disabled) {
@@ -840,9 +912,7 @@ function gameLoop() {
     }
   }
 
-  // keyJustPressedリセット
   Object.keys(keyJustPressed).forEach(k => keyJustPressed[k] = false);
-
   requestAnimationFrame(gameLoop);
 }
 
@@ -854,8 +924,9 @@ document.getElementById('start-btn').addEventListener('click', () => {
   state.phase = 'map';
   updateStatus();
   showMsgQueue([
-    'ここは へいわな村……\nのはずだったが、魔王があらわれた。',
-    'まずは村の人に話を聞こう。\n南に出れば冒険の世界が広がるぞ！',
+    'ある日ゆうしゃは聞いた。\n南の城に超絶美少女がいると。',
+    'その名は「じゅまんどぅ」。\n彼女に告白するのが夢だ。',
+    'だがモテない男には相手に\nされない。まず恋愛経験を積もう！',
     '（矢印キーで移動 / スペースで調べる）',
   ]);
 });
@@ -875,7 +946,6 @@ const mobileControls = document.getElementById('mobile-controls');
 if (isMobile && mobileControls) {
   mobileControls.classList.remove('hidden');
 
-  // D-padボタン: 押している間キー入力を模擬
   let holdIntervals = {};
 
   document.querySelectorAll('.dpad-btn, #action-btn').forEach(btn => {
@@ -886,7 +956,6 @@ if (isMobile && mobileControls) {
       keys[keyName] = true;
       keyJustPressed[keyName] = true;
 
-      // D-pad: 長押しで連続移動
       if (keyName.startsWith('Arrow')) {
         clearInterval(holdIntervals[keyName]);
         holdIntervals[keyName] = setInterval(() => {
