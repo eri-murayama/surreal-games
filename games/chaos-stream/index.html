@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta property="og:title" content="カオス配信シミュレーター | シュールゲームス">
-  <meta property="og:description" content="あなたの配信、カオスです。VTuberストリーミングシミュレーション。">
+  <meta property="og:description" content="推しの配信者を育てて人気者にしよう！かにかに・さくらんぼちゃん・ソフトクリームから選んで応援！">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/chaos-stream/index.html">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
@@ -27,7 +27,7 @@
 <body>
   <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
 
-  <div id="game-wrapper" data-sg-scale="480x750">
+  <div id="game-wrapper">
 
     <!-- タイトル画面 -->
     <div id="title-screen" class="screen active">
@@ -35,11 +35,36 @@
       <div class="glitch-container">
         <h1 class="glitch-text" data-text="カオス配信シミュレーター">カオス配信シミュレーター</h1>
       </div>
-      <p class="subtitle">あなたの配信、カオスです。</p>
+      <p class="subtitle">推しを育てて人気者にしよう！</p>
       <p class="studio-name">シュールゲームス</p>
       <button id="start-btn" class="cyber-btn">配信スタート</button>
       <div id="sg-high-score-display" class="sg-high-score" style="display:none;"></div>
-      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。にじさんじとは一切関係ありません。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
+    </div>
+
+    <!-- キャラ選択画面 -->
+    <div id="select-screen" class="screen">
+      <div class="scanline-overlay"></div>
+      <h2 class="select-title">応援する配信者を選ぼう！</h2>
+      <div class="char-select-grid">
+        <button class="char-card" data-char="kanikani">
+          <div class="char-img-wrap"><img src="kanikani.png" alt="かにかに"></div>
+          <h3 class="char-name">かにかに</h3>
+          <p class="char-desc">シルバニアファミリー開封配信</p>
+          <span class="char-difficulty">難易度: ★★☆☆☆</span>
+        </button>
+        <button class="char-card" data-char="sakuranbo">
+          <div class="char-img-wrap"><img src="sakuranbo.jpg" alt="さくらんぼちゃん"></div>
+          <h3 class="char-name">さくらんぼちゃん</h3>
+          <p class="char-desc">コスメ・美容系配信</p>
+          <span class="char-difficulty">難易度: ★★★☆☆</span>
+        </button>
+        <button class="char-card" data-char="softcream">
+          <div class="char-img-wrap"><img src="softcream.png" alt="ソフトクリーム"></div>
+          <h3 class="char-name">ソフトクリーム</h3>
+          <p class="char-desc">マルチ商法の配信</p>
+          <span class="char-difficulty difficulty-hard">難易度: ★★★★★</span>
+        </button>
+      </div>
     </div>
 
     <!-- ゲーム画面 -->
@@ -48,14 +73,14 @@
         <!-- 配信メイン画面 -->
         <div class="stream-main">
           <div class="stream-header">
-            <span class="live-badge">● LIVE</span>
-            <span class="stream-title" id="stream-title">【初配信】はじめまして！新人Vtuberです！</span>
-            <span class="viewer-count" id="viewer-count">👁 12人</span>
+            <span class="day-badge" id="day-badge">DAY 1</span>
+            <span class="live-badge" id="live-badge">● LIVE</span>
+            <span class="stream-title" id="stream-title">配信中…</span>
+            <span class="viewer-count" id="viewer-count">👁 0人</span>
           </div>
           <div class="stream-content" id="stream-content">
             <div class="character-area" id="character-area">
-              <div class="character-emoji" id="character-emoji">😊</div>
-              <div class="character-nose-hair">〰️</div>
+              <img class="character-img" id="character-img" src="" alt="">
             </div>
             <div class="narration-area" id="narration-area">
               <p id="narration-text"></p>
@@ -63,14 +88,14 @@
           </div>
           <div class="stats-bar">
             <div class="stat">
-              <span class="stat-label">カオス度</span>
-              <div class="stat-gauge"><div class="stat-fill chaos-fill" id="chaos-bar"></div></div>
-              <span class="stat-value" id="chaos-value">0</span>
+              <span class="stat-label">人気度</span>
+              <div class="stat-gauge"><div class="stat-fill popularity-fill" id="popularity-bar"></div></div>
+              <span class="stat-value" id="popularity-value">0</span>
             </div>
             <div class="stat">
-              <span class="stat-label">好感度</span>
-              <div class="stat-gauge"><div class="stat-fill likability-fill" id="likability-bar"></div></div>
-              <span class="stat-value" id="likability-value">0</span>
+              <span class="stat-label">登録者</span>
+              <div class="stat-gauge"><div class="stat-fill subscribers-fill" id="subscribers-bar"></div></div>
+              <span class="stat-value" id="subscribers-value">0</span>
             </div>
           </div>
           <div class="choices-area" id="choices-area"></div>
@@ -93,12 +118,12 @@
         <p class="result-description" id="result-description"></p>
         <div class="result-stats">
           <div class="result-stat">
-            <span>カオス度</span>
-            <span id="final-chaos">0</span>
+            <span>人気度</span>
+            <span id="final-popularity">0</span>
           </div>
           <div class="result-stat">
-            <span>好感度</span>
-            <span id="final-likability">0</span>
+            <span>登録者数</span>
+            <span id="final-subscribers">0</span>
           </div>
           <div class="result-stat">
             <span>最終視聴者数</span>
@@ -107,13 +132,15 @@
         </div>
       </div>
       <button id="retry-btn" class="cyber-btn">もう一回配信する</button>
-      <p class="disclaimer">※本作はファンメイドの非公式パロディゲームです。にじさんじとは一切関係ありません。<br>※シュールゲームスの全キャラクターには鼻毛が生えています。</p>
     </div>
 
   </div>
 
   <script src="../common/i18n.js"></script>
   <script src="../common/game-common.js"></script>
+  <script src="scenarios-kanikani.js"></script>
+  <script src="scenarios-sakuranbo.js"></script>
+  <script src="scenarios-softcream.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

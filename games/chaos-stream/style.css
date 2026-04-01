@@ -1,5 +1,6 @@
 /* ========================================
    カオス配信シミュレーター - style.css
+   PC画面向け・大画面レイアウト
    ======================================== */
 
 :root {
@@ -35,15 +36,15 @@ body {
 
 .back-to-top-link {
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 12px;
+  left: 12px;
   color: var(--green);
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   z-index: 1000;
   background: rgba(0,0,0,0.7);
-  padding: 4px 10px;
-  border-radius: 4px;
+  padding: 6px 14px;
+  border-radius: 6px;
   border: 1px solid var(--border-color);
 }
 .back-to-top-link:hover {
@@ -59,8 +60,8 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0,0,0,0.15) 2px,
-    rgba(0,0,0,0.15) 4px
+    rgba(0,0,0,0.12) 2px,
+    rgba(0,0,0,0.12) 4px
   );
   z-index: 999;
 }
@@ -70,8 +71,8 @@ body {
    ============================== */
 #title-screen {
   justify-content: center;
-  gap: 20px;
-  padding: 40px 20px;
+  gap: 28px;
+  padding: 60px 40px;
   text-align: center;
   background:
     radial-gradient(ellipse at 30% 20%, rgba(255,0,255,0.08) 0%, transparent 50%),
@@ -85,7 +86,7 @@ body {
 }
 .glitch-text {
   font-family: 'Dela Gothic One', cursive;
-  font-size: clamp(1.6rem, 6vw, 3rem);
+  font-size: 3.2rem;
   color: #fff;
   position: relative;
   animation: glitch-skew 4s infinite linear alternate-reverse;
@@ -137,22 +138,22 @@ body {
 }
 
 .subtitle {
-  font-size: clamp(0.9rem, 3vw, 1.3rem);
+  font-size: 1.4rem;
   color: var(--green);
   text-shadow: 0 0 10px rgba(0,255,65,0.5);
 }
 
 .studio-name {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--text-dim);
   letter-spacing: 0.3em;
 }
 
 .cyber-btn {
   font-family: 'M PLUS Rounded 1c', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  padding: 14px 48px;
+  padding: 16px 56px;
   color: var(--green);
   background: transparent;
   border: 2px solid var(--green);
@@ -172,19 +173,113 @@ body {
   transform: scale(0.96);
 }
 
-.disclaimer {
-  font-size: 0.7rem;
-  color: #555;
-  max-width: 500px;
-  line-height: 1.6;
-  margin-top: 10px;
+/* ==============================
+   キャラ選択画面
+   ============================== */
+#select-screen {
+  justify-content: center;
+  gap: 32px;
+  padding: 60px 40px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(0,255,65,0.06) 0%, transparent 50%),
+    var(--bg-dark);
+}
+
+.select-title {
+  font-family: 'Dela Gothic One', cursive;
+  font-size: 1.8rem;
+  color: var(--green);
+  text-shadow: 0 0 15px rgba(0,255,65,0.4);
+}
+
+.char-select-grid {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  max-width: 1000px;
+}
+
+.char-card {
+  background: var(--bg-mid);
+  border: 2px solid var(--border-color);
+  border-radius: 14px;
+  padding: 24px 20px;
+  width: 260px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  color: #eee;
+}
+.char-card:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 24px rgba(0,255,65,0.25);
+  transform: translateY(-6px);
+}
+.char-card:active {
+  transform: scale(0.97);
+}
+
+.char-img-wrap {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--border-color);
+}
+.char-card:hover .char-img-wrap {
+  border-color: var(--green);
+}
+.char-img-wrap img {
+  width: 130%;
+  height: 130%;
+  object-fit: cover;
+}
+
+.char-name {
+  font-family: 'Dela Gothic One', cursive;
+  font-size: 1.3rem;
+  color: #fff;
+  margin: 0;
+}
+
+.char-desc {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.char-difficulty {
+  font-size: 0.85rem;
+  color: var(--cyan);
+  background: rgba(0,255,255,0.1);
+  padding: 4px 14px;
+  border-radius: 12px;
+}
+.char-difficulty.difficulty-hard {
+  color: var(--red);
+  background: rgba(255,50,50,0.15);
+  animation: pulse-hard 2s infinite;
+}
+@keyframes pulse-hard {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 14px rgba(255,50,50,0.5); }
 }
 
 /* ==============================
-   ゲーム画面
+   ゲーム画面（PC大画面向け）
    ============================== */
 #game-screen {
-  padding: 40px 10px 10px;
+  padding: 50px 20px 20px;
 }
 #game-screen.active {
   display: flex;
@@ -194,15 +289,14 @@ body {
   display: flex;
   gap: 0;
   width: 100%;
-  max-width: 960px;
-  height: calc(100vh - 50px);
+  max-width: 1200px;
+  height: calc(100vh - 70px);
   border: 2px solid var(--green);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow:
-    0 0 15px rgba(0,255,65,0.2),
-    inset 0 0 80px rgba(0,255,65,0.03);
-  /* CRT curvature illusion */
+    0 0 20px rgba(0,255,65,0.2),
+    inset 0 0 100px rgba(0,255,65,0.03);
   background:
     radial-gradient(ellipse at center, rgba(0,255,65,0.02) 0%, transparent 70%),
     var(--bg-dark);
@@ -219,18 +313,33 @@ body {
 .stream-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 14px;
+  padding: 10px 18px;
   background: var(--bg-mid);
   border-bottom: 1px solid var(--border-color);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   flex-shrink: 0;
+}
+.day-badge {
+  color: var(--bg-dark);
+  font-weight: 700;
+  font-size: 0.8rem;
+  background: var(--cyan);
+  padding: 2px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
 }
 .live-badge {
   color: var(--red);
   font-weight: 700;
+  font-size: 1rem;
   animation: pulse-live 1.5s infinite;
   white-space: nowrap;
+}
+.live-badge.off-air {
+  color: var(--text-dim);
+  animation: none;
 }
 @keyframes pulse-live {
   0%, 100% { opacity: 1; }
@@ -242,73 +351,87 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #ccc;
+  font-size: 1rem;
 }
 .viewer-count {
   white-space: nowrap;
   color: var(--text-dim);
+  font-size: 1rem;
 }
 
 /* 配信コンテンツ */
 .stream-content {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  padding: 16px;
-  gap: 12px;
+  flex-direction: row;
+  padding: 20px;
+  gap: 20px;
   overflow-y: auto;
   min-height: 0;
+  position: relative;
+  align-items: flex-start;
 }
 
 .character-area {
-  text-align: center;
-  position: relative;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
 }
-.character-emoji {
-  font-size: clamp(3rem, 10vw, 5rem);
+.character-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--green);
+  background: rgba(255,255,255,0.05);
   transition: transform 0.3s;
-  display: inline-block;
+  object-fit: cover;
 }
-.character-emoji.shake {
-  animation: emoji-shake 0.5s ease-in-out;
+.character-img.shake {
+  animation: img-shake 0.5s ease-in-out;
 }
-@keyframes emoji-shake {
+@keyframes img-shake {
   0%, 100% { transform: translateX(0) rotate(0); }
   25% { transform: translateX(-8px) rotate(-5deg); }
   50% { transform: translateX(8px) rotate(5deg); }
   75% { transform: translateX(-4px) rotate(-2deg); }
 }
-.character-emoji.spin {
-  animation: emoji-spin 0.8s ease-in-out;
+.character-img.spin {
+  animation: img-spin 0.8s ease-in-out;
 }
-@keyframes emoji-spin {
+@keyframes img-spin {
   0% { transform: rotate(0deg) scale(1); }
   50% { transform: rotate(180deg) scale(1.3); }
   100% { transform: rotate(360deg) scale(1); }
 }
-.character-nose-hair {
-  font-size: 1.2rem;
-  opacity: 0.5;
-  margin-top: -8px;
+.character-img.happy {
+  animation: img-happy 0.6s ease-in-out;
+}
+@keyframes img-happy {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-10px); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(-6px); }
 }
 
 .narration-area {
+  flex: 1;
   background: rgba(0,255,65,0.05);
   border: 1px solid rgba(0,255,65,0.15);
-  border-radius: 6px;
-  padding: 14px 16px;
-  min-height: 80px;
+  border-radius: 8px;
+  padding: 20px 24px;
+  min-height: 120px;
 }
 #narration-text {
-  font-size: 0.95rem;
-  line-height: 1.8;
+  font-size: 1.15rem;
+  line-height: 2;
   white-space: pre-wrap;
 }
 
 /* ステータスバー */
 .stats-bar {
   display: flex;
-  gap: 16px;
-  padding: 8px 12px;
+  gap: 20px;
+  padding: 10px 18px;
   background: rgba(0,0,0,0.4);
   border-top: 1px solid var(--border-color);
   flex-shrink: 0;
@@ -317,8 +440,8 @@ body {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
+  gap: 8px;
+  font-size: 0.9rem;
 }
 .stat-label {
   white-space: nowrap;
@@ -326,62 +449,63 @@ body {
 }
 .stat-gauge {
   flex: 1;
-  height: 8px;
+  height: 10px;
   background: #222;
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
 }
 .stat-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 5px;
   transition: width 0.6s ease;
   width: 0%;
 }
-.chaos-fill {
-  background: linear-gradient(90deg, var(--magenta), var(--red));
-}
-.likability-fill {
+.popularity-fill {
   background: linear-gradient(90deg, var(--cyan), var(--green));
 }
+.subscribers-fill {
+  background: linear-gradient(90deg, var(--magenta), #ff8844);
+}
 .stat-value {
-  min-width: 24px;
+  min-width: 40px;
   text-align: right;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
 }
 
 /* 選択肢 */
 .choices-area {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 14px 18px;
   flex-shrink: 0;
 }
 .choice-btn {
   font-family: 'M PLUS Rounded 1c', sans-serif;
-  font-size: 0.9rem;
-  padding: 10px 16px;
+  font-size: 1.05rem;
+  padding: 14px 20px;
   background: rgba(0,255,65,0.05);
   color: var(--green);
   border: 1px solid rgba(0,255,65,0.3);
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   text-align: left;
   transition: all 0.15s;
   position: relative;
   overflow: hidden;
+  line-height: 1.5;
 }
 .choice-btn::before {
   content: '▶';
-  margin-right: 8px;
+  margin-right: 10px;
   opacity: 0;
   transition: opacity 0.15s;
 }
 .choice-btn:hover {
   background: rgba(0,255,65,0.15);
   border-color: var(--green);
-  padding-left: 24px;
+  padding-left: 30px;
 }
 .choice-btn:hover::before {
   opacity: 1;
@@ -389,10 +513,20 @@ body {
 .choice-btn:active {
   transform: scale(0.98);
 }
+/* 危険な選択肢 */
+.choice-btn.danger {
+  color: var(--red);
+  border-color: rgba(255,50,50,0.3);
+  background: rgba(255,50,50,0.05);
+}
+.choice-btn.danger:hover {
+  background: rgba(255,50,50,0.15);
+  border-color: var(--red);
+}
 
 /* チャット */
 .chat-sidebar {
-  width: 220px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--border-color);
@@ -400,10 +534,10 @@ body {
   flex-shrink: 0;
 }
 .chat-header {
-  padding: 8px 12px;
+  padding: 10px 16px;
   background: var(--bg-mid);
   border-bottom: 1px solid var(--border-color);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-dim);
   text-align: center;
@@ -412,23 +546,23 @@ body {
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   min-height: 0;
 }
 .chat-msg {
-  font-size: 0.75rem;
-  line-height: 1.4;
-  padding: 3px 6px;
-  border-radius: 3px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 4px 8px;
+  border-radius: 4px;
   animation: chat-slide-in 0.3s ease-out;
   word-break: break-all;
 }
 .chat-msg .chat-name {
   font-weight: 700;
-  margin-right: 4px;
+  margin-right: 6px;
 }
 @keyframes chat-slide-in {
   from { opacity: 0; transform: translateY(10px); }
@@ -442,6 +576,119 @@ body {
 .chat-msg.color-3 .chat-name { color: var(--yellow); }
 .chat-msg.color-4 .chat-name { color: #ff8844; }
 .chat-msg.color-5 .chat-name { color: #88ff88; }
+
+/* アンチコメント */
+.chat-msg.anti {
+  background: rgba(255,50,50,0.1);
+}
+.chat-msg.anti .chat-name {
+  color: var(--red) !important;
+}
+
+/* スパチャ（チャット欄内） */
+.chat-msg.superchat-chat {
+  background: rgba(255,170,0,0.15);
+  border: 1px solid rgba(255,170,0,0.3);
+  font-weight: 700;
+}
+
+/* ==============================
+   投げ銭（スーパーチャット）演出
+   ============================== */
+.superchat-popup {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  left: auto;
+  transform: none;
+  width: 320px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 20px rgba(255,170,0,0.3);
+  z-index: 100;
+  animation: superchat-slide-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.superchat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  color: #fff;
+  font-weight: 700;
+}
+.superchat-name {
+  font-size: 0.9rem;
+}
+.superchat-amount {
+  font-size: 1.1rem;
+  font-family: 'Press Start 2P', monospace;
+  text-shadow: 0 0 6px rgba(255,255,255,0.5);
+}
+.superchat-body {
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+@keyframes superchat-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.superchat-popup.superchat-fade-out {
+  animation: superchat-fade 0.5s ease-out forwards;
+}
+@keyframes superchat-fade {
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* 病みシーン（配信後） */
+.stream-layout.yami-mode {
+  border-color: #333;
+  box-shadow: 0 0 20px rgba(100,50,150,0.2), inset 0 0 100px rgba(50,0,80,0.1);
+}
+.stream-layout.yami-mode .narration-area {
+  background: rgba(100,50,150,0.08);
+  border-color: rgba(100,50,150,0.2);
+}
+.stream-layout.yami-mode .character-img {
+  border-color: #666;
+  filter: saturate(0.4) brightness(0.8);
+}
+
+/* Day切り替え演出 */
+.day-transition {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: day-fade 2s ease-in-out forwards;
+}
+.day-transition h2 {
+  font-family: 'Dela Gothic One', cursive;
+  font-size: 3rem;
+  color: var(--green);
+  text-shadow: 0 0 30px rgba(0,255,65,0.5);
+}
+@keyframes day-fade {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
 
 /* グリッチ演出（ゲーム中） */
 .stream-content.glitch-effect {
@@ -463,8 +710,8 @@ body {
    ============================== */
 #result-screen {
   justify-content: center;
-  gap: 20px;
-  padding: 40px 20px;
+  gap: 24px;
+  padding: 60px 40px;
   text-align: center;
   background:
     radial-gradient(ellipse at 50% 30%, rgba(255,0,255,0.08) 0%, transparent 50%),
@@ -472,92 +719,60 @@ body {
 }
 .result-title {
   font-family: 'Dela Gothic One', cursive;
-  font-size: clamp(1.3rem, 4vw, 2rem);
+  font-size: 2.2rem;
   color: var(--green);
   text-shadow: 0 0 20px rgba(0,255,65,0.4);
 }
 .result-card {
   background: var(--bg-mid);
   border: 2px solid var(--green);
-  border-radius: 12px;
-  padding: 30px;
-  max-width: 400px;
+  border-radius: 14px;
+  padding: 36px;
+  max-width: 480px;
   width: 100%;
   box-shadow: 0 0 30px rgba(0,255,65,0.1);
 }
 .result-emoji {
-  font-size: 4rem;
-  margin-bottom: 10px;
+  font-size: 5rem;
+  margin-bottom: 14px;
 }
 .result-rank {
   font-family: 'Dela Gothic One', cursive;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+  font-size: 1.8rem;
+  margin-bottom: 12px;
 }
 .result-description {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #bbb;
-  line-height: 1.7;
-  margin-bottom: 20px;
+  line-height: 1.8;
+  margin-bottom: 24px;
 }
 .result-stats {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 .result-stat {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
-  padding: 6px 12px;
+  font-size: 1rem;
+  padding: 8px 16px;
   background: rgba(0,0,0,0.3);
-  border-radius: 4px;
+  border-radius: 6px;
 }
 .result-stat span:last-child {
   font-weight: 700;
   color: var(--green);
 }
 
-/* ==============================
-   レスポンシブ（モバイル）
-   ============================== */
-@media (max-width: 640px) {
-  .stream-layout {
-    flex-direction: column;
-    height: auto;
-    min-height: calc(100vh - 50px);
-  }
-  .chat-sidebar {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid var(--border-color);
-    max-height: 200px;
-  }
-  .stream-header {
-    font-size: 0.7rem;
-    gap: 6px;
-  }
-  .stats-bar {
-    flex-direction: column;
-    gap: 6px;
-  }
-  .choices-area {
-    padding: 8px;
-  }
-  .choice-btn {
-    font-size: 0.85rem;
-    padding: 8px 12px;
-  }
-}
-
 /* スクロールバー */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 2px;
+  border-radius: 3px;
 }
