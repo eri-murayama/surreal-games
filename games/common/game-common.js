@@ -232,6 +232,22 @@
         131, 131, 165, 165, 131, 131, 165, 165,
       ]
     },
+    // YouTube配信風（カオス配信シミュレーター）— 明るくポップなフリーBGM風
+    youtube: {
+      tempo: 128, key: 'G', wave: 'triangle', volume: 0.10,
+      melody: [
+        784, 880, 988, 784, 1175, 988, 880, 784,
+        659, 784, 880, 988, 880, 784, 659, 784,
+        588, 659, 784, 880, 784, 659, 588, 659,
+        784, 880, 988, 1175, 988, 880, 784, 988,
+      ],
+      bass: [
+        392, 392, 494, 494, 588, 588, 494, 494,
+        330, 330, 392, 392, 440, 440, 392, 392,
+        294, 294, 330, 330, 392, 392, 330, 330,
+        392, 392, 494, 494, 392, 392, 494, 494,
+      ]
+    },
     // のほほん系（うんコーンキャッチャー ストーリー画面）— ゆるくてかわいい自己紹介BGM
     nohohon: {
       tempo: 80, key: 'C', wave: 'sine', volume: 0.09,
@@ -355,6 +371,20 @@
         233, 233, 349, 349, 392, 392, 233, 233,
         233, 233, 294, 294, 349, 349, 294, 294,
         262, 262, 294, 294, 349, 349, 233, 233,
+      ],
+      // 金管ブラス層（ぼーぼー鳴る sawtooth）— 周波数0=休符
+      brass: [
+        233, 233, 0, 0, 294, 294, 0, 0,
+        349, 349, 0, 233, 233, 0, 294, 294,
+        233, 233, 0, 0, 349, 349, 0, 0,
+        294, 294, 0, 349, 349, 0, 233, 233,
+      ],
+      // アップテンポのスウィング（強弱でノリを出す）
+      swing: [
+        1.1, 0.9, 1.1, 0.9, 1.2, 0.8, 1.1, 0.9,
+        1.1, 0.9, 1.1, 0.9, 1.2, 0.8, 1.1, 0.9,
+        1.1, 0.9, 1.2, 0.8, 1.1, 0.9, 1.2, 0.8,
+        1.1, 0.9, 1.1, 0.9, 1.2, 0.8, 1.1, 0.9,
       ]
     },
     // ケルト風ジグ（アイルランドゲーム）— 踊るようなアイリッシュダンス
@@ -426,7 +456,7 @@
     'escape-room': 'cute',
     'whack-kanikani': 'pop',
     'business-analysis': 'sparkle',
-    'chaos-stream': 'cyber',
+    'chaos-stream': 'youtube',
     'cosmic-chain': 'cosmic',
     'dress-up': 'cute',
     'drive': 'race',
@@ -585,6 +615,52 @@
         osc.stop(now + offsets[i] + noteDur * 0.95);
         this.bgmNodes.push(osc);
       });
+
+      // 金管ブラス層（sawtooth + ビブラートでぼーぼー鳴る）
+      if (preset.brass) {
+        preset.brass.forEach((freq, i) => {
+          if (!freq) return;
+          const noteDur = baseBeat * (swing ? swing[i] : 1);
+          // メインブラス（sawtooth — ぼーぼー感）
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.value = freq;
+          // ビブラート（揺れで生々しさを出す）
+          const vibrato = ctx.createOscillator();
+          const vibratoG = ctx.createGain();
+          vibrato.frequency.value = 5.5; // 揺れの速さ
+          vibratoG.gain.value = 4;       // 揺れ幅（Hz）
+          vibrato.connect(vibratoG);
+          vibratoG.connect(osc.frequency);
+          // 音量: メロディより大きめ（邪魔なくらい）
+          const brassVol = vol * 1.8;
+          g.gain.setValueAtTime(brassVol, now + offsets[i]);
+          g.gain.setValueAtTime(brassVol, now + offsets[i] + noteDur * 0.7);
+          g.gain.exponentialRampToValueAtTime(0.001, now + offsets[i] + noteDur * 0.95);
+          osc.connect(g);
+          g.connect(bgmDest);
+          osc.start(now + offsets[i]);
+          osc.stop(now + offsets[i] + noteDur);
+          vibrato.start(now + offsets[i]);
+          vibrato.stop(now + offsets[i] + noteDur);
+          this.bgmNodes.push(osc);
+          this.bgmNodes.push(vibrato);
+          // サブオクターブ（1オクターブ下で厚み追加）
+          const sub = ctx.createOscillator();
+          const sg = ctx.createGain();
+          sub.type = 'sawtooth';
+          sub.frequency.value = freq * 0.5;
+          sg.gain.setValueAtTime(brassVol * 0.6, now + offsets[i]);
+          sg.gain.setValueAtTime(brassVol * 0.6, now + offsets[i] + noteDur * 0.7);
+          sg.gain.exponentialRampToValueAtTime(0.001, now + offsets[i] + noteDur * 0.95);
+          sub.connect(sg);
+          sg.connect(bgmDest);
+          sub.start(now + offsets[i]);
+          sub.stop(now + offsets[i] + noteDur);
+          this.bgmNodes.push(sub);
+        });
+      }
 
       // スパークルアルペジオ層（PV playSparkleArp準拠）
       // 倍音比 [1, 1.25, 1.5, 1.875, 2, 2.5, 3]

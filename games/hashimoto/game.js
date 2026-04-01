@@ -393,42 +393,79 @@
     if (sg) sg.onGameStart();
   }
 
-  // ===== 行部澤 登場演出 =====
+  // ===== 行部澤 登場演出（2段階） =====
   function showReveal() {
     showScreen(revealScreen);
     var textEl = $_('reveal-text');
     textEl.innerHTML = '';
     revealStartBtn.style.display = 'none';
 
-    var lines = [
-      'ちょっと待ってくれ。',
+    // フェーズ1: 登場台詞
+    var phase1 = [
+      '待ちな。',
       '',
+      'バブバブバブバブうるせえよ。',
+      '橋本ゲームなんてぬるい遊びしてる',
+      '赤ちゃんがよお。',
+      '',
+      '本物の男になりてえなら、',
+      'もっとスリルあるゲームをしろ。'
+    ];
+
+    // フェーズ2: 自己紹介
+    var phase2 = [
       '<span class="reveal-name">行部澤</span>',
       '<span class="reveal-reading">（ぎょうぶざわ）</span>',
       '',
       '俺の名前は行部澤。',
       '<span class="reveal-pop">全国に約30人。</span>',
       '',
-      '俺よりもっと少ない苗字を',
-      '探せるかな？'
+      '俺より少ない苗字を探してみろ。',
+      'ぷっくら赤ちゃん。'
     ];
 
     var i = 0;
-    function typeLine() {
-      if (i < lines.length) {
-        if (lines[i] === '') {
+    function typePhase1() {
+      if (i < phase1.length) {
+        if (phase1[i] === '') {
           textEl.innerHTML += '<br>';
         } else {
-          textEl.innerHTML += lines[i] + '<br>';
+          textEl.innerHTML += phase1[i] + '<br>';
         }
         i++;
-        var delay = (lines[i - 1].indexOf('reveal-name') !== -1) ? 800 : 400;
-        setTimeout(typeLine, delay);
+        var delay = (phase1[i - 1] === '') ? 600 : 900;
+        setTimeout(typePhase1, delay);
       } else {
-        revealStartBtn.style.display = 'inline-block';
+        // フェーズ1完了 → 少し間を置いてフェーズ2へ
+        setTimeout(function() {
+          textEl.innerHTML = '';
+          var j = 0;
+          function typePhase2() {
+            if (j < phase2.length) {
+              if (phase2[j] === '') {
+                textEl.innerHTML += '<br>';
+              } else {
+                textEl.innerHTML += phase2[j] + '<br>';
+              }
+              j++;
+              var delay;
+              if (phase2[j - 1].indexOf('reveal-name') !== -1) {
+                delay = 1200;
+              } else if (phase2[j - 1] === '') {
+                delay = 600;
+              } else {
+                delay = 900;
+              }
+              setTimeout(typePhase2, delay);
+            } else {
+              revealStartBtn.style.display = 'inline-block';
+            }
+          }
+          typePhase2();
+        }, 2000);
       }
     }
-    setTimeout(typeLine, 600);
+    setTimeout(typePhase1, 1000);
   }
 
   startBtn.addEventListener('click', function() {

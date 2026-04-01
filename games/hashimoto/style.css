@@ -6,12 +6,15 @@ body {
   color: #fff;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow: hidden;
 }
 
 /* ===== 画面切替 ===== */
-.screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; padding: 16px; overflow-y: auto; }
+.screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; padding: 16px; }
 .screen.active { display: flex; }
+/* ゲームオーバー画面はコンテンツが長いのでスクロール許可・上寄せ */
+#gameover-screen.active { justify-content: flex-start; padding-top: 24px; overflow-y: auto; }
+/* ゲーム画面はスクロール不要（1画面に収める） */
+#game-screen.active { overflow: hidden; }
 
 /* ===== タイトル画面 ===== */
 .title-container { text-align: center; max-width: 400px; }
@@ -173,27 +176,27 @@ body {
 .result-detail { font-size: 0.95rem; color: #b0a8c8; margin-top: 8px; text-align: center; line-height: 1.6; }
 
 /* ===== ゲームオーバー画面 ===== */
-.gameover-container { text-align: center; max-width: 400px; }
-.gameover-icon { font-size: 80px; margin-bottom: 8px; animation: bounce 2s ease-in-out infinite; }
-.gameover-title { font-size: 2rem; font-weight: 900; color: #ff6ec7; margin-bottom: 16px; }
-.final-score { font-size: 4rem; font-weight: 900; color: #ffd700; }
-.final-label { font-size: 1rem; color: #b0a8c8; margin-bottom: 8px; }
-.final-detail { font-size: 0.9rem; color: #b0a8c8; margin-bottom: 16px; line-height: 1.6; }
+.gameover-container { text-align: center; max-width: 400px; padding-bottom: 24px; }
+.gameover-icon { font-size: 64px; margin-bottom: 4px; animation: bounce 2s ease-in-out infinite; }
+.gameover-title { font-size: 1.8rem; font-weight: 900; color: #ff6ec7; margin-bottom: 8px; }
+.final-score { font-size: 3.5rem; font-weight: 900; color: #ffd700; }
+.final-label { font-size: 0.9rem; color: #b0a8c8; margin-bottom: 4px; }
+.final-detail { font-size: 0.85rem; color: #b0a8c8; margin-bottom: 12px; line-height: 1.5; }
 .gameover-stats {
   display: flex;
   justify-content: center;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 .stat-item { text-align: center; }
-.stat-value { font-size: 1.8rem; font-weight: 900; color: #a855f7; }
-.stat-label { font-size: 0.75rem; color: #b0a8c8; }
+.stat-value { font-size: 1.5rem; font-weight: 900; color: #a855f7; }
+.stat-label { font-size: 0.7rem; color: #b0a8c8; }
 
 /* ===== 履歴リスト ===== */
 .history-section {
   width: 100%;
   max-width: 360px;
-  margin: 16px auto 24px;
+  margin: 10px auto 16px;
   text-align: left;
 }
 .history-title {
@@ -327,13 +330,80 @@ body.mode-gyobuzawa {
   80% { transform: translateX(4px); }
 }
 
-/* ===== レスポンシブ ===== */
-@media (max-width: 400px) {
+/* ===== レスポンシブ（iPad / タブレット） ===== */
+@media (max-width: 1024px) and (min-width: 481px) {
+  .screen { padding: 12px; }
+  .title-container { max-width: 460px; }
+  .choices { max-width: 460px; }
+  .gameover-container { max-width: 460px; }
+  .reveal-container { max-width: 420px; }
+}
+
+/* ===== レスポンシブ（スマホ） ===== */
+@media (max-width: 480px) {
+  .screen { padding: 10px 8px; }
+  .title-icon { font-size: 56px; margin-bottom: 4px; }
   .title-main { font-size: 2.2rem; }
-  .choice-name { font-size: 1.3rem; }
-  .choice-emoji { font-size: 36px; }
-  .choice-card { padding: 18px 8px; }
-  .choices { gap: 8px; }
-  .question-text { font-size: 1rem; }
+  .title-subtitle { font-size: 0.95rem; margin-bottom: 16px; }
+  .title-rules { padding: 12px 14px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.8; }
+  .btn-start { padding: 12px 36px; font-size: 1.05rem; }
+
+  .game-hud { gap: 20px; margin-bottom: 4px; }
   .hud-value { font-size: 1.4rem; }
+  .hud-label { font-size: 0.7rem; }
+  .player-badge { font-size: 0.78rem; padding: 4px 12px; }
+  .question-text { font-size: 1rem; margin-bottom: 10px; }
+  .question-text strong { font-size: 1.15rem; }
+
+  .choices { gap: 8px; }
+  .choice-card { padding: 16px 8px; border-radius: 16px; }
+  .choice-emoji { font-size: 36px; margin-bottom: 4px; }
+  .choice-name { font-size: 1.2rem; }
+  .choice-pop { font-size: 0.85rem; }
+  .vs-badge { font-size: 1rem; }
+
+  .gameover-icon { font-size: 56px; }
+  .gameover-title { font-size: 1.6rem; margin-bottom: 10px; }
+  .final-score { font-size: 3rem; }
+  .final-label { font-size: 0.85rem; }
+  .final-detail { font-size: 0.8rem; margin-bottom: 12px; }
+  .stat-value { font-size: 1.4rem; }
+  .gameover-stats { margin-bottom: 16px; }
+  .history-section { margin: 10px auto 16px; }
+  .history-list { max-height: 120px; }
+
+  .reveal-icon { font-size: 56px; margin-bottom: 10px; }
+  .reveal-text { font-size: 0.95rem; line-height: 1.8; min-height: 160px; }
+  .reveal-text .reveal-name { font-size: 2rem; margin: 8px 0; }
+  .reveal-text .reveal-pop { font-size: 1.2rem; }
+}
+
+/* ===== 超小型スマホ ===== */
+@media (max-width: 360px) {
+  .title-main { font-size: 1.9rem; }
+  .title-icon { font-size: 48px; }
+  .choice-emoji { font-size: 28px; }
+  .choice-name { font-size: 1rem; }
+  .choice-card { padding: 12px 6px; }
+  .final-score { font-size: 2.5rem; }
+  .reveal-text .reveal-name { font-size: 1.7rem; }
+}
+
+/* ===== 横向き対応（スマホ・タブレット） ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .screen { padding: 6px 12px; justify-content: flex-start; }
+  .title-icon, .gameover-icon, .reveal-icon { font-size: 40px; margin-bottom: 4px; }
+  .title-main { font-size: 1.6rem; }
+  .title-rules { padding: 8px 12px; margin-bottom: 12px; font-size: 0.8rem; line-height: 1.6; }
+  .btn-start { padding: 8px 28px; font-size: 0.95rem; }
+  .game-hud { margin-bottom: 2px; }
+  .player-info { margin-bottom: 2px; }
+  .question-text { margin-bottom: 6px; font-size: 0.9rem; }
+  .choice-card { padding: 10px 6px; }
+  .choice-emoji { font-size: 28px; margin-bottom: 2px; }
+  .choice-name { font-size: 1rem; }
+  .gameover-title { font-size: 1.4rem; margin-bottom: 6px; }
+  .final-score { font-size: 2.5rem; }
+  .history-list { max-height: 80px; }
+  .reveal-text { min-height: 100px; font-size: 0.85rem; line-height: 1.6; }
 }
