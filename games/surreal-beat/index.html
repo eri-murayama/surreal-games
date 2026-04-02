@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>シュールビート | シュールゲームス</title>
+  <meta name="description" content="落ちてくるシュールなノーツをリズムに合わせてタップ！">
+  <meta property="og:title" content="シュールビート | シュールゲームス">
+  <meta property="og:description" content="落ちてくるシュールなノーツをリズムに合わせてタップ！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/surreal-beat/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- タイトル画面 -->
+  <div id="title-screen" class="screen active">
+    <div class="title-content">
+      <h1 class="game-title" data-i18n="gameTitle">シュールビート</h1>
+      <p class="game-subtitle" data-i18n="gameSubtitle">リズムに合わせてシュールをタップ！</p>
+      <div class="title-emojis">💩🦀🐣🧬🔮</div>
+      <button id="start-btn" class="neon-btn" data-i18n="startBtn">スタート</button>
+      <p class="key-hint" data-i18n="keyHint">PC: D F J K キー / スマホ: タップ</p>
+    </div>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-item">
+        <span class="hud-label" data-i18n="score">スコア</span>
+        <span id="score-display" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label" data-i18n="combo">コンボ</span>
+        <span id="combo-display" class="hud-value">0</span>
+      </div>
+    </div>
+    <div id="play-area">
+      <div class="lane" data-lane="0"></div>
+      <div class="lane" data-lane="1"></div>
+      <div class="lane" data-lane="2"></div>
+      <div class="lane" data-lane="3"></div>
+      <div id="judge-line"></div>
+      <div id="judge-effect"></div>
+    </div>
+    <div id="tap-zones">
+      <button class="tap-btn" data-lane="0">D</button>
+      <button class="tap-btn" data-lane="1">F</button>
+      <button class="tap-btn" data-lane="2">J</button>
+      <button class="tap-btn" data-lane="3">K</button>
+    </div>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+  </div>
+
+  <!-- リザルト画面 -->
+  <div id="result-screen" class="screen">
+    <div class="result-content">
+      <h2 class="result-title" data-i18n="resultTitle">リザルト</h2>
+      <div class="result-score">
+        <span class="result-label" data-i18n="score">スコア</span>
+        <span id="final-score" class="result-value">0</span>
+      </div>
+      <div id="highscore-area"></div>
+      <div class="result-details">
+        <div class="result-detail perfect">
+          <span class="detail-label">Perfect</span>
+          <span id="perfect-count" class="detail-value">0</span>
+        </div>
+        <div class="result-detail great">
+          <span class="detail-label">Great</span>
+          <span id="great-count" class="detail-value">0</span>
+        </div>
+        <div class="result-detail miss">
+          <span class="detail-label">Miss</span>
+          <span id="miss-count" class="detail-value">0</span>
+        </div>
+        <div class="result-detail combo-max">
+          <span class="detail-label" data-i18n="maxCombo">最大コンボ</span>
+          <span id="max-combo" class="detail-value">0</span>
+        </div>
+      </div>
+      <div id="result-rank" class="rank-display"></div>
+      <button id="retry-btn" class="neon-btn" data-i18n="retry">もう一回</button>
+    </div>
+  </div>
+
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -47,6 +47,9 @@
     { id: 'hashimoto', title: '橋本さん', titleEn: 'Hashimoto-san', emoji: '👤', genre: 'クイズ', genreEn: 'Quiz', desc: '苗字ランキングで勝負だ！' },
     { id: 'ireland', title: 'アイルランドゲーム', titleEn: 'Ireland Game', emoji: '☘️', genre: 'クイズ', genreEn: 'Quiz', desc: '似ているものの中からアイルランドを探せ！' },
     { id: 'yandere-gakuen', title: 'ヤンデレ学園', titleEn: 'Yandere Academy', emoji: '💘', genre: '恋愛SLG', genreEn: 'Romance', desc: '逃げられない学園ラブストーリー。' },
+    { id: 'surreal-dash', title: 'シュールダッシュ', titleEn: 'Surreal Dash', emoji: '💩', genre: 'アクション', genreEn: 'Action', desc: 'うんちくんが走る！飛ぶ！エンドレスラン！' },
+    { id: 'surreal-beat', title: 'シュールビート', titleEn: 'Surreal Beat', emoji: '🎵', genre: 'リズム', genreEn: 'Rhythm', desc: 'シュールなノーツをリズムに合わせてタップ！' },
+    { id: 'surreal-cube', title: 'シュールキューブ', titleEn: 'Surreal Cube', emoji: '🎲', genre: 'アクション', genreEn: 'Action', desc: '3D空間を転がれ！シュールなキューブの大冒険！' },
   ];
 
   // ===== 実績定義 =====
@@ -498,6 +501,9 @@
     'tower': 'retro',
     'trivia-king': 'quiz',
     'unko-cone': 'march',
+    'surreal-beat': 'action',
+    'surreal-dash': 'action',
+    'surreal-cube': 'cosmic',
   };
 
   // ===== サウンドシステム（Web Audio API） =====

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>シュールダッシュ | シュールゲームス</title>
+  <meta name="description" content="うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！">
+  <meta property="og:title" content="シュールダッシュ | シュールゲームス">
+  <meta property="og:description" content="うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/surreal-dash/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- Title Screen -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="title-icon">💩💨</div>
+      <h1 class="game-title" data-i18n="gameTitle">シュールダッシュ</h1>
+      <p class="title-sub" data-i18n="gameSub">うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！</p>
+      <div id="highscore-display" class="highscore-display"></div>
+      <button id="start-btn" class="btn-primary" data-i18n="startBtn">💩 タップでスタート 💩</button>
+      <div class="controls-help">
+        <p class="help-title" data-i18n="controlsTitle">操作方法</p>
+        <p data-i18n="controlsPC">PC：スペースキーでジャンプ（2段ジャンプ可能）</p>
+        <p data-i18n="controlsMobile">スマホ：画面タップでジャンプ</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-item">
+        <span class="hud-label" data-i18n="scoreLabel">スコア</span>
+        <span id="score-display" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label" data-i18n="distLabel">距離</span>
+        <span id="dist-display" class="hud-value">0m</span>
+      </div>
+    </div>
+    <canvas id="game-canvas"></canvas>
+  </div>
+
+  <!-- Result Screen -->
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <div class="result-icon">💩</div>
+      <h2 class="result-title" data-i18n="gameOver">ゲームオーバー</h2>
+      <div class="result-stats">
+        <div class="result-row">
+          <span class="result-label" data-i18n="finalScore">スコア</span>
+          <span id="final-score" class="result-value">0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label" data-i18n="finalDist">距離</span>
+          <span id="final-dist" class="result-value">0m</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label" data-i18n="finalStars">スター</span>
+          <span id="final-stars" class="result-value">0</span>
+        </div>
+      </div>
+      <div id="result-rank" class="result-rank"></div>
+      <div id="new-record" class="sg-new-record" style="display:none" data-i18n="newRecord">NEW RECORD!</div>
+      <button id="retry-btn" class="btn-primary" data-i18n="retryBtn">💩 もう一度プレイ 💩</button>
+      <button id="title-btn" class="btn-secondary" data-i18n="titleBtn">タイトルに戻る</button>
+    </div>
+  </div>
+
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

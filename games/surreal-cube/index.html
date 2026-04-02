@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>シュールキューブ | シュールゲームス</title>
+  <meta name="description" content="3D空間を転がれ！シュールなキューブの大冒険！">
+  <meta property="og:title" content="シュールキューブ | シュールゲームス">
+  <meta property="og:description" content="3D空間を転がれ！シュールなキューブの大冒険！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/surreal-cube/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+
+  <!-- タイトル画面 -->
+  <div id="title-screen" class="screen active">
+    <div class="title-content">
+      <h1 class="game-title" data-i18n="title">シュールキューブ</h1>
+      <p class="game-subtitle" data-i18n="subtitle">3D空間を転がれ！シュールなキューブの大冒険！</p>
+      <canvas id="preview-canvas" width="200" height="200"></canvas>
+      <button id="start-btn" class="btn-start" data-i18n="start">スタート</button>
+      <div id="title-highscore"></div>
+    </div>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-item">
+        <span data-i18n="scoreLabel">スコア</span>
+        <span id="hud-score">0</span>
+      </div>
+      <div class="hud-item">
+        <span data-i18n="distLabel">距離</span>
+        <span id="hud-dist">0m</span>
+      </div>
+    </div>
+    <canvas id="game-canvas"></canvas>
+  </div>
+
+  <!-- リザルト画面 -->
+  <div id="result-screen" class="screen">
+    <div class="result-content">
+      <h2 class="result-title" data-i18n="gameOver">ゲームオーバー</h2>
+      <div class="result-score">
+        <span data-i18n="scoreLabel">スコア</span>
+        <span id="result-score-value">0</span>
+      </div>
+      <div class="result-dist">
+        <span data-i18n="distLabel">距離</span>
+        <span id="result-dist-value">0m</span>
+      </div>
+      <div id="result-highscore"></div>
+      <div id="result-new-record" class="hidden"></div>
+      <button id="retry-btn" class="btn-retry" data-i18n="retry">もう一回</button>
+    </div>
+  </div>
+
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

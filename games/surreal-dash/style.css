@@ -1,0 +1,271 @@
+/* ===== シュールダッシュ 固有スタイル ===== */
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a0533 0%, #2d1b69 40%, #6b2fa0 70%, #ff6ec7 100%);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  color: #fff;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* --- 画面切り替え --- */
+.screen {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  z-index: 10;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- タイトル画面 --- */
+#title-screen {
+  background: linear-gradient(135deg, #1a0533 0%, #2d1b69 40%, #6b2fa0 70%, #ff6ec7 100%);
+  text-align: center;
+  padding: 20px;
+}
+
+.title-container {
+  max-width: 400px;
+  width: 100%;
+}
+
+.title-icon {
+  font-size: 4rem;
+  margin-bottom: 8px;
+  animation: title-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes title-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.game-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #ff6ec7, #00fff7, #39ff14);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.title-sub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16px;
+}
+
+.highscore-display {
+  margin-bottom: 12px;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 14px 40px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6ec7, #a855f7);
+  border: none;
+  border-radius: var(--sg-radius-pill, 999px);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(255, 110, 199, 0.4);
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 30px rgba(255, 110, 199, 0.6);
+}
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--sg-radius-pill, 999px);
+  cursor: pointer;
+  transition: transform 0.15s, background 0.2s;
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.03);
+}
+
+.controls-help {
+  margin-top: 20px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--sg-radius-md, 12px);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.controls-help .help-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* --- ゲーム画面 --- */
+#game-screen {
+  background: #0d0221;
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  /* height はJSで制御 */
+}
+
+.game-hud {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  z-index: 100;
+  pointer-events: none;
+}
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 14px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+.hud-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+}
+.hud-value {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+/* --- リザルト画面 --- */
+#result-screen {
+  background: linear-gradient(135deg, #1a0533 0%, #2d1b69 50%, #6b2fa0 100%);
+  text-align: center;
+  padding: 20px;
+}
+
+.result-container {
+  max-width: 400px;
+  width: 100%;
+}
+
+.result-icon {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+}
+
+.result-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ff6ec7;
+  margin-bottom: 16px;
+}
+
+.result-stats {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--sg-radius-md, 12px);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.result-row:last-child {
+  border-bottom: none;
+}
+.result-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+.result-value {
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--sg-brand-cyan, #00fff7);
+}
+
+.result-rank {
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+/* --- トップに戻るリンク --- */
+.back-to-top-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 5000;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 10px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  transition: color 0.2s;
+}
+.back-to-top-link:hover {
+  color: #fff;
+}
+
+/* --- レスポンシブ --- */
+@media (max-width: 480px) {
+  .game-title {
+    font-size: 1.8rem;
+  }
+  .title-icon {
+    font-size: 3rem;
+  }
+  .btn-primary {
+    padding: 12px 32px;
+    font-size: 1.1rem;
+  }
+  .result-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-height: 700px) {
+  .title-container {
+    transform: scale(1.05);
+  }
+}

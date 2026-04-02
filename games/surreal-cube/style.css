@@ -1,0 +1,190 @@
+/* ===== シュールキューブ ===== */
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--sg-bg-dark);
+  color: var(--sg-text-light);
+  font-family: var(--sg-font-body);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* --- 画面切り替え --- */
+.screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.screen.active {
+  display: flex;
+}
+
+/* --- トップ戻りリンク --- */
+.back-to-top-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 5000;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--sg-radius-sm);
+  backdrop-filter: blur(4px);
+  transition: color 0.2s;
+}
+.back-to-top-link:hover {
+  color: #fff;
+}
+
+/* --- タイトル画面 --- */
+#title-screen {
+  background: radial-gradient(ellipse at center, #1a0a3e 0%, #0d0221 70%);
+}
+.title-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.game-title {
+  font-family: var(--sg-font-heading);
+  font-size: 2.2rem;
+  background: linear-gradient(90deg, var(--sg-brand-pink), var(--sg-brand-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 12px rgba(255, 110, 199, 0.5));
+}
+.game-subtitle {
+  font-size: 0.95rem;
+  color: var(--sg-text-muted);
+}
+
+#preview-canvas {
+  border-radius: var(--sg-radius-md);
+  background: transparent;
+}
+
+.btn-start, .btn-retry {
+  padding: 14px 48px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: var(--sg-font-body);
+  border: none;
+  border-radius: var(--sg-radius-pill);
+  background: linear-gradient(135deg, var(--sg-brand-pink), #a855f7);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 110, 199, 0.4);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.btn-start:hover, .btn-retry:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 28px rgba(255, 110, 199, 0.6);
+}
+.btn-start:active, .btn-retry:active {
+  transform: scale(0.97);
+}
+
+/* --- ゲーム画面 --- */
+#game-screen {
+  background: #0d0221;
+}
+.game-hud {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  gap: 20px;
+  padding: 6px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--sg-radius-pill);
+  backdrop-filter: blur(4px);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.hud-item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.hud-item span:first-child {
+  color: var(--sg-brand-cyan);
+  font-size: 0.75rem;
+}
+.hud-item span:last-child {
+  color: #fff;
+  font-size: 1rem;
+}
+
+#game-canvas {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  display: block;
+  touch-action: none;
+}
+
+/* --- リザルト画面 --- */
+#result-screen {
+  background: radial-gradient(ellipse at center, #1a0a3e 0%, #0d0221 70%);
+}
+.result-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+}
+.result-title {
+  font-family: var(--sg-font-heading);
+  font-size: 2rem;
+  color: var(--sg-brand-pink);
+}
+.result-score, .result-dist {
+  font-size: 1.1rem;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.result-score span:first-child, .result-dist span:first-child {
+  color: var(--sg-brand-cyan);
+}
+.result-score span:last-child, .result-dist span:last-child {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+#title-highscore {
+  margin-top: 4px;
+}
+
+/* --- レスポンシブ --- */
+@media (max-width: 480px) {
+  .game-title {
+    font-size: 1.6rem;
+  }
+  .game-subtitle {
+    font-size: 0.8rem;
+  }
+  .btn-start, .btn-retry {
+    padding: 12px 36px;
+    font-size: 1rem;
+  }
+  .game-hud {
+    gap: 12px;
+    padding: 4px 14px;
+  }
+}
