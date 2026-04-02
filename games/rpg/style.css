@@ -2,6 +2,7 @@ body {
   background: #2e1a2a;
   font-family: 'DotGothic16', 'Zen Maru Gothic', monospace;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;

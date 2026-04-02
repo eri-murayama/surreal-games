@@ -2,6 +2,7 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic Pro', sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -13,7 +14,7 @@ body {
 
 #game-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 600px;
   text-align: center;
 }
 

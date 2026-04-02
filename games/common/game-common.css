@@ -53,12 +53,19 @@ html, body {
   display: none !important;
 }
 
+/* --- z-index 階層設計 ---
+   コンテンツ:    1-100
+   ナビゲーション: 500-999
+   固定UI:       5000-5999
+   通知:         6000
+   ----------------------------- */
+
 /* --- サウンドトグル --- */
 .sg-sound-toggle {
   position: fixed;
   bottom: 16px;
   left: 16px;
-  z-index: 9999;
+  z-index: 5000;
   width: 40px;
   height: 40px;
   border: none;
@@ -155,7 +162,7 @@ html, body {
   position: fixed;
   top: 60px;
   right: -320px;
-  z-index: 10000;
+  z-index: 6000;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -310,7 +317,7 @@ html, body {
   position: fixed;
   bottom: 16px;
   right: 16px;
-  z-index: 9999;
+  z-index: 5000;
   width: 40px;
   height: 40px;
   border: none;
@@ -337,7 +344,7 @@ html, body {
   position: fixed;
   top: 10px;
   right: 10px;
-  z-index: 9999;
+  z-index: 5000;
   display: flex;
   gap: 4px;
 }

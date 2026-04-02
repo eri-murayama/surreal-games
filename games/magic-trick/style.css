@@ -4,6 +4,7 @@ body {
   font-family: 'Zen Kaku Gothic New', sans-serif;
   background: linear-gradient(135deg, #1a0a2e, #2d1b69, #1a0a2e);
   min-height: 100vh;
+  min-height: 100dvh;
   color: #f0e6ff;
   overflow-x: hidden;
 }

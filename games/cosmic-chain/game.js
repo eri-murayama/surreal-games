@@ -808,14 +808,14 @@
       shareBtn = document.createElement('button');
       shareBtn.id = 'share-btn';
       shareBtn.style.cssText = 'margin:8px;padding:14px 40px;font-family:"Orbitron",sans-serif;font-size:clamp(13px,3.2vw,17px);font-weight:700;border:2px solid rgba(255,255,255,0.15);border-radius:12px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1da1f2,#0d8bd9);letter-spacing:0.5px;transition:transform 0.2s,box-shadow 0.2s;';
-      shareBtn.textContent = '𝕏 でシェア';
+      shareBtn.textContent = tl('shareBtn');
       shareBtn.addEventListener('mouseenter', function () { shareBtn.style.transform = 'scale(1.05)'; shareBtn.style.boxShadow = '0 0 30px rgba(29,161,242,0.6)'; });
       shareBtn.addEventListener('mouseleave', function () { shareBtn.style.transform = 'scale(1)'; shareBtn.style.boxShadow = 'none'; });
       var retryBtnEl = document.getElementById('retry-btn');
       retryBtnEl.parentNode.insertBefore(shareBtn, retryBtnEl);
     }
     shareBtn.onclick = function () {
-      var text = '💫 コズミック・チェイン\nスコア: ' + score + '\nレベル: ' + level + '\n最大チェイン: ' + maxChain + '\n\n#シュールゲームス\n' + window.location.href;
+      var text = tl('shareText', score, level, maxChain, window.location.href);
       var url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
       window.open(url, '_blank');
     };
@@ -977,6 +977,37 @@
   // ---- Init ----
   const sg = SurrealGames.init('cosmic-chain');
 
+  // ---- i18n ----
+  let currentLang = (function() {
+    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+  })();
+
+  const LANG = {
+    ja: {
+      shareBtn: '𝕏 でシェア',
+      shareText: (score, level, maxChain, url) =>
+        '💫 コズミック・チェイン\nスコア: ' + score + '\nレベル: ' + level + '\n最大チェイン: ' + maxChain + '\n\n#シュールゲームス\n' + url,
+      highScore: (v) => 'ハイスコア: ' + v,
+    },
+    en: {
+      shareBtn: 'Share on 𝕏',
+      shareText: (score, level, maxChain, url) =>
+        '💫 Cosmic Chain\nScore: ' + score + '\nLevel: ' + level + '\nMax Chain: ' + maxChain + '\n\n#SurrealGames\n' + url,
+      highScore: (v) => 'High Score: ' + v,
+    },
+  };
+
+  function tl(key, ...args) {
+    const val = LANG[currentLang][key];
+    if (typeof val === 'function') return val(...args);
+    return val;
+  }
+
+  window.addEventListener('surreal-lang-change', function(e) {
+    if (e.detail && e.detail.lang) currentLang = e.detail.lang;
+  });
+
   if (bestScore > 0) {
     show('best-score-display');
     setText('best-score-value', bestScore);
@@ -987,7 +1018,7 @@
   if (sgHigh !== null) {
     const badge = document.createElement('div');
     badge.className = 'sg-highscore-badge';
-    badge.textContent = 'ハイスコア: ' + sgHigh;
+    badge.textContent = tl('highScore', sgHigh);
     document.getElementById('title-content').appendChild(badge);
   }
 

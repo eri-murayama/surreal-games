@@ -13,6 +13,7 @@ body {
   font-family: 'DotGothic16', 'Zen Maru Gothic', sans-serif;
   color: #3a2a1a;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,6 +26,7 @@ body {
   padding: 8px;
   text-align: center;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;

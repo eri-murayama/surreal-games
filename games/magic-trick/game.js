@@ -68,6 +68,67 @@
   // ===== 共通モジュール =====
   const sg = SurrealGames.init('magic-trick');
 
+  // ===== 多言語対応 =====
+  let currentLang = (function() {
+    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+  })();
+
+  const LANG = {
+    ja: {
+      putCoin: 'このコップにコインを入れるよ…',
+      watchCarefully: 'よく見ててね…',
+      shuffleStart: 'シャッフル開始！',
+      whereIsCoin: 'さて、コインはどこかな？',
+      correctGuess: 'よく見てたね！…でも本番はここからだ',
+      wrongGuess: 'あれ？まあいいか。本番はここからだ',
+      cupNames: ['左', '真ん中', '右'],
+      mazeInstruction: (from, to) => from + 'の穴から' + to + 'の穴へ！壁に触れるな！',
+      mazeDrag: '壁に触れずにGOALまで運べ！',
+      mazeFail: 'バレた！イカサマ失敗…！',
+      mazeSuccess: 'イカサマ成功！マジック大成功！',
+      perfectHelper: '完璧な協力者',
+      perfectComment: '全てのイカサマを成功させた！マジシャンは大スター確定！',
+      okHelper: 'まあまあの協力者',
+      okComment: 'そこそこ手伝えたね。マジシャンの評判はギリギリセーフ。',
+      badHelper: 'へっぽこ協力者',
+      badComment: 'イカサマがバレそうだったよ…もうちょっと頑張ろう。',
+      firedHelper: 'クビ',
+      firedComment: '全然手伝えなかった。マジシャンに解雇されました。',
+    },
+    en: {
+      putCoin: "I'm putting a coin under this cup...",
+      watchCarefully: 'Watch closely...',
+      shuffleStart: 'Shuffling!',
+      whereIsCoin: 'So, where is the coin?',
+      correctGuess: "Good eye! ...But the real challenge starts now",
+      wrongGuess: "Oops? Oh well. The real challenge starts now",
+      cupNames: ['Left', 'Center', 'Right'],
+      mazeInstruction: (from, to) => 'From the ' + from + ' hole to the ' + to + ' hole! Don\'t touch the walls!',
+      mazeDrag: 'Guide it to GOAL without touching the walls!',
+      mazeFail: 'Busted! Cheating failed...!',
+      mazeSuccess: 'Cheating success! Magic trick nailed!',
+      perfectHelper: 'Perfect Accomplice',
+      perfectComment: 'All tricks succeeded! The magician is now a superstar!',
+      okHelper: 'Decent Accomplice',
+      okComment: "You helped out okay. The magician's reputation is barely safe.",
+      badHelper: 'Clumsy Accomplice',
+      badComment: 'The cheating was almost caught... Try harder next time.',
+      firedHelper: 'Fired',
+      firedComment: "Couldn't help at all. The magician fired you.",
+    },
+  };
+
+  function tl(key, ...args) {
+    const val = LANG[currentLang][key];
+    if (typeof val === 'function') return val(...args);
+    return val;
+  }
+
+  window.addEventListener('surreal-lang-change', function(e) {
+    if (e.detail && e.detail.lang) currentLang = e.detail.lang;
+  });
+
   // ===== 初期化 =====
   startBtn.addEventListener('click', startGame);
   retryBtn.addEventListener('click', startGame);
@@ -111,7 +172,7 @@
     });
 
     coinPosition = Math.floor(Math.random() * CUP_COUNT);
-    speechText.textContent = 'このコップにコインを入れるよ…';
+    speechText.textContent = tl('putCoin');
 
     setTimeout(() => {
       const targetSlot = slots[coinPosition];
@@ -120,7 +181,7 @@
       targetSlot.querySelector('.coin-indicator').classList.add('visible');
 
       setTimeout(() => {
-        speechText.textContent = 'よく見ててね…';
+        speechText.textContent = tl('watchCarefully');
         setTimeout(() => {
           targetSlot.classList.remove('lift');
           targetSlot.classList.add('lift-down');
@@ -129,7 +190,7 @@
 
           setTimeout(() => {
             targetSlot.classList.remove('lift-down');
-            speechText.textContent = 'シャッフル開始！';
+            speechText.textContent = tl('shuffleStart');
             setTimeout(() => doShuffle(), 600);
           }, 500);
         }, 1000);
@@ -153,7 +214,7 @@
     let step = 0;
     function doNextSwap() {
       if (step >= moves.length) {
-        speechText.textContent = 'さて、コインはどこかな？';
+        speechText.textContent = tl('whereIsCoin');
         enableTap();
         return;
       }
@@ -221,10 +282,10 @@
     coinSlot.querySelector('.coin-indicator').classList.add('visible');
 
     if (tappedIndex === coinPosition) {
-      speechText.textContent = 'よく見てたね！…でも本番はここからだ';
+      speechText.textContent = tl('correctGuess');
       slots[tappedIndex].classList.add('correct-cup');
     } else {
-      speechText.textContent = 'あれ？まあいいか。本番はここからだ';
+      speechText.textContent = tl('wrongGuess');
       slots[tappedIndex].classList.add('wrong-cup');
     }
 
@@ -261,8 +322,8 @@
     coinX = HOLE_POSITIONS[coinPosition].x;
     coinY = HOLE_POSITIONS[coinPosition].y;
 
-    const cupNames = ['左', '真ん中', '右'];
-    instructionDetail.textContent = cupNames[coinPosition] + 'の穴から' + cupNames[targetHole] + 'の穴へ！壁に触れるな！';
+    const cupNames = tl('cupNames');
+    instructionDetail.textContent = tl('mazeInstruction', cupNames[coinPosition], cupNames[targetHole]);
 
     // キャンバス描画
     drawMaze();
@@ -521,7 +582,7 @@
       if (Math.sqrt(dx * dx + dy * dy) < HOLE_RADIUS + 10) {
         mazeActive = true;
         hasStarted = true;
-        instructionDetail.textContent = '壁に触れずにGOALまで運べ！';
+        instructionDetail.textContent = tl('mazeDrag');
         coinX = pos.x;
         coinY = pos.y;
         drawMaze();
@@ -586,7 +647,7 @@
     ctx.textBaseline = 'middle';
     ctx.fillText('✕', CANVAS_W / 2, CANVAS_H / 2);
 
-    instructionDetail.textContent = 'バレた！イカサマ失敗…！';
+    instructionDetail.textContent = tl('mazeFail');
 
     setTimeout(() => advanceRound(), 1500);
   }
@@ -615,7 +676,7 @@
     ctx.textBaseline = 'middle';
     ctx.fillText('◎', CANVAS_W / 2, CANVAS_H / 2);
 
-    instructionDetail.textContent = 'イカサマ成功！マジック大成功！';
+    instructionDetail.textContent = tl('mazeSuccess');
 
     setTimeout(() => advanceRound(), 1500);
   }
@@ -666,20 +727,20 @@
 
     if (score >= TOTAL_ROUNDS) {
       iconEl.textContent = '🤝';
-      rankEl.textContent = '完璧な協力者';
-      commentEl.textContent = '全てのイカサマを成功させた！マジシャンは大スター確定！';
+      rankEl.textContent = tl('perfectHelper');
+      commentEl.textContent = tl('perfectComment');
     } else if (score >= TOTAL_ROUNDS * 0.6) {
       iconEl.textContent = '😏';
-      rankEl.textContent = 'まあまあの協力者';
-      commentEl.textContent = 'そこそこ手伝えたね。マジシャンの評判はギリギリセーフ。';
+      rankEl.textContent = tl('okHelper');
+      commentEl.textContent = tl('okComment');
     } else if (score >= 1) {
       iconEl.textContent = '😥';
-      rankEl.textContent = 'へっぽこ協力者';
-      commentEl.textContent = 'イカサマがバレそうだったよ…もうちょっと頑張ろう。';
+      rankEl.textContent = tl('badHelper');
+      commentEl.textContent = tl('badComment');
     } else {
       iconEl.textContent = '💀';
-      rankEl.textContent = 'クビ';
-      commentEl.textContent = '全然手伝えなかった。マジシャンに解雇されました。';
+      rankEl.textContent = tl('firedHelper');
+      commentEl.textContent = tl('firedComment');
     }
   }
 

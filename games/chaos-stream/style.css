@@ -20,6 +20,7 @@ body {
   background: var(--bg-dark);
   color: #eee;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
 }
 
@@ -27,6 +28,7 @@ body {
 .screen {
   display: none;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 .screen.active {
   display: flex;
@@ -291,6 +293,7 @@ body {
   width: 100%;
   max-width: 1200px;
   height: calc(100vh - 70px);
+  height: calc(100dvh - 70px);
   border: 2px solid var(--green);
   border-radius: 10px;
   overflow: hidden;
@@ -775,4 +778,155 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 3px;
+}
+
+/* ===== レスポンシブ（スマホ） ===== */
+@media (max-width: 768px) {
+  #title-screen {
+    padding: 40px 20px;
+  }
+
+  .glitch-text {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .cyber-btn {
+    font-size: 1rem;
+    padding: 12px 36px;
+  }
+
+  /* キャラ選択 */
+  #select-screen {
+    padding: 30px 16px;
+  }
+
+  .char-select-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .char-card {
+    width: 100%;
+    max-width: 280px;
+    padding: 16px;
+  }
+
+  .char-img-wrap {
+    width: 100px;
+    height: 100px;
+  }
+
+  .char-name {
+    font-size: 1.1rem;
+  }
+
+  /* ゲーム画面 */
+  #game-screen {
+    padding: 40px 8px 8px;
+  }
+
+  .stream-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100dvh - 50px);
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    max-height: 200px;
+  }
+
+  .stream-header {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .stream-content {
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .character-area {
+    position: static;
+    display: flex;
+    justify-content: center;
+  }
+
+  .character-img {
+    width: 70px;
+    height: 70px;
+  }
+
+  #narration-text {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .stats-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .stat {
+    min-width: calc(50% - 4px);
+    font-size: 0.8rem;
+  }
+
+  .choice-btn {
+    font-size: 0.95rem;
+    padding: 12px 14px;
+  }
+
+  /* スパチャ */
+  .superchat-popup {
+    width: 80%;
+    max-width: 280px;
+    right: 10px;
+  }
+
+  /* リザルト */
+  #result-screen {
+    padding: 40px 20px;
+  }
+
+  .result-title {
+    font-size: 1.6rem;
+  }
+
+  .result-card {
+    padding: 24px 16px;
+  }
+
+  .result-emoji {
+    font-size: 3.5rem;
+  }
+
+  .day-transition h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .glitch-text {
+    font-size: 1.6rem;
+  }
+
+  .select-title {
+    font-size: 1.3rem;
+  }
+
+  .stat {
+    min-width: 100%;
+  }
 }

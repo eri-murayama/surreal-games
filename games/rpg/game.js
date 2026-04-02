@@ -5,6 +5,117 @@
 // ===== 共通モジュール初期化 =====
 const sg = SurrealGames.init('rpg');
 
+// ===== 多言語対応 =====
+let currentLang = (function() {
+  try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+  return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+})();
+
+const LANG_RPG = {
+  ja: {
+    mapNames: ['ワールドマップ', 'はじまりの町', 'じゅまんどぅの城'],
+    statName: (lv) => `ゆうしゃ Lv.${lv}`,
+    statHp: (hp, max) => `精神力 ${hp}/${max}`,
+    statMp: (mp, max) => `経済力 ${mp}/${max}`,
+    statGf: (n) => `彼女 ${n}人`,
+    battleHp: (hp, max) => `精神力 ${hp}/${max}`,
+    battleMp: (mp, max) => `経済力 ${mp}/${max}`,
+    battleGf: (n) => `彼女 ${n}人`,
+    appeared: (name) => `${name}が あらわれた！`,
+    confessLog: (name, fill) => `ゆうしゃは 告白した！\n${name}のハートが ${fill}たまった！`,
+    praiseLog: (name, fill) => `ゆうしゃは ${name}を褒めた！\nハートが ${fill}たまった！`,
+    giftLog: (name, fill) => `ゆうしゃは プレゼントを渡した！\n${name}のハートが ${fill}たまった！`,
+    noMp: '経済力が たりない！',
+    cantRunBoss: 'じゅまんどぅからは にげられない！',
+    ranAway: 'うまく にげきれた！',
+    cantRun: 'にげられなかった！',
+    reactions: (name, dmg) => [
+      `${name}は つめたい視線を\nむけてきた！精神力 -${dmg}`,
+      `${name}に「キモい」と\n言われた！精神力 -${dmg}`,
+      `${name}は スマホを\nいじりだした！精神力 -${dmg}`,
+      `${name}に ため息を\nつかれた！精神力 -${dmg}`,
+    ],
+    bossDefeated: 'じゅまんどぅが デレた！',
+    gotGirlfriend: (name, exp) => `${name}が 彼女になった！\n恋愛経験値 +${exp}！`,
+    levelUp: (lv) => `恋愛レベルアップ！ Lv.${lv}！\nモテ力が上がった！`,
+    heartBroken: 'ゆうしゃは 心が折れた……',
+    revivedMsg: '目が覚めた……\n精神力が回復して町に戻っていた。',
+    victorySub: (lv, gf) => `Lv.${lv}、彼女${gf}人でクリア！\nじゅまんどぅとラブラブだ！\n……たぶん。`,
+    enterTown: 'はじまりの町に やってきた。',
+    enterCastle: 'じゅまんどぅの城に\n足をふみいれた……！',
+    exitTown: 'ワールドマップに でた。',
+    exitCastle: 'じゅまんどぅの城から でた。',
+    introLines: [
+      'ある日ゆうしゃは聞いた。\n南の城に超絶美少女がいると。',
+      'その名は「じゅまんどぅ」。\n彼女に告白するのが夢だ。',
+      'だがモテない男には相手に\nされない。まず恋愛経験を積もう！',
+      '（矢印キーで移動 / スペースで調べる）',
+    ],
+    npcLines: {
+      'おじさんA': ['南の城に超かわいい\n「じゅまんどぅ」がいるらしいよ！', '恋愛経験値をためないと\n相手にしてもらえないかもね〜。'],
+      'おじさんB': ['この村のコンビニは\nなぜかプレゼントだけ売ってる。', 'しかも全部高い。'],
+      'ネコ': ['にゃーん。（元気が出てきた）', '＊精神力と経済力が回復した！＊'],
+      'じゅまんどぅ': ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'],
+    },
+  },
+  en: {
+    mapNames: ['World Map', 'Starting Town', "Jumandou's Castle"],
+    statName: (lv) => `Hero Lv.${lv}`,
+    statHp: (hp, max) => `Spirit ${hp}/${max}`,
+    statMp: (mp, max) => `Wealth ${mp}/${max}`,
+    statGf: (n) => `GFs: ${n}`,
+    battleHp: (hp, max) => `Spirit ${hp}/${max}`,
+    battleMp: (mp, max) => `Wealth ${mp}/${max}`,
+    battleGf: (n) => `GFs: ${n}`,
+    appeared: (name) => `${name} appeared!`,
+    confessLog: (name, fill) => `Hero confessed!\n${name}'s heart filled by ${fill}!`,
+    praiseLog: (name, fill) => `Hero complimented ${name}!\nHeart filled by ${fill}!`,
+    giftLog: (name, fill) => `Hero gave a gift!\n${name}'s heart filled by ${fill}!`,
+    noMp: 'Not enough Wealth!',
+    cantRunBoss: "Can't escape from Jumandou!",
+    ranAway: 'Got away safely!',
+    cantRun: "Couldn't escape!",
+    reactions: (name, dmg) => [
+      `${name} gave you\nan icy stare! Spirit -${dmg}`,
+      `${name} said "Ew."\nSpirit -${dmg}`,
+      `${name} started\nscrolling their phone! Spirit -${dmg}`,
+      `${name} sighed\nat you! Spirit -${dmg}`,
+    ],
+    bossDefeated: 'Jumandou fell for you!',
+    gotGirlfriend: (name, exp) => `${name} became your GF!\nLove EXP +${exp}!`,
+    levelUp: (lv) => `Love Level UP! Lv.${lv}!\nCharm power increased!`,
+    heartBroken: "Hero's heart was shattered...",
+    revivedMsg: "Woke up...\nSpirit recovered and you're back in town.",
+    victorySub: (lv, gf) => `Lv.${lv}, ${gf} GFs — cleared!\nYou and Jumandou are in love!\n...Probably.`,
+    enterTown: 'Arrived at Starting Town.',
+    enterCastle: "Stepped into\nJumandou's Castle...!",
+    exitTown: 'Returned to the World Map.',
+    exitCastle: "Left Jumandou's Castle.",
+    introLines: [
+      'One day, the Hero heard:\nA super cute girl lives in the southern castle.',
+      'Her name is "Jumandou."\nConfessing to her is his dream.',
+      "But unpopular guys don't stand a chance.\nFirst, gain some love experience!",
+      '(Arrow keys to move / Space to interact)',
+    ],
+    npcLines: {
+      'おじさんA': ['I hear a super cute girl named\n"Jumandou" lives in the southern castle!', "You'll need love experience\nor she won't give you the time of day~"],
+      'おじさんB': ["This village's convenience store\nonly sells gifts for some reason.", 'And they\'re all expensive.'],
+      'ネコ': ['Meow~ (You feel energized!)', '* Spirit and Wealth restored! *'],
+      'じゅまんどぅ': ["Hmm, you made it this far.\nYou think you can win me over?"],
+    },
+  },
+};
+
+function tl(key, ...args) {
+  const val = LANG_RPG[currentLang][key];
+  if (typeof val === 'function') return val(...args);
+  return val;
+}
+
+window.addEventListener('surreal-lang-change', function(e) {
+  if (e.detail && e.detail.lang) currentLang = e.detail.lang;
+});
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const enemyCanvas = document.getElementById('enemy-canvas');
@@ -510,10 +621,10 @@ function canWalk(mx, my) {
 
 // ===== ステータス更新 =====
 function updateStatus() {
-  document.getElementById('stat-name').textContent = `ゆうしゃ Lv.${state.level}`;
-  document.getElementById('stat-hp').textContent = `精神力 ${state.hp}/${state.maxHp}`;
-  document.getElementById('stat-mp').textContent = `経済力 ${state.mp}/${state.maxMp}`;
-  document.getElementById('stat-gf').textContent = `彼女 ${state.girlfriends}人`;
+  document.getElementById('stat-name').textContent = tl('statName', state.level);
+  document.getElementById('stat-hp').textContent = tl('statHp', state.hp, state.maxHp);
+  document.getElementById('stat-mp').textContent = tl('statMp', state.mp, state.maxMp);
+  document.getElementById('stat-gf').textContent = tl('statGf', state.girlfriends);
 }
 
 // ===== メッセージ表示 =====
@@ -553,14 +664,15 @@ function interactFacing() {
       state.mp = state.maxMp;
       updateStatus();
     }
+    const npcLines = tl('npcLines')[npc.name] || npc.lines;
     if (npc.name === 'じゅまんどぅ') {
-      showMsg(npc.lines[0], () => {
+      showMsg(npcLines[0], () => {
         closeMsg();
         startBattle('boss');
       });
       return;
     }
-    showMsgQueue(npc.lines);
+    showMsgQueue(npcLines);
     return;
   }
 
@@ -574,16 +686,16 @@ function interactFacing() {
 function enterLocation(_tx, _ty, ch) {
   if (ch === 'V' && state.map === 0) {
     state.map = 1; state.px = 6; state.py = 9;
-    showMsg('はじまりの町に やってきた。');
+    showMsg(tl('enterTown'));
   } else if (ch === 'K' && state.map === 0) {
     state.map = 2; state.px = 9; state.py = 1;
-    showMsg('じゅまんどぅの城に\n足をふみいれた……！');
+    showMsg(tl('enterCastle'));
   } else if (ch === 'D' && state.map === 1) {
     state.map = 0; state.px = 3; state.py = 4;
-    showMsg('ワールドマップに でた。');
+    showMsg(tl('exitTown'));
   } else if (ch === 'D' && state.map === 2) {
     state.map = 0; state.px = 13; state.py = 8;
-    showMsg('じゅまんどぅの城から でた。');
+    showMsg(tl('exitCastle'));
   }
   updateStatus();
 }
@@ -620,7 +732,7 @@ function startBattle(enemyKey) {
   document.getElementById('enemy-name').textContent = def.name;
   updateEnemyHeart();
   drawEnemySprite(def);
-  setBattleLog(`${def.name}が あらわれた！`);
+  setBattleLog(tl('appeared', def.name));
   state.battleCursor = 0;
   updateBattleStatus();
   setBattleButtons(true);
@@ -645,9 +757,9 @@ function setBattleButtons(enabled) {
 }
 
 function updateBattleStatus() {
-  document.getElementById('battle-hp').textContent = `精神力 ${state.hp}/${state.maxHp}`;
-  document.getElementById('battle-mp').textContent = `経済力 ${state.mp}/${state.maxMp}`;
-  document.getElementById('battle-gf').textContent = `彼女 ${state.girlfriends}人`;
+  document.getElementById('battle-hp').textContent = tl('battleHp', state.hp, state.maxHp);
+  document.getElementById('battle-mp').textContent = tl('battleMp', state.mp, state.maxMp);
+  document.getElementById('battle-gf').textContent = tl('battleGf', state.girlfriends);
 }
 
 function updateBattleCursor() {
@@ -690,18 +802,18 @@ function playerAction(action) {
     const fill = Math.max(1, state.atk - Math.floor(b.enemy.resist / 2) + Math.floor(Math.random() * 4));
     b.heartFilled += fill;
     shakeScreen();
-    setBattleLog(`ゆうしゃは 告白した！\n${b.enemy.name}のハートが ${fill}たまった！`);
+    setBattleLog(tl('confessLog', b.enemy.name, fill));
     updateEnemyHeart();
   } else if (action === 'praise') {
     // 褒める — 中程度のハート充填（MP不要）
     const fill = Math.max(1, Math.floor(state.atk * 0.7) + Math.floor(Math.random() * 3));
     b.heartFilled += fill;
-    setBattleLog(`ゆうしゃは ${b.enemy.name}を褒めた！\nハートが ${fill}たまった！`);
+    setBattleLog(tl('praiseLog', b.enemy.name, fill));
     updateEnemyHeart();
   } else if (action === 'gift') {
     // プレゼントする — 効果大だが経済力を消費
     if (state.mp < 4) {
-      setBattleLog('経済力が たりない！');
+      setBattleLog(tl('noMp'));
       setTimeout(() => setBattleButtons(true), 800);
       return;
     }
@@ -711,20 +823,20 @@ function playerAction(action) {
     const fill = Math.max(1, Math.floor(state.atk * 1.8) - Math.floor(b.enemy.resist / 3) + Math.floor(Math.random() * 6));
     b.heartFilled += fill;
     shakeScreen();
-    setBattleLog(`ゆうしゃは プレゼントを渡した！\n${b.enemy.name}のハートが ${fill}たまった！`);
+    setBattleLog(tl('giftLog', b.enemy.name, fill));
     updateEnemyHeart();
   } else if (action === 'run') {
     if (b.key === 'boss') {
-      setBattleLog('じゅまんどぅからは にげられない！');
+      setBattleLog(tl('cantRunBoss'));
       setTimeout(() => setBattleButtons(true), 800);
       return;
     }
     if (Math.random() < 0.7) {
-      setBattleLog('うまく にげきれた！');
+      setBattleLog(tl('ranAway'));
       setTimeout(() => endBattle(), 1000);
       return;
     }
-    setBattleLog('にげられなかった！');
+    setBattleLog(tl('cantRun'));
   }
 
   // ハートゲージMAX確認
@@ -748,12 +860,7 @@ function enemyTurn() {
   shakeScreen();
 
   // リアクション台詞ランダム
-  const reactions = [
-    `${b.enemy.name}は つめたい視線を\nむけてきた！精神力 -${dmg}`,
-    `${b.enemy.name}に「キモい」と\n言われた！精神力 -${dmg}`,
-    `${b.enemy.name}は スマホを\nいじりだした！精神力 -${dmg}`,
-    `${b.enemy.name}に ため息を\nつかれた！精神力 -${dmg}`,
-  ];
+  const reactions = tl('reactions', b.enemy.name, dmg);
   setBattleLog(reactions[Math.floor(Math.random() * reactions.length)]);
 
   setTimeout(() => {
@@ -771,7 +878,7 @@ function battleVictory() {
   const exp = b.enemy.exp;
 
   if (b.key === 'boss') {
-    setBattleLog('じゅまんどぅが デレた！');
+    setBattleLog(tl('bossDefeated'));
     setTimeout(() => {
       endBattle();
       state.defeatedBoss = true;
@@ -783,7 +890,7 @@ function battleVictory() {
 
   state.girlfriends++;
   state.exp += exp;
-  setBattleLog(`${b.enemy.name}が 彼女になった！\n恋愛経験値 +${exp}！`);
+  setBattleLog(tl('gotGirlfriend', b.enemy.name, exp));
 
   setTimeout(() => {
     if (state.exp >= state.nextExp) {
@@ -807,19 +914,19 @@ function levelUp() {
   updateStatus();
   updateBattleStatus();
 
-  setBattleLog(`恋愛レベルアップ！ Lv.${state.level}！\nモテ力が上がった！`);
+  setBattleLog(tl('levelUp', state.level));
   setTimeout(() => endBattle(), 1500);
 }
 
 function battleDefeat() {
-  setBattleLog('ゆうしゃは 心が折れた……');
+  setBattleLog(tl('heartBroken'));
   setTimeout(() => {
     endBattle();
     state.map = 1; state.px = 6; state.py = 9;
     state.hp = Math.floor(state.maxHp / 2);
     state.mp = Math.floor(state.maxMp / 2);
     updateStatus();
-    showMsg('目が覚めた……\n精神力が回復して町に戻っていた。');
+    showMsg(tl('revivedMsg'));
   }, 1500);
 }
 
@@ -828,8 +935,7 @@ function showVictory() {
   state.phase = 'victory';
   sg.onGameEnd(state.level);
   document.getElementById('victory-screen').classList.remove('hidden');
-  document.getElementById('victory-sub').textContent =
-    `Lv.${state.level}、彼女${state.girlfriends}人でクリア！\nじゅまんどぅとラブラブだ！\n……たぶん。`;
+  document.getElementById('victory-sub').textContent = tl('victorySub', state.level, state.girlfriends);
 }
 
 // ===== マップ移動 =====
@@ -923,12 +1029,7 @@ document.getElementById('start-btn').addEventListener('click', () => {
   initState();
   state.phase = 'map';
   updateStatus();
-  showMsgQueue([
-    'ある日ゆうしゃは聞いた。\n南の城に超絶美少女がいると。',
-    'その名は「じゅまんどぅ」。\n彼女に告白するのが夢だ。',
-    'だがモテない男には相手に\nされない。まず恋愛経験を積もう！',
-    '（矢印キーで移動 / スペースで調べる）',
-  ]);
+  showMsgQueue(tl('introLines'));
 });
 
 document.getElementById('victory-btn').addEventListener('click', () => {

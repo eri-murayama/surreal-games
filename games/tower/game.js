@@ -8,6 +8,141 @@
 
   const sg = SurrealGames.init('tower');
 
+  // ===== 多言語対応 =====
+  let currentLang = (function() {
+    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+  })();
+
+  const LANG_TW = {
+    ja: {
+      enteredTower: 'シュールの塔に足を踏み入れた...',
+      continueFrom: (f) => `${f}Fからの続き...`,
+      reachedFloor: (f) => `${f}Fに到達！`,
+      bossWarning: (name, emoji) => `⚠️ ボス階！ ${emoji} ${name}が待ち構えている！`,
+      defeated: (name, dmg) => `${name}に${dmg}ダメージ！`,
+      killedEnemy: (name, exp, coins) => `${name}を倒した！(+${exp}exp, +${coins}コイン)`,
+      bossDefeated: '★★★ ボス撃破！ ★★★',
+      eliteDefeated: '★ エリート撃破！ボーナス報酬！',
+      critHit: '★会心の一撃！',
+      enemyAttack: (name, dmg) => `${name}から${dmg}ダメージ！`,
+      dodged: (name) => `${name}の攻撃をかわした！`,
+      reflectKill: (name) => `反射ダメージで${name}を倒した！`,
+      bombKill: (n) => `爆発で${n}体倒した！`,
+      pickedUp: (emoji, name, desc) => `${emoji} ${name}を拾った！ ${desc}`,
+      toBag: (emoji, name) => `${emoji} ${name}をバッグに入れた！`,
+      bagPopup: (name) => `バッグ: ${name}`,
+      equipped: (emoji, name) => `${emoji} ${name}を装備した！`,
+      purchased: (emoji, name) => `${emoji} ${name}を購入した！`,
+      weaponEquip: (name) => `武器装備: ${name}`,
+      armorEquip: (name) => `防具装備: ${name}`,
+      accessoryEquip: (name) => `アクセサリ装備: ${name}`,
+      betterWeapon: '既に良い武器があるのでコインに変換した',
+      betterArmor: '既に良い防具があるのでコインに変換した',
+      treasureCoins: (n) => `💰 宝箱からコイン${n}枚！`,
+      treasureWeapon: (emoji, name) => `${emoji} 宝箱から${name}！`,
+      treasureArmor: (emoji, name) => `${emoji} 宝箱から${name}！`,
+      restHealed: (n) => `休憩ポイントでHP${n}回復！`,
+      usedItem: (emoji, name, desc) => `${emoji} ${name}を使った！ ${desc}`,
+      gachaResult: (rarity, emoji, name) => `ガチャ: ${rarity} ${emoji} ${name}！`,
+      noCoins: 'コインが足りない...（10コイン必要）',
+      emptyBag: 'バッグは空です',
+      noEquip: '-- なし --',
+      equipStats: (atk, def, crit, evade) => `攻撃: ${atk} / 防御: ${def} / 会心: ${crit}% / 回避: ${evade}%`,
+      poisonGone: '毒が消えた',
+      confused: '混乱して別の方向に進んだ！',
+      revivedLog: 'フォローの力で復活した！',
+      shareText: (floor, level, kills, isNew) =>
+        `🗼 シュールの塔 ${floor}F到達！\nLv${level} / 撃破${kills}体\n${isNew ? '★新記録★' : ''}\n#シュールゲームス`,
+      gameoverStats: (floor, level, kills, bossKills, turns, isNew, best) =>
+        `到達階: <span style="color:#b388ff;font-size:28px">${floor}F</span><br>` +
+        `レベル: ${level}<br>撃破数: ${kills}体<br>ボス撃破: ${bossKills}体<br>ターン数: ${turns}<br>` +
+        (isNew ? '<span class="sg-new-record">★ 新記録！ ★</span>' : `最高記録: ${best}F`),
+      summon: (name) => `${name}が配下を呼んだ！`,
+      shielded: (name) => `${name}がバリアを張った！`,
+      shieldGone: (name) => `${name}のバリアが消えた！`,
+      aoe: (name, dmg) => `${name}の範囲攻撃！${dmg}ダメージ！`,
+      clone: (name) => `${name}が分身を生んだ！`,
+      timestop: (name) => `${name}が時を止めた！`,
+      darkness: (name) => `${name}が闇を放った！視界が狭まる！`,
+      poisonField: (name) => `${name}が毒の霧を放った！`,
+      confuseAttack: (name) => `${name}のメロディ！方向感覚がおかしい！`,
+      quake: (name, dmg) => `${name}の地震！${dmg}ダメージ！`,
+      teleported: (name) => `${name}が瞬間移動した！`,
+      pulled: (name) => `${name}に引き寄せられた！`,
+      split: (name) => `${name}が分裂した！`,
+      gachaTitle: 'ガチャ [G]', equipTitle: '装備 [E]', bagTitle: 'バッグ [B]',
+    },
+    en: {
+      enteredTower: 'Entered the Surreal Tower...',
+      continueFrom: (f) => `Continuing from ${f}F...`,
+      reachedFloor: (f) => `Reached ${f}F!`,
+      bossWarning: (name, emoji) => `⚠️ Boss Floor! ${emoji} ${name} awaits!`,
+      defeated: (name, dmg) => `Dealt ${dmg} damage to ${name}!`,
+      killedEnemy: (name, exp, coins) => `Defeated ${name}! (+${exp}exp, +${coins} coins)`,
+      bossDefeated: '★★★ BOSS DEFEATED! ★★★',
+      eliteDefeated: '★ Elite defeated! Bonus rewards!',
+      critHit: '★ Critical hit!',
+      enemyAttack: (name, dmg) => `${name} dealt ${dmg} damage!`,
+      dodged: (name) => `Dodged ${name}'s attack!`,
+      reflectKill: (name) => `Reflect damage defeated ${name}!`,
+      bombKill: (n) => `Explosion defeated ${n} enemies!`,
+      pickedUp: (emoji, name, desc) => `${emoji} Got ${name}! ${desc}`,
+      toBag: (emoji, name) => `${emoji} Put ${name} in bag!`,
+      bagPopup: (name) => `Bag: ${name}`,
+      equipped: (emoji, name) => `${emoji} Equipped ${name}!`,
+      purchased: (emoji, name) => `${emoji} Bought ${name}!`,
+      weaponEquip: (name) => `Weapon: ${name}`,
+      armorEquip: (name) => `Armor: ${name}`,
+      accessoryEquip: (name) => `Accessory: ${name}`,
+      betterWeapon: 'Already have a better weapon — converted to coins',
+      betterArmor: 'Already have better armor — converted to coins',
+      treasureCoins: (n) => `💰 Found ${n} coins in a chest!`,
+      treasureWeapon: (emoji, name) => `${emoji} Found ${name} in a chest!`,
+      treasureArmor: (emoji, name) => `${emoji} Found ${name} in a chest!`,
+      restHealed: (n) => `Rested and recovered ${n} HP!`,
+      usedItem: (emoji, name, desc) => `${emoji} Used ${name}! ${desc}`,
+      gachaResult: (rarity, emoji, name) => `Gacha: ${rarity} ${emoji} ${name}!`,
+      noCoins: 'Not enough coins... (10 needed)',
+      emptyBag: 'Bag is empty',
+      noEquip: '-- None --',
+      equipStats: (atk, def, crit, evade) => `ATK: ${atk} / DEF: ${def} / CRIT: ${crit}% / EVD: ${evade}%`,
+      poisonGone: 'Poison wore off',
+      confused: 'Stumbled in a random direction!',
+      revivedLog: 'Revived by the power of a follow!',
+      shareText: (floor, level, kills, isNew) =>
+        `🗼 Surreal Tower — Reached ${floor}F!\nLv${level} / ${kills} kills\n${isNew ? '★ New Record! ★' : ''}\n#SurrealGames`,
+      gameoverStats: (floor, level, kills, bossKills, turns, isNew, best) =>
+        `Floor: <span style="color:#b388ff;font-size:28px">${floor}F</span><br>` +
+        `Level: ${level}<br>Kills: ${kills}<br>Bosses: ${bossKills}<br>Turns: ${turns}<br>` +
+        (isNew ? '<span class="sg-new-record">★ New Record! ★</span>' : `Best: ${best}F`),
+      summon: (name) => `${name} summoned minions!`,
+      shielded: (name) => `${name} put up a shield!`,
+      shieldGone: (name) => `${name}'s shield faded!`,
+      aoe: (name, dmg) => `${name}'s AoE attack! ${dmg} damage!`,
+      clone: (name) => `${name} spawned a clone!`,
+      timestop: (name) => `${name} stopped time!`,
+      darkness: (name) => `${name} unleashed darkness! Vision narrowed!`,
+      poisonField: (name) => `${name} released poison mist!`,
+      confuseAttack: (name) => `${name}'s melody! Sense of direction scrambled!`,
+      quake: (name, dmg) => `${name}'s earthquake! ${dmg} damage!`,
+      teleported: (name) => `${name} teleported!`,
+      pulled: (name) => `Pulled in by ${name}!`,
+      split: (name) => `${name} split in two!`,
+      gachaTitle: 'Gacha [G]', equipTitle: 'Equip [E]', bagTitle: 'Bag [B]',
+    },
+  };
+
+  function tl(key, ...args) {
+    const val = LANG_TW[currentLang][key];
+    if (typeof val === 'function') return val(...args);
+    return val;
+  }
+
+  window.addEventListener('surreal-lang-change', function(e) {
+    if (e.detail && e.detail.lang) currentLang = e.detail.lang;
+  });
+
   // ===== 定数 =====
   const TILE = 32;
   const MAP_W = 15;
@@ -619,7 +754,7 @@
       reviveUsed = data.reviveUsed || false;
       $('game-log').innerHTML = '';
       showScreen('game');
-      addLog(`${game.floor}Fからの続き...`, 'floor');
+      addLog(tl('continueFrom', game.floor), 'floor');
       render();
       startAnimLoop();
       return true;
@@ -665,7 +800,7 @@
     $('game-log').innerHTML = '';
     generateFloor();
     showScreen('game');
-    addLog('シュールの塔に足を踏み入れた...', 'floor');
+    addLog(tl('enteredTower'), 'floor');
     render();
     startAnimLoop();
   }
@@ -694,7 +829,7 @@
       boss.maxHp = boss.hp;
       boss.stunned = false;
       game.enemies.push(boss);
-      addLog(`⚠️ ボス階！ ${boss.emoji} ${boss.name}が待ち構えている！`, 'special');
+      addLog(tl('bossWarning', boss.name, boss.emoji), 'special');
     } else {
       // 通常階: 敵配置
       const numEnemies = Math.min(3 + Math.floor(game.floor * 0.6), 9);
@@ -774,7 +909,7 @@
           }
           return true;
         });
-        if (bombed) { addLog(`爆発で${bombed}体倒した！`, 'special'); checkLevelUp(); }
+        if (bombed) { addLog(tl('bombKill', bombed), 'special'); checkLevelUp(); }
         showPopup('ドカーン！'); break;
       }
       case 'double': p.doubleTurns += value; showPopup(`${value}ターン2回行動！`); break;
@@ -838,12 +973,12 @@
       const isCrit = rng(100) < stats.crit;
       if (isCrit) {
         baseDmg = Math.floor(baseDmg * 2);
-        addLog('★会心の一撃！', 'special');
+        addLog(tl('critHit'), 'special');
         screenFlash('#ffd700', 0.2);
       }
       defender.hp -= baseDmg;
       spawnDamageNumber(defender.x, defender.y, baseDmg, isCrit ? '#ffd700' : '#ff6b6b');
-      addLog(`${defender.name}に${baseDmg}ダメージ！`, 'damage');
+      addLog(tl('defeated', defender.name, baseDmg), 'damage');
 
       // 吸血
       if (stats.lifesteal > 0) {
@@ -854,7 +989,7 @@
 
       if (defender.hp <= 0) {
         const coinDrop = Math.floor((defender.coins || 0) * (1 + stats.coinBonus / 100));
-        addLog(`${defender.name}を倒した！(+${defender.exp}exp, +${coinDrop}コイン)`, 'item');
+        addLog(tl('killedEnemy', defender.name, defender.exp, coinDrop), 'item');
         grantKillRewards(defender);
         flashHUD('hud-exp'); flashHUD('hud-coin');
         game.enemies = game.enemies.filter(e => e !== defender);
@@ -862,14 +997,14 @@
 
         if (defender.isBoss) {
           game.bossDefeated = true;
-          addLog('★★★ ボス撃破！ ★★★', 'special');
+          addLog(tl('bossDefeated'), 'special');
           screenShake(10, 20);
           screenFlash('#ffd700', 0.5);
           // ボスドロップ
           dropBossReward();
         }
         if (defender.isElite) {
-          addLog('★ エリート撃破！ボーナス報酬！', 'special');
+          addLog(tl('eliteDefeated'), 'special');
           screenFlash('#b388ff', 0.3);
         }
         checkLevelUp();
@@ -877,13 +1012,13 @@
     } else {
       // 敵の攻撃
       if (rng(100) < stats.evade) {
-        addLog(`${attacker.name}の攻撃をかわした！`, 'special');
+        addLog(tl('dodged', attacker.name), 'special');
         spawnParticle(p.x * TILE + TILE / 2, p.y * TILE, 'MISS', '#66bb6a', 14, 30, -2);
         return;
       }
       let dmg = Math.max(1, attacker.atk - stats.def + rng(3) - 1);
       if (p.barrierTurns > 0) dmg = Math.max(1, Math.floor(dmg * 0.5));
-      addLog(`${attacker.name}から${dmg}ダメージ！`, 'damage');
+      addLog(tl('enemyAttack', attacker.name, dmg), 'damage');
       p.hp -= dmg;
       flashHUD('hud-hp');
       spawnDamageNumber(p.x, p.y, dmg);
@@ -894,7 +1029,7 @@
         attacker.hp -= stats.thorns;
         spawnDamageNumber(attacker.x, attacker.y, stats.thorns, '#ffa726');
         if (attacker.hp <= 0) {
-          addLog(`反射ダメージで${attacker.name}を倒した！`, 'special');
+          addLog(tl('reflectKill', attacker.name), 'special');
           grantKillRewards(attacker);
           game.enemies = game.enemies.filter(e => e !== attacker);
           spawnExplosion(attacker.x, attacker.y);
@@ -1090,10 +1225,10 @@
   function updateEquipDisplay() {
     const p = game.player;
     const stats = getEffectiveStats(p);
-    $('equip-weapon').innerHTML = p.weapon ? `${p.weapon.emoji} ${p.weapon.name}` : '-- なし --';
-    $('equip-armor').innerHTML = p.armor ? `${p.armor.emoji} ${p.armor.name}` : '-- なし --';
-    $('equip-accessory').innerHTML = p.accessory ? `${p.accessory.emoji} ${p.accessory.name}` : '-- なし --';
-    $('equip-stats').innerHTML = `攻撃: ${stats.atk} / 防御: ${stats.def} / 会心: ${stats.crit}% / 回避: ${stats.evade}%`;
+    $('equip-weapon').innerHTML = p.weapon ? `${p.weapon.emoji} ${p.weapon.name}` : tl('noEquip');
+    $('equip-armor').innerHTML = p.armor ? `${p.armor.emoji} ${p.armor.name}` : tl('noEquip');
+    $('equip-accessory').innerHTML = p.accessory ? `${p.accessory.emoji} ${p.accessory.name}` : tl('noEquip');
+    $('equip-stats').innerHTML = tl('equipStats', stats.atk, stats.def, stats.crit, stats.evade);
   }
 
   function closeEquipment() {
@@ -1104,7 +1239,7 @@
   // ===== バッグ =====
   function openBag() {
     if (!game.player.bag || game.player.bag.length === 0) {
-      addLog('バッグは空です', 'item');
+      addLog(tl('emptyBag'), 'item');
       return;
     }
     game.state = 'bag';
@@ -1237,7 +1372,7 @@
           while (tries < 20 && (mx < 0 || mx >= MAP_W || my < 0 || my >= MAP_H || game.map[my][mx] === T.WALL || game.enemies.some(e => e.x === mx && e.y === my) || (mx === p.x && my === p.y)));
           if (tries < 20) {
             game.enemies.push({ ...minion, x: mx, y: my, maxHp: minion.hp, stunned: false });
-            addLog(`${boss.name}が配下を呼んだ！`, 'special');
+            addLog(tl('summon', boss.name), 'special');
           }
         }
         break;
@@ -1247,14 +1382,14 @@
           boss.shieldTurns = 3;
           boss.originalDef = boss.def;
           boss.def += 15;
-          addLog(`${boss.name}がバリアを張った！`, 'special');
+          addLog(tl('shielded', boss.name), 'special');
         }
         if (boss.shieldActive) {
           boss.shieldTurns--;
           if (boss.shieldTurns <= 0) {
             boss.def = boss.originalDef;
             boss.shieldActive = false;
-            addLog(`${boss.name}のバリアが消えた！`, 'floor');
+            addLog(tl('shieldGone', boss.name), 'floor');
           }
         }
         break;
@@ -1264,7 +1399,7 @@
           p.hp -= dmg;
           spawnDamageNumber(p.x, p.y, dmg, '#ffa726');
           screenShake(5, 8);
-          addLog(`${boss.name}の範囲攻撃！${dmg}ダメージ！`, 'damage');
+          addLog(tl('aoe', boss.name, dmg), 'damage');
           flashHUD('hud-hp');
           if (p.hp <= 0) { p.hp = 0; gameOver(); }
         }
@@ -1277,13 +1412,13 @@
           while (tries < 20 && (cx < 0 || cx >= MAP_W || cy < 0 || cy >= MAP_H || game.map[cy][cx] === T.WALL || game.enemies.some(e => e.x === cx && e.y === cy) || (cx === p.x && cy === p.y)));
           if (tries < 20) {
             game.enemies.push({ ...clone, x: cx, y: cy, stunned: false });
-            addLog(`${boss.name}が分身を生んだ！`, 'special');
+            addLog(tl('clone', boss.name), 'special');
           }
         }
         break;
       case 'timestop':
         if (rng(5) === 0) {
-          addLog(`${boss.name}が時を止めた！`, 'special');
+          addLog(tl('timestop', boss.name), 'special');
           screenFlash('#9c7cff', 0.4);
           // ボスがもう1ターン行動
           const bdist = dist(boss, p);
@@ -1293,21 +1428,21 @@
       case 'darkness':
         if (rng(4) === 0) {
           game.statusEffects.blind = Math.max(game.statusEffects.blind, 5);
-          addLog(`${boss.name}が闇を放った！視界が狭まる！`, 'special');
+          addLog(tl('darkness', boss.name), 'special');
           screenFlash('#000', 0.5);
         }
         break;
       case 'poison_field':
         if (rng(3) === 0) {
           game.statusEffects.poison = Math.max(game.statusEffects.poison, 4);
-          addLog(`${boss.name}が毒の霧を放った！`, 'special');
+          addLog(tl('poisonField', boss.name), 'special');
           screenFlash('#66bb6a', 0.3);
         }
         break;
       case 'confuse':
         if (rng(4) === 0) {
           game.statusEffects.confuse = Math.max(game.statusEffects.confuse, 4);
-          addLog(`${boss.name}のメロディ！方向感覚がおかしい！`, 'special');
+          addLog(tl('confuseAttack', boss.name), 'special');
         }
         break;
       case 'quake':
@@ -1316,7 +1451,7 @@
           p.hp -= dmg;
           spawnDamageNumber(p.x, p.y, dmg, '#ffa726');
           screenShake(10, 15);
-          addLog(`${boss.name}の地震！${dmg}ダメージ！`, 'damage');
+          addLog(tl('quake', boss.name, dmg), 'damage');
           flashHUD('hud-hp');
           if (p.hp <= 0) { p.hp = 0; gameOver(); }
         }
@@ -1329,7 +1464,7 @@
             const nx = p.x + dx, ny = p.y + dy;
             if (nx >= 0 && nx < MAP_W && ny >= 0 && ny < MAP_H && game.map[ny][nx] !== T.WALL && !game.enemies.some(e => e.x === nx && e.y === ny)) {
               boss.x = nx; boss.y = ny;
-              addLog(`${boss.name}が瞬間移動した！`, 'special');
+              addLog(tl('teleported', boss.name), 'special');
               screenFlash('#b388ff', 0.2);
               break;
             }
@@ -1347,7 +1482,7 @@
     if (game.statusEffects.confuse > 0 && rng(100) < 25) {
       const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
       [dx, dy] = dirs[rng(4)];
-      addLog('混乱して別の方向に進んだ！', 'damage');
+      addLog(tl('confused'), 'damage');
     }
 
     const p = game.player;
@@ -1389,7 +1524,7 @@
     const tile = game.map[ny][nx];
     if (tile === T.STAIR) {
       game.floor++;
-      addLog(`${game.floor}Fに到達！`, 'floor');
+      addLog(tl('reachedFloor', game.floor), 'floor');
       flashHUD('hud-floor');
       screenFlash('#b388ff', 0.2);
       generateFloor();
@@ -1402,7 +1537,7 @@
     if (tile === T.REST) {
       const healAmt = Math.floor(game.player.maxHp * 0.4);
       game.player.hp = Math.min(game.player.maxHp, game.player.hp + healAmt);
-      addLog(`休憩ポイントでHP${healAmt}回復！`, 'heal');
+      addLog(tl('restHealed', healAmt), 'heal');
       spawnHealNumber(p.x, p.y, healAmt);
       flashHUD('hud-hp');
       game.map[ny][nx] = T.FLOOR; // 一度きり
@@ -1514,7 +1649,7 @@
             const pullX = p.x + pullDx, pullY = p.y + pullDy;
             if (pullX >= 0 && pullX < MAP_W && pullY >= 0 && pullY < MAP_H && game.map[pullY][pullX] !== T.WALL && !game.enemies.some(o => o.x === pullX && o.y === pullY)) {
               p.x = pullX; p.y = pullY;
-              addLog(`${e.name}に引き寄せられた！`, 'damage');
+              addLog(tl('pulled', e.name), 'damage');
               screenShake(2, 4);
             }
           }
@@ -1531,7 +1666,7 @@
             while (tries < 10 && (cx < 0 || cx >= MAP_W || cy < 0 || cy >= MAP_H || game.map[cy][cx] === T.WALL || game.enemies.some(o => o.x === cx && o.y === cy) || (cx === p.x && cy === p.y)));
             if (tries < 10) {
               game.enemies.push({ ...clone, x: cx, y: cy, stunned: false });
-              addLog(`${e.name}が分裂した！`, 'special');
+              addLog(tl('split', e.name), 'special');
             }
           }
           dx = Math.sign(p.x - e.x); dy = Math.sign(p.y - e.y);
@@ -1573,7 +1708,7 @@
       p.hp = Math.max(1, p.hp - poisonDmg);
       game.statusEffects.poison--;
       spawnDamageNumber(p.x, p.y, poisonDmg, '#66bb6a');
-      if (game.statusEffects.poison === 0) addLog('毒が消えた', 'heal');
+      if (game.statusEffects.poison === 0) addLog(tl('poisonGone'), 'heal');
     }
 
     // 状態異常カウントダウン
@@ -1610,14 +1745,7 @@
     if (isNew) localStorage.setItem(BEST_KEY, game.floor);
 
     const stats = $('gameover-stats');
-    stats.innerHTML = `
-      到達階: <span style="color:#b388ff;font-size:28px">${game.floor}F</span><br>
-      レベル: ${game.player.level}<br>
-      撃破数: ${game.player.kills}体<br>
-      ボス撃破: ${game.player.bossKills}体<br>
-      ターン数: ${game.turnCount}<br>
-      ${isNew ? '<span class="sg-new-record">★ 新記録！ ★</span>' : `最高記録: ${best}F`}
-    `;
+    stats.innerHTML = tl('gameoverStats', game.floor, game.player.level, game.player.kills, game.player.bossKills, game.turnCount, isNew, best);
 
     $('gameover-epitaph').textContent = EPITAPHS[rng(EPITAPHS.length)];
 
@@ -1629,7 +1757,7 @@
     if (shareBtn) {
       shareBtn.classList.remove('hidden');
       shareBtn.onclick = () => {
-        const txt = `🗼 シュールの塔 ${game.floor}F到達！\nLv${game.player.level} / 撃破${game.player.kills}体\n${isNew ? '★新記録★' : ''}\n#シュールゲームス`;
+        const txt = tl('shareText', game.floor, game.player.level, game.player.kills, isNew);
         const url = window.location.href;
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(txt + '\n' + url), '_blank');
       };
@@ -1662,7 +1790,7 @@
     }
 
     showScreen('game');
-    addLog('フォローの力で復活した！', 'special');
+    addLog(tl('revivedLog'), 'special');
     screenFlash('#ffd700', 0.4);
     render();
     startAnimLoop();
@@ -2029,7 +2157,7 @@
 
   function tryOpenGacha() {
     if (!game || game.state !== 'play') return;
-    if (game.player.coins < GACHA_COST) { addLog('コインが足りない...（10コイン必要）', 'coin'); return; }
+    if (game.player.coins < GACHA_COST) { addLog(tl('noCoins'), 'coin'); return; }
     openGacha();
   }
 
@@ -2076,9 +2204,9 @@
   const hudBtns = document.createElement('div');
   hudBtns.id = 'hud-buttons';
   hudBtns.innerHTML = `
-    <button id="hud-gacha-btn" title="ガチャ [G]">🎰</button>
-    <button id="hud-equip-btn" title="装備 [E]">⚔️</button>
-    <button id="hud-bag-btn" title="バッグ [B]">🎒</button>
+    <button id="hud-gacha-btn" title="${tl('gachaTitle')}">🎰</button>
+    <button id="hud-equip-btn" title="${tl('equipTitle')}">⚔️</button>
+    <button id="hud-bag-btn" title="${tl('bagTitle')}">🎒</button>
   `;
   $('game-hud').appendChild(hudBtns);
   $('hud-gacha-btn').addEventListener('click', tryOpenGacha);

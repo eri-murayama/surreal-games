@@ -3,6 +3,7 @@ body {
   color: #e0e0e0;
   font-family: 'Zen Maru Gothic', sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   overflow-x: hidden;

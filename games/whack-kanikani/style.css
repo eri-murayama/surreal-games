@@ -2,6 +2,7 @@ body {
   background: linear-gradient(180deg, #ffb6c1 0%, #ff91a4 30%, #ff69b4 100%);
   font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic Pro', sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -416,6 +417,7 @@ button.btn-disabled {
   top: 0;
   width: 240px;
   height: 100vh;
+  height: 100dvh;
   pointer-events: none;
   z-index: 0;
 }

@@ -665,3 +665,13 @@ if (isMobile && mobileTapBtn) {
     }
   }, { passive: false });
 }
+
+// ===== ページ離脱時のタイマークリーンアップ =====
+window.addEventListener('beforeunload', () => {
+  if (battleTimer) {
+    clearInterval(battleTimer);
+    battleTimer = null;
+  }
+  gameRunning = false;
+  cleanupPeer();
+});

@@ -23,6 +23,7 @@ body {
   background-size: 400% 400%;
   animation: bgShift 12s ease infinite;
   min-height: 100vh;
+  min-height: 100dvh;
   color: #333;
   overflow-x: hidden;
 }
@@ -155,6 +156,7 @@ body {
   display: none;
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   justify-content: center;
   align-items: center;
   flex-direction: column;

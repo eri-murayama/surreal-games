@@ -138,6 +138,108 @@
     { rank: '圏外', name: '一尺八寸', pop: 40 }
   ];
 
+  // ===== 多言語対応 =====
+  var currentLang = (function() {
+    try { var s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+  })();
+
+  var LANG = {
+    ja: {
+      san: 'さん',
+      formatPop: function(n) {
+        if (n >= 10000) return '約' + Math.round(n / 10000) + '万人';
+        return '約' + n.toLocaleString() + '人';
+      },
+      hashimotoPlayer: 'あなた：橋本さん（約44万人）',
+      hashimotoQuestion: 'どっちが橋本さんより<br><strong>人口が少ない</strong>？',
+      gyobuzawaPlayer: 'あなた：行部澤さん（約30人）',
+      gyobuzawaQuestion: 'どっちが行部澤さんより<br><strong>人口が少ない</strong>？',
+      wrong: 'ハズレ！',
+      hashimotoLabel: '橋本さんは約44万人でした',
+      gyobuzawaLabel: '行部澤さんは約30人でした',
+      rankLabel: function(r) { return (typeof r === 'number') ? r + '位' : r; },
+      historyHashimoto: '👤 橋本さん … 第24位（約44万人）',
+      historyGyobuzawa: '🌀 行部澤さん … 圏外（約30人）',
+      hashimotoComments: [
+        '橋本さん…まだまだだね',
+        '橋本さん、ちょっと苗字に詳しくなったね',
+        '橋本さん、なかなかやるじゃん！',
+        '橋本さん、苗字マスターの素質あり！',
+        '橋本さん、あなたは苗字の神だ！！',
+      ],
+      gyobuzawaComments: [
+        '行部澤の壁は高かった…',
+        'なかなかやるな…だが行部澤には遠い',
+        '行部澤も認めざるを得ない…！',
+        '行部澤を超えた…！苗字界の覇者だ！！',
+      ],
+      highScoreLabel: function(hs) { return '🏆 ハイスコア: ' + hs + '問'; },
+      reveal1: [
+        '待ちな。', '', 'バブバブバブバブうるせえよ。',
+        '橋本ゲームなんてぬるい遊びしてる', '赤ちゃんがよお。', '',
+        '本物の男になりてえなら、', 'もっとスリルあるゲームをしろ。'
+      ],
+      reveal2: [
+        '<span class="reveal-name">行部澤</span>',
+        '<span class="reveal-reading">（ぎょうぶざわ）</span>', '',
+        '俺の名前は行部澤。',
+        '<span class="reveal-pop">全国に約30人。</span>', '',
+        '俺より少ない苗字を探してみろ。', 'ぷっくら赤ちゃん。'
+      ],
+    },
+    en: {
+      san: '',
+      formatPop: function(n) {
+        if (n >= 1000000) return '~' + (n / 1000000).toFixed(1) + 'M people';
+        if (n >= 1000) return '~' + Math.round(n / 1000) + 'K people';
+        return '~' + n.toLocaleString() + ' people';
+      },
+      hashimotoPlayer: 'You: Hashimoto (~440K people)',
+      hashimotoQuestion: 'Which has <strong>fewer people</strong><br>than Hashimoto?',
+      gyobuzawaPlayer: 'You: Gyobuzawa (~30 people)',
+      gyobuzawaQuestion: 'Which has <strong>fewer people</strong><br>than Gyobuzawa?',
+      wrong: 'Wrong!',
+      hashimotoLabel: 'Hashimoto has ~440K people',
+      gyobuzawaLabel: 'Gyobuzawa has ~30 people',
+      rankLabel: function(r) { return (typeof r === 'number') ? '#' + r : r; },
+      historyHashimoto: '👤 Hashimoto ... #24 (~440K people)',
+      historyGyobuzawa: '🌀 Gyobuzawa ... Unranked (~30 people)',
+      hashimotoComments: [
+        'Hashimoto... you need more practice',
+        'Hashimoto, you learned a little about surnames!',
+        'Hashimoto, not bad at all!',
+        'Hashimoto, you have the makings of a surname master!',
+        'Hashimoto, you are the GOD of surnames!!',
+      ],
+      gyobuzawaComments: [
+        "Gyobuzawa's wall was too high...",
+        "Not bad... but Gyobuzawa is still far away",
+        "Even Gyobuzawa has to acknowledge this...!",
+        "You surpassed Gyobuzawa...! King of surnames!!",
+      ],
+      highScoreLabel: function(hs) { return '🏆 High Score: ' + hs; },
+      reveal1: [
+        'Hold it.', '', "Wah wah wah, you're so noisy.",
+        "Playing this easy Hashimoto game", "like a baby.", '',
+        "If you wanna be a real one,", "play a game with more thrill."
+      ],
+      reveal2: [
+        '<span class="reveal-name">Gyobuzawa</span>',
+        '<span class="reveal-reading">(GYOH-boo-zah-wah)</span>', '',
+        "My name is Gyobuzawa.",
+        '<span class="reveal-pop">Only about 30 in all of Japan.</span>', '',
+        "Try to find a surname rarer than mine.", "Little baby."
+      ],
+    },
+  };
+
+  function tl(key) { return LANG[currentLang][key]; }
+
+  window.addEventListener('surreal-lang-change', function(e) {
+    if (e.detail && e.detail.lang) currentLang = e.detail.lang;
+  });
+
   var HASHIMOTO_POP = 440000;
   var GYOBUZAWA_POP = 30;
   var FACE_EMOJIS = ['👨', '👩', '👴', '👵', '🧑', '🧔', '👷', '💂'];
@@ -180,8 +282,7 @@
   }
 
   function formatPop(n) {
-    if (n >= 10000) return '約' + Math.round(n / 10000) + '万人';
-    return '約' + n.toLocaleString() + '人';
+    return tl('formatPop')(n);
   }
 
   function randomFace() {
@@ -237,8 +338,8 @@
     choiceLeft.querySelector('.choice-emoji').textContent = randomFace();
     choiceRight.querySelector('.choice-emoji').textContent = randomFace();
 
-    nameLeft.textContent = currentPair.left.name + 'さん';
-    nameRight.textContent = currentPair.right.name + 'さん';
+    nameLeft.textContent = currentPair.left.name + tl('san');
+    nameRight.textContent = currentPair.right.name + tl('san');
 
     resultOverlay.classList.add('hidden');
   }
@@ -302,11 +403,11 @@
 
       resultOverlay.classList.remove('hidden');
       resultIcon.textContent = '😱';
-      resultMessage.textContent = 'ハズレ！';
-      var playerLabel = gameMode === 'gyobuzawa' ? '行部澤さんは約30人でした' : '橋本さんは約44万人でした';
+      resultMessage.textContent = tl('wrong');
+      var playerLabel = gameMode === 'gyobuzawa' ? tl('gyobuzawaLabel') : tl('hashimotoLabel');
       resultDetail.innerHTML =
-        correctSurname.name + 'さんは' + formatPop(correctSurname.pop) + '<br>' +
-        wrongSurname.name + 'さんは' + formatPop(wrongSurname.pop) + '<br>' +
+        correctSurname.name + tl('san') + ' ' + formatPop(correctSurname.pop) + '<br>' +
+        wrongSurname.name + tl('san') + ' ' + formatPop(wrongSurname.pop) + '<br>' +
         playerLabel;
 
       setTimeout(function() {
@@ -322,16 +423,18 @@
 
     var comment = '';
     if (gameMode === 'gyobuzawa') {
-      if (score === 0) comment = '行部澤の壁は高かった…';
-      else if (score < 3) comment = 'なかなかやるな…だが行部澤には遠い';
-      else if (score < 5) comment = '行部澤も認めざるを得ない…！';
-      else comment = '行部澤を超えた…！苗字界の覇者だ！！';
+      var gc = tl('gyobuzawaComments');
+      if (score === 0) comment = gc[0];
+      else if (score < 3) comment = gc[1];
+      else if (score < 5) comment = gc[2];
+      else comment = gc[3];
     } else {
-      if (score === 0) comment = '橋本さん…まだまだだね';
-      else if (score < 5) comment = '橋本さん、ちょっと苗字に詳しくなったね';
-      else if (score < 10) comment = '橋本さん、なかなかやるじゃん！';
-      else if (score < 20) comment = '橋本さん、苗字マスターの素質あり！';
-      else comment = '橋本さん、あなたは苗字の神だ！！';
+      var hc = tl('hashimotoComments');
+      if (score === 0) comment = hc[0];
+      else if (score < 5) comment = hc[1];
+      else if (score < 10) comment = hc[2];
+      else if (score < 20) comment = hc[3];
+      else comment = hc[4];
     }
     $_('final-detail').textContent = comment;
 
@@ -340,9 +443,9 @@
     var historyList = $_('history-list');
     historyList.innerHTML = '';
     if (gameMode === 'gyobuzawa') {
-      historyPlayer.textContent = '🌀 行部澤さん … 圏外（約30人）';
+      historyPlayer.textContent = tl('historyGyobuzawa');
     } else {
-      historyPlayer.textContent = '👤 橋本さん … 第24位（約44万人）';
+      historyPlayer.textContent = tl('historyHashimoto');
     }
     var seen = {};
     history.forEach(function(h) {
@@ -352,9 +455,9 @@
           var row = document.createElement('div');
           row.className = 'history-row';
           var isLess = s.pop < pop;
-          var rankLabel = (typeof s.rank === 'number') ? s.rank + '位' : s.rank;
+          var rankLabel = tl('rankLabel')(s.rank);
           row.innerHTML = '<span class="history-rank">' + rankLabel + '</span>' +
-            '<span class="history-name">' + s.name + 'さん</span>' +
+            '<span class="history-name">' + s.name + tl('san') + '</span>' +
             '<span class="history-pop ' + (isLess ? 'fewer' : 'more') + '">' + formatPop(s.pop) + '</span>';
           historyList.appendChild(row);
         }
@@ -370,12 +473,12 @@
   function updateUI() {
     if (gameMode === 'gyobuzawa') {
       document.body.classList.add('mode-gyobuzawa');
-      playerBadge.textContent = 'あなた：行部澤さん（約30人）';
-      questionText.innerHTML = 'どっちが行部澤さんより<br><strong>人口が少ない</strong>？';
+      playerBadge.textContent = tl('gyobuzawaPlayer');
+      questionText.innerHTML = tl('gyobuzawaQuestion');
     } else {
       document.body.classList.remove('mode-gyobuzawa');
-      playerBadge.textContent = 'あなた：橋本さん（約44万人）';
-      questionText.innerHTML = 'どっちが橋本さんより<br><strong>人口が少ない</strong>？';
+      playerBadge.textContent = tl('hashimotoPlayer');
+      questionText.innerHTML = tl('hashimotoQuestion');
     }
   }
 
@@ -401,28 +504,10 @@
     revealStartBtn.style.display = 'none';
 
     // フェーズ1: 登場台詞
-    var phase1 = [
-      '待ちな。',
-      '',
-      'バブバブバブバブうるせえよ。',
-      '橋本ゲームなんてぬるい遊びしてる',
-      '赤ちゃんがよお。',
-      '',
-      '本物の男になりてえなら、',
-      'もっとスリルあるゲームをしろ。'
-    ];
+    var phase1 = tl('reveal1');
 
     // フェーズ2: 自己紹介
-    var phase2 = [
-      '<span class="reveal-name">行部澤</span>',
-      '<span class="reveal-reading">（ぎょうぶざわ）</span>',
-      '',
-      '俺の名前は行部澤。',
-      '<span class="reveal-pop">全国に約30人。</span>',
-      '',
-      '俺より少ない苗字を探してみろ。',
-      'ぷっくら赤ちゃん。'
-    ];
+    var phase2 = tl('reveal2');
 
     var i = 0;
     function typePhase1() {
@@ -488,7 +573,7 @@
     var hs = SurrealGames.HighScore.get('hashimoto');
     if (hs > 0) {
       var hsEl = $_('sg-high-score-display');
-      hsEl.textContent = '🏆 ハイスコア: ' + hs + '問';
+      hsEl.textContent = tl('highScoreLabel')(hs);
       hsEl.style.display = 'block';
     }
   }

@@ -21,6 +21,7 @@ body {
   background: linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-main) 40%, #5a3420 100%);
   color: var(--white);
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
   position: relative;
 }
@@ -298,6 +299,7 @@ body {
 #game-screen {
   padding-top: 10px;
   min-height: 100vh;
+  min-height: 100dvh;
   justify-content: flex-start;
 }
 

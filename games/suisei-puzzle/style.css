@@ -23,6 +23,7 @@ body {
   background: linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-main) 40%, #1e1060 100%);
   color: var(--white);
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
   position: relative;
 }
@@ -106,6 +107,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   z-index: 1;
 }

@@ -3,6 +3,8 @@ body {
   background: #0a0a1a;
   color: #fff;
   min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,6 +17,8 @@ body {
   width: 100%;
   max-width: 480px;
   min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100dvh;
   position: relative;
   overflow: hidden;
 }
@@ -26,6 +30,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #1a0533 0%, #2d1b69 40%, #4a2c8a 100%);
   text-align: center;
   padding: 20px;
@@ -113,6 +118,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #1a1a3e 0%, #2d2d6b 100%);
 }
 
@@ -370,6 +376,7 @@ body {
 /* ===== ごはん画面 ===== */
 #feed-screen, #shop-screen, #zukan-screen {
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #1a0533 0%, #2d1b69 100%);
   padding: 20px 15px;
 }
@@ -478,6 +485,7 @@ body {
 /* ===== ミニゲーム画面 ===== */
 #minigame-screen {
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #0a2a1a 0%, #1a4a3a 100%);
   padding: 20px 15px;
   display: flex;
@@ -527,6 +535,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #0a0a2e 0%, #1a1a5e 100%);
   text-align: center;
   padding: 20px;
@@ -583,6 +592,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #1a0533 0%, #2d1b69 100%);
   text-align: center;
   padding: 20px;

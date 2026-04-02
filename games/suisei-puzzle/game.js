@@ -448,6 +448,47 @@
   // ---- Common module ----
   const sg = SurrealGames.init('suisei-puzzle');
 
+  // ---- i18n ----
+  let currentLang = (function() {
+    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+  })();
+
+  const LANG = {
+    ja: {
+      pause: '一時停止', resume: '再開',
+      highScore: (v) => 'ハイスコア: ' + v,
+      cometRank: '☄️ 彗星ランク ☄️',
+      starRank: '⭐ 星空ランク ⭐',
+      meteorRank: '✧ 流れ星ランク ✧',
+      moonRank: '🌙 三日月ランク 🌙',
+      shareText: (score, lines, level, rank, url) =>
+        '☄️ すいすいパズル～彗星のごとく～\nスコア: ' + score + '\nライン: ' + lines + '\nレベル: ' + level + '\nランク: ' + rank + '\n\n#シュールゲームス\n' + url,
+      shareBtn: '𝕏 で結果をシェア',
+    },
+    en: {
+      pause: 'Pause', resume: 'Resume',
+      highScore: (v) => 'High Score: ' + v,
+      cometRank: '☄️ Comet Rank ☄️',
+      starRank: '⭐ Starry Rank ⭐',
+      meteorRank: '✧ Shooting Star Rank ✧',
+      moonRank: '🌙 Crescent Rank 🌙',
+      shareText: (score, lines, level, rank, url) =>
+        '☄️ Sui-Sui Puzzle ~Like a Comet~\nScore: ' + score + '\nLines: ' + lines + '\nLevel: ' + level + '\nRank: ' + rank + '\n\n#SurrealGames\n' + url,
+      shareBtn: 'Share on 𝕏',
+    },
+  };
+
+  function tl(key, ...args) {
+    const val = LANG[currentLang][key];
+    if (typeof val === 'function') return val(...args);
+    return val;
+  }
+
+  window.addEventListener('surreal-lang-change', function(e) {
+    if (e.detail && e.detail.lang) currentLang = e.detail.lang;
+  });
+
   // ---- Game lifecycle ----
   function startGame() {
     sg.onGameStart();
@@ -484,10 +525,10 @@
 
     // Rank
     let rank = '';
-    if (score >= 10000) rank = '☄️ 彗星ランク ☄️';
-    else if (score >= 5000) rank = '⭐ 星空ランク ⭐';
-    else if (score >= 2000) rank = '✧ 流れ星ランク ✧';
-    else rank = '🌙 三日月ランク 🌙';
+    if (score >= 10000) rank = tl('cometRank');
+    else if (score >= 5000) rank = tl('starRank');
+    else if (score >= 2000) rank = tl('meteorRank');
+    else rank = tl('moonRank');
     $('result-rank').textContent = rank;
 
     // Build share button
@@ -497,11 +538,11 @@
     const shareBtn = document.createElement('a');
     shareBtn.id = 'share-btn';
     const gameURL = window.location.href;
-    const shareText = `☄️ すいすいパズル～彗星のごとく～\nスコア: ${score.toLocaleString()}\nライン: ${linesCleared}\nレベル: ${level}\nランク: ${rank}\n\n#シュールゲームス\n${gameURL}`;
+    const shareText = tl('shareText', score.toLocaleString(), linesCleared, level, rank, gameURL);
     shareBtn.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
     shareBtn.target = '_blank';
     shareBtn.rel = 'noopener noreferrer';
-    shareBtn.textContent = '𝕏 で結果をシェア';
+    shareBtn.textContent = tl('shareBtn');
     shareBtn.className = 'btn-primary';
     shareBtn.style.cssText = 'display:inline-block;text-decoration:none;text-align:center;margin-bottom:12px;background:linear-gradient(135deg,#1d9bf0,#1a8cd8);';
 
@@ -598,7 +639,7 @@
   function togglePause() {
     if (gameOver) return;
     paused = !paused;
-    $('pause-btn').textContent = paused ? '再開' : '一時停止';
+    $('pause-btn').textContent = paused ? tl('resume') : tl('pause');
     if (!paused) {
       lastTime = 0;
     }
@@ -689,7 +730,7 @@
   if (sgHigh !== null) {
     const badge = document.createElement('div');
     badge.className = 'sg-highscore-badge';
-    badge.textContent = 'ハイスコア: ' + sgHigh.toLocaleString();
+    badge.textContent = tl('highScore', sgHigh.toLocaleString());
     document.querySelector('.title-container').appendChild(badge);
   }
 
