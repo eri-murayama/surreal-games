@@ -6,11 +6,187 @@
 (() => {
   'use strict';
 
+  // ===== i18n =====
+  const translations = {
+    ja: {
+      gameTitle: 'うんコーン\nキャッチャー',
+      startBtn: '💩 ゲームスタート 💩',
+      helpTitle: '操作方法',
+      helpPC: 'PC：← → キーで左右に移動',
+      helpMobile: 'スマホ：画面の左半分/右半分をタッチで移動',
+      scoreLabel: 'スコア',
+      stackLabel: '段数',
+      gameOver: 'ゲームオーバー',
+      maxStackLabel: '最高段数',
+      retryBtn: '💩 もう一度プレイ 💩',
+      titleBtn: 'タイトルに戻る',
+      charName: 'チョコ味のソフトクリーム',
+      shareResult: '𝕏 結果をシェア',
+      storyTapNext: 'タップして次へ',
+      storyTapStart: 'タップしてゲーム開始！',
+      highScore: (s) => `ハイスコア: ${s}点`,
+      story1: 'やあ、僕はうん…\nチョコ味のソフトクリーム！',
+      story2: 'お腹を空かせた貧しい君たちに\n食べてもらいたい…。\nそんな気持ちでたっくさんの\nソフトクリームを作ったよ！',
+      story3: '今から踏ん張って\nねじり出していくから\n残さずキャッチしてね！',
+      heroCatch: [
+        'いいね～', '過去にやってた？', 'エクスタシー！',
+        'もっとくれよ！', 'ハイになっちまうぜえ？', 'きたきたきたあ！',
+        'ふうううう！', 'いい匂い！', 'この形！この艶！',
+        'これだからたまんねえよ！'
+      ],
+      heroMilestone: [
+        '５段！ひよっこうんコーン技師！',
+        '１０段！うんコーンバイトリーダー！',
+        '１５段！よっ、うんコーン部長！',
+        '２０段！イケメンうんコーン実業家！',
+        '２５段！うんコーンタワー建設！',
+        '３０段！神のうんコーン生誕！',
+        '３５段！宇宙を超えたうんコーン！'
+      ],
+      heroComments: {
+        terrible: 'え…{stack}段？そっか…そうだよね、君みたいな人間にこんな難しいことできるわけないか…。僕こそごめんね…謝るよ。',
+        bad: '{stack}段か。うんうんうん大丈夫大丈夫！生まれながらにして劣っている人っているもんね。気にしないで。もう休んでいいよ！',
+        ok: '{stack}段！わあ、君なりに頑張ってくれたんだね。形はきっったないけど。でも嬉しいよ。ありがとうね。',
+        good: '{stack}段！？！？！？きみ、きみきみ、す、すす、すごいよ！わああ、拝みたい！君に入信したい！！',
+        amazing: '{stack}段！？！？！？きみ、きみきみ、す、すす、すごいよ！わああ、拝みたい！君に入信したい！！',
+        godlike: '{stack}段…。そうだね、君にだけ教えよう…。僕はうんちなんだ…。共にうんちになろう。'
+      },
+      ranks: {
+        r35: '🌌 宇宙を超えたうんコーン 🌌',
+        r30: '👑 神のうんコーン生誕 👑',
+        r25: '🏗️ うんコーンタワー建設 🏗️',
+        r20: '💼 イケメンうんコーン実業家 💼',
+        r15: '🎩 よっ、うんコーン部長 🎩',
+        r10: '🍦 うんコーンバイトリーダー 🍦',
+        r5: '🐣 ひよっこうんコーン技師 🐣',
+        r0: '😢 うんコーン以下の存在 😢'
+      },
+      shareText: (score, stack, rank) =>
+        `💩🍦 うんコーンキャッチャー\nスコア: ${score}点\n最大積み: ${stack}段\nランク: ${rank}\n\n#シュールゲームス`,
+    },
+    en: {
+      gameTitle: 'Poopsicle\nCatcher',
+      startBtn: '💩 START GAME 💩',
+      helpTitle: 'Controls',
+      helpPC: 'PC: ← → arrow keys to move',
+      helpMobile: 'Mobile: Touch left/right half of screen',
+      scoreLabel: 'Score',
+      stackLabel: 'Stack',
+      gameOver: 'Game Over',
+      maxStackLabel: 'Max Stack',
+      retryBtn: '💩 Play Again 💩',
+      titleBtn: 'Back to Title',
+      charName: 'Chocolate Soft Serve',
+      shareResult: '𝕏 Share Result',
+      storyTapNext: 'Tap to continue',
+      storyTapStart: 'Tap to start!',
+      highScore: (s) => `High Score: ${s}`,
+      story1: "Hey, I'm a poo...\nChocolate soft serve!",
+      story2: "I want to feed you poor,\nhungry people...\nSo I made tons of\nsoft serve for you!",
+      story3: "I'm gonna squeeze\nthem out now,\nso catch every one!",
+      heroCatch: [
+        'Nice!', 'Done this before?', 'Ecstasy!',
+        'Give me more!', "I'm getting high!", 'Here it comes!',
+        'Whooooo!', 'Smells great!', 'That shape! That shine!',
+        "This is why I can't stop!"
+      ],
+      heroMilestone: [
+        '5 stack! Rookie Poopsicle Builder!',
+        '10 stack! Poopsicle Shift Leader!',
+        '15 stack! Poopsicle Manager!',
+        '20 stack! Poopsicle Entrepreneur!',
+        '25 stack! Poopsicle Tower!',
+        '30 stack! Divine Poopsicle!',
+        '35 stack! Cosmic Poopsicle!'
+      ],
+      heroComments: {
+        terrible: "Huh... {stack} stack? I see... I guess someone like you couldn't handle something this hard... I'm sorry.",
+        bad: "{stack} stacks, huh. It's okay! Some people are just born that way. Don't worry. You can rest now!",
+        ok: '{stack} stacks! Wow, you tried your best. The shape is terrible though. But thanks!',
+        good: '{stack} stacks!? Y-you... amazing! I want to worship you!!',
+        amazing: '{stack} stacks!? Y-you... amazing! I want to worship you!!',
+        godlike: "{stack} stacks... I'll tell only you... I'm actually poop... Let's become poop together."
+      },
+      ranks: {
+        r35: '🌌 Cosmic Poopsicle 🌌',
+        r30: '👑 Divine Poopsicle 👑',
+        r25: '🏗️ Poopsicle Tower 🏗️',
+        r20: '💼 Poopsicle Entrepreneur 💼',
+        r15: '🎩 Poopsicle Manager 🎩',
+        r10: '🍦 Poopsicle Shift Leader 🍦',
+        r5: '🐣 Rookie Poopsicle Builder 🐣',
+        r0: '😢 Less Than a Poopsicle 😢'
+      },
+      shareText: (score, stack, rank) =>
+        `💩🍦 Poopsicle Catcher\nScore: ${score}\nMax Stack: ${stack}\nRank: ${rank}\n\n#SurrealGames`,
+    }
+  };
+
+  // i18n初期化
+  if (window.SurrealI18n) {
+    SurrealI18n.init(translations, {
+      onLangChange: function () { updateI18nTexts(); }
+    });
+  }
+
+  function t(key, ...args) {
+    if (window.SurrealI18n) return SurrealI18n.t(key, ...args);
+    const val = translations.ja[key];
+    return typeof val === 'function' ? val(...args) : (val || key);
+  }
+
+  const $ = id => document.getElementById(id);
+
+  function updateI18nTexts() {
+    // タイトル画面
+    const titleEl = document.querySelector('.game-title');
+    if (titleEl) titleEl.innerHTML = t('gameTitle').replace('\n', '<br>');
+    const startBtn = $('start-btn');
+    if (startBtn) startBtn.textContent = t('startBtn');
+    const helpTitle = document.querySelector('.help-title');
+    if (helpTitle) helpTitle.textContent = t('helpTitle');
+    const helpTexts = document.querySelectorAll('.controls-help p:not(.help-title)');
+    if (helpTexts[0]) helpTexts[0].textContent = t('helpPC');
+    if (helpTexts[1]) helpTexts[1].textContent = t('helpMobile');
+
+    // ゲーム画面HUD
+    const hudLabels = document.querySelectorAll('.hud-label');
+    if (hudLabels[0]) hudLabels[0].textContent = t('scoreLabel');
+    if (hudLabels[1]) hudLabels[1].textContent = t('stackLabel');
+
+    // リザルト画面
+    const resultTitle = document.querySelector('.result-title');
+    if (resultTitle) resultTitle.textContent = t('gameOver');
+    const resultLabels = document.querySelectorAll('.result-label');
+    if (resultLabels[0]) resultLabels[0].textContent = t('scoreLabel');
+    if (resultLabels[1]) resultLabels[1].textContent = t('maxStackLabel');
+    const retryBtn = $('retry-btn');
+    if (retryBtn) retryBtn.textContent = t('retryBtn');
+    const titleBtn = $('title-btn');
+    if (titleBtn) titleBtn.textContent = t('titleBtn');
+    const charName = document.querySelector('.character-name');
+    if (charName) charName.textContent = t('charName');
+
+    // ストーリー画面
+    const hint = $('story-tap-hint');
+    if (hint && storyStep < STORY_LINES_KEYS.length - 1) {
+      hint.textContent = t('storyTapNext');
+    } else if (hint) {
+      hint.textContent = t('storyTapStart');
+    }
+
+    // トップに戻るリンク
+    const backLink = document.querySelector('.back-to-top-link');
+    if (backLink) backLink.textContent = t('backToTop');
+
+    // ハイスコア
+    showHighScore();
+  }
+
   // ===== 共通モジュール初期化 =====
   const sg = SurrealGames.init('unko-cone');
 
   // ---- DOM ----
-  const $ = id => document.getElementById(id);
   const titleScreen  = $('title-screen');
   const storyScreen  = $('story-screen');
   const gameScreen   = $('game-screen');
@@ -33,56 +209,14 @@
   const SPAWN_INTERVAL_MIN = 600;
   const SPAWN_INTERVAL_DECREASE = 40;
 
-  // ---- 主人公のリアクション ----
-  const HERO_CATCH = [
-    'いいね～', '過去にやってた？', 'エクスタシー！',
-    'もっとくれよ！', 'ハイになっちまうぜえ？', 'きたきたきたあ！',
-    'ふうううう！', 'いい匂い！', 'この形！この艶！',
-    'これだからたまんねえよ！'
-  ];
-
-  const HERO_MILESTONE = [
-    '５段！ひよっこうんコーン技師！',
-    '１０段！うんコーンバイトリーダー！',
-    '１５段！よっ、うんコーン部長！',
-    '２０段！イケメンうんコーン実業家！',
-    '２５段！うんコーンタワー建設！',
-    '３０段！神のうんコーン生誕！',
-    '３５段！宇宙を超えたうんコーン！'
-  ];
-
-  // ---- 主人公のリザルトコメント ----
-  const HERO_COMMENTS = {
-    terrible: [
-      'え…{stack}段？そっか…そうだよね、君みたいな人間にこんな難しいことできるわけないか…。僕こそごめんね…謝るよ。',
-    ],
-    bad: [
-      '{stack}段か。うんうんうん大丈夫大丈夫！生まれながらにして劣っている人っているもんね。気にしないで。もう休んでいいよ！',
-    ],
-    ok: [
-      '{stack}段！わあ、君なりに頑張ってくれたんだね。形はきっったないけど。でも嬉しいよ。ありがとうね。',
-    ],
-    good: [
-      '{stack}段！？！？！？きみ、きみきみ、す、すす、すごいよ！わああ、拝みたい！君に入信したい！！',
-    ],
-    amazing: [
-      '{stack}段！？！？！？きみ、きみきみ、す、すす、すごいよ！わああ、拝みたい！君に入信したい！！',
-    ],
-    godlike: [
-      '{stack}段…。そうだね、君にだけ教えよう…。僕はうんちなんだ…。共にうんちになろう。',
-    ]
-  };
+  // ---- ストーリーキー ----
+  const STORY_LINES_KEYS = ['story1', 'story2', 'story3'];
 
   // ---- Character image for in-game ----
   const heroImg = new Image();
   heroImg.src = 'character.png';
 
   // ---- Story screen logic ----
-  const STORY_LINES = [
-    'やあ、僕はうん…\nチョコ味のソフトクリーム！',
-    'お腹を空かせた貧しい君たちに\n食べてもらいたい…。\nそんな気持ちでたっくさんの\nソフトクリームを作ったよ！',
-    '今から踏ん張って\nねじり出していくから\n残さずキャッチしてね！'
-  ];
   let storyStep = 0;
 
   // トイレの流れる音（Web Audio APIで生成）
@@ -126,19 +260,19 @@
     const text = $('story-text');
     const hint = $('story-tap-hint');
 
-    if (storyStep < STORY_LINES.length) {
+    if (storyStep < STORY_LINES_KEYS.length) {
       bubble.classList.remove('visible');
       setTimeout(() => {
-        text.textContent = STORY_LINES[storyStep];
+        text.textContent = t(STORY_LINES_KEYS[storyStep]);
         bubble.classList.add('visible');
       }, 200);
-      hint.textContent = storyStep < STORY_LINES.length - 1 ? 'タップして次へ' : 'タップしてゲーム開始！';
+      hint.textContent = storyStep < STORY_LINES_KEYS.length - 1 ? t('storyTapNext') : t('storyTapStart');
     }
   }
 
   function advanceStory() {
     storyStep++;
-    if (storyStep < STORY_LINES.length) {
+    if (storyStep < STORY_LINES_KEYS.length) {
       showStoryLine();
     } else {
       // 最後のセリフ後：のほほんBGM停止→SE再生→ゲーム開始
@@ -407,11 +541,13 @@
     spawnInterval = Math.max(SPAWN_INTERVAL_MIN, spawnInterval - SPAWN_INTERVAL_DECREASE * 0.5);
 
     // Reactions
+    const milestones = t('heroMilestone');
+    const catches = t('heroCatch');
     if (stackCount % 5 === 0) {
-      const idx = Math.min(Math.floor(stackCount / 5) - 1, HERO_MILESTONE.length - 1);
-      showCombo(HERO_MILESTONE[idx]);
+      const idx = Math.min(Math.floor(stackCount / 5) - 1, milestones.length - 1);
+      showCombo(milestones[idx]);
     } else {
-      const msg = HERO_CATCH[Math.floor(Math.random() * HERO_CATCH.length)];
+      const msg = catches[Math.floor(Math.random() * catches.length)];
       showNishidaComment(msg);
     }
 
@@ -477,16 +613,18 @@
     $('final-score').textContent = score;
     $('final-stack').textContent = maxStack;
 
-    // Rank（HERO_MILESTONEと一致）
-    let rank = '';
-    if (maxStack >= 35) rank = '🌌 宇宙を超えたうんコーン 🌌';
-    else if (maxStack >= 30) rank = '👑 神のうんコーン生誕 👑';
-    else if (maxStack >= 25) rank = '🏗️ うんコーンタワー建設 🏗️';
-    else if (maxStack >= 20) rank = '💼 イケメンうんコーン実業家 💼';
-    else if (maxStack >= 15) rank = '🎩 よっ、うんコーン部長 🎩';
-    else if (maxStack >= 10) rank = '🍦 うんコーンバイトリーダー 🍦';
-    else if (maxStack >= 5) rank = '🐣 ひよっこうんコーン技師 🐣';
-    else rank = '😢 うんコーン以下の存在 😢';
+    // Rank
+    const ranks = t('ranks');
+    let rankKey;
+    if (maxStack >= 35) rankKey = 'r35';
+    else if (maxStack >= 30) rankKey = 'r30';
+    else if (maxStack >= 25) rankKey = 'r25';
+    else if (maxStack >= 20) rankKey = 'r20';
+    else if (maxStack >= 15) rankKey = 'r15';
+    else if (maxStack >= 10) rankKey = 'r10';
+    else if (maxStack >= 5) rankKey = 'r5';
+    else rankKey = 'r0';
+    const rank = ranks[rankKey];
     $('result-rank').textContent = rank;
 
     // 主人公のコメント
@@ -498,8 +636,8 @@
     else if (maxStack >= 5) tier = 'bad';
     else tier = 'terrible';
 
-    const comments = HERO_COMMENTS[tier];
-    let comment = comments[Math.floor(Math.random() * comments.length)];
+    const heroComments = t('heroComments');
+    let comment = heroComments[tier];
     comment = comment.replace(/\{score\}/g, score).replace(/\{stack\}/g, maxStack);
     $('character-text').textContent = comment;
 
@@ -510,11 +648,11 @@
     const shareBtn = document.createElement('button');
     shareBtn.id = 'share-btn';
     shareBtn.className = 'btn-primary';
-    shareBtn.textContent = '𝕏 結果をシェア';
+    shareBtn.textContent = t('shareResult');
     shareBtn.style.cssText = 'background: linear-gradient(135deg, #1a1a1a, #333); margin-bottom: 12px;';
     shareBtn.addEventListener('click', () => {
       const gameURL = window.location.href;
-      const text = `💩🍦 うんコーンキャッチャー\nスコア: ${score}点\n最大積み: ${maxStack}段\nランク: ${rank}\n\n#シュールゲームス\n${gameURL}`;
+      const text = t('shareText', score, maxStack, rank) + '\n' + gameURL;
       const tweetURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
       window.open(tweetURL, '_blank');
     });
@@ -522,6 +660,7 @@
     const retryBtn = $('retry-btn');
     retryBtn.parentNode.insertBefore(shareBtn, retryBtn);
 
+    updateI18nTexts();
     setTimeout(() => showScreen(resultScreen), 400);
   }
 
@@ -639,9 +778,10 @@
     const best = sg.getHighScore();
     const el = $('highscore-display');
     if (el) {
-      el.textContent = best ? `ハイスコア: ${best}点` : '';
+      el.textContent = best ? t('highScore', best) : '';
     }
   }
   showHighScore();
+  updateI18nTexts();
 
 })();
