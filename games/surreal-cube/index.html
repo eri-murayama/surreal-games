@@ -12,9 +12,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>シュールキューブ | シュールゲームス</title>
-  <meta name="description" content="3D空間を転がれ！シュールなキューブの大冒険！">
+  <meta name="description" content="3D回転パズル！キューブを回して指定の面を手前に向けろ！">
   <meta property="og:title" content="シュールキューブ | シュールゲームス">
-  <meta property="og:description" content="3D空間を転がれ！シュールなキューブの大冒険！">
+  <meta property="og:description" content="3D回転パズル！キューブを回して指定の面を手前に向けろ！">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/surreal-cube/index.html">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
@@ -29,43 +29,89 @@
   <div id="title-screen" class="screen active">
     <div class="title-content">
       <h1 class="game-title" data-i18n="title">シュールキューブ</h1>
-      <p class="game-subtitle" data-i18n="subtitle">3D空間を転がれ！シュールなキューブの大冒険！</p>
+      <p class="game-subtitle" data-i18n="subtitle">3D回転パズル！指定の面を手前に向けろ！</p>
       <canvas id="preview-canvas" width="200" height="200"></canvas>
-      <button id="start-btn" class="btn-start" data-i18n="start">スタート</button>
+      <button id="start-btn" class="btn-primary" data-i18n="start">スタート</button>
       <div id="title-highscore"></div>
+    </div>
+  </div>
+
+  <!-- ステージ選択画面 -->
+  <div id="stage-select-screen" class="screen">
+    <div class="stage-select-content">
+      <h2 class="screen-heading" data-i18n="stageSelect">ステージ選択</h2>
+      <div id="stage-list" class="stage-list"></div>
+      <button id="stage-back-btn" class="btn-secondary" data-i18n="backToTitle">タイトルに戻る</button>
     </div>
   </div>
 
   <!-- ゲーム画面 -->
   <div id="game-screen" class="screen">
     <div class="game-hud">
-      <div class="hud-item">
-        <span data-i18n="scoreLabel">スコア</span>
-        <span id="hud-score">0</span>
+      <div class="hud-row">
+        <div class="hud-item">
+          <span data-i18n="stageLabel">ステージ</span>
+          <span id="hud-stage">1</span>
+        </div>
+        <div class="hud-item hud-quest">
+          <span id="hud-quest-emoji"></span>
+          <span id="hud-quest-text" data-i18n="turnFront">を手前に！</span>
+        </div>
+        <div class="hud-item">
+          <span id="hud-cleared">0</span>/<span id="hud-total">5</span>
+        </div>
       </div>
-      <div class="hud-item">
-        <span data-i18n="distLabel">距離</span>
-        <span id="hud-dist">0m</span>
+      <div class="hud-timer-bar">
+        <div id="hud-timer-fill" class="hud-timer-fill"></div>
+      </div>
+      <div class="hud-row">
+        <div class="hud-item">
+          <span data-i18n="scoreLabel">スコア</span>
+          <span id="hud-score">0</span>
+        </div>
       </div>
     </div>
-    <canvas id="game-canvas"></canvas>
+    <canvas id="game-canvas" width="400" height="500"></canvas>
+    <p class="hint-text" data-i18n="hint">ドラッグでキューブを回転</p>
   </div>
 
-  <!-- リザルト画面 -->
+  <!-- ステージクリア画面 -->
+  <div id="clear-screen" class="screen">
+    <div class="clear-content">
+      <h2 class="clear-title" data-i18n="stageClear">ステージクリア！</h2>
+      <div class="clear-stats">
+        <div class="stat-row"><span data-i18n="scoreLabel">スコア</span><span id="clear-score">0</span></div>
+        <div class="stat-row"><span data-i18n="timeBonus">タイムボーナス</span><span id="clear-bonus">0</span></div>
+        <div class="stat-row stat-total"><span data-i18n="totalScore">合計</span><span id="clear-total">0</span></div>
+      </div>
+      <button id="next-stage-btn" class="btn-primary" data-i18n="nextStage">次のステージへ</button>
+      <button id="clear-back-btn" class="btn-secondary" data-i18n="backToStages">ステージ選択に戻る</button>
+    </div>
+  </div>
+
+  <!-- ゲームオーバー画面 -->
+  <div id="gameover-screen" class="screen">
+    <div class="result-content">
+      <h2 class="result-title" data-i18n="timeUp">タイムアップ！</h2>
+      <div class="result-stats">
+        <div class="stat-row"><span data-i18n="cleared">クリア数</span><span id="go-cleared">0</span></div>
+        <div class="stat-row"><span data-i18n="scoreLabel">スコア</span><span id="go-score">0</span></div>
+      </div>
+      <button id="go-retry-btn" class="btn-primary" data-i18n="retry">もう一回</button>
+      <button id="go-back-btn" class="btn-secondary" data-i18n="backToStages">ステージ選択に戻る</button>
+    </div>
+  </div>
+
+  <!-- リザルト画面（全クリア） -->
   <div id="result-screen" class="screen">
     <div class="result-content">
-      <h2 class="result-title" data-i18n="gameOver">ゲームオーバー</h2>
-      <div class="result-score">
-        <span data-i18n="scoreLabel">スコア</span>
-        <span id="result-score-value">0</span>
-      </div>
-      <div class="result-dist">
-        <span data-i18n="distLabel">距離</span>
-        <span id="result-dist-value">0m</span>
+      <h2 class="result-title" data-i18n="allClear">全ステージクリア！</h2>
+      <div class="result-stats">
+        <div class="stat-row stat-total"><span data-i18n="finalScore">最終スコア</span><span id="result-score-value">0</span></div>
       </div>
       <div id="result-highscore"></div>
       <div id="result-new-record" class="hidden"></div>
-      <button id="retry-btn" class="btn-retry" data-i18n="retry">もう一回</button>
+      <button id="result-back-btn" class="btn-primary" data-i18n="backToTitle">タイトルに戻る</button>
     </div>
   </div>
 

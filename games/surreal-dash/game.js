@@ -1,25 +1,27 @@
 /**
- * シュールダッシュ - エンドレスランナー
- * うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！
+ * シュールダッシュ - エンドレスランナー（強化版）
+ * ゾーン制・パワーアップ・ボス・パララックス・演出強化
  */
 (function () {
   'use strict';
 
   // ===== i18n =====
-  const translations = {
+  var translations = {
     ja: {
       gameTitle: 'シュールダッシュ',
-      gameSub: 'うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！',
+      gameSub: '5つのゾーンを駆け抜けろ！パワーアップ＆ボスバトル！',
       startBtn: '💩 タップでスタート 💩',
       controlsTitle: '操作方法',
       controlsPC: 'PC：スペースキーでジャンプ（2段ジャンプ可能）',
       controlsMobile: 'スマホ：画面タップでジャンプ',
       scoreLabel: 'スコア',
       distLabel: '距離',
+      zoneLabel: 'ゾーン',
       gameOver: 'ゲームオーバー',
       finalScore: 'スコア',
       finalDist: '距離',
       finalStars: 'スター',
+      finalZone: '到達ゾーン',
       newRecord: '🎉 NEW RECORD!',
       retryBtn: '💩 もう一度プレイ 💩',
       titleBtn: 'タイトルに戻る',
@@ -28,21 +30,34 @@
       rankB: '🥈 ランク B - いい感じ！',
       rankC: '🥉 ランク C - まだまだ！',
       rankD: '💩 ランク D - がんばれ！',
-      shareText: (score, dist) => `シュールダッシュで${score}点、${dist}m走ったよ！💩💨 #シュールゲームス`,
+      zone1: '宇宙',
+      zone2: '深海',
+      zone3: '砂漠',
+      zone4: 'サイバー',
+      zone5: 'カオス',
+      zoneBanner1: 'ZONE 1 - 宇宙',
+      zoneBanner2: 'ZONE 2 - 深海',
+      zoneBanner3: 'ZONE 3 - 砂漠',
+      zoneBanner4: 'ZONE 4 - サイバー',
+      zoneBanner5: 'ZONE 5 - カオス',
+      bossWarning: '⚠ BOSS ⚠',
+      shareText: function (score, dist) { return 'シュールダッシュで' + score + '点、' + dist + 'm走ったよ！💩💨 #シュールゲームス'; },
     },
     en: {
       gameTitle: 'Surreal Dash',
-      gameSub: 'Poop-kun runs! Jumps! An endless run in a surreal world!',
+      gameSub: 'Run through 5 zones! Power-ups & Boss battles!',
       startBtn: '💩 Tap to Start 💩',
       controlsTitle: 'Controls',
       controlsPC: 'PC: Space to jump (double jump OK)',
       controlsMobile: 'Mobile: Tap to jump',
       scoreLabel: 'Score',
       distLabel: 'Dist',
+      zoneLabel: 'Zone',
       gameOver: 'Game Over',
       finalScore: 'Score',
       finalDist: 'Distance',
       finalStars: 'Stars',
+      finalZone: 'Zone Reached',
       newRecord: '🎉 NEW RECORD!',
       retryBtn: '💩 Play Again 💩',
       titleBtn: 'Back to Title',
@@ -51,7 +66,18 @@
       rankB: '🥈 Rank B - Nice!',
       rankC: '🥉 Rank C - Keep going!',
       rankD: '💩 Rank D - Try harder!',
-      shareText: (score, dist) => `I scored ${score} pts and ran ${dist}m in Surreal Dash! 💩💨 #SurrealGames`,
+      zone1: 'Space',
+      zone2: 'Deep Sea',
+      zone3: 'Desert',
+      zone4: 'Cyber',
+      zone5: 'Chaos',
+      zoneBanner1: 'ZONE 1 - SPACE',
+      zoneBanner2: 'ZONE 2 - DEEP SEA',
+      zoneBanner3: 'ZONE 3 - DESERT',
+      zoneBanner4: 'ZONE 4 - CYBER',
+      zoneBanner5: 'ZONE 5 - CHAOS',
+      bossWarning: '⚠ BOSS ⚠',
+      shareText: function (score, dist) { return 'I scored ' + score + ' pts and ran ' + dist + 'm in Surreal Dash! 💩💨 #SurrealGames'; },
     }
   };
 
@@ -61,8 +87,11 @@
     });
   }
 
-  function t(key, ...args) {
-    return window.SurrealI18n ? SurrealI18n.t(key, ...args) : translations.ja[key] || key;
+  function t(key) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    var val = window.SurrealI18n ? SurrealI18n.t.apply(null, arguments) : (translations.ja[key] || key);
+    if (typeof val === 'function') return val.apply(null, args);
+    return val;
   }
 
   function updateAllText() {
@@ -90,49 +119,158 @@
   var ctx = canvas.getContext('2d');
   var scoreDisplay = document.getElementById('score-display');
   var distDisplay = document.getElementById('dist-display');
+  var zoneDisplay = document.getElementById('zone-display');
   var finalScore = document.getElementById('final-score');
   var finalDist = document.getElementById('final-dist');
   var finalStars = document.getElementById('final-stars');
+  var finalZone = document.getElementById('final-zone');
   var resultRank = document.getElementById('result-rank');
   var newRecordEl = document.getElementById('new-record');
 
   // ===== ゲーム定数 =====
   var DESIGN_W = 500;
   var DESIGN_H = 700;
-  var GROUND_H = 80;      // 地面の高さ
-  var GRAVITY = 2200;      // 重力加速度 (px/s^2)
-  var JUMP_VEL = -700;     // ジャンプ初速
-  var MAX_JUMPS = 2;       // 2段ジャンプ
-  var BASE_SPEED = 250;    // 初期スクロール速度 (px/s)
-  var SPEED_INCREASE = 4;  // 速度増加 (px/s per second)
-  var MAX_SPEED = 700;
+  var GROUND_H = 80;
+  var GRAVITY = 2200;
+  var JUMP_VEL = -700;
+  var MAX_JUMPS = 2;
+  var BASE_SPEED = 250;
+  var SPEED_INCREASE = 4;
+  var MAX_SPEED = 750;
   var PLAYER_SIZE = 40;
-  var OBSTACLE_INTERVAL_MIN = 0.8; // 障害物の最小間隔(秒)
+  var OBSTACLE_INTERVAL_MIN = 0.8;
   var OBSTACLE_INTERVAL_MAX = 2.0;
   var STAR_INTERVAL_MIN = 1.5;
   var STAR_INTERVAL_MAX = 3.5;
+  var POWERUP_INTERVAL_MIN = 8;
+  var POWERUP_INTERVAL_MAX = 18;
+
+  // ===== ゾーン定義 =====
+  var ZONES = [
+    {
+      id: 1, nameKey: 'zone1', bannerKey: 'zoneBanner1',
+      distStart: 0, distEnd: 1000,
+      bgTop: '#0d0221', bgBot: '#1a0a3e',
+      groundColor: '#1a0a2e', groundLine: '#ff6ec7',
+      enemies: ['crab', 'cactus'],
+      bgm: 'action',
+      parallaxColors: ['rgba(255,255,255,0.3)', 'rgba(160,100,255,0.2)']
+    },
+    {
+      id: 2, nameKey: 'zone2', bannerKey: 'zoneBanner2',
+      distStart: 1000, distEnd: 3000,
+      bgTop: '#001a33', bgBot: '#003366',
+      groundColor: '#001122', groundLine: '#00aaff',
+      enemies: ['crab', 'pufferfish', 'shark'],
+      bgm: 'cosmic',
+      parallaxColors: ['rgba(0,150,255,0.2)', 'rgba(0,255,200,0.15)']
+    },
+    {
+      id: 3, nameKey: 'zone3', bannerKey: 'zoneBanner3',
+      distStart: 3000, distEnd: 6000,
+      bgTop: '#3d1c00', bgBot: '#cc6600',
+      groundColor: '#5c3000', groundLine: '#ffaa00',
+      enemies: ['cactus', 'scorpion', 'camel'],
+      bgm: 'march',
+      parallaxColors: ['rgba(255,180,50,0.2)', 'rgba(255,100,0,0.15)']
+    },
+    {
+      id: 4, nameKey: 'zone4', bannerKey: 'zoneBanner4',
+      distStart: 6000, distEnd: 10000,
+      bgTop: '#0a0a2e', bgBot: '#1a0a4e',
+      groundColor: '#0a0a1e', groundLine: '#ff00ff',
+      enemies: ['robot', 'lightning', 'redorb'],
+      bgm: 'cyber',
+      parallaxColors: ['rgba(255,0,255,0.2)', 'rgba(0,255,255,0.15)']
+    },
+    {
+      id: 5, nameKey: 'zone5', bannerKey: 'zoneBanner5',
+      distStart: 10000, distEnd: Infinity,
+      bgTop: '#220022', bgBot: '#002222',
+      groundColor: '#111111', groundLine: '#ffffff',
+      enemies: ['crab', 'pufferfish', 'shark', 'cactus', 'scorpion', 'camel', 'robot', 'lightning', 'redorb'],
+      bgm: 'gameshow',
+      parallaxColors: ['rgba(255,0,0,0.2)', 'rgba(0,255,0,0.15)', 'rgba(0,0,255,0.2)']
+    }
+  ];
+
+  // 敵の絵文字マッピング
+  var ENEMY_DEFS = {
+    crab:       { emoji: '🦀', w: 36, h: 36, ground: true },
+    cactus:     { emoji: '🌵', w: 36, h: 48, ground: true },
+    bird:       { emoji: '🦅', w: 36, h: 36, ground: false },
+    pufferfish: { emoji: '🐡', w: 36, h: 36, ground: true },
+    shark:      { emoji: '🦈', w: 44, h: 40, ground: false },
+    scorpion:   { emoji: '🦂', w: 36, h: 36, ground: true },
+    camel:      { emoji: '🐫', w: 44, h: 44, ground: true },
+    robot:      { emoji: '🤖', w: 40, h: 40, ground: true },
+    lightning:  { emoji: '⚡', w: 32, h: 40, ground: false },
+    redorb:     { emoji: '🔴', w: 36, h: 36, ground: false }
+  };
+
+  // ボス定義（各ゾーン末尾付近で出現）
+  var BOSS_DEFS = [
+    { emoji: '🦀', w: 120, h: 100, type: 'duckuner', zone: 1 },  // 巨大蟹：下をくぐる
+    { emoji: '🦈', w: 140, h: 100, type: 'jumper', zone: 2 },    // 巨大鮫：ジャンプで避ける
+    { emoji: '🐫', w: 130, h: 110, type: 'duckuner', zone: 3 },  // 巨大ラクダ：下をくぐる
+    { emoji: '🤖', w: 120, h: 120, type: 'jumper', zone: 4 },    // 巨大ロボ：ジャンプ
+    { emoji: '👾', w: 150, h: 130, type: 'jumper', zone: 5 }     // カオスボス
+  ];
+
+  // パワーアップ定義
+  var POWERUP_TYPES = [
+    { id: 'shield', emoji: '🛡️', duration: 0, desc: 'シールド' },
+    { id: 'magnet', emoji: '🧲', duration: 5, desc: 'マグネット' },
+    { id: 'fire',   emoji: '🔥', duration: 5, desc: 'ファイア' }
+  ];
 
   // ===== ゲーム状態 =====
   var state = {
     running: false,
+    dying: false,
+    dieTimer: 0,
     score: 0,
     distance: 0,
     starsCollected: 0,
     speed: BASE_SPEED,
+    timeScale: 1,
     player: null,
     obstacles: [],
     stars: [],
+    powerups: [],
     particles: [],
+    scorePopups: [],
+    afterimages: [],
     bgOffset: 0,
     groundOffset: 0,
     nextObstacleTime: 0,
     nextStarTime: 0,
+    nextPowerupTime: 0,
     elapsedTime: 0,
     lastTime: 0,
     animId: null,
     groundY: 0,
-    // 背景の星
     bgStars: [],
+    // ゾーン
+    currentZone: 0,
+    zoneBanner: null,
+    zoneBannerTimer: 0,
+    bgFade: 0,
+    prevZoneBg: null,
+    // パワーアップ状態
+    shieldActive: false,
+    magnetActive: false,
+    magnetTimer: 0,
+    fireActive: false,
+    fireTimer: 0,
+    // ボス
+    boss: null,
+    bossSpawned: [],
+    bossWarningTimer: 0,
+    // パララックス背景レイヤー
+    parallaxLayers: [],
+    // 虹色用
+    rainbowHue: 0,
   };
 
   // ===== キャンバスサイズ設定 =====
@@ -172,6 +310,41 @@
     }
   }
 
+  // ===== パララックス背景レイヤー初期化 =====
+  function initParallaxLayers() {
+    state.parallaxLayers = [];
+    // 遠い層（山・雲的なもの）
+    for (var layer = 0; layer < 3; layer++) {
+      var shapes = [];
+      for (var i = 0; i < 8; i++) {
+        shapes.push({
+          x: i * (DESIGN_W / 4) + Math.random() * 60,
+          y: state.groundY - 30 - layer * 60 - Math.random() * 40,
+          w: 40 + Math.random() * 80,
+          h: 20 + Math.random() * 40,
+        });
+      }
+      state.parallaxLayers.push({
+        speed: 0.1 + layer * 0.15,
+        offset: 0,
+        shapes: shapes,
+        layer: layer
+      });
+    }
+  }
+
+  // ===== ゾーン取得 =====
+  function getZoneIndex(dist) {
+    for (var i = ZONES.length - 1; i >= 0; i--) {
+      if (dist >= ZONES[i].distStart) return i;
+    }
+    return 0;
+  }
+
+  function getCurrentZone() {
+    return ZONES[state.currentZone];
+  }
+
   // ===== プレイヤー =====
   function createPlayer() {
     return {
@@ -187,23 +360,51 @@
 
   // ===== 障害物 =====
   function spawnObstacle() {
-    var types = ['crab', 'cactus', 'bird'];
-    var type = types[Math.floor(Math.random() * types.length)];
-    var ob = { type: type, x: DESIGN_W + 10, w: 36, h: 36, passed: false };
+    var zone = getCurrentZone();
+    var enemyList = zone.enemies;
+    var type = enemyList[Math.floor(Math.random() * enemyList.length)];
+    var def = ENEMY_DEFS[type];
+    if (!def) def = ENEMY_DEFS.crab;
 
-    if (type === 'crab') {
-      ob.y = state.groundY - 36;
-      ob.emoji = '\uD83E\uDD80'; // 🦀
-    } else if (type === 'cactus') {
-      ob.h = 48;
-      ob.y = state.groundY - 48;
-      ob.emoji = '\uD83C\uDF35'; // 🌵
+    var ob = {
+      type: type,
+      x: DESIGN_W + 10,
+      w: def.w,
+      h: def.h,
+      emoji: def.emoji,
+      passed: false,
+      isBoss: false
+    };
+
+    if (def.ground) {
+      ob.y = state.groundY - def.h;
     } else {
-      // 鳥：空中
-      ob.y = state.groundY - 120 - Math.random() * 80;
-      ob.emoji = '\uD83E\uDD85'; // 🦅
+      ob.y = state.groundY - 100 - Math.random() * 100;
     }
     return ob;
+  }
+
+  // ===== ボス =====
+  function spawnBoss(zoneIndex) {
+    var def = BOSS_DEFS[zoneIndex] || BOSS_DEFS[4];
+    var boss = {
+      emoji: def.emoji,
+      w: def.w,
+      h: def.h,
+      x: DESIGN_W + 20,
+      passed: false,
+      isBoss: true,
+      type: def.type
+    };
+
+    if (def.type === 'duckuner') {
+      // 空中に浮かぶ→下をくぐる
+      boss.y = state.groundY - def.h - 60;
+    } else {
+      // 地面に接地→ジャンプで避ける
+      boss.y = state.groundY - def.h;
+    }
+    return boss;
   }
 
   // ===== スター =====
@@ -213,14 +414,32 @@
       y: state.groundY - 60 - Math.random() * 140,
       w: 28,
       h: 28,
-      emoji: '\u2B50', // ⭐
+      emoji: '⭐',
       collected: false,
+    };
+  }
+
+  // ===== パワーアップ =====
+  function spawnPowerup() {
+    var type = POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)];
+    return {
+      x: DESIGN_W + 10,
+      y: state.groundY - 80 - Math.random() * 120,
+      w: 32,
+      h: 32,
+      emoji: type.emoji,
+      id: type.id,
+      duration: type.duration,
+      collected: false,
+      bobPhase: Math.random() * Math.PI * 2
     };
   }
 
   // ===== パーティクル =====
   function spawnRunParticles() {
     if (!state.player.onGround) return;
+    var zone = getCurrentZone();
+    var color = zone.groundLine || '#ff6ec7';
     for (var i = 0; i < 2; i++) {
       state.particles.push({
         x: state.player.x,
@@ -230,7 +449,7 @@
         life: 0.4 + Math.random() * 0.3,
         maxLife: 0.4 + Math.random() * 0.3,
         size: 3 + Math.random() * 4,
-        color: 'rgba(255, 110, 199, ',
+        color: color,
       });
     }
   }
@@ -247,7 +466,7 @@
         life: 0.5 + Math.random() * 0.5,
         maxLife: 0.5 + Math.random() * 0.5,
         size: 4 + Math.random() * 6,
-        color: 'rgba(255, 255, 0, ',
+        color: '#ffff00',
       });
     }
   }
@@ -257,21 +476,77 @@
       var angle = Math.random() * Math.PI * 2;
       var speed = 60 + Math.random() * 80;
       state.particles.push({
-        x: sx,
-        y: sy,
+        x: sx, y: sy,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         life: 0.3 + Math.random() * 0.3,
         maxLife: 0.3 + Math.random() * 0.3,
         size: 3 + Math.random() * 4,
-        color: 'rgba(0, 255, 247, ',
+        color: '#00fff7',
       });
     }
   }
 
+  function spawnLandingParticles() {
+    for (var i = 0; i < 12; i++) {
+      var angle = -Math.PI + Math.random() * Math.PI;
+      var speed = 40 + Math.random() * 100;
+      state.particles.push({
+        x: state.player.x + state.player.w / 2,
+        y: state.groundY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed * 0.5 - 30,
+        life: 0.3 + Math.random() * 0.2,
+        maxLife: 0.3 + Math.random() * 0.2,
+        size: 2 + Math.random() * 4,
+        color: getCurrentZone().groundLine || '#ff6ec7',
+      });
+    }
+  }
+
+  function spawnFireParticles() {
+    if (!state.fireActive) return;
+    var p = state.player;
+    for (var i = 0; i < 3; i++) {
+      state.particles.push({
+        x: p.x + p.w / 2 + (Math.random() - 0.5) * 20,
+        y: p.y + p.h / 2 + (Math.random() - 0.5) * 20,
+        vx: -Math.random() * 60 - 20,
+        vy: -Math.random() * 40 - 20,
+        life: 0.2 + Math.random() * 0.2,
+        maxLife: 0.2 + Math.random() * 0.2,
+        size: 4 + Math.random() * 6,
+        color: Math.random() > 0.5 ? '#ff4400' : '#ffaa00',
+      });
+    }
+  }
+
+  // ===== スコアポップアップ =====
+  function addScorePopup(x, y, text) {
+    state.scorePopups.push({
+      x: x, y: y,
+      text: text,
+      life: 0.8,
+      maxLife: 0.8
+    });
+  }
+
+  // ===== 残像 =====
+  function addAfterimage() {
+    if (!state.player || state.player.onGround) return;
+    state.afterimages.push({
+      x: state.player.x,
+      y: state.player.y,
+      w: state.player.w,
+      h: state.player.h,
+      life: 0.15,
+      maxLife: 0.15
+    });
+  }
+
   // ===== 当たり判定 (AABB) =====
   function collides(a, b) {
-    var shrink = 6; // 若干小さめに判定
+    var shrink = 6;
     return (
       a.x + shrink < b.x + b.w - shrink &&
       a.x + a.w - shrink > b.x + shrink &&
@@ -282,7 +557,7 @@
 
   // ===== ジャンプ =====
   function jump() {
-    if (!state.running) return;
+    if (!state.running || state.dying) return;
     var p = state.player;
     if (p.jumps < MAX_JUMPS) {
       p.vy = JUMP_VEL;
@@ -292,29 +567,95 @@
     }
   }
 
+  // ===== パワーアップ発動 =====
+  function activatePowerup(pu) {
+    if (pu.id === 'shield') {
+      state.shieldActive = true;
+    } else if (pu.id === 'magnet') {
+      state.magnetActive = true;
+      state.magnetTimer = pu.duration;
+    } else if (pu.id === 'fire') {
+      state.fireActive = true;
+      state.fireTimer = pu.duration;
+    }
+    if (GameManager) GameManager.sound.play('correct');
+    addScorePopup(pu.x, pu.y, pu.emoji);
+  }
+
+  // ===== 色ヘルパー =====
+  function hexToRgb(hex) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return [r, g, b];
+  }
+
+  function lerpColor(c1, c2, t) {
+    var a = hexToRgb(c1);
+    var b = hexToRgb(c2);
+    var r = Math.round(a[0] + (b[0] - a[0]) * t);
+    var g = Math.round(a[1] + (b[1] - a[1]) * t);
+    var bl = Math.round(a[2] + (b[2] - a[2]) * t);
+    return 'rgb(' + r + ',' + g + ',' + bl + ')';
+  }
+
   // ===== 描画 =====
   function draw(dt) {
+    var zone = getCurrentZone();
+
     // 背景グラデーション
-    var grad = ctx.createLinearGradient(0, 0, DESIGN_W, DESIGN_H);
-    grad.addColorStop(0, '#0d0221');
-    grad.addColorStop(0.4, '#1a0a3e');
-    grad.addColorStop(0.7, '#4a1580');
-    grad.addColorStop(1, '#2d0533');
-    ctx.fillStyle = grad;
+    if (zone.id === 5) {
+      // ゾーン5：虹色グラデーション
+      state.rainbowHue = (state.rainbowHue + dt * 30) % 360;
+      var h1 = state.rainbowHue;
+      var h2 = (state.rainbowHue + 60) % 360;
+      var h3 = (state.rainbowHue + 120) % 360;
+      var grad = ctx.createLinearGradient(0, 0, DESIGN_W, DESIGN_H);
+      grad.addColorStop(0, 'hsl(' + h1 + ',70%,15%)');
+      grad.addColorStop(0.5, 'hsl(' + h2 + ',70%,20%)');
+      grad.addColorStop(1, 'hsl(' + h3 + ',70%,15%)');
+      ctx.fillStyle = grad;
+    } else {
+      var bgTop = zone.bgTop;
+      var bgBot = zone.bgBot;
+
+      // ゾーン遷移中のフェード
+      if (state.bgFade > 0 && state.prevZoneBg) {
+        bgTop = lerpColor(state.prevZoneBg.bgTop, zone.bgTop, 1 - state.bgFade);
+        bgBot = lerpColor(state.prevZoneBg.bgBot, zone.bgBot, 1 - state.bgFade);
+      }
+
+      var grad = ctx.createLinearGradient(0, 0, 0, DESIGN_H);
+      grad.addColorStop(0, bgTop);
+      grad.addColorStop(1, bgBot);
+      ctx.fillStyle = grad;
+    }
     ctx.fillRect(0, 0, DESIGN_W, DESIGN_H);
 
-    // 背景の星（きらきら）
-    for (var i = 0; i < state.bgStars.length; i++) {
-      var s = state.bgStars[i];
-      var a = s.alpha * (0.5 + 0.5 * Math.sin(state.elapsedTime * s.twinkleSpeed));
-      ctx.fillStyle = 'rgba(255, 255, 255, ' + a + ')';
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    // 背景の星/泡/パーティクル（ゾーン毎）
+    drawBgElements(zone);
+
+    // パララックス背景
+    drawParallax(zone);
 
     // 地面
-    drawGround();
+    drawGround(zone);
+
+    // パワーアップアイテム
+    for (var i = 0; i < state.powerups.length; i++) {
+      var pu = state.powerups[i];
+      if (!pu.collected) {
+        var bobY = Math.sin(state.elapsedTime * 4 + pu.bobPhase) * 8;
+        ctx.font = pu.w + 'px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // 光るエフェクト
+        ctx.shadowColor = '#ffff00';
+        ctx.shadowBlur = 12;
+        ctx.fillText(pu.emoji, pu.x + pu.w / 2, pu.y + pu.h / 2 + bobY);
+        ctx.shadowBlur = 0;
+      }
+    }
 
     // スター
     for (var i = 0; i < state.stars.length; i++) {
@@ -323,46 +664,125 @@
         ctx.font = st.w + 'px serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        // 浮遊アニメーション
         var floatY = Math.sin(state.elapsedTime * 3 + st.x * 0.01) * 6;
         ctx.fillText(st.emoji, st.x + st.w / 2, st.y + st.h / 2 + floatY);
       }
     }
 
-    // 障害物
+    // 障害物（通常＋ボス）
     for (var i = 0; i < state.obstacles.length; i++) {
       var ob = state.obstacles[i];
-      ctx.font = ob.h + 'px serif';
+      ctx.font = (ob.isBoss ? ob.h * 0.8 : ob.h) + 'px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      if (ob.isBoss) {
+        // ボスは赤い影
+        ctx.shadowColor = '#ff0000';
+        ctx.shadowBlur = 20;
+      }
       ctx.fillText(ob.emoji, ob.x + ob.w / 2, ob.y + ob.h / 2);
+      ctx.shadowBlur = 0;
+    }
+
+    // ボスの場合、上にも表示
+    if (state.boss) {
+      // ボス警告テキストはバナーで表示済み
+    }
+
+    // 残像（ジャンプ中）
+    for (var i = 0; i < state.afterimages.length; i++) {
+      var ai = state.afterimages[i];
+      var aiAlpha = (ai.life / ai.maxLife) * 0.3;
+      ctx.globalAlpha = aiAlpha;
+      ctx.font = ai.w + 'px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('💩', ai.x + ai.w / 2, ai.y + ai.h / 2);
+      ctx.globalAlpha = 1;
     }
 
     // プレイヤー
     if (state.player) {
-      ctx.font = state.player.w + 'px serif';
+      var p = state.player;
+
+      // シールドエフェクト
+      if (state.shieldActive) {
+        ctx.beginPath();
+        ctx.arc(p.x + p.w / 2, p.y + p.h / 2, p.w * 0.8, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(100,200,255,0.6)';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = '#00aaff';
+        ctx.shadowBlur = 15;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      // ファイアエフェクト（プレイヤーの周りに炎の輪）
+      if (state.fireActive) {
+        ctx.beginPath();
+        ctx.arc(p.x + p.w / 2, p.y + p.h / 2, p.w * 0.9, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,100,0,0.7)';
+        ctx.lineWidth = 4;
+        ctx.shadowColor = '#ff4400';
+        ctx.shadowBlur = 20;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      // マグネットエフェクト（磁力線）
+      if (state.magnetActive) {
+        ctx.strokeStyle = 'rgba(200,100,255,0.3)';
+        ctx.lineWidth = 1;
+        for (var mi = 0; mi < 4; mi++) {
+          var mAngle = state.elapsedTime * 3 + mi * Math.PI / 2;
+          var mRadius = 50 + Math.sin(state.elapsedTime * 5 + mi) * 10;
+          ctx.beginPath();
+          ctx.arc(p.x + p.w / 2, p.y + p.h / 2, mRadius, mAngle, mAngle + 0.8);
+          ctx.stroke();
+        }
+      }
+
+      ctx.font = p.w + 'px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      // 走るとき少し傾ける
       ctx.save();
-      var tilt = state.player.onGround ? Math.sin(state.elapsedTime * 12) * 0.1 : -0.2;
-      ctx.translate(state.player.x + state.player.w / 2, state.player.y + state.player.h / 2);
+      var tilt = p.onGround ? Math.sin(state.elapsedTime * 12) * 0.1 : -0.2;
+      ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
       ctx.rotate(tilt);
-      ctx.fillText('\uD83D\uDCA9', 0, 0); // 💩
+      ctx.fillText('💩', 0, 0);
       ctx.restore();
     }
 
     // パーティクル
     for (var i = 0; i < state.particles.length; i++) {
-      var p = state.particles[i];
-      var alpha = p.life / p.maxLife;
-      ctx.fillStyle = p.color + alpha + ')';
+      var part = state.particles[i];
+      var alpha = part.life / part.maxLife;
+      ctx.fillStyle = part.color;
+      ctx.globalAlpha = alpha;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+      ctx.arc(part.x, part.y, part.size * alpha, 0, Math.PI * 2);
       ctx.fill();
     }
+    ctx.globalAlpha = 1;
 
-    // スピードライン（高速時）
+    // スコアポップアップ
+    for (var i = 0; i < state.scorePopups.length; i++) {
+      var pop = state.scorePopups[i];
+      var popAlpha = pop.life / pop.maxLife;
+      var popY = pop.y - (1 - popAlpha) * 40;
+      ctx.globalAlpha = popAlpha;
+      ctx.font = 'bold 18px Zen Maru Gothic, sans-serif';
+      ctx.fillStyle = '#ffff00';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 4;
+      ctx.fillText(pop.text, pop.x, popY);
+      ctx.shadowBlur = 0;
+    }
+    ctx.globalAlpha = 1;
+
+    // スピードライン
     if (state.speed > 400) {
       var lineAlpha = Math.min((state.speed - 400) / 300, 0.4);
       ctx.strokeStyle = 'rgba(255, 255, 255, ' + lineAlpha + ')';
@@ -376,15 +796,99 @@
         ctx.stroke();
       }
     }
+
+    // ゾーンバナー
+    if (state.zoneBannerTimer > 0) {
+      drawZoneBanner();
+    }
+
+    // ボス警告
+    if (state.bossWarningTimer > 0) {
+      drawBossWarning();
+    }
   }
 
-  function drawGround() {
-    // 地面背景
-    ctx.fillStyle = '#1a0a2e';
+  function drawBgElements(zone) {
+    if (zone.id === 2) {
+      // 海底：泡
+      for (var i = 0; i < state.bgStars.length; i++) {
+        var s = state.bgStars[i];
+        var a = s.alpha * 0.5;
+        ctx.strokeStyle = 'rgba(100, 200, 255, ' + a + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y + Math.sin(state.elapsedTime * 0.5 + i) * 20, s.size * 2, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    } else if (zone.id === 4) {
+      // サイバー：グリッドライン
+      ctx.strokeStyle = 'rgba(255,0,255,0.08)';
+      ctx.lineWidth = 1;
+      var gridSpacing = 50;
+      var gridOff = (state.bgOffset * 0.5) % gridSpacing;
+      for (var x = -gridOff; x < DESIGN_W + gridSpacing; x += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, state.groundY);
+        ctx.stroke();
+      }
+      for (var y = 0; y < state.groundY; y += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(DESIGN_W, y);
+        ctx.stroke();
+      }
+      // ネオンフラッシュ
+      if (Math.sin(state.elapsedTime * 8) > 0.9) {
+        ctx.fillStyle = 'rgba(255,0,255,0.03)';
+        ctx.fillRect(0, 0, DESIGN_W, DESIGN_H);
+      }
+    } else {
+      // 通常：きらきら星
+      for (var i = 0; i < state.bgStars.length; i++) {
+        var s = state.bgStars[i];
+        var a = s.alpha * (0.5 + 0.5 * Math.sin(state.elapsedTime * s.twinkleSpeed));
+        ctx.fillStyle = 'rgba(255, 255, 255, ' + a + ')';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function drawParallax(zone) {
+    var colors = zone.parallaxColors || ['rgba(255,255,255,0.1)'];
+    for (var l = 0; l < state.parallaxLayers.length; l++) {
+      var layer = state.parallaxLayers[l];
+      var col = colors[l % colors.length];
+      ctx.fillStyle = col;
+      var offset = layer.offset % (DESIGN_W * 2);
+      for (var s = 0; s < layer.shapes.length; s++) {
+        var sh = layer.shapes[s];
+        var sx = ((sh.x - offset + DESIGN_W * 2) % (DESIGN_W * 2)) - DESIGN_W * 0.5;
+        ctx.beginPath();
+        ctx.ellipse(sx, sh.y, sh.w / 2, sh.h / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function drawGround(zone) {
+    var gColor = zone.groundColor || '#1a0a2e';
+    var gLine = zone.groundLine || '#ff6ec7';
+
+    // ゾーン遷移中のフェード
+    if (state.bgFade > 0 && state.prevZoneBg) {
+      gColor = lerpColor(state.prevZoneBg.groundColor || '#1a0a2e', zone.groundColor || '#1a0a2e', 1 - state.bgFade);
+      gLine = lerpColor(state.prevZoneBg.groundLine || '#ff6ec7', zone.groundLine || '#ff6ec7', 1 - state.bgFade);
+    }
+
+    ctx.fillStyle = gColor;
     ctx.fillRect(0, state.groundY, DESIGN_W, GROUND_H);
 
-    // 地面パターン（動くドット）
-    ctx.fillStyle = 'rgba(255, 110, 199, 0.3)';
+    // 地面パターン
+    ctx.fillStyle = gLine;
+    ctx.globalAlpha = 0.3;
     var dotSpacing = 30;
     var offset = state.groundOffset % dotSpacing;
     for (var x = -offset; x < DESIGN_W + dotSpacing; x += dotSpacing) {
@@ -394,11 +898,12 @@
         ctx.fill();
       }
     }
+    ctx.globalAlpha = 1;
 
     // 地面の上端ライン
-    ctx.strokeStyle = '#ff6ec7';
+    ctx.strokeStyle = gLine;
     ctx.lineWidth = 2;
-    ctx.shadowColor = '#ff6ec7';
+    ctx.shadowColor = gLine;
     ctx.shadowBlur = 8;
     ctx.beginPath();
     ctx.moveTo(0, state.groundY);
@@ -407,32 +912,186 @@
     ctx.shadowBlur = 0;
   }
 
+  function drawZoneBanner() {
+    var progress = 1 - state.zoneBannerTimer / 2.5;
+    var alpha;
+    if (progress < 0.15) {
+      alpha = progress / 0.15;
+    } else if (progress > 0.7) {
+      alpha = (1 - progress) / 0.3;
+    } else {
+      alpha = 1;
+    }
+    alpha = Math.max(0, Math.min(1, alpha));
+
+    ctx.globalAlpha = alpha;
+
+    // 暗い帯
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(0, DESIGN_H / 2 - 50, DESIGN_W, 100);
+
+    // ゾーン名テキスト
+    var bannerText = state.zoneBanner || '';
+    ctx.font = 'bold 36px Zen Maru Gothic, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = getCurrentZone().groundLine || '#ff6ec7';
+    ctx.shadowBlur = 20;
+    ctx.fillText(bannerText, DESIGN_W / 2, DESIGN_H / 2);
+    ctx.shadowBlur = 0;
+
+    ctx.globalAlpha = 1;
+  }
+
+  function drawBossWarning() {
+    var flash = Math.sin(state.elapsedTime * 15) > 0;
+    if (flash) {
+      ctx.fillStyle = 'rgba(255,0,0,0.1)';
+      ctx.fillRect(0, 0, DESIGN_W, DESIGN_H);
+    }
+
+    var alpha = Math.min(state.bossWarningTimer / 0.3, 1);
+    ctx.globalAlpha = alpha;
+    ctx.font = 'bold 28px Zen Maru Gothic, sans-serif';
+    ctx.fillStyle = '#ff0000';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = '#ff0000';
+    ctx.shadowBlur = 15;
+    ctx.fillText(t('bossWarning'), DESIGN_W / 2, 100);
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+  }
+
   // ===== アップデート =====
   function update(dt) {
+    // スローモーション（ゲームオーバー演出）
+    if (state.dying) {
+      state.dieTimer -= dt;
+      state.timeScale = Math.max(0.05, state.dieTimer / 0.3);
+      dt *= state.timeScale;
+      if (state.dieTimer <= 0) {
+        finishGameOver();
+        return;
+      }
+    }
+
     if (!state.running) return;
 
     state.elapsedTime += dt;
     state.speed = Math.min(BASE_SPEED + state.elapsedTime * SPEED_INCREASE, MAX_SPEED);
+
+    // ボス中は少し遅くする
+    if (state.boss) {
+      state.speed = Math.min(state.speed, 350);
+    }
+
     state.distance += state.speed * dt;
     state.bgOffset += state.speed * dt * 0.3;
     state.groundOffset += state.speed * dt;
 
+    // パララックス更新
+    for (var l = 0; l < state.parallaxLayers.length; l++) {
+      state.parallaxLayers[l].offset += state.speed * dt * state.parallaxLayers[l].speed;
+    }
+
+    // ===== ゾーン切り替えチェック =====
+    var distM = state.distance / 10;
+    var newZoneIdx = getZoneIndex(state.distance);
+    if (newZoneIdx !== state.currentZone) {
+      var prevZone = ZONES[state.currentZone];
+      state.prevZoneBg = {
+        bgTop: prevZone.bgTop,
+        bgBot: prevZone.bgBot,
+        groundColor: prevZone.groundColor,
+        groundLine: prevZone.groundLine
+      };
+      state.currentZone = newZoneIdx;
+      state.bgFade = 1.0;
+      state.zoneBanner = t(ZONES[newZoneIdx].bannerKey);
+      state.zoneBannerTimer = 2.5;
+
+      // BGM切り替え
+      var newZone = ZONES[newZoneIdx];
+      try {
+        if (window.SurrealGames && window.SurrealGames.SoundSystem) {
+          window.SurrealGames.SoundSystem.playBgm(newZone.bgm);
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    // 背景フェード
+    if (state.bgFade > 0) {
+      state.bgFade -= dt * 0.8;
+      if (state.bgFade < 0) state.bgFade = 0;
+    }
+
+    // バナータイマー
+    if (state.zoneBannerTimer > 0) {
+      state.zoneBannerTimer -= dt;
+    }
+
+    // ボス警告タイマー
+    if (state.bossWarningTimer > 0) {
+      state.bossWarningTimer -= dt;
+    }
+
+    // ===== ボスチェック（各ゾーン終盤）=====
+    var zone = getCurrentZone();
+    if (zone.distEnd !== Infinity && !state.boss) {
+      var distToEnd = zone.distEnd - state.distance;
+      // ゾーン終了の少し前にボスを出す
+      if (distToEnd < 500 && distToEnd > 300 && state.bossSpawned.indexOf(zone.id) === -1) {
+        state.bossSpawned.push(zone.id);
+        state.boss = spawnBoss(state.currentZone);
+        state.obstacles.push(state.boss);
+        state.bossWarningTimer = 1.5;
+        if (GameManager) GameManager.sound.play('wrong');
+      }
+    }
+
     // プレイヤー物理演算
     var p = state.player;
+    var wasInAir = !p.onGround;
     p.vy += GRAVITY * dt;
     p.y += p.vy * dt;
 
-    // 地面着地
     if (p.y + p.h >= state.groundY) {
       p.y = state.groundY - p.h;
       p.vy = 0;
+      if (wasInAir) {
+        p.onGround = true;
+        p.jumps = 0;
+        spawnLandingParticles();
+      }
       p.onGround = true;
       p.jumps = 0;
     }
 
-    // 走るパーティクル（間引き）
-    if (Math.random() < 0.3) {
-      spawnRunParticles();
+    // ジャンプ中の残像
+    if (!p.onGround && state.elapsedTime % 0.05 < dt) {
+      addAfterimage();
+    }
+
+    // 走るパーティクル
+    if (Math.random() < 0.3) spawnRunParticles();
+
+    // ファイアパーティクル
+    if (state.fireActive) spawnFireParticles();
+
+    // パワーアップタイマー
+    if (state.magnetActive) {
+      state.magnetTimer -= dt;
+      if (state.magnetTimer <= 0) {
+        state.magnetActive = false;
+      }
+    }
+    if (state.fireActive) {
+      state.fireTimer -= dt;
+      if (state.fireTimer <= 0) {
+        state.fireActive = false;
+      }
     }
 
     // 距離スコア加算
@@ -440,11 +1099,10 @@
 
     // 障害物スポーン
     state.nextObstacleTime -= dt;
-    if (state.nextObstacleTime <= 0) {
+    if (state.nextObstacleTime <= 0 && !state.boss) {
       state.obstacles.push(spawnObstacle());
       var interval = OBSTACLE_INTERVAL_MIN +
         Math.random() * (OBSTACLE_INTERVAL_MAX - OBSTACLE_INTERVAL_MIN);
-      // 速度が上がると間隔が短くなる
       interval *= Math.max(0.4, BASE_SPEED / state.speed);
       state.nextObstacleTime = interval;
     }
@@ -457,42 +1115,124 @@
         Math.random() * (STAR_INTERVAL_MAX - STAR_INTERVAL_MIN);
     }
 
+    // パワーアップスポーン
+    state.nextPowerupTime -= dt;
+    if (state.nextPowerupTime <= 0) {
+      state.powerups.push(spawnPowerup());
+      state.nextPowerupTime = POWERUP_INTERVAL_MIN +
+        Math.random() * (POWERUP_INTERVAL_MAX - POWERUP_INTERVAL_MIN);
+    }
+
     // 障害物移動・判定
     for (var i = state.obstacles.length - 1; i >= 0; i--) {
       var ob = state.obstacles[i];
       ob.x -= state.speed * dt;
 
-      // 通過スコア
       if (!ob.passed && ob.x + ob.w < p.x) {
         ob.passed = true;
+        if (ob.isBoss) {
+          state.boss = null;
+          addScorePopup(p.x, p.y - 20, '+500');
+          state.score += 500;
+        }
       }
 
       // 当たり判定
       if (collides(p, ob)) {
-        gameOver();
+        // ファイア中 → 障害物を破壊（ボス以外）
+        if (state.fireActive && !ob.isBoss) {
+          // 障害物破壊エフェクト
+          for (var j = 0; j < 10; j++) {
+            var ang = Math.random() * Math.PI * 2;
+            var spd = 80 + Math.random() * 100;
+            state.particles.push({
+              x: ob.x + ob.w / 2, y: ob.y + ob.h / 2,
+              vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
+              life: 0.3, maxLife: 0.3,
+              size: 4 + Math.random() * 4,
+              color: '#ff4400',
+            });
+          }
+          addScorePopup(ob.x, ob.y, '+100');
+          state.score += 100;
+          state.obstacles.splice(i, 1);
+          if (GameManager) GameManager.sound.play('correct');
+          continue;
+        }
+
+        // シールド → 1回防ぐ
+        if (state.shieldActive) {
+          state.shieldActive = false;
+          // シールド破壊エフェクト
+          for (var j = 0; j < 15; j++) {
+            var ang = Math.random() * Math.PI * 2;
+            var spd = 60 + Math.random() * 80;
+            state.particles.push({
+              x: p.x + p.w / 2, y: p.y + p.h / 2,
+              vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
+              life: 0.4, maxLife: 0.4,
+              size: 3 + Math.random() * 5,
+              color: '#00aaff',
+            });
+          }
+          state.obstacles.splice(i, 1);
+          if (GameManager) GameManager.sound.play('tap');
+          continue;
+        }
+
+        // 通常衝突 → ゲームオーバー開始（スローモーション）
+        startGameOver();
         return;
       }
 
-      // 画面外
       if (ob.x + ob.w < -50) {
+        if (ob.isBoss && ob === state.boss) state.boss = null;
         state.obstacles.splice(i, 1);
       }
     }
 
-    // スター移動・収集
+    // スター移動・収集（マグネット対応）
     for (var i = state.stars.length - 1; i >= 0; i--) {
       var st = state.stars[i];
       st.x -= state.speed * dt;
+
+      // マグネット吸引
+      if (state.magnetActive && !st.collected) {
+        var dx = (p.x + p.w / 2) - (st.x + st.w / 2);
+        var dy = (p.y + p.h / 2) - (st.y + st.h / 2);
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200) {
+          var pullStr = 400 * dt;
+          st.x += (dx / dist) * pullStr;
+          st.y += (dy / dist) * pullStr;
+        }
+      }
 
       if (!st.collected && collides(p, st)) {
         st.collected = true;
         state.starsCollected++;
         spawnStarParticles(st.x + st.w / 2, st.y + st.h / 2);
+        addScorePopup(st.x, st.y, '+50');
         if (GameManager) GameManager.sound.play('correct');
       }
 
       if (st.x + st.w < -50) {
         state.stars.splice(i, 1);
+      }
+    }
+
+    // パワーアップ移動・収集
+    for (var i = state.powerups.length - 1; i >= 0; i--) {
+      var pu = state.powerups[i];
+      pu.x -= state.speed * dt;
+
+      if (!pu.collected && collides(p, pu)) {
+        pu.collected = true;
+        activatePowerup(pu);
+      }
+
+      if (pu.x + pu.w < -50) {
+        state.powerups.splice(i, 1);
       }
     }
 
@@ -502,24 +1242,34 @@
       part.life -= dt;
       part.x += part.vx * dt;
       part.y += part.vy * dt;
-      if (part.life <= 0) {
-        state.particles.splice(i, 1);
-      }
+      if (part.life <= 0) state.particles.splice(i, 1);
+    }
+
+    // スコアポップアップ更新
+    for (var i = state.scorePopups.length - 1; i >= 0; i--) {
+      state.scorePopups[i].life -= dt;
+      if (state.scorePopups[i].life <= 0) state.scorePopups.splice(i, 1);
+    }
+
+    // 残像更新
+    for (var i = state.afterimages.length - 1; i >= 0; i--) {
+      state.afterimages[i].life -= dt;
+      if (state.afterimages[i].life <= 0) state.afterimages.splice(i, 1);
     }
 
     // HUD更新
     scoreDisplay.textContent = state.score;
     distDisplay.textContent = Math.floor(state.distance / 10) + 'm';
+    zoneDisplay.textContent = t(getCurrentZone().nameKey);
   }
 
   // ===== ゲームループ =====
   function gameLoop(timestamp) {
-    if (!state.running) return;
+    if (!state.running && !state.dying) return;
 
     var dt = (timestamp - state.lastTime) / 1000;
     state.lastTime = timestamp;
 
-    // フレーム落ち対策：dtが大きすぎる場合はクランプ
     if (dt > 0.1) dt = 0.016;
 
     update(dt);
@@ -540,64 +1290,99 @@
   function startGame() {
     resizeCanvas();
     initBgStars();
+    initParallaxLayers();
 
     state.running = true;
+    state.dying = false;
+    state.dieTimer = 0;
+    state.timeScale = 1;
     state.score = 0;
     state.distance = 0;
     state.starsCollected = 0;
     state.speed = BASE_SPEED;
     state.obstacles = [];
     state.stars = [];
+    state.powerups = [];
     state.particles = [];
+    state.scorePopups = [];
+    state.afterimages = [];
     state.bgOffset = 0;
     state.groundOffset = 0;
-    state.nextObstacleTime = 1.5; // 最初は少し余裕
+    state.nextObstacleTime = 1.5;
     state.nextStarTime = 2.0;
+    state.nextPowerupTime = 6;
     state.elapsedTime = 0;
     state.player = createPlayer();
+    state.currentZone = 0;
+    state.zoneBanner = t('zoneBanner1');
+    state.zoneBannerTimer = 2.5;
+    state.bgFade = 0;
+    state.prevZoneBg = null;
+    state.shieldActive = false;
+    state.magnetActive = false;
+    state.magnetTimer = 0;
+    state.fireActive = false;
+    state.fireTimer = 0;
+    state.boss = null;
+    state.bossSpawned = [];
+    state.bossWarningTimer = 0;
+    state.rainbowHue = 0;
 
     showScreen(gameScreen);
 
     if (GameManager) GameManager.onGameStart();
 
+    // 初期BGM
+    try {
+      if (window.SurrealGames && window.SurrealGames.SoundSystem) {
+        window.SurrealGames.SoundSystem.playBgm('action');
+      }
+    } catch (e) { /* ignore */ }
+
     state.lastTime = performance.now();
     state.animId = requestAnimationFrame(gameLoop);
   }
 
-  // ===== ゲームオーバー =====
-  function gameOver() {
+  // ===== ゲームオーバー（スローモーション開始） =====
+  function startGameOver() {
+    state.dying = true;
+    state.dieTimer = 0.3;
+    spawnCrashParticles();
+    if (GameManager) GameManager.sound.play('wrong');
+  }
+
+  // ===== ゲームオーバー完了 =====
+  function finishGameOver() {
     state.running = false;
+    state.dying = false;
     if (state.animId) {
       cancelAnimationFrame(state.animId);
       state.animId = null;
     }
 
-    spawnCrashParticles();
-    // クラッシュ後のパーティクルを少し描画
     draw(0);
-
-    if (GameManager) GameManager.sound.play('wrong');
 
     var dist = Math.floor(state.distance / 10);
     var sc = state.score;
     var stars = state.starsCollected;
+    var zoneName = t(getCurrentZone().nameKey);
 
-    // リザルト表示
     finalScore.textContent = sc;
     finalDist.textContent = dist + 'm';
     finalStars.textContent = stars;
+    finalZone.textContent = zoneName;
 
     // ランク判定
     var rank;
-    if (sc >= 2000) rank = t('rankS');
-    else if (sc >= 1000) rank = t('rankA');
-    else if (sc >= 500) rank = t('rankB');
-    else if (sc >= 200) rank = t('rankC');
+    if (sc >= 5000) rank = t('rankS');
+    else if (sc >= 2000) rank = t('rankA');
+    else if (sc >= 1000) rank = t('rankB');
+    else if (sc >= 400) rank = t('rankC');
     else rank = t('rankD');
     resultRank.textContent = rank;
 
     // ハイスコア
-    var result = GameManager ? GameManager.onGameEnd(sc, { distance: dist, stars: stars }) : {};
+    var result = GameManager ? GameManager.onGameEnd(sc, { distance: dist, stars: stars, zone: zoneName }) : {};
     if (result && result.isNewHigh) {
       newRecordEl.style.display = 'inline-block';
       newRecordEl.textContent = t('newRecord');
@@ -605,13 +1390,12 @@
       newRecordEl.style.display = 'none';
     }
 
-    // シェアテキスト更新
     updateShareText(sc, dist);
 
     setTimeout(function () {
       showScreen(resultScreen);
       updateAllText();
-    }, 600);
+    }, 300);
   }
 
   // ===== シェアテキスト =====
@@ -640,17 +1424,13 @@
   }
 
   // ===== 入力ハンドリング =====
-  // キーボード
   document.addEventListener('keydown', function (e) {
     if (e.code === 'Space' || e.key === ' ') {
       e.preventDefault();
-      if (state.running) {
-        jump();
-      }
+      if (state.running) jump();
     }
   });
 
-  // タッチ・クリック（ゲーム画面のみ）
   canvas.addEventListener('touchstart', function (e) {
     e.preventDefault();
     jump();
@@ -661,7 +1441,6 @@
     jump();
   });
 
-  // リサイズ対応
   window.addEventListener('resize', function () {
     resizeCanvas();
   });
@@ -684,6 +1463,7 @@
   // ===== 初期化 =====
   resizeCanvas();
   initBgStars();
+  initParallaxLayers();
   showHighScore();
   updateAllText();
 

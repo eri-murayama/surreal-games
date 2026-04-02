@@ -1,21 +1,41 @@
 /**
- * シュールビート - リズムゲーム
+ * シュールビート - 5ステージ制リズムゲーム
  * 落ちてくるシュールなノーツをタイミングよくタップ！
  */
 (function () {
   'use strict';
 
   // ===== i18n =====
-  const translations = {
+  var translations = {
     ja: {
       gameTitle: 'シュールビート',
       gameSubtitle: 'リズムに合わせてシュールをタップ！',
       startBtn: 'スタート',
       keyHint: 'PC: D F J K キー / スマホ: タップ',
-      resultTitle: 'リザルト',
+      stageSelectTitle: 'ステージ選択',
+      backToTitle: 'タイトルに戻る',
+      stageClear: 'ステージクリア！',
+      nextStage: '次のステージへ',
+      backToSelect: 'ステージ選択',
+      resultFailed: 'ステージ失敗…',
+      failHint: 'Missを全ノーツの20%以下に抑えよう！',
       maxCombo: '最大コンボ',
-      shareText: function (score, rank) {
-        return 'シュールビートで ' + score + '点（ランク' + rank + '）を取ったよ！💩🎵\n#シュールゲームス #シュールビート';
+      fullCombo: 'FULL COMBO!',
+      allClear: '全ステージクリア！',
+      locked: '🔒',
+      cleared: '⭐',
+      stage1: 'シュール入門',
+      stage2: 'カニカニフィーバー',
+      stage3: 'ダークビート',
+      stage4: 'カオスラッシュ',
+      stage5: 'シュールマスター',
+      stage1detail: 'BPM 120 / 基本8ビート',
+      stage2detail: 'BPM 140 / 裏拍増加・🦀ノーツ',
+      stage3detail: 'BPM 160 / 16ビート・同時押し',
+      stage4detail: 'BPM 175 / 高速連打・変調',
+      stage5detail: 'BPM 190 / 全パターン混合',
+      shareText: function (score, stage) {
+        return 'シュールビート「' + stage + '」で ' + score + '点！💩🎵\n#シュールゲームス #シュールビート';
       },
     },
     en: {
@@ -23,107 +43,259 @@
       gameSubtitle: 'Tap surreal emojis to the rhythm!',
       startBtn: 'START',
       keyHint: 'PC: D F J K keys / Mobile: Tap',
-      resultTitle: 'RESULT',
+      stageSelectTitle: 'Stage Select',
+      backToTitle: 'Back to Title',
+      stageClear: 'Stage Clear!',
+      nextStage: 'Next Stage',
+      backToSelect: 'Stage Select',
+      resultFailed: 'Stage Failed...',
+      failHint: 'Keep misses under 20% of total notes!',
       maxCombo: 'Max Combo',
-      shareText: function (score, rank) {
-        return 'I scored ' + score + ' (Rank ' + rank + ') in Surreal Beat! 💩🎵\n#SurrealGames #SurrealBeat';
+      fullCombo: 'FULL COMBO!',
+      allClear: 'All Stages Clear!',
+      locked: '🔒',
+      cleared: '⭐',
+      stage1: 'Surreal Intro',
+      stage2: 'Crab Fever',
+      stage3: 'Dark Beat',
+      stage4: 'Chaos Rush',
+      stage5: 'Surreal Master',
+      stage1detail: 'BPM 120 / Basic 8-beat',
+      stage2detail: 'BPM 140 / Offbeat + 🦀 Notes',
+      stage3detail: 'BPM 160 / 16-beat + Double',
+      stage4detail: 'BPM 175 / Speed Rush',
+      stage5detail: 'BPM 190 / All Patterns',
+      shareText: function (score, stage) {
+        return 'I scored ' + score + ' on "' + stage + '" in Surreal Beat! 💩🎵\n#SurrealGames #SurrealBeat';
       },
     },
   };
 
   if (window.SurrealI18n) {
     SurrealI18n.init(translations, {
-      onLangChange: function () { updateI18nTexts(); }
+      onLangChange: function () { updateI18nTexts(); renderStageList(); }
     });
   }
 
   // ===== ゲーム初期化 =====
-  const GameManager = window.SurrealGames.init('surreal-beat');
-  const SoundSystem = window.SurrealGames.SoundSystem;
+  var GameManager = window.SurrealGames.init('surreal-beat');
+  var SoundSystem = window.SurrealGames.SoundSystem;
+
+  // ===== ステージ定義 =====
+  var STAGES = [
+    {
+      name: 'stage1', bpm: 120, duration: 30000,
+      bgm: 'cute', emojis: ['💩', '🐣', '🔮', '🫠', '🧠'],
+      colors: ['#ff6ec7', '#00fff7'],
+      offbeatChance: 0.15, skipChance: 0.2, doubleChance: 0,
+      sabiDensity: 0.1, sixteenthChance: 0
+    },
+    {
+      name: 'stage2', bpm: 140, duration: 35000,
+      bgm: 'pop', emojis: ['🦀', '🦀', '🦀', '💩', '🐣', '🍄'],
+      colors: ['#ff8c00', '#ffd700'],
+      offbeatChance: 0.35, skipChance: 0.12, doubleChance: 0,
+      sabiDensity: 0.2, sixteenthChance: 0
+    },
+    {
+      name: 'stage3', bpm: 160, duration: 35000,
+      bgm: 'mystery', emojis: ['👁', '🧬', '🔮', '🍄', '🤡'],
+      colors: ['#8b00ff', '#39ff14'],
+      offbeatChance: 0.3, skipChance: 0.1, doubleChance: 0.15,
+      sabiDensity: 0.25, sixteenthChance: 0.15
+    },
+    {
+      name: 'stage4', bpm: 175, duration: 35000,
+      bgm: 'action', emojis: ['💩', '🦀', '🐣', '🧬', '🔮', '👁', '🍄', '🫠', '🤡', '🧠'],
+      colors: ['#ff0000', '#ffffff'],
+      offbeatChance: 0.4, skipChance: 0.08, doubleChance: 0.2,
+      sabiDensity: 0.3, sixteenthChance: 0.2
+    },
+    {
+      name: 'stage5', bpm: 190, duration: 40000,
+      bgm: 'gameshow', emojis: ['💩', '🦀', '🐣', '🧬', '🔮', '👁', '🍄', '🫠', '🤡', '🧠'],
+      colors: ['#ff0000', '#ff8c00', '#ffd700', '#39ff14', '#00fff7', '#8b00ff'],
+      offbeatChance: 0.45, skipChance: 0.05, doubleChance: 0.25,
+      sabiDensity: 0.35, sixteenthChance: 0.25
+    },
+  ];
 
   // ===== 定数 =====
-  const BPM = 150;
-  const BEAT_INTERVAL = 60000 / BPM; // ms per beat
-  const SONG_DURATION = 35000; // 35秒
-  const NOTE_EMOJIS = ['💩', '🦀', '🐣', '🧬', '🔮', '👁', '🍄', '🫠', '🤡', '🧠'];
-  const LANE_COUNT = 4;
-  const FALL_DURATION = 2000; // ノーツが上から判定ラインまで落ちる時間(ms)
-
-  // 判定閾値(ms)
-  const PERFECT_THRESHOLD = 60;
-  const GREAT_THRESHOLD = 120;
-
-  // スコア
-  const PERFECT_SCORE = 100;
-  const GREAT_SCORE = 50;
+  var LANE_COUNT = 4;
+  var FALL_DURATION = 1800;
+  var PERFECT_THRESHOLD = 60;
+  var GREAT_THRESHOLD = 120;
+  var PERFECT_SCORE = 100;
+  var GREAT_SCORE = 50;
+  var STORAGE_KEY = 'surreal-beat-progress';
 
   // ===== ステート =====
-  let gameState = 'title'; // title, playing, result
-  let score = 0;
-  let combo = 0;
-  let maxCombo = 0;
-  let perfectCount = 0;
-  let greatCount = 0;
-  let missCount = 0;
-  let noteChart = []; // { time, lane, emoji }
-  let activeNotes = []; // { el, time, lane, hit }
-  let gameStartTime = 0;
-  let animFrameId = null;
+  var gameState = 'title';
+  var currentStageIndex = 0;
+  var score = 0;
+  var combo = 0;
+  var maxCombo = 0;
+  var perfectCount = 0;
+  var greatCount = 0;
+  var missCount = 0;
+  var noteChart = [];
+  var activeNotes = [];
+  var gameStartTime = 0;
+  var animFrameId = null;
+  var beatPulseTimer = null;
+  var particles = [];
+
+  // ===== 進行度管理 =====
+  function loadProgress() {
+    try {
+      var data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (data && typeof data.unlocked === 'number') return data;
+    } catch (e) { /* ignore */ }
+    return { unlocked: 1, cleared: [] };
+  }
+
+  function saveProgress(progress) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch (e) { /* ignore */ }
+  }
 
   // ===== DOM要素 =====
-  const titleScreen = document.getElementById('title-screen');
-  const gameScreen = document.getElementById('game-screen');
-  const resultScreen = document.getElementById('result-screen');
-  const startBtn = document.getElementById('start-btn');
-  const retryBtn = document.getElementById('retry-btn');
-  const scoreDisplay = document.getElementById('score-display');
-  const comboDisplay = document.getElementById('combo-display');
-  const playArea = document.getElementById('play-area');
-  const judgeEffect = document.getElementById('judge-effect');
-  const progressFill = document.getElementById('progress-fill');
-  const finalScore = document.getElementById('final-score');
-  const perfectCountEl = document.getElementById('perfect-count');
-  const greatCountEl = document.getElementById('great-count');
-  const missCountEl = document.getElementById('miss-count');
-  const maxComboEl = document.getElementById('max-combo');
-  const resultRank = document.getElementById('result-rank');
-  const highscoreArea = document.getElementById('highscore-area');
-  const tapBtns = document.querySelectorAll('.tap-btn');
+  var titleScreen = document.getElementById('title-screen');
+  var stageSelectScreen = document.getElementById('stage-select-screen');
+  var gameScreen = document.getElementById('game-screen');
+  var clearScreen = document.getElementById('clear-screen');
+  var resultScreen = document.getElementById('result-screen');
+  var startBtn = document.getElementById('start-btn');
+  var backToTitleBtn = document.getElementById('back-to-title-btn');
+  var retryBtn = document.getElementById('retry-btn');
+  var retryStageBtn = document.getElementById('retry-stage-btn');
+  var nextStageBtn = document.getElementById('next-stage-btn');
+  var backToSelectBtn = document.getElementById('back-to-select-btn');
+  var failBackBtn = document.getElementById('fail-back-btn');
+  var scoreDisplay = document.getElementById('score-display');
+  var comboDisplay = document.getElementById('combo-display');
+  var stageNameDisplay = document.getElementById('stage-name-display');
+  var playArea = document.getElementById('play-area');
+  var judgeEffect = document.getElementById('judge-effect');
+  var progressFill = document.getElementById('progress-fill');
+  var particleCanvas = document.getElementById('particle-canvas');
+  var particleCtx = particleCanvas ? particleCanvas.getContext('2d') : null;
+  var tapBtns = document.querySelectorAll('.tap-btn');
 
   // ===== 画面切り替え =====
   function showScreen(screenId) {
-    [titleScreen, gameScreen, resultScreen].forEach(function (s) {
-      s.classList.remove('active');
-    });
+    var screens = [titleScreen, stageSelectScreen, gameScreen, clearScreen, resultScreen];
+    screens.forEach(function (s) { s.classList.remove('active'); });
     document.getElementById(screenId).classList.add('active');
   }
 
+  // ===== ステージ選択画面描画 =====
+  function renderStageList() {
+    var listEl = document.getElementById('stage-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    var progress = loadProgress();
+
+    for (var i = 0; i < STAGES.length; i++) {
+      var stage = STAGES[i];
+      var isUnlocked = i < progress.unlocked;
+      var isCleared = progress.cleared && progress.cleared.indexOf(i) !== -1;
+      var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
+
+      var card = document.createElement('div');
+      card.className = 'stage-card';
+      card.setAttribute('data-stage', i);
+      if (!isUnlocked) card.classList.add('stage-locked');
+      if (isCleared) card.classList.add('stage-cleared');
+
+      var numEl = document.createElement('div');
+      numEl.className = 'stage-number';
+      numEl.textContent = i + 1;
+
+      var infoEl = document.createElement('div');
+      infoEl.className = 'stage-info';
+
+      var nameEl = document.createElement('div');
+      nameEl.className = 'stage-card-name';
+      nameEl.textContent = t(stage.name);
+
+      var detailEl = document.createElement('div');
+      detailEl.className = 'stage-card-detail';
+      detailEl.textContent = t(stage.name + 'detail');
+
+      infoEl.appendChild(nameEl);
+      infoEl.appendChild(detailEl);
+
+      var statusEl = document.createElement('div');
+      statusEl.className = 'stage-status';
+      if (isCleared) {
+        statusEl.textContent = '⭐';
+      } else if (!isUnlocked) {
+        statusEl.textContent = '🔒';
+      } else {
+        statusEl.textContent = '▶';
+      }
+
+      card.appendChild(numEl);
+      card.appendChild(infoEl);
+      card.appendChild(statusEl);
+
+      if (isUnlocked) {
+        (function (idx) {
+          card.addEventListener('click', function () {
+            currentStageIndex = idx;
+            startGame();
+          });
+        })(i);
+      }
+
+      listEl.appendChild(card);
+    }
+  }
+
   // ===== 譜面自動生成 =====
-  function generateChart() {
+  function generateChart(stageConfig) {
     var chart = [];
-    var totalBeats = Math.floor(SONG_DURATION / BEAT_INTERVAL);
-    var lastLanes = [-1, -1]; // 直前2つのレーン（同レーン連続回避）
+    var beatInterval = 60000 / stageConfig.bpm;
+    var totalBeats = Math.floor(stageConfig.duration / beatInterval);
+    var lastLanes = [-1, -1];
+    var emojis = stageConfig.emojis;
 
     for (var i = 0; i < totalBeats; i++) {
-      // 変化のあるリズムパターン: 8ビートベース + ランダム変調
       var beatPhase = i % 8;
       var shouldPlace = false;
 
-      // 基本パターン: 1, 3, 5, 7拍目（8ビート）
+      // 基本パターン: 8ビート（1, 3, 5, 7拍目）
       if (beatPhase === 0 || beatPhase === 2 || beatPhase === 4 || beatPhase === 6) {
         shouldPlace = true;
       }
-      // 裏拍を時々入れる（30%）
-      if (!shouldPlace && Math.random() < 0.3) {
+
+      // 裏拍
+      if (!shouldPlace && Math.random() < stageConfig.offbeatChance) {
         shouldPlace = true;
       }
-      // たまに8ビートの拍を抜く（15%）
-      if (shouldPlace && Math.random() < 0.15) {
+
+      // 16ビート（拍間にノーツ追加）
+      if (stageConfig.sixteenthChance > 0 && Math.random() < stageConfig.sixteenthChance) {
+        var sixteenthTime = i * beatInterval + beatInterval * 0.5;
+        if (sixteenthTime < stageConfig.duration) {
+          var sixteenthLane = Math.floor(Math.random() * LANE_COUNT);
+          chart.push({
+            time: sixteenthTime,
+            lane: sixteenthLane,
+            emoji: emojis[Math.floor(Math.random() * emojis.length)]
+          });
+        }
+      }
+
+      // たまに拍を抜く
+      if (shouldPlace && Math.random() < stageConfig.skipChance) {
         shouldPlace = false;
       }
 
       if (shouldPlace) {
-        // レーン選択（直前と被りにくく）
+        // レーン選択（連続回避）
         var lane;
         var attempts = 0;
         do {
@@ -135,20 +307,32 @@
         lastLanes[0] = lane;
 
         chart.push({
-          time: i * BEAT_INTERVAL,
+          time: i * beatInterval,
           lane: lane,
-          emoji: NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)]
+          emoji: emojis[Math.floor(Math.random() * emojis.length)]
         });
+
+        // 同時押し
+        if (stageConfig.doubleChance > 0 && Math.random() < stageConfig.doubleChance) {
+          var doubleLane;
+          do {
+            doubleLane = Math.floor(Math.random() * LANE_COUNT);
+          } while (doubleLane === lane);
+          chart.push({
+            time: i * beatInterval,
+            lane: doubleLane,
+            emoji: emojis[Math.floor(Math.random() * emojis.length)]
+          });
+        }
       }
     }
 
-    // サビ（後半）で密度UP: 追加ノーツ
+    // サビ（後半60%以降）で密度UP
     var sabiStart = Math.floor(totalBeats * 0.6);
     for (var j = sabiStart; j < totalBeats; j++) {
-      if (Math.random() < 0.2) {
+      if (Math.random() < stageConfig.sabiDensity) {
         var extraLane = Math.floor(Math.random() * LANE_COUNT);
-        // 既存ノーツと同時刻・同レーンでないか確認
-        var time = j * BEAT_INTERVAL;
+        var time = j * beatInterval;
         var conflict = chart.some(function (n) {
           return Math.abs(n.time - time) < 50 && n.lane === extraLane;
         });
@@ -156,19 +340,19 @@
           chart.push({
             time: time,
             lane: extraLane,
-            emoji: NOTE_EMOJIS[Math.floor(Math.random() * NOTE_EMOJIS.length)]
+            emoji: emojis[Math.floor(Math.random() * emojis.length)]
           });
         }
       }
     }
 
-    // 時刻順にソート
     chart.sort(function (a, b) { return a.time - b.time; });
     return chart;
   }
 
   // ===== ゲーム開始 =====
   function startGame() {
+    var stageConfig = STAGES[currentStageIndex];
     gameState = 'playing';
     score = 0;
     combo = 0;
@@ -177,32 +361,152 @@
     greatCount = 0;
     missCount = 0;
     activeNotes = [];
-    noteChart = generateChart();
+    particles = [];
+    noteChart = generateChart(stageConfig);
 
     scoreDisplay.textContent = '0';
     comboDisplay.textContent = '0';
     progressFill.style.width = '0%';
 
+    // ステージ名表示
+    var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
+    stageNameDisplay.textContent = 'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name);
+
     // プレイエリアのノーツをクリア
-    var existingNotes = playArea.querySelectorAll('.note');
+    var existingNotes = playArea.querySelectorAll('.note, .lane-flash');
     existingNotes.forEach(function (n) { n.remove(); });
 
+    // テーマ色を適用
+    applyStageTheme(stageConfig);
+
     showScreen('game-screen');
-    GameManager.onGameStart();
+
+    // BGMをステージに合わせて再生
+    SoundSystem.playBgm(stageConfig.bgm);
+
+    // パーティクルキャンバスサイズ
+    resizeParticleCanvas();
 
     gameStartTime = performance.now();
     animFrameId = requestAnimationFrame(gameLoop);
+
+    // 背景パルス開始
+    startBeatPulse(stageConfig.bpm);
+  }
+
+  // ===== テーマ色適用 =====
+  function applyStageTheme(stageConfig) {
+    var c = stageConfig.colors;
+    var gradStr = c.length === 2
+      ? 'linear-gradient(90deg, ' + c[0] + ', ' + c[1] + ')'
+      : 'linear-gradient(90deg, ' + c.join(', ') + ')';
+
+    var judgeLine = document.getElementById('judge-line');
+    if (judgeLine) {
+      judgeLine.style.background = gradStr;
+    }
+    progressFill.style.background = gradStr;
+  }
+
+  // ===== 背景パルス =====
+  function startBeatPulse(bpm) {
+    stopBeatPulse();
+    var interval = 60000 / bpm;
+    beatPulseTimer = setInterval(function () {
+      if (gameState !== 'playing') return;
+      gameScreen.classList.remove('bg-pulse');
+      // reflow強制
+      void gameScreen.offsetWidth;
+      gameScreen.classList.add('bg-pulse');
+    }, interval);
+  }
+
+  function stopBeatPulse() {
+    if (beatPulseTimer) {
+      clearInterval(beatPulseTimer);
+      beatPulseTimer = null;
+    }
+    gameScreen.classList.remove('bg-pulse');
+  }
+
+  // ===== パーティクルキャンバスリサイズ =====
+  function resizeParticleCanvas() {
+    if (!particleCanvas) return;
+    particleCanvas.width = playArea.offsetWidth;
+    particleCanvas.height = playArea.offsetHeight;
+  }
+
+  // ===== パーティクルシステム =====
+  function spawnParticles(x, y, count, colors) {
+    for (var i = 0; i < count; i++) {
+      var angle = Math.random() * Math.PI * 2;
+      var speed = 2 + Math.random() * 5;
+      particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 2,
+        life: 1.0,
+        decay: 0.01 + Math.random() * 0.02,
+        size: 3 + Math.random() * 5,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+  }
+
+  function updateAndDrawParticles() {
+    if (!particleCtx || !particleCanvas) return;
+    particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.1; // gravity
+      p.life -= p.decay;
+
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+
+      particleCtx.globalAlpha = p.life;
+      particleCtx.fillStyle = p.color;
+      particleCtx.beginPath();
+      particleCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      particleCtx.fill();
+    }
+    particleCtx.globalAlpha = 1;
+  }
+
+  // ===== クリア演出パーティクル =====
+  function spawnClearParticles() {
+    if (!particleCanvas) return;
+    var w = particleCanvas.width;
+    var h = particleCanvas.height;
+    var colors = ['#ff6ec7', '#00fff7', '#39ff14', '#ffd700', '#ff4444', '#8b00ff'];
+    for (var burst = 0; burst < 5; burst++) {
+      (function (b) {
+        setTimeout(function () {
+          var cx = w * 0.2 + Math.random() * w * 0.6;
+          var cy = h * 0.2 + Math.random() * h * 0.6;
+          spawnParticles(cx, cy, 30, colors);
+        }, b * 200);
+      })(burst);
+    }
   }
 
   // ===== ゲームループ =====
   function gameLoop(timestamp) {
     if (gameState !== 'playing') return;
 
+    var stageConfig = STAGES[currentStageIndex];
     var elapsed = timestamp - gameStartTime;
-    var progress = Math.min(elapsed / SONG_DURATION, 1);
+    var songDuration = stageConfig.duration;
+    var progress = Math.min(elapsed / songDuration, 1);
     progressFill.style.width = (progress * 100) + '%';
 
-    // ノーツ生成（FALL_DURATION分前に生成）
+    // ノーツ生成
     for (var i = 0; i < noteChart.length; i++) {
       var note = noteChart[i];
       var spawnTime = note.time - FALL_DURATION;
@@ -225,7 +529,10 @@
         an.el.style.top = (ratio * 100) + '%';
       }
 
-      // Miss判定: 判定ラインを通り過ぎた
+      // コンボエフェクト適用
+      updateNoteComboEffect(an.el);
+
+      // Miss判定
       if (elapsed > an.time + GREAT_THRESHOLD) {
         an.hit = true;
         missCount++;
@@ -234,12 +541,17 @@
         showJudge('miss', an.lane);
         removeNote(an.el);
         activeNotes.splice(j, 1);
+
+        // 画面揺れ
+        triggerScreenShake();
       }
     }
 
+    // パーティクル更新
+    updateAndDrawParticles();
+
     // 曲終了チェック
-    // 全ノーツが処理済みか、曲時間+余裕で終了
-    if (elapsed >= SONG_DURATION + FALL_DURATION + 500) {
+    if (elapsed >= songDuration + FALL_DURATION + 500) {
       endGame();
       return;
     }
@@ -266,11 +578,46 @@
     activeNotes.push(noteObj);
   }
 
-  // ===== ノーツ削除（アニメーション付き） =====
+  // ===== ノーツにコンボエフェクト =====
+  function updateNoteComboEffect(el) {
+    if (combo >= 30) {
+      if (!el.classList.contains('note-rainbow')) {
+        el.classList.remove('note-fire');
+        el.classList.add('note-rainbow');
+      }
+    } else if (combo >= 10) {
+      if (!el.classList.contains('note-fire') && !el.classList.contains('note-rainbow')) {
+        el.classList.add('note-fire');
+      }
+    }
+  }
+
+  // ===== ノーツ削除 =====
   function removeNote(el) {
     el.classList.add('note-hit');
     setTimeout(function () {
       if (el.parentNode) el.parentNode.removeChild(el);
+    }, 300);
+  }
+
+  // ===== レーン光波エフェクト =====
+  function triggerLaneFlash(lane) {
+    var flash = document.createElement('div');
+    flash.className = 'lane-flash';
+    flash.setAttribute('data-lane', lane);
+    playArea.appendChild(flash);
+    setTimeout(function () {
+      if (flash.parentNode) flash.parentNode.removeChild(flash);
+    }, 500);
+  }
+
+  // ===== 画面揺れ =====
+  function triggerScreenShake() {
+    playArea.classList.remove('screen-shake');
+    void playArea.offsetWidth;
+    playArea.classList.add('screen-shake');
+    setTimeout(function () {
+      playArea.classList.remove('screen-shake');
     }, 300);
   }
 
@@ -279,7 +626,6 @@
     var text = document.createElement('div');
     text.className = 'judge-text ' + type;
     text.textContent = type === 'perfect' ? 'PERFECT' : type === 'great' ? 'GREAT' : 'MISS';
-    // レーンの中央に表示
     text.style.left = (lane * 25 + 12.5) + '%';
     text.style.transform = 'translateX(-50%)';
     judgeEffect.appendChild(text);
@@ -297,7 +643,6 @@
     var closestDiff = Infinity;
     var closestIdx = -1;
 
-    // 最も近いノーツを見つける
     for (var i = 0; i < activeNotes.length; i++) {
       var n = activeNotes[i];
       if (n.hit || n.lane !== lane) continue;
@@ -310,7 +655,6 @@
     }
 
     if (!closestNote || closestDiff > GREAT_THRESHOLD) {
-      // 空振り — 何もしない（Missは自動判定のみ）
       return;
     }
 
@@ -318,14 +662,12 @@
     SoundSystem.play('tap');
 
     if (closestDiff <= PERFECT_THRESHOLD) {
-      // Perfect
       perfectCount++;
       combo++;
       var multiplier = 1 + Math.floor(combo / 10) * 0.5;
       score += Math.floor(PERFECT_SCORE * multiplier);
       showJudge('perfect', lane);
     } else {
-      // Great
       greatCount++;
       combo++;
       var multiplierG = 1 + Math.floor(combo / 10) * 0.5;
@@ -336,6 +678,17 @@
     if (combo > maxCombo) maxCombo = combo;
     scoreDisplay.textContent = score;
     comboDisplay.textContent = combo;
+
+    // レーン光波
+    triggerLaneFlash(lane);
+
+    // ヒットパーティクル
+    if (particleCanvas) {
+      var noteX = (lane * 0.25 + 0.125) * particleCanvas.width;
+      var noteY = particleCanvas.height * 0.9;
+      var stage = STAGES[currentStageIndex];
+      spawnParticles(noteX, noteY, 5, stage.colors);
+    }
 
     removeNote(closestNote.el);
     activeNotes.splice(closestIdx, 1);
@@ -348,8 +701,10 @@
       cancelAnimationFrame(animFrameId);
       animFrameId = null;
     }
+    stopBeatPulse();
+    SoundSystem.stopBgm();
 
-    // 残りのアクティブノーツをMissとしてカウント
+    // 残りのアクティブノーツをMiss
     activeNotes.forEach(function (n) {
       if (!n.hit) {
         missCount++;
@@ -358,17 +713,11 @@
     });
     activeNotes = [];
 
-    var result = GameManager.onGameEnd(score);
-
-    // リザルト表示
-    finalScore.textContent = score;
-    perfectCountEl.textContent = perfectCount;
-    greatCountEl.textContent = greatCount;
-    missCountEl.textContent = missCount;
-    maxComboEl.textContent = maxCombo;
+    var totalNotes = perfectCount + greatCount + missCount;
+    var missRatio = totalNotes > 0 ? missCount / totalNotes : 1;
+    var cleared = missRatio <= 0.2;
 
     // ランク計算
-    var totalNotes = perfectCount + greatCount + missCount;
     var accuracy = totalNotes > 0 ? (perfectCount + greatCount * 0.5) / totalNotes : 0;
     var rank = 'D';
     if (accuracy >= 0.95 && missCount === 0) rank = 'S';
@@ -376,34 +725,141 @@
     else if (accuracy >= 0.7) rank = 'B';
     else if (accuracy >= 0.5) rank = 'C';
 
-    resultRank.textContent = rank;
-    resultRank.className = 'rank-display rank-' + rank.toLowerCase();
+    var isFullCombo = missCount === 0 && totalNotes > 0;
 
-    // ハイスコア
-    highscoreArea.innerHTML = '';
-    if (result && result.isNewHigh) {
-      var newRecordEl = document.createElement('div');
-      newRecordEl.className = 'sg-new-record';
-      newRecordEl.textContent = SurrealI18n ? SurrealI18n.t('newRecord') : '🎉 NEW RECORD!';
-      highscoreArea.appendChild(newRecordEl);
+    var result = GameManager.onGameEnd(score);
+    var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
+    var stageConfig = STAGES[currentStageIndex];
+
+    if (cleared) {
+      // クリア! 進行度を更新
+      var progress = loadProgress();
+      if (progress.cleared.indexOf(currentStageIndex) === -1) {
+        progress.cleared.push(currentStageIndex);
+      }
+      if (currentStageIndex + 1 >= progress.unlocked && currentStageIndex + 1 < STAGES.length) {
+        progress.unlocked = currentStageIndex + 2;
+      }
+      saveProgress(progress);
+
+      // クリア画面表示
+      document.getElementById('clear-stage-name').textContent =
+        'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name);
+      document.getElementById('clear-score').textContent = score;
+      document.getElementById('clear-rank').textContent = rank;
+      document.getElementById('clear-rank').className = 'rank-display rank-' + rank.toLowerCase();
+      document.getElementById('clear-perfect').textContent = perfectCount;
+      document.getElementById('clear-great').textContent = greatCount;
+      document.getElementById('clear-miss').textContent = missCount;
+      document.getElementById('clear-max-combo').textContent = maxCombo;
+
+      // フルコンボ表示
+      var fcBanner = document.getElementById('clear-fullcombo');
+      if (isFullCombo) {
+        fcBanner.textContent = t('fullCombo');
+        fcBanner.classList.remove('hidden');
+      } else {
+        fcBanner.classList.add('hidden');
+      }
+
+      // 次のステージボタンの表示制御
+      if (currentStageIndex >= STAGES.length - 1) {
+        nextStageBtn.textContent = t('allClear');
+        nextStageBtn.style.display = 'inline-block';
+      } else {
+        nextStageBtn.textContent = t('nextStage');
+        nextStageBtn.style.display = 'inline-block';
+      }
+
+      SoundSystem.play('result');
+      showScreen('clear-screen');
+
+      // クリア演出パーティクル（canvasがgame-screen内なので、clear-screen上にも一時的に見せる）
+      // 代わりにDOM花火を生成
+      spawnDomFireworks();
+
+    } else {
+      // 失敗画面
+      document.getElementById('result-stage-name').textContent =
+        'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name);
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('perfect-count').textContent = perfectCount;
+      document.getElementById('great-count').textContent = greatCount;
+      document.getElementById('miss-count').textContent = missCount;
+      document.getElementById('max-combo').textContent = maxCombo;
+      document.getElementById('result-rank').textContent = rank;
+      document.getElementById('result-rank').className = 'rank-display rank-' + rank.toLowerCase();
+
+      // ハイスコア
+      var highscoreArea = document.getElementById('highscore-area');
+      highscoreArea.innerHTML = '';
+      if (result && result.isNewHigh) {
+        var newRecordEl = document.createElement('div');
+        newRecordEl.className = 'sg-new-record';
+        newRecordEl.textContent = SurrealI18n ? SurrealI18n.t('newRecord') : '🎉 NEW RECORD!';
+        highscoreArea.appendChild(newRecordEl);
+      }
+      var highData = GameManager.getHighScore();
+      if (highData) {
+        var badge = document.createElement('div');
+        badge.className = 'sg-highscore-badge';
+        badge.textContent = highData;
+        highscoreArea.appendChild(badge);
+      }
+
+      showScreen('result-screen');
     }
-    var highData = GameManager.getHighScore();
-    if (highData) {
-      var badge = document.createElement('div');
-      badge.className = 'sg-highscore-badge';
-      badge.textContent = highData;
-      highscoreArea.appendChild(badge);
+
+    // シェアテキスト更新
+    updateShareText(score, t(stageConfig.name));
+  }
+
+  // ===== DOM花火（クリア演出） =====
+  function spawnDomFireworks() {
+    var container = document.querySelector('#clear-screen .clear-content');
+    if (!container) return;
+    var colors = ['#ff6ec7', '#00fff7', '#39ff14', '#ffd700', '#ff4444', '#8b00ff', '#ff8c00'];
+
+    for (var burst = 0; burst < 40; burst++) {
+      (function (b) {
+        setTimeout(function () {
+          var particle = document.createElement('div');
+          particle.style.cssText =
+            'position:absolute;' +
+            'width:' + (4 + Math.random() * 6) + 'px;' +
+            'height:' + (4 + Math.random() * 6) + 'px;' +
+            'border-radius:50%;' +
+            'background:' + colors[Math.floor(Math.random() * colors.length)] + ';' +
+            'left:' + (10 + Math.random() * 80) + '%;' +
+            'top:' + (5 + Math.random() * 30) + '%;' +
+            'pointer-events:none;' +
+            'z-index:100;' +
+            'animation:fireworkParticle ' + (0.8 + Math.random() * 1.2) + 's ease-out forwards;';
+          container.appendChild(particle);
+          setTimeout(function () {
+            if (particle.parentNode) particle.parentNode.removeChild(particle);
+          }, 2500);
+        }, b * 50);
+      })(burst);
     }
 
-    // シェアテキストを更新
-    updateShareText(score, rank);
-
-    showScreen('result-screen');
+    // アニメーション定義（一度だけ注入）
+    if (!document.getElementById('firework-styles')) {
+      var style = document.createElement('style');
+      style.id = 'firework-styles';
+      style.textContent =
+        '@keyframes fireworkParticle {' +
+        '0% { opacity: 1; transform: scale(1) translateY(0); }' +
+        '50% { opacity: 0.8; transform: scale(1.5) translateY(-30px); }' +
+        '100% { opacity: 0; transform: scale(0.5) translateY(60px); }' +
+        '}';
+      document.head.appendChild(style);
+    }
   }
 
   // ===== シェアテキスト更新 =====
-  function updateShareText(s, r) {
-    var text = SurrealI18n ? SurrealI18n.t('shareText', s, r) : '';
+  function updateShareText(s, stageName) {
+    var text = SurrealI18n ? SurrealI18n.t('shareText', s, stageName) : '';
     var shareBtn = document.querySelector('.sg-share-btn');
     if (shareBtn) {
       var url = 'https://eri-murayama.github.io/surreal-games/games/surreal-beat/index.html';
@@ -421,19 +877,46 @@
   }
 
   // ===== イベントリスナー =====
-  // スタートボタン
   startBtn.addEventListener('click', function () {
-    startGame();
+    renderStageList();
+    showScreen('stage-select-screen');
   });
 
-  // リトライボタン
+  backToTitleBtn.addEventListener('click', function () {
+    showScreen('title-screen');
+  });
+
   retryBtn.addEventListener('click', function () {
     startGame();
   });
 
-  // タップボタン（スマホ）
+  retryStageBtn.addEventListener('click', function () {
+    startGame();
+  });
+
+  nextStageBtn.addEventListener('click', function () {
+    if (currentStageIndex >= STAGES.length - 1) {
+      // 全クリア → ステージ選択に戻る
+      renderStageList();
+      showScreen('stage-select-screen');
+    } else {
+      currentStageIndex++;
+      startGame();
+    }
+  });
+
+  backToSelectBtn.addEventListener('click', function () {
+    renderStageList();
+    showScreen('stage-select-screen');
+  });
+
+  failBackBtn.addEventListener('click', function () {
+    renderStageList();
+    showScreen('stage-select-screen');
+  });
+
+  // タップボタン
   tapBtns.forEach(function (btn) {
-    // タッチ開始で即反応
     btn.addEventListener('touchstart', function (e) {
       e.preventDefault();
       var lane = parseInt(btn.getAttribute('data-lane'));
@@ -445,7 +928,6 @@
       btn.classList.remove('pressed');
     });
 
-    // マウスクリック（PC + タッチスクリーンPC）
     btn.addEventListener('mousedown', function (e) {
       e.preventDefault();
       var lane = parseInt(btn.getAttribute('data-lane'));
@@ -458,7 +940,7 @@
     });
   });
 
-  // キーボード（PC）
+  // キーボード
   var keyMap = { 'd': 0, 'f': 1, 'j': 2, 'k': 3 };
 
   document.addEventListener('keydown', function (e) {
@@ -477,6 +959,11 @@
     }
   });
 
-  // 初期i18nテキスト適用
+  // リサイズ時にキャンバス更新
+  window.addEventListener('resize', function () {
+    resizeParticleCanvas();
+  });
+
+  // 初期テキスト適用
   updateI18nTexts();
 })();

@@ -12,9 +12,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>シュールダッシュ | シュールゲームス</title>
-  <meta name="description" content="うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！">
+  <meta name="description" content="うんちくんが走る！飛ぶ！5つのゾーンを駆け抜けるシュールな世界のエンドレスラン！">
   <meta property="og:title" content="シュールダッシュ | シュールゲームス">
-  <meta property="og:description" content="うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！">
+  <meta property="og:description" content="うんちくんが走る！飛ぶ！5つのゾーンを駆け抜けるシュールな世界のエンドレスラン！">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/surreal-dash/index.html">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
@@ -33,7 +33,7 @@
     <div class="title-container">
       <div class="title-icon">💩💨</div>
       <h1 class="game-title" data-i18n="gameTitle">シュールダッシュ</h1>
-      <p class="title-sub" data-i18n="gameSub">うんちくんが走る！飛ぶ！シュールな世界のエンドレスラン！</p>
+      <p class="title-sub" data-i18n="gameSub">5つのゾーンを駆け抜けろ！パワーアップ＆ボスバトル！</p>
       <div id="highscore-display" class="highscore-display"></div>
       <button id="start-btn" class="btn-primary" data-i18n="startBtn">💩 タップでスタート 💩</button>
       <div class="controls-help">
@@ -54,6 +54,10 @@
       <div class="hud-item">
         <span class="hud-label" data-i18n="distLabel">距離</span>
         <span id="dist-display" class="hud-value">0m</span>
+      </div>
+      <div class="hud-item hud-zone">
+        <span class="hud-label" data-i18n="zoneLabel">ゾーン</span>
+        <span id="zone-display" class="hud-value">宇宙</span>
       </div>
     </div>
     <canvas id="game-canvas"></canvas>
@@ -76,6 +80,10 @@
         <div class="result-row">
           <span class="result-label" data-i18n="finalStars">スター</span>
           <span id="final-stars" class="result-value">0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label" data-i18n="finalZone">到達ゾーン</span>
+          <span id="final-zone" class="result-value">-</span>
         </div>
       </div>
       <div id="result-rank" class="result-rank"></div>

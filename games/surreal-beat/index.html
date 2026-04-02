@@ -12,9 +12,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>シュールビート | シュールゲームス</title>
-  <meta name="description" content="落ちてくるシュールなノーツをリズムに合わせてタップ！">
+  <meta name="description" content="落ちてくるシュールなノーツをリズムに合わせてタップ！5ステージ制リズムゲーム">
   <meta property="og:title" content="シュールビート | シュールゲームス">
-  <meta property="og:description" content="落ちてくるシュールなノーツをリズムに合わせてタップ！">
+  <meta property="og:description" content="落ちてくるシュールなノーツをリズムに合わせてタップ！5ステージ制リズムゲーム">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/surreal-beat/index.html">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
@@ -36,12 +36,24 @@
     </div>
   </div>
 
+  <!-- ステージ選択画面 -->
+  <div id="stage-select-screen" class="screen">
+    <div class="stage-select-content">
+      <h2 class="stage-select-title" data-i18n="stageSelectTitle">ステージ選択</h2>
+      <div id="stage-list" class="stage-list"></div>
+      <button id="back-to-title-btn" class="neon-btn neon-btn-small" data-i18n="backToTitle">タイトルに戻る</button>
+    </div>
+  </div>
+
   <!-- ゲーム画面 -->
   <div id="game-screen" class="screen">
     <div class="game-hud">
       <div class="hud-item">
         <span class="hud-label" data-i18n="score">スコア</span>
         <span id="score-display" class="hud-value">0</span>
+      </div>
+      <div class="hud-item hud-stage-name">
+        <span id="stage-name-display" class="hud-stage-text"></span>
       </div>
       <div class="hud-item">
         <span class="hud-label" data-i18n="combo">コンボ</span>
@@ -55,6 +67,7 @@
       <div class="lane" data-lane="3"></div>
       <div id="judge-line"></div>
       <div id="judge-effect"></div>
+      <canvas id="particle-canvas"></canvas>
     </div>
     <div id="tap-zones">
       <button class="tap-btn" data-lane="0">D</button>
@@ -65,10 +78,48 @@
     <div id="progress-bar"><div id="progress-fill"></div></div>
   </div>
 
-  <!-- リザルト画面 -->
+  <!-- ステージクリア画面 -->
+  <div id="clear-screen" class="screen">
+    <div class="clear-content">
+      <h2 class="clear-title" data-i18n="stageClear">ステージクリア！</h2>
+      <div id="clear-stage-name" class="clear-stage-name"></div>
+      <div class="result-score">
+        <span class="result-label" data-i18n="score">スコア</span>
+        <span id="clear-score" class="result-value">0</span>
+      </div>
+      <div id="clear-rank" class="rank-display"></div>
+      <div class="result-details">
+        <div class="result-detail perfect">
+          <span class="detail-label">Perfect</span>
+          <span id="clear-perfect" class="detail-value">0</span>
+        </div>
+        <div class="result-detail great">
+          <span class="detail-label">Great</span>
+          <span id="clear-great" class="detail-value">0</span>
+        </div>
+        <div class="result-detail miss">
+          <span class="detail-label">Miss</span>
+          <span id="clear-miss" class="detail-value">0</span>
+        </div>
+        <div class="result-detail combo-max">
+          <span class="detail-label" data-i18n="maxCombo">最大コンボ</span>
+          <span id="clear-max-combo" class="detail-value">0</span>
+        </div>
+      </div>
+      <div id="clear-fullcombo" class="fullcombo-banner hidden"></div>
+      <div class="clear-buttons">
+        <button id="next-stage-btn" class="neon-btn" data-i18n="nextStage">次のステージへ</button>
+        <button id="retry-stage-btn" class="neon-btn neon-btn-small" data-i18n="retry">もう一回</button>
+        <button id="back-to-select-btn" class="neon-btn neon-btn-small" data-i18n="backToSelect">ステージ選択</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- リザルト画面（失敗時） -->
   <div id="result-screen" class="screen">
     <div class="result-content">
-      <h2 class="result-title" data-i18n="resultTitle">リザルト</h2>
+      <h2 class="result-title" data-i18n="resultFailed">ステージ失敗…</h2>
+      <div id="result-stage-name" class="clear-stage-name"></div>
       <div class="result-score">
         <span class="result-label" data-i18n="score">スコア</span>
         <span id="final-score" class="result-value">0</span>
@@ -93,7 +144,11 @@
         </div>
       </div>
       <div id="result-rank" class="rank-display"></div>
-      <button id="retry-btn" class="neon-btn" data-i18n="retry">もう一回</button>
+      <p class="fail-hint" data-i18n="failHint">Missを全ノーツの20%以下に抑えよう！</p>
+      <div class="clear-buttons">
+        <button id="retry-btn" class="neon-btn" data-i18n="retry">もう一回</button>
+        <button id="fail-back-btn" class="neon-btn neon-btn-small" data-i18n="backToSelect">ステージ選択</button>
+      </div>
     </div>
   </div>
 
