@@ -338,8 +338,9 @@
     }
     .menu-item {
       display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: baseline;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 16px;
       padding: 20px 0;
       border-bottom: 1px solid rgba(92, 61, 46, 0.1);
       opacity: 0;
@@ -349,6 +350,22 @@
     .menu-item.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+    .menu-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .menu-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .menu-item:hover .menu-photo img {
+      transform: scale(1.1);
     }
     .menu-name {
       font-size: 1rem;
@@ -365,13 +382,22 @@
       font-size: 0.8rem;
       color: var(--text-light);
       margin-top: 6px;
-      grid-column: 1 / -1;
     }
     .menu-price {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.2rem;
       color: var(--gold);
       white-space: nowrap;
+    }
+    @media (max-width: 480px) {
+      .menu-item {
+        grid-template-columns: 64px 1fr auto;
+        gap: 12px;
+      }
+      .menu-photo {
+        width: 64px;
+        height: 64px;
+      }
     }
     .menu-category-section { display: none; }
     .menu-category-section.active { display: block; }
@@ -594,6 +620,7 @@
       <!-- Coffee -->
       <div class="menu-category-section active" id="cat-coffee">
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=200&h=200&fit=crop" alt="本日の珈琲" loading="lazy"></div>
           <div>
             <div class="menu-name">本日の珈琲</div>
             <div class="menu-name-en">Today's Coffee</div>
@@ -602,6 +629,7 @@
           <div class="menu-price">&yen;550</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1534778101976-62847782c213?w=200&h=200&fit=crop" alt="カフェラテ" loading="lazy"></div>
           <div>
             <div class="menu-name">カフェラテ</div>
             <div class="menu-name-en">Cafe Latte</div>
@@ -610,6 +638,7 @@
           <div class="menu-price">&yen;620</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=200&h=200&fit=crop" alt="エスプレッソ" loading="lazy"></div>
           <div>
             <div class="menu-name">エスプレッソ</div>
             <div class="menu-name-en">Espresso</div>
@@ -618,6 +647,7 @@
           <div class="menu-price">&yen;450</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=200&h=200&fit=crop" alt="水出しアイスコーヒー" loading="lazy"></div>
           <div>
             <div class="menu-name">水出しアイスコーヒー</div>
             <div class="menu-name-en">Cold Brew</div>
@@ -626,6 +656,7 @@
           <div class="menu-price">&yen;600</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=200&h=200&fit=crop" alt="カプチーノ" loading="lazy"></div>
           <div>
             <div class="menu-name">カプチーノ</div>
             <div class="menu-name-en">Cappuccino</div>
@@ -637,6 +668,7 @@
       <!-- Sweets -->
       <div class="menu-category-section" id="cat-sweets">
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1508737027454-e6454ef45afd?w=200&h=200&fit=crop" alt="バスクチーズケーキ" loading="lazy"></div>
           <div>
             <div class="menu-name">自家製バスクチーズケーキ</div>
             <div class="menu-name-en">Basque Cheesecake</div>
@@ -645,6 +677,7 @@
           <div class="menu-price">&yen;580</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=200&h=200&fit=crop" alt="季節のタルト" loading="lazy"></div>
           <div>
             <div class="menu-name">季節のタルト</div>
             <div class="menu-name-en">Seasonal Tart</div>
@@ -653,6 +686,7 @@
           <div class="menu-price">&yen;650</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=200&h=200&fit=crop" alt="ティラミス" loading="lazy"></div>
           <div>
             <div class="menu-name">ティラミス</div>
             <div class="menu-name-en">Tiramisu</div>
@@ -664,6 +698,7 @@
       <!-- Food -->
       <div class="menu-category-section" id="cat-food">
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=200&h=200&fit=crop" alt="厚切りトースト" loading="lazy"></div>
           <div>
             <div class="menu-name">厚切りトーストセット</div>
             <div class="menu-name-en">Thick Toast Set</div>
@@ -672,6 +707,7 @@
           <div class="menu-price">&yen;700</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1528736235302-52922df5c122?w=200&h=200&fit=crop" alt="サンドイッチ" loading="lazy"></div>
           <div>
             <div class="menu-name">本日のサンドイッチ</div>
             <div class="menu-name-en">Today's Sandwich</div>
@@ -680,6 +716,7 @@
           <div class="menu-price">&yen;880</div>
         </div>
         <div class="menu-item">
+          <div class="menu-photo"><img src="https://images.unsplash.com/photo-1511690743698-d9d18f7e20f1?w=200&h=200&fit=crop" alt="グラノーラボウル" loading="lazy"></div>
           <div>
             <div class="menu-name">自家製グラノーラボウル</div>
             <div class="menu-name-en">Granola Bowl</div>

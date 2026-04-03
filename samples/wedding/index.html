@@ -85,7 +85,7 @@
       letter-spacing: 0.1em;
     }
 
-    /* ===== Hero ===== */
+    /* ===== Hero with slideshow ===== */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -94,8 +94,39 @@
       text-align: center;
       padding: 40px 24px;
       position: relative;
-      background: linear-gradient(180deg, rgba(253,251,247,0.88) 0%, rgba(245,236,224,0.9) 100%),
-                  url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&h=900&fit=crop') center/cover no-repeat;
+      overflow: hidden;
+    }
+    .hero-slideshow {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+      transform: scale(1.05);
+      animation: slideZoom 24s ease-in-out infinite;
+    }
+    .hero-slide.active {
+      opacity: 1;
+    }
+    .hero-slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&h=900&fit=crop'); }
+    .hero-slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1400&h=900&fit=crop'); animation-delay: -6s; }
+    .hero-slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1400&h=900&fit=crop'); animation-delay: -12s; }
+    .hero-slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1400&h=900&fit=crop'); animation-delay: -18s; }
+    @keyframes slideZoom {
+      0%, 100% { transform: scale(1.05); }
+      50% { transform: scale(1.12); }
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(253,251,247,0.88) 0%, rgba(245,236,224,0.92) 100%);
+      z-index: 1;
     }
     .hero::before {
       content: '';
@@ -104,6 +135,7 @@
       left: -50%;
       width: 200%;
       height: 200%;
+      z-index: 2;
       background: radial-gradient(ellipse at 30% 40%, rgba(196, 160, 122, 0.08) 0%, transparent 50%),
                   radial-gradient(ellipse at 70% 60%, rgba(138, 154, 123, 0.06) 0%, transparent 50%);
       animation: bgFloat 20s ease-in-out infinite;
@@ -111,6 +143,90 @@
     @keyframes bgFloat {
       0%, 100% { transform: translate(0, 0); }
       50% { transform: translate(-2%, 2%); }
+    }
+
+    /* ===== Falling petals ===== */
+    .petals-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      top: -20px;
+      width: 12px;
+      height: 12px;
+      background: var(--rose-light);
+      border-radius: 50% 0 50% 50%;
+      opacity: 0;
+      animation: petalFall linear infinite;
+    }
+    .petal:nth-child(odd) {
+      background: var(--green-light);
+      width: 10px;
+      height: 10px;
+    }
+    @keyframes petalFall {
+      0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+      10% { opacity: 0.5; }
+      50% { transform: translateY(50vh) rotate(180deg) translateX(40px); opacity: 0.3; }
+      90% { opacity: 0.1; }
+      100% { transform: translateY(100vh) rotate(360deg) translateX(-20px); opacity: 0; }
+    }
+
+    /* ===== Photo gallery strip ===== */
+    .photo-strip {
+      background: var(--white);
+      padding: 60px 0;
+      overflow: hidden;
+    }
+    .photo-strip-title {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--text);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .photo-strip-sub {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-light);
+      letter-spacing: 0.2em;
+      margin-bottom: 32px;
+    }
+    .photo-scroll {
+      display: flex;
+      gap: 12px;
+      animation: photoScroll 30s linear infinite;
+      width: max-content;
+    }
+    .photo-scroll:hover {
+      animation-play-state: paused;
+    }
+    .photo-scroll-item {
+      width: 200px;
+      height: 260px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .photo-scroll-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .photo-scroll-item:hover img {
+      transform: scale(1.08);
+    }
+    @keyframes photoScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
     .hero-content {
@@ -594,8 +710,18 @@
   <!-- Floating hearts -->
   <div class="hearts-container" id="hearts"></div>
 
+  <!-- Falling petals -->
+  <div class="petals-container" id="petals"></div>
+
   <!-- Hero -->
   <section class="hero">
+    <div class="hero-slideshow">
+      <div class="hero-slide active"></div>
+      <div class="hero-slide"></div>
+      <div class="hero-slide"></div>
+      <div class="hero-slide"></div>
+    </div>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-flower">
         <img src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=150&h=150&fit=crop" alt="花" loading="lazy">
@@ -767,6 +893,31 @@
     <div class="closing-names fade-in">Yuto & Sakura</div>
   </section>
 
+  <!-- Photo gallery strip -->
+  <section class="photo-strip">
+    <div class="photo-strip-title fade-in">Our Memories</div>
+    <div class="photo-strip-sub fade-in">思い出のアルバム</div>
+    <div class="photo-scroll">
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <!-- duplicate for seamless loop -->
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=520&fit=crop" alt="" loading="lazy"></div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     &copy; 2026 Yuto & Sakura Wedding
@@ -802,12 +953,36 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
+    /* Hero slideshow */
+    const slides = document.querySelectorAll('.hero-slide');
+    let currentSlide = 0;
+    function nextSlide() {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }
+    setInterval(nextSlide, 6000);
+
+    /* Falling petals */
+    const petalsContainer = document.getElementById('petals');
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.style.left = Math.random() * 100 + '%';
+      petal.style.animationDuration = (6 + Math.random() * 8) + 's';
+      petal.style.animationDelay = Math.random() * 2 + 's';
+      petal.style.width = (8 + Math.random() * 8) + 'px';
+      petal.style.height = petal.style.width;
+      petalsContainer.appendChild(petal);
+      setTimeout(() => petal.remove(), 16000);
+    }
+    setInterval(createPetal, 1200);
+
     /* Floating hearts */
     const heartsContainer = document.getElementById('hearts');
     function createHeart() {
       const heart = document.createElement('span');
       heart.className = 'floating-heart';
-      heart.textContent = ['&#10084;', '&#10085;', '&#9829;'][Math.floor(Math.random() * 3)];
       heart.innerHTML = ['&#10047;', '&#10048;', '&#10049;'][Math.floor(Math.random() * 3)];
       heart.style.left = Math.random() * 100 + '%';
       heart.style.animationDuration = (8 + Math.random() * 12) + 's';
