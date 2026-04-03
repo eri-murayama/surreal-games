@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>湯宿 翠風庵（すいふうあん）| 奥湯河原の隠れ宿</title>
+  <meta name="description" content="奥湯河原に佇む全8室の隠れ宿。源泉掛け流しの露天風呂と旬の会席料理でおもてなし。日本旅館サンプルサイト。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700&family=Zen+Old+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="湯宿 翠風庵 | 奥湯河原の隠れ宿">
+  <meta property="og:description" content="源泉掛け流しの露天風呂と旬の会席料理。全8室の隠れ宿。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Serif JP', serif;
+      color: #3a3535;
+      background: #f7f3ec;
+      overflow-x: hidden;
+      line-height: 2;
+      letter-spacing: 0.04em;
+    }
+
+    :root {
+      --deep-green: #2d4a3e;
+      --sumi: #2c2c2c;
+      --gold: #b8963e;
+      --gold-light: #d4b96a;
+      --kinari: #f7f3ec;
+      --kinari-dark: #ebe5d8;
+      --text: #3a3535;
+      --text-light: #7a7270;
+      --red-accent: #8b4c4c;
+    }
+
+    /* ===== Back link ===== */
+    .back-to-portfolio {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 200;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.75rem;
+      padding: 6px 14px;
+      border-radius: 2px;
+      background: rgba(45, 74, 62, 0.6);
+      backdrop-filter: blur(8px);
+      transition: background 0.3s;
+      letter-spacing: 0.05em;
+    }
+    .back-to-portfolio:hover { background: rgba(45, 74, 62, 0.9); }
+
+    /* ===== Sample badge ===== */
+    .sample-badge {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 200;
+      background: var(--gold);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 6px 16px;
+      border-radius: 2px;
+      letter-spacing: 0.15em;
+    }
+
+    /* ===== Navigation ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 150;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(247, 243, 236, 0);
+      backdrop-filter: blur(0);
+      transition: all 0.4s;
+    }
+    .nav.scrolled {
+      background: rgba(247, 243, 236, 0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 20px rgba(0,0,0,0.06);
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.72rem;
+      color: #fff;
+      letter-spacing: 0.15em;
+      transition: color 0.3s;
+    }
+    .nav.scrolled .nav-links a { color: var(--text); }
+    .nav-links a:hover { color: var(--gold); }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=80') center/cover no-repeat;
+      transform: scale(1.05);
+      animation: heroZoom 20s ease-in-out infinite alternate;
+    }
+    @keyframes heroZoom {
+      0% { transform: scale(1.05); }
+      100% { transform: scale(1.12); }
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(20,20,18,0.55) 0%, rgba(20,20,18,0.70) 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      padding: 24px;
+    }
+    .hero-vertical {
+      writing-mode: vertical-rl;
+      display: inline-block;
+      margin: 0 auto 32px;
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 1rem;
+      letter-spacing: 0.4em;
+      color: rgba(255,255,255,0.7);
+      line-height: 2.2;
+    }
+    .hero-name {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 40px;
+    }
+    .hero-divider {
+      width: 1px;
+      height: 60px;
+      background: var(--gold);
+      margin: 0 auto 24px;
+    }
+    .hero-cta {
+      display: inline-block;
+      padding: 14px 48px;
+      border: 1px solid rgba(184, 150, 62, 0.6);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      transition: all 0.4s;
+    }
+    .hero-cta:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    /* ===== Section common ===== */
+    .section {
+      padding: 100px 24px;
+    }
+    .section-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .section-title-wrap {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .section-title-en {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--sumi);
+    }
+    .section-title-line {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin: 16px auto 0;
+    }
+
+    /* ===== Concept ===== */
+    .concept { background: var(--kinari); }
+    .concept-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .concept-image {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 12px 12px 0 var(--kinari-dark);
+    }
+    .concept-text h3 {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+      color: var(--deep-green);
+    }
+    .concept-text p {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      line-height: 2.2;
+      margin-bottom: 16px;
+    }
+    .concept-vertical-text {
+      writing-mode: vertical-rl;
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      line-height: 2.5;
+      margin-top: 24px;
+    }
+    @media (max-width: 768px) {
+      .concept-body {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+
+    /* ===== Rooms ===== */
+    .rooms { background: #fff; }
+    .room-list {
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+    .room-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .room-item:nth-child(even) {
+      direction: rtl;
+    }
+    .room-item:nth-child(even) > * {
+      direction: ltr;
+    }
+    .room-image-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .room-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+    .room-image-wrap:hover .room-image {
+      transform: scale(1.05);
+    }
+    .room-label {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(45, 74, 62, 0.85);
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 6px 16px;
+      letter-spacing: 0.15em;
+    }
+    .room-info h3 {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+      color: var(--deep-green);
+    }
+    .room-info .room-size {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .room-info p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 2;
+      margin-bottom: 20px;
+    }
+    .room-price {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+    .room-price span {
+      font-size: 0.7rem;
+      color: var(--text-light);
+    }
+    @media (max-width: 768px) {
+      .room-item,
+      .room-item:nth-child(even) {
+        grid-template-columns: 1fr;
+        direction: ltr;
+        gap: 20px;
+      }
+    }
+
+    /* ===== Onsen ===== */
+    .onsen { background: var(--deep-green); color: #fff; }
+    .onsen .section-title-en { color: var(--gold-light); }
+    .onsen .section-title { color: #fff; }
+    .onsen .section-title-line { background: var(--gold-light); }
+    .onsen-intro {
+      text-align: center;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.7);
+      max-width: 600px;
+      margin: -30px auto 48px;
+      line-height: 2.2;
+    }
+    .onsen-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .onsen-gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+      aspect-ratio: 4/3;
+    }
+    .onsen-gallery-item:first-child {
+      grid-column: 1 / 3;
+      grid-row: 1 / 3;
+      aspect-ratio: auto;
+    }
+    .onsen-gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+    .onsen-gallery-item:hover img {
+      transform: scale(1.05);
+    }
+    .onsen-gallery-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.6));
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+    .onsen-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+      text-align: center;
+    }
+    .onsen-feature h4 {
+      font-family: 'Zen Old Mincho', serif;
+      font-weight: 400;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--gold-light);
+    }
+    .onsen-feature p {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.9;
+    }
+    @media (max-width: 768px) {
+      .onsen-gallery {
+        grid-template-columns: 1fr 1fr;
+      }
+      .onsen-gallery-item:first-child {
+        grid-column: 1 / 3;
+        grid-row: auto;
+        aspect-ratio: 16/9;
+      }
+      .onsen-features {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    /* ===== Cuisine ===== */
+    .cuisine { background: var(--kinari); }
+    .cuisine-intro {
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: -30px auto 48px;
+      line-height: 2.2;
+    }
+    .cuisine-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+    .cuisine-card {
+      background: #fff;
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .cuisine-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+    .cuisine-card img {
+      width: 100%;
+      aspect-ratio: 3/2;
+      object-fit: cover;
+    }
+    .cuisine-card-body {
+      padding: 24px;
+    }
+    .cuisine-card h3 {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--deep-green);
+    }
+    .cuisine-card p {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      line-height: 1.9;
+    }
+    @media (max-width: 768px) {
+      .cuisine-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== Facility ===== */
+    .facility { background: #fff; }
+    .facility-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .facility-item {
+      text-align: center;
+      padding: 32px 20px;
+      background: var(--kinari);
+      border-radius: 2px;
+      transition: transform 0.3s;
+    }
+    .facility-item:hover { transform: translateY(-4px); }
+    .facility-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .facility-item h4 {
+      font-family: 'Zen Old Mincho', serif;
+      font-weight: 400;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--deep-green);
+    }
+    .facility-item p {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      line-height: 1.9;
+    }
+    @media (max-width: 768px) {
+      .facility-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+    }
+    @media (max-width: 480px) {
+      .facility-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== Reservation ===== */
+    .reservation {
+      background: var(--kinari-dark);
+    }
+    .reservation-form {
+      max-width: 640px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 48px 40px;
+      border-radius: 2px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+    .form-group label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .form-group label .required {
+      color: var(--red-accent);
+      font-size: 0.65rem;
+      margin-left: 4px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      background: #fafafa;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--deep-green);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .form-submit {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: var(--deep-green);
+      color: #fff;
+      border: none;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 12px;
+    }
+    .form-submit:hover {
+      background: #1e3a2e;
+    }
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .reservation-form {
+        padding: 32px 20px;
+      }
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      background: var(--sumi);
+      color: rgba(255,255,255,0.6);
+      padding: 60px 24px 40px;
+      text-align: center;
+    }
+    .footer-name {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: 0.2em;
+      margin-bottom: 16px;
+    }
+    .footer-info {
+      font-size: 0.75rem;
+      line-height: 2.2;
+      margin-bottom: 24px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--gold-light); }
+    .footer-copy {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== Scroll animations ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-in-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-in-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .fade-in-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-in-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ===== Decorative ===== */
+    .wa-pattern {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      opacity: 0.03;
+      pointer-events: none;
+      background: repeating-conic-gradient(var(--sumi) 0% 25%, transparent 0% 50%) 0 0 / 20px 20px;
+    }
+  </style>
+</head>
+<body>
+
+<a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
+<div class="sample-badge">SAMPLE</div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <ul class="nav-links">
+    <li><a href="#concept">おもてなし</a></li>
+    <li><a href="#rooms">客室</a></li>
+    <li><a href="#onsen">温泉</a></li>
+    <li><a href="#cuisine">お料理</a></li>
+    <li><a href="#facility">館内案内</a></li>
+    <li><a href="#reservation">ご予約</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content fade-in">
+    <div class="hero-vertical">四季を纏う、静寂の湯宿</div>
+    <div class="hero-divider"></div>
+    <h1 class="hero-name">翠 風 庵</h1>
+    <p class="hero-sub">すいふうあん &mdash; 奥湯河原の隠れ宿</p>
+    <a href="#reservation" class="hero-cta">ご予約はこちら</a>
+  </div>
+</section>
+
+<!-- Concept -->
+<section class="section concept" id="concept">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-in">
+      <p class="section-title-en">Concept</p>
+      <h2 class="section-title">おもてなしの心</h2>
+      <div class="section-title-line"></div>
+    </div>
+    <div class="concept-body">
+      <img
+        src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80"
+        alt="和室の設え"
+        class="concept-image fade-in-left"
+        loading="lazy"
+      >
+      <div class="concept-text fade-in-right">
+        <h3>一期一会の<br>おもてなしを</h3>
+        <p>
+          奥湯河原の渓流沿いに佇む全八室の小さな宿。
+          喧騒を離れ、四季折々の自然に包まれながら、
+          ゆるやかに流れる時間をお過ごしください。
+        </p>
+        <p>
+          創業より八十余年、変わらぬ心で
+          お客様をお迎えして参りました。
+          源泉掛け流しの湯と旬の食材を活かした会席料理、
+          そして何より「人の温もり」でおもてなしいたします。
+        </p>
+        <div class="concept-vertical-text">
+          花鳥風月を愛で<br>心静かに過ごす贅沢
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Rooms -->
+<section class="section rooms" id="rooms">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-in">
+      <p class="section-title-en">Rooms</p>
+      <h2 class="section-title">客室のご案内</h2>
+      <div class="section-title-line"></div>
+    </div>
+    <div class="room-list">
+      <!-- Room 1 -->
+      <div class="room-item fade-in">
+        <div class="room-image-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=80"
+            alt="和室 清流"
+            class="room-image"
+            loading="lazy"
+          >
+          <div class="room-label">和 室</div>
+        </div>
+        <div class="room-info">
+          <h3>清流（せいりゅう）</h3>
+          <p class="room-size">十二畳半 + 広縁 &mdash; 定員4名</p>
+          <p>
+            渓流を望む落ち着いた純和室。
+            畳の香りと川のせせらぎに包まれ、
+            日本の原風景を感じるひとときを。
+            窓辺の広縁では、移ろう季節の景色を
+            ゆったりとお楽しみいただけます。
+          </p>
+          <div class="room-price">
+            &yen;38,000〜 <span>/ 1泊2食付・お一人様</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room 2 -->
+      <div class="room-item fade-in">
+        <div class="room-image-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80"
+            alt="和洋室 月見"
+            class="room-image"
+            loading="lazy"
+          >
+          <div class="room-label">和洋室</div>
+        </div>
+        <div class="room-info">
+          <h3>月見（つきみ）</h3>
+          <p class="room-size">和室八畳 + ツインベッド &mdash; 定員3名</p>
+          <p>
+            和の趣とベッドの快適さを兼ね備えた
+            和洋折衷の客室。
+            畳のくつろぎとベッドの安眠、
+            どちらもお愉しみいただけます。
+            窓からは四季の庭園を一望。
+          </p>
+          <div class="room-price">
+            &yen;45,000〜 <span>/ 1泊2食付・お一人様</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room 3 -->
+      <div class="room-item fade-in">
+        <div class="room-image-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1580041065738-e72023775cdc?w=800&q=80"
+            alt="特別室 翠雲"
+            class="room-image"
+            loading="lazy"
+          >
+          <div class="room-label">特別室</div>
+        </div>
+        <div class="room-info">
+          <h3>翠雲（すいうん）</h3>
+          <p class="room-size">和室十畳 + 居間 + 露天風呂付 &mdash; 定員4名</p>
+          <p>
+            専用の露天風呂を備えた、当館自慢の特別室。
+            客室から続く露天風呂では、
+            眼下に広がる渓谷美を独り占め。
+            特別な日の滞在にふさわしい
+            贅沢な空間をご用意いたしました。
+          </p>
+          <div class="room-price">
+            &yen;65,000〜 <span>/ 1泊2食付・お一人様</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Onsen -->
+<section class="section onsen" id="onsen">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-in">
+      <p class="section-title-en">Hot Spring</p>
+      <h2 class="section-title">温泉</h2>
+      <div class="section-title-line"></div>
+    </div>
+    <p class="onsen-intro fade-in">
+      奥湯河原の源泉から湧き出る良質な弱アルカリ性単純温泉。<br>
+      肌に柔らかく、芯から温まる名湯を<br>
+      源泉掛け流しでお愉しみください。
+    </p>
+    <div class="onsen-gallery fade-in">
+      <div class="onsen-gallery-item">
+        <img src="https://images.unsplash.com/photo-1545579133-99bb5ab189bd?w=1000&q=80" alt="露天風呂" loading="lazy">
+        <div class="onsen-gallery-caption">露天風呂「翠の湯」</div>
+      </div>
+      <div class="onsen-gallery-item">
+        <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=600&q=80" alt="内湯" loading="lazy">
+        <div class="onsen-gallery-caption">内湯「石楠花」</div>
+      </div>
+      <div class="onsen-gallery-item">
+        <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600&q=80" alt="貸切風呂" loading="lazy">
+        <div class="onsen-gallery-caption">貸切風呂「かわせみ」</div>
+      </div>
+    </div>
+    <div class="onsen-features fade-in">
+      <div class="onsen-feature">
+        <h4>源泉掛け流し</h4>
+        <p>加水・加温・循環なし。<br>源泉そのままの贅沢な湯を<br>心ゆくまでご堪能ください。</p>
+      </div>
+      <div class="onsen-feature">
+        <h4>美肌の湯</h4>
+        <p>pH8.5の弱アルカリ性。<br>古い角質を柔らかくし<br>しっとりすべすべの肌に。</p>
+      </div>
+      <div class="onsen-feature">
+        <h4>四季の露天風呂</h4>
+        <p>春は桜、夏は新緑、<br>秋は紅葉、冬は雪見風呂。<br>移ろう景色と共に。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cuisine -->
+<section class="section cuisine" id="cuisine">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-in">
+      <p class="section-title-en">Cuisine</p>
+      <h2 class="section-title">お料理</h2>
+      <div class="section-title-line"></div>
+    </div>
+    <p class="cuisine-intro fade-in">
+      地元の旬の食材を活かした月替わりの会席料理。<br>
+      料理長が一品一品、心を込めてお仕立ていたします。
+    </p>
+    <div class="cuisine-grid">
+      <div class="cuisine-card fade-in">
+        <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80" alt="会席料理" loading="lazy">
+        <div class="cuisine-card-body">
+          <h3>季節の会席料理</h3>
+          <p>先付から甘味まで全十二品。四季折々の食材を、目にも美しい盛り付けでお届けします。地元・相模湾の海の幸と箱根の山の幸を贅沢に。</p>
+        </div>
+      </div>
+      <div class="cuisine-card fade-in">
+        <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=80" alt="お造り" loading="lazy">
+        <div class="cuisine-card-body">
+          <h3>お造り</h3>
+          <p>相模湾で水揚げされた新鮮な魚介を、料理長が厳選。旬の味わいをそのままに、繊細な技で仕立てます。</p>
+        </div>
+      </div>
+      <div class="cuisine-card fade-in">
+        <img src="https://images.unsplash.com/photo-1606491956689-2ea866880049?w=800&q=80" alt="和牛" loading="lazy">
+        <div class="cuisine-card-body">
+          <h3>特選和牛の炭火焼</h3>
+          <p>厳選したA5ランクの黒毛和牛を備長炭でじっくりと。とろけるような食感と豊かな旨みをお愉しみください。</p>
+        </div>
+      </div>
+      <div class="cuisine-card fade-in">
+        <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&q=80" alt="朝食" loading="lazy">
+        <div class="cuisine-card-body">
+          <h3>朝餉（あさげ）</h3>
+          <p>地元の食材をふんだんに使った和朝食。炊きたてのご飯、焼き魚、手作り豆腐など、朝から身体に優しい品々を。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Facility -->
+<section class="section facility" id="facility">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-in">
+      <p class="section-title-en">Facility &amp; Area Guide</p>
+      <h2 class="section-title">館内・周辺案内</h2>
+      <div class="section-title-line"></div>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item fade-in">
+        <div class="facility-icon">&#127795;</div>
+        <h4>日本庭園</h4>
+        <p>四季の草花が彩る回遊式庭園。散策しながら季節の移ろいをお感じください。</p>
+      </div>
+      <div class="facility-item fade-in">
+        <div class="facility-icon">&#127861;</div>
+        <h4>茶室「松風」</h4>
+        <p>本格的な茶室でお抹茶体験。静寂の中、一服の茶を愉しむ贅沢な時間。</p>
+      </div>
+      <div class="facility-item fade-in">
+        <div class="facility-icon">&#128214;</div>
+        <h4>読書ラウンジ</h4>
+        <p>渓流を眺める静かなラウンジ。書籍やコーヒーをご自由にお楽しみいただけます。</p>
+      </div>
+      <div class="facility-item fade-in">
+        <div class="facility-icon">&#9968;</div>
+        <h4>湯上がり処</h4>
+        <p>温泉の後は冷たいお飲み物と季節の和菓子で。ほっと一息つけるくつろぎ空間。</p>
+      </div>
+      <div class="facility-item fade-in">
+        <div class="facility-icon">&#128652;</div>
+        <h4>送迎サービス</h4>
+        <p>湯河原駅から無料送迎。お電話一本でお迎えに参ります（要事前予約）。</p>
+      </div>
+      <div class="facility-item fade-in">
+        <div class="facility-icon">&#127966;</div>
+        <h4>周辺観光</h4>
+        <p>万葉公園、湯河原梅林、幕山ハイキングなど、見どころ豊富な湯河原を満喫。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reservation -->
+<section class="section reservation" id="reservation">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-in">
+      <p class="section-title-en">Reservation</p>
+      <h2 class="section-title">ご予約</h2>
+      <div class="section-title-line"></div>
+    </div>
+    <form class="reservation-form fade-in" id="reservationForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>チェックイン<span class="required">必須</span></label>
+          <input type="date" required>
+        </div>
+        <div class="form-group">
+          <label>チェックアウト<span class="required">必須</span></label>
+          <input type="date" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>宿泊人数<span class="required">必須</span></label>
+          <select required>
+            <option value="">選択してください</option>
+            <option>1名</option>
+            <option>2名</option>
+            <option>3名</option>
+            <option>4名</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>客室タイプ<span class="required">必須</span></label>
+          <select required>
+            <option value="">選択してください</option>
+            <option>和室「清流」</option>
+            <option>和洋室「月見」</option>
+            <option>特別室「翠雲」</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label>お名前<span class="required">必須</span></label>
+          <input type="text" placeholder="山田 太郎" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>電話番号<span class="required">必須</span></label>
+          <input type="tel" placeholder="090-1234-5678" required>
+        </div>
+        <div class="form-group">
+          <label>メールアドレス<span class="required">必須</span></label>
+          <input type="email" placeholder="example@mail.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label>ご要望・備考</label>
+          <textarea placeholder="アレルギー、記念日のご要望など、お気軽にお申し付けください。"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="form-submit">予約を確認する</button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-name">翠 風 庵</div>
+  <div class="footer-info">
+    〒259-0314 神奈川県足柄下郡湯河原町宮上999（架空の住所）<br>
+    TEL: 0465-00-0000 &nbsp;|&nbsp; FAX: 0465-00-0001<br>
+    チェックイン 15:00 / チェックアウト 11:00
+  </div>
+  <div class="footer-links">
+    <a href="#concept">おもてなし</a>
+    <a href="#rooms">客室</a>
+    <a href="#onsen">温泉</a>
+    <a href="#cuisine">お料理</a>
+    <a href="#reservation">ご予約</a>
+  </div>
+  <p class="footer-copy">&copy; 2024 湯宿 翠風庵 &mdash; This is a sample website.</p>
+</footer>
+
+<script>
+  // ===== Scroll animations (IntersectionObserver) =====
+  const observerOptions = {
+    threshold: 0.15,
+    rootMargin: '0px 0px -40px 0px'
+  };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right').forEach(el => {
+    observer.observe(el);
+  });
+
+  // ===== Navigation scroll effect =====
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
+  // ===== Form submit =====
+  document.getElementById('reservationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('サンプルのため送信されません');
+  });
+</script>
+
+</body>
+</html>

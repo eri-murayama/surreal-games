@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexTech Solutions | DX支援・クラウド・AIコンサルティング</title>
+  <meta name="description" content="NexTech Solutions（ネクステック・ソリューションズ）は、DX支援・クラウドソリューション・AIコンサルティングで企業の未来を共創するIT企業です。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="NexTech Solutions | DX支援・クラウド・AIコンサルティング">
+  <meta property="og:description" content="テクノロジーで、ビジネスの未来を共創する。DX支援・クラウド・AIコンサルティング。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      color: #333;
+      background: #fff;
+      overflow-x: hidden;
+      line-height: 1.8;
+    }
+
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --primary-light: #4a9afa;
+      --primary-bg: rgba(26, 115, 232, 0.06);
+      --primary-glow: rgba(26, 115, 232, 0.2);
+      --dark: #1a1a2e;
+      --text: #333;
+      --text-light: #666;
+      --text-lighter: #999;
+      --bg-gray: #f7f9fc;
+      --border: #e8edf3;
+      --white: #fff;
+    }
+
+    /* ===== Back link ===== */
+    .back-to-portfolio {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 200;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+      transition: background 0.3s;
+    }
+    .back-to-portfolio:hover { background: rgba(0,0,0,0.5); }
+
+    /* ===== Sample badge ===== */
+    .sample-badge {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 200;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 6px 16px;
+      border-radius: 20px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== Navigation ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 0 32px;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .nav.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+    .nav.scrolled .nav-logo { color: var(--dark); }
+    .nav.scrolled .nav-links a { color: var(--text); }
+    .nav.scrolled .nav-links a:hover { color: var(--primary); }
+    .nav.scrolled .hamburger span { background: var(--dark); }
+
+    .nav-logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.3s;
+    }
+    .nav-logo span { color: var(--primary-light); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links .nav-cta {
+      padding: 10px 24px;
+      background: var(--primary);
+      color: #fff !important;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .nav-links .nav-cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 110;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      transition: transform 0.3s, opacity 0.3s, background 0.3s;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 105;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--dark);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 12px 0;
+    }
+    .mobile-menu a:hover { color: var(--primary); }
+    .mobile-menu .nav-cta {
+      padding: 14px 36px;
+      background: var(--primary);
+      color: #fff !important;
+      border-radius: 30px;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+    }
+    .hero-bg-pattern {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(26, 115, 232, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(74, 154, 250, 0.1) 0%, transparent 40%);
+    }
+    .hero-grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(26, 115, 232, 0.2);
+      border: 1px solid rgba(26, 115, 232, 0.4);
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--primary-light);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-title .gradient {
+      background: linear-gradient(135deg, #74b9ff, var(--primary-light), #a29bfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 300;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 40px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 40px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px var(--primary-glow);
+    }
+    .btn-outline {
+      display: inline-block;
+      padding: 16px 40px;
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Section common ===== */
+    .section { padding: 100px 24px; }
+    .section-gray { background: var(--bg-gray); }
+    .section-dark { background: var(--dark); color: #fff; }
+    .section-label {
+      text-align: center;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .section-dark .section-label { color: var(--primary-light); }
+    .section-title {
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--dark);
+    }
+    .section-dark .section-title { color: #fff; }
+    .section-desc {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      max-width: 600px;
+      margin: 0 auto 60px;
+    }
+    .section-dark .section-desc { color: rgba(255,255,255,0.6); }
+
+    /* ===== Services ===== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .service-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .service-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s, transform 0.6s, box-shadow 0.3s;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    }
+    .service-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .service-body { padding: 28px; }
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+    .service-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--dark);
+    }
+    .service-desc {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      line-height: 1.9;
+    }
+
+    /* ===== Numbers ===== */
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .number-item {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .number-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .number-value {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--primary-light);
+      line-height: 1.2;
+    }
+    .number-suffix {
+      font-size: 0.5em;
+      font-weight: 500;
+    }
+    .number-label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 8px;
+    }
+
+    /* ===== News ===== */
+    .news-list {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .news-item {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.3s;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    .news-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.5s, transform 0.5s, color 0.3s;
+    }
+    .news-item:hover { color: var(--primary); }
+    .news-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-lighter);
+      white-space: nowrap;
+      min-width: 100px;
+    }
+    .news-tag {
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .news-tag.press { background: #fff3e0; color: #e65100; }
+    .news-tag.product { background: #e8f5e9; color: #2e7d32; }
+    .news-title-text {
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      .news-item { flex-wrap: wrap; gap: 8px; }
+      .news-date { min-width: auto; }
+    }
+
+    /* ===== Recruit ===== */
+    .recruit-content {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .recruit-positions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .position-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: left;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .position-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.5s, transform 0.5s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .position-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .position-type {
+      font-size: 0.7rem;
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .position-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+    .position-desc {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    /* ===== Contact form ===== */
+    .contact-form {
+      max-width: 640px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 48px 36px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+    .form-group label .required {
+      color: #e74c3c;
+      font-size: 0.75rem;
+      margin-left: 4px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--bg-gray);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+      background: #fff;
+    }
+    .form-group textarea { resize: vertical; min-height: 140px; }
+    .form-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+      letter-spacing: 0.05em;
+    }
+    .form-submit:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+
+    /* ===== Company info ===== */
+    .company-table {
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .company-table th,
+    .company-table td {
+      padding: 18px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .company-table th {
+      font-weight: 600;
+      color: var(--dark);
+      width: 160px;
+      white-space: nowrap;
+      vertical-align: top;
+    }
+    .company-table td {
+      color: var(--text-light);
+    }
+    @media (max-width: 600px) {
+      .company-table th,
+      .company-table td {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+      }
+      .company-table th {
+        padding-top: 18px;
+        border-bottom: none;
+      }
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.6);
+      padding: 60px 24px 30px;
+    }
+    .footer-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 768px) {
+      .footer-content { grid-template-columns: 1fr; gap: 32px; }
+    }
+    .footer-brand .footer-logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .footer-brand .footer-logo span { color: var(--primary-light); }
+    .footer-brand p {
+      font-size: 0.82rem;
+      line-height: 1.8;
+    }
+    .footer-heading {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 24px;
+      text-align: center;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== Fade-in ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s, transform 0.8s;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== Scroll-triggered counter ===== */
+    .count-up { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+
+  <a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
+  <div class="sample-badge">SAMPLE</div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">Nex<span>Tech</span></a>
+    <div class="nav-links">
+      <a href="#services">事業内容</a>
+      <a href="#numbers">実績</a>
+      <a href="#news">お知らせ</a>
+      <a href="#recruit">採用情報</a>
+      <a href="#company">会社概要</a>
+      <a href="#contact" class="nav-cta">お問い合わせ</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services" onclick="closeMenu()">事業内容</a>
+    <a href="#numbers" onclick="closeMenu()">実績</a>
+    <a href="#news" onclick="closeMenu()">お知らせ</a>
+    <a href="#recruit" onclick="closeMenu()">採用情報</a>
+    <a href="#company" onclick="closeMenu()">会社概要</a>
+    <a href="#contact" class="nav-cta" onclick="closeMenu()">お問い合わせ</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-content">
+      <div class="hero-badge">TECHNOLOGY &times; INNOVATION</div>
+      <h1 class="hero-title">
+        テクノロジーで、<br><span class="gradient">ビジネスの未来</span>を共創する。
+      </h1>
+      <p class="hero-subtitle">
+        DX支援・クラウドソリューション・AIコンサルティングで<br>
+        企業のデジタル変革を加速させます。
+      </p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn-primary">お問い合わせ</a>
+        <a href="#services" class="btn-outline">事業内容を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section" id="services">
+    <p class="section-label fade-in">SERVICES</p>
+    <h2 class="section-title fade-in">事業内容</h2>
+    <p class="section-desc fade-in">お客様のビジネス課題に最適なテクノロジーソリューションを提供します。</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <img class="service-image" src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop" alt="DX支援">
+        <div class="service-body">
+          <div class="service-icon">&#9881;</div>
+          <h3 class="service-name">DX支援</h3>
+          <p class="service-desc">業務プロセスの可視化から、システム設計・導入・運用まで一気通貫でサポート。レガシーシステムの刷新やワークフローの自動化を実現します。</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <img class="service-image" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop" alt="クラウドソリューション">
+        <div class="service-body">
+          <div class="service-icon">&#9729;</div>
+          <h3 class="service-name">クラウドソリューション</h3>
+          <p class="service-desc">AWS・Azure・GCPなど主要クラウド基盤の設計・構築・移行を支援。セキュリティとコスト最適化を両立したクラウドアーキテクチャを提供します。</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <img class="service-image" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop" alt="AIコンサルティング">
+        <div class="service-body">
+          <div class="service-icon">&#9672;</div>
+          <h3 class="service-name">AIコンサルティング</h3>
+          <p class="service-desc">データ分析基盤の構築から機械学習モデルの開発・運用まで。生成AIの活用戦略策定や、業務へのAI組み込みをワンストップで支援します。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Numbers -->
+  <section class="section section-dark" id="numbers">
+    <p class="section-label fade-in">NUMBERS</p>
+    <h2 class="section-title fade-in">数字で見るNexTech</h2>
+    <p class="section-desc fade-in">設立以来、多くの企業様と共に歩んできました。</p>
+    <div class="numbers-grid" id="numbersGrid">
+      <div class="number-item">
+        <div class="number-value"><span class="count-up" data-target="2015">0</span><span class="number-suffix">年</span></div>
+        <div class="number-label">設立</div>
+      </div>
+      <div class="number-item">
+        <div class="number-value"><span class="count-up" data-target="320">0</span><span class="number-suffix">名</span></div>
+        <div class="number-label">社員数</div>
+      </div>
+      <div class="number-item">
+        <div class="number-value"><span class="count-up" data-target="850">0</span><span class="number-suffix">社</span></div>
+        <div class="number-label">累計取引先数</div>
+      </div>
+      <div class="number-item">
+        <div class="number-value"><span class="count-up" data-target="2400">0</span><span class="number-suffix">件+</span></div>
+        <div class="number-label">プロジェクト実績</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News -->
+  <section class="section" id="news">
+    <p class="section-label fade-in">NEWS</p>
+    <h2 class="section-title fade-in">お知らせ</h2>
+    <p class="section-desc fade-in">最新のニュースやプレスリリースをお届けします。</p>
+    <div class="news-list">
+      <a href="#" class="news-item" onclick="event.preventDefault();">
+        <span class="news-date">2026.03.28</span>
+        <span class="news-tag press">プレス</span>
+        <span class="news-title-text">AI活用支援サービス「NexAI Enterprise」の提供を開始しました</span>
+      </a>
+      <a href="#" class="news-item" onclick="event.preventDefault();">
+        <span class="news-date">2026.03.15</span>
+        <span class="news-tag">お知らせ</span>
+        <span class="news-title-text">東京本社を丸の内に移転しました</span>
+      </a>
+      <a href="#" class="news-item" onclick="event.preventDefault();">
+        <span class="news-date">2026.02.20</span>
+        <span class="news-tag product">製品</span>
+        <span class="news-title-text">クラウド移行支援ツール「CloudBridge v3.0」をリリース</span>
+      </a>
+      <a href="#" class="news-item" onclick="event.preventDefault();">
+        <span class="news-date">2026.01.30</span>
+        <span class="news-tag">お知らせ</span>
+        <span class="news-title-text">「DX推進パートナー大賞 2025」にて最優秀賞を受賞</span>
+      </a>
+      <a href="#" class="news-item" onclick="event.preventDefault();">
+        <span class="news-date">2026.01.10</span>
+        <span class="news-tag press">プレス</span>
+        <span class="news-title-text">資本金を5億円に増資しました</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Recruit -->
+  <section class="section section-gray" id="recruit">
+    <p class="section-label fade-in">RECRUIT</p>
+    <h2 class="section-title fade-in">採用情報</h2>
+    <p class="section-desc fade-in">テクノロジーで未来を変える仲間を募集しています。</p>
+    <div class="recruit-content">
+      <div class="recruit-positions">
+        <div class="position-card">
+          <div class="position-type">ENGINEER</div>
+          <div class="position-name">バックエンドエンジニア</div>
+          <p class="position-desc">Go / Python / AWSを使ったシステム設計・開発</p>
+        </div>
+        <div class="position-card">
+          <div class="position-type">ENGINEER</div>
+          <div class="position-name">フロントエンドエンジニア</div>
+          <p class="position-desc">React / TypeScriptによるUI/UX開発</p>
+        </div>
+        <div class="position-card">
+          <div class="position-type">CONSULTANT</div>
+          <div class="position-name">DXコンサルタント</div>
+          <p class="position-desc">クライアント企業のDX戦略策定・推進支援</p>
+        </div>
+        <div class="position-card">
+          <div class="position-type">DATA SCIENCE</div>
+          <div class="position-name">AIエンジニア</div>
+          <p class="position-desc">機械学習モデルの開発・生成AI活用の研究開発</p>
+        </div>
+      </div>
+      <a href="#" class="btn-primary" onclick="event.preventDefault(); alert('サンプルのため遷移しません');">採用情報を詳しく見る</a>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section" id="contact">
+    <p class="section-label fade-in">CONTACT</p>
+    <h2 class="section-title fade-in">お問い合わせ</h2>
+    <p class="section-desc fade-in">サービスに関するご質問やお見積もりなど、お気軽にお問い合わせください。</p>
+    <form class="contact-form fade-in" id="contactForm" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label>会社名<span class="required">*</span></label>
+        <input type="text" placeholder="例: 株式会社サンプル" required>
+      </div>
+      <div class="form-group">
+        <label>お名前<span class="required">*</span></label>
+        <input type="text" placeholder="例: 山田 太郎" required>
+      </div>
+      <div class="form-group">
+        <label>メールアドレス<span class="required">*</span></label>
+        <input type="email" placeholder="例: info@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>お問い合わせ種別</label>
+        <select>
+          <option value="">選択してください</option>
+          <option>サービスについて</option>
+          <option>お見積もり依頼</option>
+          <option>採用について</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>お問い合わせ内容<span class="required">*</span></label>
+        <textarea placeholder="お問い合わせ内容をご記入ください" required></textarea>
+      </div>
+      <button type="submit" class="form-submit">送信する</button>
+    </form>
+  </section>
+
+  <!-- Company -->
+  <section class="section section-gray" id="company">
+    <p class="section-label fade-in">COMPANY</p>
+    <h2 class="section-title fade-in">会社概要</h2>
+    <p class="section-desc fade-in"></p>
+    <table class="company-table fade-in">
+      <tr>
+        <th>社名</th>
+        <td>NexTech Solutions 株式会社（ネクステック・ソリューションズ）</td>
+      </tr>
+      <tr>
+        <th>代表取締役</th>
+        <td>高橋 慎一</td>
+      </tr>
+      <tr>
+        <th>設立</th>
+        <td>2015年4月1日</td>
+      </tr>
+      <tr>
+        <th>資本金</th>
+        <td>5億円</td>
+      </tr>
+      <tr>
+        <th>従業員数</th>
+        <td>320名（2026年3月現在）</td>
+      </tr>
+      <tr>
+        <th>所在地</th>
+        <td>〒100-0005<br>東京都千代田区丸の内1-1-1 NexTechビル 15F</td>
+      </tr>
+      <tr>
+        <th>事業内容</th>
+        <td>DX支援コンサルティング / クラウドソリューション設計・構築 / AIコンサルティング・開発 / システムインテグレーション</td>
+      </tr>
+      <tr>
+        <th>主要取引先</th>
+        <td>大手製造業、金融機関、通信事業者、官公庁 他</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="footer-logo">Nex<span>Tech</span> Solutions</div>
+        <p>テクノロジーで、ビジネスの未来を共創する。<br>DX支援・クラウドソリューション・AIコンサルティング</p>
+      </div>
+      <div>
+        <div class="footer-heading">SERVICE</div>
+        <ul class="footer-links">
+          <li><a href="#services">DX支援</a></li>
+          <li><a href="#services">クラウドソリューション</a></li>
+          <li><a href="#services">AIコンサルティング</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">COMPANY</div>
+        <ul class="footer-links">
+          <li><a href="#company">会社概要</a></li>
+          <li><a href="#news">お知らせ</a></li>
+          <li><a href="#recruit">採用情報</a></li>
+          <li><a href="#contact">お問い合わせ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 NexTech Solutions Inc. All Rights Reserved.</p>
+      <p style="margin-top:8px;">※これはサンプルサイトです。実在の企業ではありません。</p>
+    </div>
+  </footer>
+
+  <script>
+    /* Navbar scroll effect */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    /* Hamburger menu */
+    function toggleMenu() {
+      document.getElementById('hamburger').classList.toggle('active');
+      document.getElementById('mobileMenu').classList.toggle('open');
+      document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+    }
+    function closeMenu() {
+      document.getElementById('hamburger').classList.remove('active');
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* IntersectionObserver for scroll animations */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          /* staggered delay for siblings */
+          const siblings = entry.target.parentElement.children;
+          const idx = Array.from(siblings).indexOf(entry.target);
+          entry.target.style.transitionDelay = (idx * 0.1) + 's';
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in, .service-card, .number-item, .news-item, .position-card').forEach(el => observer.observe(el));
+
+    /* Count-up animation */
+    let counted = false;
+    const numbersObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !counted) {
+          counted = true;
+          document.querySelectorAll('.count-up').forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000;
+            const startTime = performance.now();
+
+            function updateCount(currentTime) {
+              const elapsed = currentTime - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              /* ease-out curve */
+              const eased = 1 - Math.pow(1 - progress, 3);
+              const current = Math.floor(eased * target);
+              counter.textContent = current.toLocaleString();
+              if (progress < 1) {
+                requestAnimationFrame(updateCount);
+              } else {
+                counter.textContent = target.toLocaleString();
+              }
+            }
+            requestAnimationFrame(updateCount);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    numbersObserver.observe(document.getElementById('numbersGrid'));
+
+    /* Form submit */
+    function handleSubmit(e) {
+      e.preventDefault();
+      alert('サンプルのため送信されません');
+    }
+  </script>
+</body>
+</html>
