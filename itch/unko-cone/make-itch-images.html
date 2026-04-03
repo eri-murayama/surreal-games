@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Poopsicle Catcher - itch.io Image Generator</title>
+<style>
+  body { background: #222; color: #fff; font-family: sans-serif; padding: 20px; }
+  canvas { display: block; margin: 20px auto; border: 1px solid #555; }
+  h2 { text-align: center; margin-top: 40px; }
+  p { text-align: center; color: #aaa; font-size: 14px; }
+  button { display: block; margin: 10px auto; padding: 10px 24px; background: #8B4513; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+  button:hover { background: #a0522d; }
+</style>
+</head>
+<body>
+
+<h2>Cover Image (630x500)</h2>
+<p>Right-click to save, or click the button below</p>
+<canvas id="cover" width="630" height="500"></canvas>
+<button onclick="downloadCanvas('cover', 'poopsicle-catcher-cover.png')">Download Cover</button>
+
+<h2>Background Image (960x640)</h2>
+<canvas id="background" width="960" height="640"></canvas>
+<button onclick="downloadCanvas('background', 'poopsicle-catcher-bg.png')">Download Background</button>
+
+<script>
+function drawPoop(ctx, x, y, size) {
+  ctx.fillStyle = '#8B4513';
+  ctx.beginPath(); ctx.ellipse(x, y + size * 0.15, size * 0.45, size * 0.2, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x, y - size * 0.05, size * 0.35, size * 0.18, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x, y - size * 0.22, size * 0.22, size * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x - size * 0.08, y - size * 0.32);
+  ctx.quadraticCurveTo(x + size * 0.1, y - size * 0.5, x + size * 0.05, y - size * 0.42);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.beginPath(); ctx.ellipse(x - size * 0.1, y - size * 0.15, size * 0.06, size * 0.08, -0.3, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawCone(ctx, x, y, w, h) {
+  ctx.fillStyle = '#d4a050';
+  ctx.beginPath();
+  ctx.moveTo(x, y); ctx.lineTo(x - w/2, y - h); ctx.lineTo(x + w/2, y - h);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#b8863c'; ctx.lineWidth = 2;
+  for (let i = 1; i < 4; i++) {
+    const t = i / 4;
+    const lx = x + (-w/2) * (1-t), rx = x + (w/2) * (1-t), ly = y + (-h) * (1-t);
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(rx, ly); ctx.stroke();
+  }
+}
+
+// ===== Cover (630x500) =====
+(function() {
+  const c = document.getElementById('cover');
+  const ctx = c.getContext('2d');
+
+  const grad = ctx.createRadialGradient(315, 250, 0, 315, 250, 400);
+  grad.addColorStop(0, '#5a3420');
+  grad.addColorStop(1, '#1a0e08');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 630, 500);
+
+  // Floating emoji
+  ctx.globalAlpha = 0.15;
+  ctx.font = '40px serif';
+  for (let i = 0; i < 20; i++) {
+    ctx.fillText(Math.random() > 0.3 ? '💩' : '🍦', Math.random() * 630, Math.random() * 500);
+  }
+  ctx.globalAlpha = 1;
+
+  // Ground
+  ctx.fillStyle = '#3a2010';
+  ctx.fillRect(0, 420, 630, 80);
+
+  // Center cone + stack
+  drawCone(ctx, 315, 400, 70, 80);
+  for (let i = 0; i < 8; i++) {
+    drawPoop(ctx, 315 + (Math.random()-0.5)*7, 320 - i * 16 - 8, 40);
+  }
+
+  // Falling poops
+  [100, 220, 420, 540].forEach(x => {
+    drawPoop(ctx, x, 60 + Math.random() * 150, 36);
+  });
+
+  // Title
+  ctx.font = 'bold 56px "Dela Gothic One", Impact, sans-serif';
+  ctx.fillStyle = '#fbbf24';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(0,0,0,0.9)';
+  ctx.shadowBlur = 15;
+  ctx.fillText('POOPSICLE', 315, 70);
+  ctx.fillText('CATCHER', 315, 125);
+  ctx.shadowBlur = 0;
+
+  // Subtitle
+  ctx.font = 'bold 20px sans-serif';
+  ctx.fillStyle = '#d4a574';
+  ctx.fillText('Stack chocolate soft serve to the sky!', 315, 155);
+
+  // Big emoji
+  ctx.font = '60px serif';
+  ctx.fillText('💩🍦', 315, 490);
+})();
+
+// ===== Background (960x640) =====
+(function() {
+  const c = document.getElementById('background');
+  const ctx = c.getContext('2d');
+
+  const grad = ctx.createLinearGradient(0, 0, 960, 640);
+  grad.addColorStop(0, '#2d1810');
+  grad.addColorStop(0.5, '#4a2c1a');
+  grad.addColorStop(1, '#5a3420');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 960, 640);
+
+  ctx.globalAlpha = 0.12;
+  ctx.font = '40px serif';
+  for (let i = 0; i < 30; i++) {
+    ctx.fillText(Math.random() > 0.3 ? '💩' : '🍦', Math.random() * 960, Math.random() * 640);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = '#3a2010';
+  ctx.fillRect(0, 560, 960, 80);
+
+  drawCone(ctx, 480, 540, 80, 90);
+  for (let i = 0; i < 12; i++) {
+    drawPoop(ctx, 480 + (Math.random()-0.5)*8, 450 - i * 18 - 10, 44);
+  }
+
+  [150, 320, 650, 800].forEach(x => {
+    drawPoop(ctx, x, 80 + Math.random() * 200, 38);
+  });
+
+  ctx.font = 'bold 60px "Dela Gothic One", Impact, sans-serif';
+  ctx.fillStyle = '#fbbf24';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(0,0,0,0.8)';
+  ctx.shadowBlur = 12;
+  ctx.fillText('POOPSICLE CATCHER', 480, 80);
+  ctx.shadowBlur = 0;
+
+  ctx.font = 'bold 24px sans-serif';
+  ctx.fillStyle = '#d4a574';
+  ctx.fillText('Catch & Stack Chocolate Soft Serve!', 480, 120);
+})();
+
+function downloadCanvas(id, filename) {
+  const c = document.getElementById(id);
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = c.toDataURL('image/png');
+  link.click();
+}
+</script>
+</body>
+</html>

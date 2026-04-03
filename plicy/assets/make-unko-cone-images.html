@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>うんコーンキャッチャー PLiCy用画像生成</title>
+<style>
+  body { background: #222; color: #fff; font-family: sans-serif; padding: 20px; }
+  canvas { display: block; margin: 20px auto; border: 1px solid #555; }
+  h2 { text-align: center; margin-top: 40px; }
+  p { text-align: center; color: #aaa; font-size: 14px; }
+  .info { background: #333; padding: 20px; border-radius: 10px; max-width: 700px; margin: 20px auto; }
+  .info h3 { color: #fbbf24; }
+  .info p { text-align: left; line-height: 1.8; }
+  button { display: block; margin: 10px auto; padding: 10px 24px; background: #8B4513; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+  button:hover { background: #a0522d; }
+</style>
+</head>
+<body>
+
+<div class="info">
+  <h3>PLiCy投稿用情報</h3>
+  <p><strong>タイトル：</strong>うんコーンキャッチャー</p>
+  <p><strong>紹介文：</strong></p>
+  <p>
+    空から降ってくる"チョコ味のソフトクリーム"をコーンでキャッチ！<br>
+    どんどん積み上げて、最高記録を目指そう！<br><br>
+    💩 落ちてくるソフトクリームをキャッチして積み上げろ！<br>
+    🍦 積めば積むほどスピードアップ！<br>
+    🏆 ランク制度あり！「うんコーン以下の存在」から「宇宙を超えたうんコーン」まで<br>
+    😂 チョコ味のソフトクリームくんのシュールなコメント付き<br>
+    🎵 おなら入りマーチBGMでテンションMAX！<br><br>
+    操作：← → キーまたはタッチで左右移動<br>
+    プレイ時間：1〜5分
+  </p>
+  <p><strong>タグ：</strong>アクション, カジュアル, おバカ, シュール, コメディ, ブラウザ, HTML5, 無料, スマホ対応</p>
+</div>
+
+<h2>サムネイル画像 (横300×縦300)</h2>
+<p>右クリック → 画像を保存</p>
+<canvas id="thumbnail" width="300" height="300"></canvas>
+<button onclick="downloadCanvas('thumbnail', 'うんコーンサムネ.png')">サムネイルをダウンロード</button>
+
+<h2>背景画像 (横960×縦640)</h2>
+<p>右クリック → 画像を保存</p>
+<canvas id="background" width="960" height="640"></canvas>
+<button onclick="downloadCanvas('background', 'うんコーン背景.png')">背景をダウンロード</button>
+
+<script>
+// ===== うんち描画関数 =====
+function drawPoop(ctx, x, y, size) {
+  ctx.fillStyle = '#8B4513';
+  // Bottom
+  ctx.beginPath(); ctx.ellipse(x, y + size * 0.15, size * 0.45, size * 0.2, 0, 0, Math.PI * 2); ctx.fill();
+  // Middle
+  ctx.beginPath(); ctx.ellipse(x, y - size * 0.05, size * 0.35, size * 0.18, 0, 0, Math.PI * 2); ctx.fill();
+  // Top
+  ctx.beginPath(); ctx.ellipse(x, y - size * 0.22, size * 0.22, size * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+  // Tip
+  ctx.beginPath();
+  ctx.moveTo(x - size * 0.08, y - size * 0.32);
+  ctx.quadraticCurveTo(x + size * 0.1, y - size * 0.5, x + size * 0.05, y - size * 0.42);
+  ctx.fill();
+  // Shine
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.beginPath(); ctx.ellipse(x - size * 0.1, y - size * 0.15, size * 0.06, size * 0.08, -0.3, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawCone(ctx, x, y, w, h) {
+  ctx.fillStyle = '#d4a050';
+  ctx.beginPath();
+  ctx.moveTo(x, y); ctx.lineTo(x - w/2, y - h); ctx.lineTo(x + w/2, y - h);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#b8863c'; ctx.lineWidth = 2;
+  for (let i = 1; i < 4; i++) {
+    const t = i / 4;
+    const lx = x + (-w/2) * (1-t), rx = x + (w/2) * (1-t), ly = y + (-h) * (1-t);
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(rx, ly); ctx.stroke();
+  }
+}
+
+// ===== サムネイル =====
+(function() {
+  const c = document.getElementById('thumbnail');
+  const ctx = c.getContext('2d');
+
+  // Background
+  const grad = ctx.createRadialGradient(150, 150, 0, 150, 150, 200);
+  grad.addColorStop(0, '#5a3420');
+  grad.addColorStop(1, '#2d1810');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 300, 300);
+
+  // Floating emoji
+  ctx.font = '30px serif';
+  ctx.globalAlpha = 0.2;
+  const emojis = ['💩', '🍦', '💩', '🍦', '💩'];
+  [[40,40],[250,60],[60,250],[230,230],[150,50]].forEach(([x,y], i) => {
+    ctx.fillText(emojis[i], x, y);
+  });
+  ctx.globalAlpha = 1;
+
+  // Cone + stack
+  drawCone(ctx, 150, 240, 60, 70);
+  for (let i = 0; i < 5; i++) {
+    drawPoop(ctx, 150 + (Math.random()-0.5)*6, 170 - i * 16 - 8, 36);
+  }
+
+  // Title
+  ctx.font = 'bold 32px "Dela Gothic One", sans-serif';
+  ctx.fillStyle = '#fbbf24';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(0,0,0,0.8)';
+  ctx.shadowBlur = 8;
+  ctx.fillText('うんコーン', 150, 42);
+  ctx.fillText('キャッチャー', 150, 78);
+  ctx.shadowBlur = 0;
+
+  // 💩 emoji big
+  ctx.font = '50px serif';
+  ctx.fillText('💩', 150, 290);
+})();
+
+// ===== 背景 =====
+(function() {
+  const c = document.getElementById('background');
+  const ctx = c.getContext('2d');
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, 960, 640);
+  grad.addColorStop(0, '#2d1810');
+  grad.addColorStop(0.5, '#4a2c1a');
+  grad.addColorStop(1, '#5a3420');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 960, 640);
+
+  // Floating poop pattern
+  ctx.globalAlpha = 0.15;
+  ctx.font = '40px serif';
+  for (let i = 0; i < 30; i++) {
+    const x = Math.random() * 960;
+    const y = Math.random() * 640;
+    ctx.fillText(Math.random() > 0.3 ? '💩' : '🍦', x, y);
+  }
+  ctx.globalAlpha = 1;
+
+  // Ground
+  ctx.fillStyle = '#3a2010';
+  ctx.fillRect(0, 560, 960, 80);
+
+  // Center cone + tall stack
+  drawCone(ctx, 480, 540, 80, 90);
+  for (let i = 0; i < 12; i++) {
+    drawPoop(ctx, 480 + (Math.random()-0.5)*8, 450 - i * 18 - 10, 44);
+  }
+
+  // Falling poops
+  [150, 320, 650, 800].forEach(x => {
+    drawPoop(ctx, x, 80 + Math.random() * 200, 38);
+  });
+
+  // Title
+  ctx.font = 'bold 60px "Dela Gothic One", sans-serif';
+  ctx.fillStyle = '#fbbf24';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(0,0,0,0.8)';
+  ctx.shadowBlur = 12;
+  ctx.fillText('うんコーンキャッチャー', 480, 80);
+  ctx.shadowBlur = 0;
+
+  // Subtitle
+  ctx.font = 'bold 24px sans-serif';
+  ctx.fillStyle = '#d4a574';
+  ctx.fillText('チョコ味のソフトクリームを積み上げろ！', 480, 120);
+})();
+
+function downloadCanvas(id, filename) {
+  const c = document.getElementById(id);
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = c.toDataURL('image/png');
+  link.click();
+}
+</script>
+</body>
+</html>

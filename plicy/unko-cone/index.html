@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>うんコーンキャッチャー</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Floating poop decoration -->
+  <div class="bg-poops" aria-hidden="true">
+    <span class="float-poop" style="--x:8%;--y:15%;--delay:0s;--dur:5s">💩</span>
+    <span class="float-poop" style="--x:22%;--y:60%;--delay:1.5s;--dur:6s">💩</span>
+    <span class="float-poop" style="--x:75%;--y:20%;--delay:0.8s;--dur:4.5s">💩</span>
+    <span class="float-poop" style="--x:88%;--y:70%;--delay:2.2s;--dur:5.5s">💩</span>
+    <span class="float-poop" style="--x:45%;--y:80%;--delay:3s;--dur:7s">💩</span>
+    <span class="float-poop" style="--x:60%;--y:10%;--delay:1s;--dur:4s">🍦</span>
+  </div>
+
+  <!-- Title Screen -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="title-icon">💩🍦</div>
+      <h1 class="game-title">うんコーン<br>キャッチャー</h1>
+      <div class="character-preview" aria-hidden="true">
+        <div class="character-preview-frame">
+          <img src="unko-char.png" alt="うんちキャラ" class="character-img">
+        </div>
+      </div>
+      <div id="highscore-display" class="highscore-display"></div>
+      <button id="start-btn" class="btn-primary">💩 ゲームスタート 💩</button>
+      <div class="controls-help">
+        <p class="help-title">操作方法</p>
+        <p>PC：← → キーで左右に移動</p>
+        <p>スマホ：画面の左半分/右半分をタッチで移動</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Screen -->
+  <div id="story-screen" class="screen">
+    <div class="story-container">
+      <div class="story-poop-icon"><img src="unko-char.png" alt="うんちキャラ" class="story-poop-img"></div>
+      <div class="story-bubble" id="story-bubble">
+        <p id="story-text"></p>
+      </div>
+      <p class="story-tap-hint" id="story-tap-hint">タップして次へ</p>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-item">
+        <span class="hud-label">スコア</span>
+        <span id="score" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">段数</span>
+        <span id="stack-count" class="hud-value">0</span>
+      </div>
+    </div>
+    <canvas id="game-canvas"></canvas>
+    <div id="combo-text" class="combo-text" aria-hidden="true"></div>
+    <div id="nishida-comment" class="nishida-comment" aria-hidden="true"></div>
+  </div>
+
+  <!-- Result Screen -->
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <div class="result-icon">💩</div>
+      <h2 class="result-title">ゲームオーバー</h2>
+      <div class="result-stats">
+        <div class="result-row">
+          <span class="result-label">スコア</span>
+          <span id="final-score" class="result-value">0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">最高段数</span>
+          <span id="final-stack" class="result-value">0</span>
+        </div>
+      </div>
+      <div class="result-rank" id="result-rank"></div>
+      <div class="character-comment-box">
+        <div class="character-face">
+          <img src="unko-char.png" alt="チョコ味のソフトクリーム" class="character-result-img">
+        </div>
+        <div class="character-speech">
+          <p class="character-name">チョコ味のソフトクリーム</p>
+          <p id="character-text" class="character-text"></p>
+        </div>
+      </div>
+      <button id="retry-btn" class="btn-primary">💩 もう一度プレイ 💩</button>
+      <button id="title-btn" class="btn-secondary">タイトルに戻る</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
