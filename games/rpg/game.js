@@ -16,16 +16,16 @@ const LANG_RPG = {
     mapNames: ['ワールドマップ', 'はじまりの町', 'じゅまんどぅの城'],
     statName: (lv) => `ゆうしゃ Lv.${lv}`,
     statHp: (hp, max) => `精神力 ${hp}/${max}`,
-    statMp: (mp, max) => `経済力 ${mp}/${max}`,
+    statMoney: (m) => `${m.toLocaleString()}ギュニー`,
     statGf: (n) => `彼女 ${n}人`,
     battleHp: (hp, max) => `精神力 ${hp}/${max}`,
-    battleMp: (mp, max) => `経済力 ${mp}/${max}`,
+    battleMoney: (m) => `${m.toLocaleString()}ギュニー`,
     battleGf: (n) => `彼女 ${n}人`,
     appeared: (name) => `${name}が あらわれた！`,
     confessLog: (name, fill) => `ゆうしゃは 告白した！\n${name}のハートが ${fill}たまった！`,
     praiseLog: (name, fill) => `ゆうしゃは ${name}を褒めた！\nハートが ${fill}たまった！`,
-    giftLog: (name, fill) => `ゆうしゃは プレゼントを渡した！\n${name}のハートが ${fill}たまった！`,
-    noMp: '経済力が たりない！',
+    giftLog: (name, item, fill) => `ゆうしゃは ${item}を渡した！\n${name}のハートが ${fill}たまった！`,
+    noGift: 'プレゼントを 持っていない！',
     cantRunBoss: 'じゅまんどぅからは にげられない！',
     ranAway: 'うまく にげきれた！',
     cantRun: 'にげられなかった！',
@@ -40,21 +40,23 @@ const LANG_RPG = {
     levelUp: (lv) => `恋愛レベルアップ！ Lv.${lv}！\nモテ力が上がった！`,
     heartBroken: 'ゆうしゃは 心が折れた……',
     revivedMsg: '目が覚めた……\n精神力が回復して町に戻っていた。',
+    gainMoney: (n) => `${n.toLocaleString()}ギュニー 手に入れた！`,
     victorySub: (lv, gf) => `Lv.${lv}、彼女${gf}人でクリア！\nじゅまんどぅとラブラブだ！\n……たぶん。`,
     enterTown: 'はじまりの町に やってきた。',
     enterCastle: 'じゅまんどぅの城に\n足をふみいれた……！',
     exitTown: 'ワールドマップに でた。',
     exitCastle: 'じゅまんどぅの城から でた。',
     introLines: [
-      'ある日ゆうしゃは聞いた。\n南の城に超絶美少女がいると。',
-      'その名は「じゅまんどぅ」。\n彼女に告白するのが夢だ。',
-      'だがモテない男には相手に\nされない。まず恋愛経験を積もう！',
+      '俺の名前は　ネクラ　チギュオ　！\nもうすぐで30歳！',
+      'そろそろ彼女が欲しい年頃だ。\nまあ今まで機会がなかっただけだし、',
+      '俺にかかれば彼女の一人や二人\n余裕だろ。',
+      'よおし、さっそく可愛い子でも\nナンパしにいくか！',
       '（矢印キーで移動 / スペースで調べる）',
     ],
     npcLines: {
       'おじさんA': ['南の城に超かわいい\n「じゅまんどぅ」がいるらしいよ！', '恋愛経験値をためないと\n相手にしてもらえないかもね〜。'],
-      'おじさんB': ['この村のコンビニは\nなぜかプレゼントだけ売ってる。', 'しかも全部高い。'],
-      'ネコ': ['にゃーん。（元気が出てきた）', '＊精神力と経済力が回復した！＊'],
+      'おじさんB': ['この町にはプレゼント屋が\nあるぞ。女にモテたいなら\n買っていきな。', 'しかも全部高い。ギュニー貯めないとな。'],
+      'ネコ': ['にゃーん。（元気が出てきた）', '＊精神力が回復した！＊'],
       'じゅまんどぅ': ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'],
     },
   },
@@ -62,16 +64,16 @@ const LANG_RPG = {
     mapNames: ['World Map', 'Starting Town', "Jumandou's Castle"],
     statName: (lv) => `Hero Lv.${lv}`,
     statHp: (hp, max) => `Spirit ${hp}/${max}`,
-    statMp: (mp, max) => `Wealth ${mp}/${max}`,
+    statMoney: (m) => `${m.toLocaleString()} Gyuney`,
     statGf: (n) => `GFs: ${n}`,
     battleHp: (hp, max) => `Spirit ${hp}/${max}`,
-    battleMp: (mp, max) => `Wealth ${mp}/${max}`,
+    battleMoney: (m) => `${m.toLocaleString()} Gyuney`,
     battleGf: (n) => `GFs: ${n}`,
     appeared: (name) => `${name} appeared!`,
     confessLog: (name, fill) => `Hero confessed!\n${name}'s heart filled by ${fill}!`,
     praiseLog: (name, fill) => `Hero complimented ${name}!\nHeart filled by ${fill}!`,
-    giftLog: (name, fill) => `Hero gave a gift!\n${name}'s heart filled by ${fill}!`,
-    noMp: 'Not enough Wealth!',
+    giftLog: (name, item, fill) => `Hero gave ${item}!\n${name}'s heart filled by ${fill}!`,
+    noGift: 'No gifts in inventory!',
     cantRunBoss: "Can't escape from Jumandou!",
     ranAway: 'Got away safely!',
     cantRun: "Couldn't escape!",
@@ -86,21 +88,23 @@ const LANG_RPG = {
     levelUp: (lv) => `Love Level UP! Lv.${lv}!\nCharm power increased!`,
     heartBroken: "Hero's heart was shattered...",
     revivedMsg: "Woke up...\nSpirit recovered and you're back in town.",
+    gainMoney: (n) => `Got ${n.toLocaleString()} Gyuney!`,
     victorySub: (lv, gf) => `Lv.${lv}, ${gf} GFs — cleared!\nYou and Jumandou are in love!\n...Probably.`,
     enterTown: 'Arrived at Starting Town.',
     enterCastle: "Stepped into\nJumandou's Castle...!",
     exitTown: 'Returned to the World Map.',
     exitCastle: "Left Jumandou's Castle.",
     introLines: [
-      'One day, the Hero heard:\nA super cute girl lives in the southern castle.',
-      'Her name is "Jumandou."\nConfessing to her is his dream.',
-      "But unpopular guys don't stand a chance.\nFirst, gain some love experience!",
+      "My name is Nekura Chiguo!\nAlmost 30 years old!",
+      "I'm at the age when a guy wants a girlfriend.\nI just never had the chance 'til now,",
+      'but with my charm, one or two girlfriends\nshould be easy.',
+      'Alright, time to go pick up\nsome cute girls!',
       '(Arrow keys to move / Space to interact)',
     ],
     npcLines: {
       'おじさんA': ['I hear a super cute girl named\n"Jumandou" lives in the southern castle!', "You'll need love experience\nor she won't give you the time of day~"],
-      'おじさんB': ["This village's convenience store\nonly sells gifts for some reason.", 'And they\'re all expensive.'],
-      'ネコ': ['Meow~ (You feel energized!)', '* Spirit and Wealth restored! *'],
+      'おじさんB': ["This town has a gift shop.\nIf you want to score with ladies,\nbuy some stuff.", "They're all expensive though.\nSave up your Gyuney."],
+      'ネコ': ['Meow~ (You feel energized!)', '* Spirit restored! *'],
       'じゅまんどぅ': ["Hmm, you made it this far.\nYou think you can win me over?"],
     },
   },
@@ -207,9 +211,13 @@ const NPCS = [
   { x: 3, y: 5, map: 1, color: '#6ae', name: 'おじさんB',
     lines: ['この村のコンビニは\nなぜかプレゼントだけ売ってる。', 'しかも全部高い。'] },
   { x: 10, y: 4, map: 1, color: '#ea6', name: 'ネコ',
-    lines: ['にゃーん。（元気が出てきた）', '＊精神力と経済力が回復した！＊'] },
+    lines: ['にゃーん。（元気が出てきた）', '＊精神力が回復した！＊'] },
   { x: 7, y: 5, map: 2, color: '#f6f', name: 'じゅまんどぅ',
     lines: ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'] },
+  { x: 2, y: 3, map: 1, color: '#776655', name: 'ニトオ',
+    lines: ['ニトオ「よう、また来たか」'] },
+  { x: 1, y: 5, map: 1, color: '#fa8', name: 'プレゼント屋',
+    lines: ['プレゼント屋'] },
 ];
 
 // 敵データ（女の子たち）— ハートゲージの最大値がmaxHeart
@@ -238,7 +246,6 @@ function initState() {
     px: 4, py: 2, // ワールドマップの村の近く
     dir: 0, // 0=下,1=左,2=右,3=上
     hp: 30, maxHp: 30,       // 精神力
-    mp: 10, maxMp: 10,       // 経済力
     atk: 8, def: 4,          // 口説き力, メンタル防御
     level: 1, exp: 0, nextExp: 20,
     girlfriends: 0,          // 彼女の数
@@ -248,8 +255,33 @@ function initState() {
     battle: null,
     battleCursor: 0,
     defeatedBoss: false,
+    chiguoIntro: true,       // 最初の一歩でブスンコ強制バトル
+    money: 0,                // ギュニー
+    unlockedMoves: [],       // 解放された攻撃技（順番に追加）
+    presents: {},            // プレゼント在庫 { flower: 2, ring: 1, ... }
   };
 }
+
+// ===== 技データ =====
+const MOVES = {
+  greet:   { label: '挨拶をする', name: '挨拶' },
+  praise:  { label: '褒める',     name: '褒め' },
+  confess: { label: '告白する',   name: '告白' },
+  gift:    { label: 'プレゼント', name: 'プレゼント' },
+};
+const UNLOCK_ORDER = ['greet', 'praise', 'confess', 'gift'];
+const MOVE_PRICE = 100000;
+
+// ===== プレゼント商品（お店で購入） =====
+// fill: ハートゲージ充填量、price: ギュニー
+const PRESENTS = {
+  flower:   { name: '花束',             price:   3000, fill: 8 },
+  choco:    { name: '高級チョコ',       price:  10000, fill: 18 },
+  perfume:  { name: '香水',             price:  30000, fill: 35 },
+  ring:     { name: '指輪',             price:  80000, fill: 60 },
+  bag:      { name: 'ブランドバッグ',   price: 200000, fill: 120 },
+};
+const PRESENT_ORDER = ['flower', 'choco', 'perfume', 'ring', 'bag'];
 initState();
 
 // ===== 入力 =====
@@ -623,8 +655,9 @@ function canWalk(mx, my) {
 function updateStatus() {
   document.getElementById('stat-name').textContent = tl('statName', state.level);
   document.getElementById('stat-hp').textContent = tl('statHp', state.hp, state.maxHp);
-  document.getElementById('stat-mp').textContent = tl('statMp', state.mp, state.maxMp);
   document.getElementById('stat-gf').textContent = tl('statGf', state.girlfriends);
+  const moneyEl = document.getElementById('stat-money');
+  if (moneyEl) moneyEl.textContent = tl('statMoney', state.money);
 }
 
 // ===== メッセージ表示 =====
@@ -661,7 +694,6 @@ function interactFacing() {
   if (npc) {
     if (npc.name === 'ネコ') {
       state.hp = state.maxHp;
-      state.mp = state.maxMp;
       updateStatus();
     }
     const npcLines = tl('npcLines')[npc.name] || npc.lines;
@@ -672,6 +704,14 @@ function interactFacing() {
       });
       return;
     }
+    if (npc.name === 'ニトオ') {
+      handleNitooTalk();
+      return;
+    }
+    if (npc.name === 'プレゼント屋') {
+      openShop();
+      return;
+    }
     showMsgQueue(npcLines);
     return;
   }
@@ -680,6 +720,96 @@ function interactFacing() {
   if (ch === 'D' || ch === 'V' || ch === 'K') {
     enterLocation(fx, fy, ch);
   }
+}
+
+// ===== プレゼント屋（ショップ） =====
+function openShop() {
+  state.phase = 'shop';
+  state.shopCursor = 0;
+  document.getElementById('shop-overlay').classList.remove('hidden');
+  renderShop('なにを 買う？');
+}
+
+function renderShop(logText) {
+  document.getElementById('shop-money').textContent = `${state.money.toLocaleString()}ギュニー`;
+  // 在庫表示
+  const listEl = document.getElementById('shop-list');
+  listEl.innerHTML = '';
+  PRESENT_ORDER.forEach(k => {
+    const p = PRESENTS[k];
+    const stock = state.presents[k] || 0;
+    const row = document.createElement('div');
+    row.className = 'shop-list-item';
+    row.innerHTML = `<span>${p.name}（ハート+${p.fill}）</span><span class="stock">所持:${stock}</span>`;
+    listEl.appendChild(row);
+  });
+  // ボタンラベル
+  const btns = document.querySelectorAll('.shop-btn');
+  PRESENT_ORDER.forEach((k, i) => {
+    const p = PRESENTS[k];
+    btns[i].textContent = `${p.name} ${p.price.toLocaleString()}G`;
+    btns[i].dataset.key = k;
+  });
+  updateShopCursor();
+  if (logText !== undefined) document.getElementById('shop-log').textContent = logText;
+}
+
+function updateShopCursor() {
+  const btns = document.querySelectorAll('.shop-btn');
+  btns.forEach((btn, i) => btn.classList.toggle('selected', i === state.shopCursor));
+}
+
+function closeShop() {
+  document.getElementById('shop-overlay').classList.add('hidden');
+  state.phase = 'map';
+}
+
+function shopBuy(presentKey) {
+  const p = PRESENTS[presentKey];
+  if (state.money < p.price) {
+    renderShop('ギュニーが たりない！');
+    return;
+  }
+  state.money -= p.price;
+  state.presents[presentKey] = (state.presents[presentKey] || 0) + 1;
+  updateStatus();
+  renderShop(`${p.name}を 買った！`);
+}
+
+document.querySelectorAll('.shop-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (state.phase !== 'shop') return;
+    if (btn.dataset.idx === 'close') { closeShop(); return; }
+    shopBuy(btn.dataset.key);
+  });
+});
+
+// ===== ニトオ（情報商材屋）の処理 =====
+function handleNitooTalk() {
+  const nUnlocked = state.unlockedMoves.length;
+  if (nUnlocked >= UNLOCK_ORDER.length) {
+    showMsgQueue([
+      'ニトオ「もう売る情報は無ぇよ。\n　あとは自力で頑張りな」',
+    ]);
+    return;
+  }
+  if (state.money < MOVE_PRICE) {
+    showMsgQueue([
+      'ニトオ「次の情報商材も\n　１０万ギュニーだ。\n　たまったらまた来な」',
+      `（現在 ${state.money.toLocaleString()}ギュニー）`,
+    ]);
+    return;
+  }
+  // 購入成立
+  const nextKey = UNLOCK_ORDER[nUnlocked];
+  const label = MOVES[nextKey].label;
+  state.money -= MOVE_PRICE;
+  state.unlockedMoves.push(nextKey);
+  updateStatus();
+  showMsgQueue([
+    'ニトオ「毎度あり！これが次の極意だ」',
+    `＊情報商材を受け取った！＊\n「${label}」を覚えた！`,
+  ]);
 }
 
 // ===== マップ遷移 =====
@@ -702,6 +832,13 @@ function enterLocation(_tx, _ty, ch) {
 
 // ===== エンカウント =====
 function checkEncounter() {
+  // チギュオの最初の一歩で強制バトル（ブスンコ）
+  if (state.chiguoIntro) {
+    state.chiguoIntro = false;
+    state.steps = 0;
+    startBattle('busunko', true);
+    return;
+  }
   const table = ENCOUNTERS[state.map];
   if (!table) return;
   const ch = MAPS[state.map][state.py][state.px];
@@ -716,7 +853,7 @@ function checkEncounter() {
 }
 
 // ===== バトルシステム（恋愛版） =====
-function startBattle(enemyKey) {
+function startBattle(enemyKey, chiguoSpecial) {
   const def = ENEMIES[enemyKey];
   state.battle = {
     enemy: { ...def },
@@ -724,6 +861,8 @@ function startBattle(enemyKey) {
     key: enemyKey,
     turn: 'player',
     ended: false,
+    chiguoSpecial: !!chiguoSpecial,
+    turnCount: 0,
   };
   state.phase = 'battle';
 
@@ -732,7 +871,46 @@ function startBattle(enemyKey) {
   document.getElementById('enemy-name').textContent = def.name;
   updateEnemyHeart();
   drawEnemySprite(def);
-  setBattleLog(tl('appeared', def.name));
+
+  // ボタン表示の切り替え（特殊バトル: チギュオ vs ブスンコ）
+  const btns = document.querySelectorAll('.battle-btn');
+  if (chiguoSpecial) {
+    const labels = ['あっあっ', 'どぅふ', 'おおれおれ', 'にげる'];
+    const actions = ['chi_a', 'chi_b', 'chi_c', 'chi_run'];
+    btns.forEach((btn, i) => {
+      btn.textContent = labels[i];
+      btn.dataset.action = actions[i];
+    });
+    setBattleLog('ブスンコ「なんか用？」');
+  } else {
+    // 通常バトル: 解放された技に応じて動的にメニュー構成
+    let slots;
+    if (state.unlockedMoves.length >= 4) {
+      // 全技解放：元の4択
+      slots = [
+        { label: '告白する', action: 'confess' },
+        { label: '褒める', action: 'praise' },
+        { label: 'プレゼント', action: 'gift' },
+        { label: '逃げる', action: 'run' },
+      ];
+    } else {
+      const attackSlots = [];
+      for (let i = 0; i < 3; i++) {
+        const key = state.unlockedMoves[i];
+        if (key) {
+          attackSlots.push({ label: MOVES[key].label, action: key });
+        } else {
+          attackSlots.push({ label: '？？？', action: 'locked' });
+        }
+      }
+      slots = [...attackSlots, { label: '逃げる', action: 'run' }];
+    }
+    btns.forEach((btn, i) => {
+      btn.textContent = slots[i].label;
+      btn.dataset.action = slots[i].action;
+    });
+    setBattleLog(tl('appeared', def.name));
+  }
   state.battleCursor = 0;
   updateBattleStatus();
   setBattleButtons(true);
@@ -758,7 +936,8 @@ function setBattleButtons(enabled) {
 
 function updateBattleStatus() {
   document.getElementById('battle-hp').textContent = tl('battleHp', state.hp, state.maxHp);
-  document.getElementById('battle-mp').textContent = tl('battleMp', state.mp, state.maxMp);
+  const moneyEl = document.getElementById('battle-money');
+  if (moneyEl) moneyEl.textContent = tl('battleMoney', state.money);
   document.getElementById('battle-gf').textContent = tl('battleGf', state.girlfriends);
 }
 
@@ -797,7 +976,34 @@ function playerAction(action) {
   const b = state.battle;
   setBattleButtons(false);
 
-  if (action === 'confess') {
+  // チギュオ特殊バトル — すべての攻撃は通らない、逃げられない
+  if (b.chiguoSpecial) {
+    const chiLogs = {
+      chi_a: 'チギュオ「あっあっ……」\nうまく言葉が出ない！',
+      chi_b: 'チギュオ「どぅふ……」\n笑いがこぼれただけだ！',
+      chi_c: 'チギュオ「おおれおれ……」\n声が上ずって意味不明だ！',
+      chi_run: '緊張で足がすくんで\nにげられない！',
+    };
+    setBattleLog(chiLogs[action] || '……');
+    shakeScreen();
+    setTimeout(() => enemyTurn(), 1200);
+    return;
+  }
+
+  if (action === 'locked') {
+    // まだ覚えていない技
+    setBattleLog('その技はまだ覚えていない！\nニトオから情報商材を買おう。');
+    setTimeout(() => setBattleButtons(true), 1000);
+    return;
+  }
+
+  if (action === 'greet') {
+    // 挨拶をする — 小さめのハート充填（MP不要）
+    const fill = Math.max(1, Math.floor(state.atk * 0.4) + Math.floor(Math.random() * 2) + 1);
+    b.heartFilled += fill;
+    setBattleLog(`ゆうしゃは 挨拶をした！\n${b.enemy.name}のハートが ${fill}たまった！`);
+    updateEnemyHeart();
+  } else if (action === 'confess') {
     // 告白する — 口説き力ベースのハート充填
     const fill = Math.max(1, state.atk - Math.floor(b.enemy.resist / 2) + Math.floor(Math.random() * 4));
     b.heartFilled += fill;
@@ -811,19 +1017,21 @@ function playerAction(action) {
     setBattleLog(tl('praiseLog', b.enemy.name, fill));
     updateEnemyHeart();
   } else if (action === 'gift') {
-    // プレゼントする — 効果大だが経済力を消費
-    if (state.mp < 4) {
-      setBattleLog(tl('noMp'));
+    // プレゼントする — 在庫から一番高価なものを消費
+    const bestKey = [...PRESENT_ORDER].reverse().find(k => (state.presents[k] || 0) > 0);
+    if (!bestKey) {
+      setBattleLog(tl('noGift'));
       setTimeout(() => setBattleButtons(true), 800);
       return;
     }
-    state.mp -= 4;
+    const present = PRESENTS[bestKey];
+    state.presents[bestKey]--;
     updateStatus();
     updateBattleStatus();
-    const fill = Math.max(1, Math.floor(state.atk * 1.8) - Math.floor(b.enemy.resist / 3) + Math.floor(Math.random() * 6));
+    const fill = Math.max(1, present.fill - Math.floor(b.enemy.resist / 3) + Math.floor(Math.random() * 4));
     b.heartFilled += fill;
     shakeScreen();
-    setBattleLog(tl('giftLog', b.enemy.name, fill));
+    setBattleLog(tl('giftLog', b.enemy.name, present.name, fill));
     updateEnemyHeart();
   } else if (action === 'run') {
     if (b.key === 'boss') {
@@ -852,16 +1060,32 @@ function playerAction(action) {
 function enemyTurn() {
   const b = state.battle;
   // 相手のリアクション — 精神力にダメージ
-  const dmg = Math.max(1, b.enemy.charm - Math.floor(state.def / 2) + Math.floor(Math.random() * 3));
+  let dmg;
+  if (b.chiguoSpecial) {
+    // チギュオ特殊バトル: 3ターンで必ず0にする
+    b.turnCount++;
+    dmg = Math.ceil(state.hp / Math.max(1, 4 - b.turnCount));
+  } else {
+    dmg = Math.max(1, b.enemy.charm - Math.floor(state.def / 2) + Math.floor(Math.random() * 3));
+  }
   state.hp -= dmg;
   if (state.hp < 0) state.hp = 0;
   updateStatus();
   updateBattleStatus();
   shakeScreen();
 
-  // リアクション台詞ランダム
-  const reactions = tl('reactions', b.enemy.name, dmg);
-  setBattleLog(reactions[Math.floor(Math.random() * reactions.length)]);
+  if (b.chiguoSpecial) {
+    const chiReactions = [
+      `ブスンコに冷たい目で\n見られた！精神力 -${dmg}`,
+      `ブスンコ「キモ……」\n精神力 -${dmg}`,
+      `ブスンコに無視された！\n精神力 -${dmg}`,
+    ];
+    setBattleLog(chiReactions[Math.min(b.turnCount - 1, chiReactions.length - 1)]);
+  } else {
+    // リアクション台詞ランダム
+    const reactions = tl('reactions', b.enemy.name, dmg);
+    setBattleLog(reactions[Math.floor(Math.random() * reactions.length)]);
+  }
 
   setTimeout(() => {
     if (state.hp <= 0) {
@@ -890,7 +1114,12 @@ function battleVictory() {
 
   state.girlfriends++;
   state.exp += exp;
-  setBattleLog(tl('gotGirlfriend', b.enemy.name, exp));
+  // お金を獲得
+  const reward = exp * 2000;
+  state.money += reward;
+  updateStatus();
+  updateBattleStatus();
+  setBattleLog(tl('gotGirlfriend', b.enemy.name, exp) + '\n' + tl('gainMoney', reward));
 
   setTimeout(() => {
     if (state.exp >= state.nextExp) {
@@ -907,8 +1136,6 @@ function levelUp() {
   state.nextExp = Math.floor(state.nextExp * 1.4);
   state.maxHp += 5;
   state.hp = state.maxHp;
-  state.maxMp += 2;
-  state.mp = state.maxMp;
   state.atk += 2;
   state.def += 1;
   updateStatus();
@@ -919,14 +1146,46 @@ function levelUp() {
 }
 
 function battleDefeat() {
-  setBattleLog(tl('heartBroken'));
+  const wasChiguo = state.battle && state.battle.chiguoSpecial;
+  if (wasChiguo) {
+    setBattleLog('目の前が真っ暗になった……');
+  } else {
+    setBattleLog(tl('heartBroken'));
+  }
   setTimeout(() => {
     endBattle();
-    state.map = 1; state.px = 6; state.py = 9;
-    state.hp = Math.floor(state.maxHp / 2);
-    state.mp = Math.floor(state.maxMp / 2);
-    updateStatus();
-    showMsg(tl('revivedMsg'));
+    if (wasChiguo) {
+      // 始まりの町のお店で目を覚ます
+      state.map = 1; state.px = 3; state.py = 3;
+      state.dir = 1; // 左向き（ニトオの方）
+      state.hp = state.maxHp;
+      updateStatus();
+      showMsgQueue([
+        'チギュオ「こ、ここは…」',
+        '？？？「目が覚めた？」',
+        '目の前には小汚いオヤジが\n立っていた。',
+        'ニトオ「俺の名前は　ヒキコモ　ニトオ。\nお前の命の恩人さ。」',
+        'チギュオ「あっ、す…」',
+        'ニトオ「お前、女にモテないだろ」',
+        'チギュオ「おっ、べ、べつに…」',
+        'ニトオ「１００％モテる方法、あるぞ」',
+        'チギュオ「えっ…」',
+        'ニトオ「１０万ギュニー」',
+        'チギュオ「……ま、まじすか…」',
+        'ニトオ「おうよ、俺っちの情報商材は\n評判いいんだよ。彼女１００人\nできちまうぜ」',
+        'チギュオ「か、買います！！\n……あ、今金無いです」',
+        'ニトオ「チッ……まぁいい、\n初回だけタダにしといてやる。\n次からは金持ってこいよ」',
+        '＊情報商材を手に入れた！＊\nチギュオは「挨拶をする」を覚えた！',
+      ], () => {
+        state.unlockedMoves = ['greet'];
+        closeMsg();
+      });
+    } else {
+      state.map = 1; state.px = 6; state.py = 9;
+      state.hp = Math.floor(state.maxHp / 2);
+      updateStatus();
+      showMsg(tl('revivedMsg'));
+    }
   }, 1500);
 }
 
@@ -1007,6 +1266,35 @@ function gameLoop() {
           playerAction(action);
         }
       }
+    }
+  } else if (state.phase === 'shop') {
+    const btns = document.querySelectorAll('.shop-btn');
+    const cols = 2;
+    const total = btns.length; // 5 items + close = 6
+    if (consumeKey('ArrowLeft')) {
+      if (state.shopCursor < PRESENT_ORDER.length && state.shopCursor % cols === 1) { state.shopCursor--; updateShopCursor(); }
+    } else if (consumeKey('ArrowRight')) {
+      if (state.shopCursor < PRESENT_ORDER.length && state.shopCursor % cols === 0 && state.shopCursor + 1 < PRESENT_ORDER.length) { state.shopCursor++; updateShopCursor(); }
+    } else if (consumeKey('ArrowUp')) {
+      if (state.shopCursor === total - 1) {
+        // close→直前の商品行
+        state.shopCursor = PRESENT_ORDER.length - 1;
+      } else if (state.shopCursor >= cols) {
+        state.shopCursor -= cols;
+      }
+      updateShopCursor();
+    } else if (consumeKey('ArrowDown')) {
+      if (state.shopCursor < PRESENT_ORDER.length) {
+        const next = state.shopCursor + cols;
+        state.shopCursor = next < PRESENT_ORDER.length ? next : (total - 1);
+        updateShopCursor();
+      }
+    } else if (consumeKey(' ') || consumeKey('Enter')) {
+      const sel = btns[state.shopCursor];
+      if (sel.dataset.idx === 'close') closeShop();
+      else shopBuy(sel.dataset.key);
+    } else if (consumeKey('Escape')) {
+      closeShop();
     }
   } else if (state.phase === 'title') {
     if (consumeKey(' ') || consumeKey('Enter')) {

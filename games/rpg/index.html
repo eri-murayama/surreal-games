@@ -36,8 +36,8 @@
       <div id="status-bar">
         <span id="stat-name">ゆうしゃ Lv.1</span>
         <span id="stat-hp">精神力 30/30</span>
-        <span id="stat-mp">経済力 10/10</span>
         <span id="stat-gf">彼女 0人</span>
+        <span id="stat-money">0ギュニー</span>
       </div>
 
       <!-- メッセージボックス -->
@@ -56,7 +56,7 @@
         <div id="battle-log"></div>
         <div id="battle-player-status">
           <span id="battle-hp">精神力 30/30</span>
-          <span id="battle-mp">経済力 10/10</span>
+          <span id="battle-money">0ギュニー</span>
           <span id="battle-gf">彼女 0人</span>
         </div>
         <div id="battle-menu">
@@ -64,6 +64,24 @@
           <button class="battle-btn" data-action="praise">褒める</button>
           <button class="battle-btn" data-action="gift">プレゼント</button>
           <button class="battle-btn" data-action="run">逃げる</button>
+        </div>
+      </div>
+
+      <!-- ショップ画面 -->
+      <div id="shop-overlay" class="hidden">
+        <div id="shop-header">
+          <span id="shop-title">プレゼント屋</span>
+          <span id="shop-money">0ギュニー</span>
+        </div>
+        <div id="shop-list"></div>
+        <div id="shop-log">なにを 買う？</div>
+        <div id="shop-menu">
+          <button class="shop-btn" data-idx="0"></button>
+          <button class="shop-btn" data-idx="1"></button>
+          <button class="shop-btn" data-idx="2"></button>
+          <button class="shop-btn" data-idx="3"></button>
+          <button class="shop-btn" data-idx="4"></button>
+          <button class="shop-btn shop-close" data-idx="close">とじる</button>
         </div>
       </div>
 
