@@ -42,7 +42,7 @@ const LANG_RPG = {
     revivedMsg: '目が覚めた……\n精神力が回復して町に戻っていた。',
     gainMoney: (n) => `${n.toLocaleString()}ギュニー 手に入れた！`,
     victorySub: (lv, gf) => `Lv.${lv}、彼女${gf}人でクリア！\nじゅまんどぅとラブラブだ！\n……たぶん。`,
-    enterTown: 'はじまりの町に やってきた。',
+    enterTown: 'はじまりの町に やってきた。\n（プレゼント屋が近くにいる！）',
     enterCastle: 'じゅまんどぅの城に\n足をふみいれた……！',
     exitTown: 'ワールドマップに でた。',
     exitCastle: 'じゅまんどぅの城から でた。',
@@ -90,7 +90,7 @@ const LANG_RPG = {
     revivedMsg: "Woke up...\nSpirit recovered and you're back in town.",
     gainMoney: (n) => `Got ${n.toLocaleString()} Gyuney!`,
     victorySub: (lv, gf) => `Lv.${lv}, ${gf} GFs — cleared!\nYou and Jumandou are in love!\n...Probably.`,
-    enterTown: 'Arrived at Starting Town.',
+    enterTown: 'Arrived at Starting Town.\n(A gift shop is nearby!)',
     enterCastle: "Stepped into\nJumandou's Castle...!",
     exitTown: 'Returned to the World Map.',
     exitCastle: "Left Jumandou's Castle.",
@@ -216,7 +216,7 @@ const NPCS = [
     lines: ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'] },
   { x: 2, y: 3, map: 1, color: '#776655', name: 'ニトオ',
     lines: ['ニトオ「よう、また来たか」'] },
-  { x: 1, y: 5, map: 1, color: '#fa8', name: 'プレゼント屋',
+  { x: 5, y: 9, map: 1, color: '#fa8', name: 'プレゼント屋',
     lines: ['プレゼント屋'] },
 ];
 
@@ -815,7 +815,7 @@ function handleNitooTalk() {
 // ===== マップ遷移 =====
 function enterLocation(_tx, _ty, ch) {
   if (ch === 'V' && state.map === 0) {
-    state.map = 1; state.px = 6; state.py = 9;
+    state.map = 1; state.px = 6; state.py = 9; state.dir = 1;
     showMsg(tl('enterTown'));
   } else if (ch === 'K' && state.map === 0) {
     state.map = 2; state.px = 9; state.py = 1;
