@@ -1000,8 +1000,8 @@ function gameOver(hitR, hitC) {
     const overlay = document.createElement('div');
     overlay.className = 'gameover-overlay';
     overlay.innerHTML = `
-      <div class="gameover-text">お前を呪う</div>
-      <button class="overlay-btn" onclick="this.parentElement.remove(); initGame();">もう一度</button>
+      <div class="gameover-text">${SurrealI18n.t('curseMsg')}</div>
+      <button class="overlay-btn" onclick="this.parentElement.remove(); initGame();">${SurrealI18n.t('playAgain')}</button>
     `;
     document.body.appendChild(overlay);
   }, delay + 150);
@@ -1054,7 +1054,7 @@ function playJobutsu(isNewRecord) {
   // 「成仏...」テキスト
   const text = document.createElement('div');
   text.className = 'jobutsu-text';
-  text.textContent = '成　仏　...';
+  text.textContent = SurrealI18n.t('jobutsuMsg');
   document.body.appendChild(text);
 
   spawnSpirits();
@@ -1069,15 +1069,15 @@ function playJobutsu(isNewRecord) {
 
 function showVictory(isNewRecord) {
   const recordHtml = isNewRecord
-    ? '<div class="victory-record">👑 最速記録更新！</div>'
+    ? `<div class="victory-record">${SurrealI18n.t('newRecordMsg')}</div>`
     : '';
   const overlay = document.createElement('div');
   overlay.className = 'victory-overlay';
   overlay.innerHTML = `
-    <div class="victory-text">...成仏...</div>
-    <div class="victory-time">${String(elapsedTime).padStart(3, '0')} 秒</div>
+    <div class="victory-text">${SurrealI18n.t('victoryMsg')}</div>
+    <div class="victory-time">${String(elapsedTime).padStart(3, '0')} ${SurrealI18n.t('secUnit')}</div>
     ${recordHtml}
-    <button class="overlay-btn" onclick="this.parentElement.remove(); document.querySelectorAll('.confetti,.jobutsu-ghost,.jobutsu-text').forEach(e=>e.remove()); initGame();">もう一度</button>
+    <button class="overlay-btn" onclick="this.parentElement.remove(); document.querySelectorAll('.confetti,.jobutsu-ghost,.jobutsu-text').forEach(e=>e.remove()); initGame();">${SurrealI18n.t('playAgain')}</button>
   `;
   document.body.appendChild(overlay);
 
@@ -1115,6 +1115,99 @@ initGame();
 </script>
 <script src="../common/i18n.js"></script>
 <script src="../common/game-common.js"></script>
-<script>SurrealGames.init('minesweeper');</script>
+<script>
+SurrealI18n.init({
+  ja: {
+    title: 'かいだんマインスイーパー',
+    easy: '初級', medium: '中級', hard: '上級',
+    mineLabel: '💣',
+    highscoreLabel: '最速記録',
+    highscoreNone: '--',
+    curseMsg: 'お前を呪う',
+    jobutsuMsg: '成　仏　...',
+    victoryMsg: '...成仏...',
+    newRecordMsg: '👑 最速記録更新！',
+    playAgain: 'もう一度',
+    bgmLabel: 'BGM',
+    kaidanLabel: '怪談',
+    kaidanOn: '怪談ON',
+    kaidanNoFile: 'ファイルなし',
+    backToTop: '← トップに戻る',
+    secUnit: '秒',
+    shareResult: (diff, time) => `【かいだんマインスイーパー】${diff}を${time}秒でクリア！成仏しました...👻\n#シュールゲームス`,
+  },
+  en: {
+    title: 'Kaidan Minesweeper',
+    easy: 'Easy', medium: 'Medium', hard: 'Hard',
+    mineLabel: '💣',
+    highscoreLabel: 'Best Time',
+    highscoreNone: '--',
+    curseMsg: 'I CURSE YOU',
+    jobutsuMsg: 'Rest in peace...',
+    victoryMsg: '...Rest in Peace...',
+    newRecordMsg: '👑 NEW RECORD!',
+    playAgain: 'Play Again',
+    bgmLabel: 'BGM',
+    kaidanLabel: 'Ghost',
+    kaidanOn: 'Ghost ON',
+    kaidanNoFile: 'No File',
+    backToTop: '← Back to Top',
+    secUnit: 'sec',
+    shareResult: (diff, time) => `【Kaidan Minesweeper】Cleared ${diff} in ${time}s! The spirit rests in peace...👻\n#SurrealGames`,
+  }
+}, {
+  onLangChange: function() { applyI18n(); }
+});
+
+function applyI18n() {
+  document.querySelector('h1').textContent = SurrealI18n.t('title');
+  document.getElementById('diff-easy').textContent = SurrealI18n.t('easy');
+  document.getElementById('diff-medium').textContent = SurrealI18n.t('medium');
+  document.getElementById('diff-hard').textContent = SurrealI18n.t('hard');
+  document.querySelector('.back-link').textContent = SurrealI18n.t('backToTop');
+
+  // ハイスコアバー
+  const hiBar = document.getElementById('highscoreBar');
+  const hiVal = document.getElementById('highscoreVal');
+  const val = hiVal.textContent;
+  hiBar.innerHTML = '<span class="crown">👑</span>' + SurrealI18n.t('highscoreLabel') + '：<span id="highscoreVal">' + val + '</span> ' + SurrealI18n.t('secUnit');
+
+  // BGM/怪談ボタン
+  const bgmBtn = document.getElementById('bgmBtn');
+  const voiceBtn = document.getElementById('voiceBtn');
+  if (bgmPlaying) {
+    bgmBtn.innerHTML = '<span class="icon">🔊</span>' + SurrealI18n.t('bgmLabel');
+  } else {
+    bgmBtn.innerHTML = '<span class="icon">🔇</span>' + SurrealI18n.t('bgmLabel');
+  }
+  if (voicePlaying) {
+    voiceBtn.innerHTML = '<span class="icon">👻</span>' + SurrealI18n.t('kaidanOn');
+  } else {
+    voiceBtn.innerHTML = '<span class="icon">👻</span>' + SurrealI18n.t('kaidanLabel');
+  }
+}
+applyI18n();
+
+// Xシェアボタンのクリックイベントを上書き（得点付き）
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.sg-share-btn');
+  if (!btn) return;
+  e.preventDefault();
+  const diffNames = { ja: ['初級','中級','上級'], en: ['Easy','Medium','Hard'] };
+  const lang = SurrealI18n.currentLang;
+  const diffLabel = (diffNames[lang] || diffNames.ja)[currentDiff];
+  let text;
+  if (gameState === 'won') {
+    text = SurrealI18n.t('shareResult', diffLabel, elapsedTime);
+  } else {
+    text = lang === 'en'
+      ? '【Kaidan Minesweeper】Playing now! 👻\n#SurrealGames'
+      : '【かいだんマインスイーパー】プレイ中！👻\n#シュールゲームス';
+  }
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(window.location.href), '_blank');
+});
+
+SurrealGames.init('minesweeper');
+</script>
 </body>
 </html>
