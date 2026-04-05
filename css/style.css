@@ -587,6 +587,34 @@ section {
   border-color: #ff69b4;
 }
 
+/* --- かいだんマインスイーパー --- */
+.placeholder-art--kaidan {
+  background: linear-gradient(135deg, #0a0a1a, #1a0a2a);
+}
+
+.card-chara--kaidan {
+  width: 50%;
+  filter: drop-shadow(0 0 15px rgba(150, 100, 255, 0.4));
+  animation: kaidanFloat 3s ease-in-out infinite;
+}
+
+@keyframes kaidanFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.card-flip-back__img--kaidan {
+  width: 250%;
+  top: -100%;
+  left: -55%;
+}
+
+.kaidan-speech {
+  color: #9966ff;
+  box-shadow: 0 4px 20px rgba(100, 50, 200, 0.4);
+  border-color: #7744cc;
+}
+
 /* ===== カードフリップ共通 ===== */
 
 /* preserve-3dを壊す原因を無効化 */

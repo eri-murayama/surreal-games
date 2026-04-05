@@ -378,16 +378,22 @@
           </div>
         </article>
 
-        <!-- ゲームカード: マインスイーパー -->
-        <article class="game-card fade-in">
-          <div class="game-card__image">
-            <div class="placeholder-art" style="background: linear-gradient(135deg, #1a1a2e, #3a3a5c);">
-              <span class="placeholder-emoji">💣</span>
+        <!-- ゲームカード: かいだんマインスイーパー -->
+        <article class="game-card game-card--flip fade-in">
+          <div class="game-card__image card-flip-zone">
+            <div class="card-flip-inner">
+              <div class="card-flip-front placeholder-art placeholder-art--kaidan">
+                <img src="assets/images/kaidan-ghost.png" alt="おばけ" class="card-chara card-chara--kaidan">
+              </div>
+              <div class="card-flip-back placeholder-art--kaidan">
+                <img src="assets/images/kaidan-ghost.png" alt="おばけ" class="card-flip-back__img card-flip-back__img--kaidan">
+                <div class="card-flip-back__speech kaidan-speech">きょうふの　かいだん</div>
+              </div>
             </div>
           </div>
           <div class="game-card__body">
-            <h3 class="game-card__title">マインスイーパー</h3>
-            <p class="game-card__desc">初級・中級・上級の3難易度。レトロLCD風ステータス表示。旗＆爆発アニメーション。</p>
+            <h3 class="game-card__title">かいだんマインスイーパー</h3>
+            <p class="game-card__desc">本当の恐怖はここにある。<br>地雷を探して霊を成仏させろ！</p>
             <div class="store-links">
               <a href="games/minesweeper/index.html" class="store-btn" aria-label="ブラウザでプレイ">
                 <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
