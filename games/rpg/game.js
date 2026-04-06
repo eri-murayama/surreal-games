@@ -287,13 +287,13 @@ const PRESENT_ORDER = ['flower', 'choco', 'perfume', 'ring', 'bag'];
 
 // ===== 武器データ =====
 const WEAPONS = {
-  cologne:   { name: 'コロン',           price:   5000, atk: 3,  def: 0 },
-  suit:      { name: 'スーツ',           price:  20000, atk: 5,  def: 2 },
-  watch:     { name: '高級時計',         price:  60000, atk: 8,  def: 3 },
-  car:       { name: '外車のカギ',       price: 150000, atk: 12, def: 5 },
-  mansion:   { name: 'タワマンの鍵',     price: 500000, atk: 20, def: 8 },
+  flower:    { name: '花束',             price:   5000, atk: 3,  def: 0 },
+  ticket:    { name: '金券',             price:  20000, atk: 5,  def: 2 },
+  bag:       { name: 'ブランドバッグ',   price:  60000, atk: 8,  def: 3 },
+  car:       { name: '外車',             price: 150000, atk: 12, def: 5 },
+  mansion:   { name: 'タワマン',         price: 500000, atk: 20, def: 8 },
 };
-const WEAPON_ORDER = ['cologne', 'suit', 'watch', 'car', 'mansion'];
+const WEAPON_ORDER = ['flower', 'ticket', 'bag', 'car', 'mansion'];
 initState();
 
 // ===== セーブ・ロード =====
@@ -773,7 +773,10 @@ function interactFacing() {
       return;
     }
     if (npc.name === '武器屋') {
-      openWeaponShop();
+      showMsg('いらっしゃい！', () => {
+        closeMsg();
+        openWeaponShop();
+      });
       return;
     }
     showMsgQueue(npcLines);
@@ -891,8 +894,8 @@ function updateWeaponCursor() {
 
 function closeWeaponShop() {
   document.getElementById('weapon-overlay').classList.add('hidden');
-  state.phase = 'map';
   saveGame();
+  showMsg('毎度！');
 }
 
 function weaponBuy(weaponKey) {
