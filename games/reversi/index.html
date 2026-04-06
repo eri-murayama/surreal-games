@@ -307,7 +307,74 @@ html, body {
   color: #c4a46a;
   margin-bottom: 20px;
 }
-.result-box .btn { font-size: 15px; padding: 10px 24px; }
+.result-box .btn { font-size: 15px; padding: 10px 24px; margin: 4px; }
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+.result-actions .btn { margin: 0; font-size: 13px; padding: 8px 16px; }
+.result-btn-share {
+  background: rgba(30,30,50,0.6);
+  border-color: rgba(100,100,140,0.4);
+  color: #ccc;
+}
+.result-btn-share:hover {
+  background: rgba(50,50,70,0.6);
+}
+.result-btn-home {
+  background: rgba(30,50,30,0.5);
+  border-color: rgba(80,130,80,0.3);
+  color: #a0c8a0;
+  text-decoration: none;
+}
+.result-btn-home:hover {
+  background: rgba(40,60,40,0.6);
+}
+
+.result-recommend {
+  margin-top: 14px;
+  padding: 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  text-align: center;
+}
+.result-recommend-title {
+  font-size: 13px;
+  color: #c4a46a;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.result-recommend-cards {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.result-recommend-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 6px;
+  min-width: 80px;
+  background: rgba(200,170,100,0.08);
+  border-radius: 8px;
+  text-decoration: none;
+  color: #e8dcc8;
+  border: 1px solid rgba(200,170,100,0.12);
+  transition: transform 0.15s, background 0.2s;
+  font-size: 11px;
+}
+.result-recommend-card:hover {
+  transform: translateY(-2px);
+  background: rgba(200,170,100,0.18);
+}
+.result-recommend-emoji { font-size: 1.4rem; }
+.result-recommend-name { font-size: 0.65rem; font-weight: 600; line-height: 1.2; text-align: center; }
 
 /* Confetti */
 .confetti {
@@ -674,7 +741,12 @@ html, body {
   <div class="result-box">
     <div class="result-title" id="resultTitle"></div>
     <div class="result-score" id="resultScore"></div>
-    <button class="btn primary" id="resultNewGame">もう一度遊ぶ</button>
+    <div class="result-actions">
+      <button class="btn primary" id="resultNewGame">もう一度遊ぶ</button>
+      <button class="btn result-btn-share" id="resultShare">𝕏 シェア</button>
+      <a class="btn result-btn-home" id="resultHome" href="../../index.html">🏠 トップページへ</a>
+    </div>
+    <div class="result-recommend" id="resultRecommend"></div>
   </div>
 </div>
 
@@ -831,17 +903,21 @@ html, body {
     scoreWhiteEl.textContent = w;
   }
 
+  function t(key, ...args) {
+    return window.SurrealI18n ? SurrealI18n.t(key, ...args) : key;
+  }
+
   function updateTurn() {
     if (gameOver) {
-      turnEl.textContent = '終了';
+      turnEl.textContent = t('finished');
       turnEl.className = 'turn-indicator';
       return;
     }
     if (currentPlayer === BLACK) {
-      turnEl.textContent = 'あなたの番';
+      turnEl.textContent = t('yourTurn');
       turnEl.className = 'turn-indicator active-black';
     } else {
-      turnEl.textContent = 'CPU思考中...';
+      turnEl.textContent = t('cpuThinking');
       turnEl.className = 'turn-indicator active-white';
     }
   }
@@ -971,10 +1047,10 @@ html, body {
 
   function updateTurnForOkunote() {
     if (eternalMode) {
-      turnEl.textContent = '∞ 俺のターン ∞';
+      turnEl.textContent = t('eternalTurn');
       turnEl.className = 'turn-indicator eternal-active';
     } else if (myTurnRemaining > 0) {
-      turnEl.textContent = `⚡ 俺のターン！(残り${myTurnRemaining})`;
+      turnEl.textContent = t('myTurnRemaining', myTurnRemaining);
       turnEl.className = 'turn-indicator my-turn-active';
     }
   }
@@ -1030,7 +1106,7 @@ html, body {
       }
     } else if (curMoves.length > 0) {
       // Opponent must pass
-      showToast(currentPlayer === BLACK ? 'CPUはパスしました' : 'パスします');
+      showToast(currentPlayer === BLACK ? t('cpuPass') : t('youPass'));
       updateTurn();
       renderBoard();
       if (currentPlayer === WHITE) {
@@ -1049,11 +1125,11 @@ html, body {
     renderBoard();
     const { black, white } = countStones(board);
     let title, isWin = false;
-    if (black > white) { title = 'あなたの勝ち!'; isWin = true; }
-    else if (white > black) { title = 'CPUの勝ち'; }
-    else { title = '引き分け'; }
+    if (black > white) { title = t('youWin'); isWin = true; }
+    else if (white > black) { title = t('cpuWins'); }
+    else { title = t('draw'); }
     resultTitle.textContent = title;
-    resultScore.textContent = `黒 ${black} - ${white} 白`;
+    resultScore.textContent = t('scoreFormat', black, white);
     setTimeout(() => {
       overlay.classList.add('show');
       if (isWin) spawnConfetti();
@@ -1391,6 +1467,132 @@ html, body {
 </script>
 <script src="../common/i18n.js"></script>
 <script src="../common/game-common.js"></script>
-<script>SurrealGames.init('reversi');</script>
+<script>
+SurrealGames.init('reversi');
+
+// ===== i18n 初期化 =====
+SurrealI18n.init({
+  ja: {
+    title: 'リバーシ',
+    yourTurn: 'あなたの番',
+    cpuThinking: 'CPU思考中...',
+    finished: '終了',
+    youWin: 'あなたの勝ち!',
+    cpuWins: 'CPUの勝ち',
+    draw: '引き分け',
+    scoreFormat: (b, w) => `黒 ${b} - ${w} 白`,
+    cpuPass: 'CPUはパスしました',
+    youPass: 'パスします',
+    easy: 'やさしい',
+    normal: 'ふつう',
+    hard: 'つよい',
+    newGame: '新しいゲーム',
+    playAgain: 'もう一度遊ぶ',
+    shareOnX: '𝕏 シェア',
+    backToHome: '🏠 トップページへ',
+    otherGames: '🎮 他のゲームも遊ぶ',
+    okunote: '⚡ 奥の手',
+    myTurn: '俺のターン',
+    myTurnExcl: '！',
+    myTurnRemaining: (n) => `⚡ 俺のターン！(残り${n})`,
+    eternalTurn: '∞ 俺のターン ∞',
+    eternalText: '永遠に<br>俺のターン！',
+    eternalSub: '― どこにでも置ける ―',
+    backToTop: '← トップに戻る',
+    shareResult: (b, w, result) => `【リバーシ】${result} 黒${b} vs 白${w}\n#シュールゲームス`,
+  },
+  en: {
+    title: 'Reversi',
+    yourTurn: 'Your Turn',
+    cpuThinking: 'CPU thinking...',
+    finished: 'Finished',
+    youWin: 'You Win!',
+    cpuWins: 'CPU Wins',
+    draw: 'Draw',
+    scoreFormat: (b, w) => `Black ${b} - ${w} White`,
+    cpuPass: 'CPU passed',
+    youPass: 'You pass',
+    easy: 'Easy',
+    normal: 'Normal',
+    hard: 'Hard',
+    newGame: 'New Game',
+    playAgain: 'Play Again',
+    shareOnX: '𝕏 Share',
+    backToHome: '🏠 Home',
+    otherGames: '🎮 Play Other Games',
+    okunote: '⚡ Trump Card',
+    myTurn: 'MY TURN',
+    myTurnExcl: '!',
+    myTurnRemaining: (n) => `⚡ MY TURN! (${n} left)`,
+    eternalTurn: '∞ MY TURN ∞',
+    eternalText: 'ETERNAL<br>MY TURN!',
+    eternalSub: '― Place anywhere ―',
+    backToTop: '← Back to Top',
+    shareResult: (b, w, result) => `[Reversi] ${result} Black ${b} vs White ${w}\n#SurrealGames`,
+  },
+}, {
+  onLangChange: updateAllTexts
+});
+
+function updateAllTexts() {
+  const t = SurrealI18n.t.bind(SurrealI18n);
+  // ヘッダー
+  document.querySelector('.header a').textContent = t('backToTop');
+  document.querySelector('.game-title').textContent = t('title');
+  // 難易度ボタン
+  const diffBtns = document.querySelectorAll('.diff-btn');
+  diffBtns[0].textContent = t('easy');
+  diffBtns[1].textContent = t('normal');
+  diffBtns[2].textContent = t('hard');
+  // ボタン
+  document.getElementById('newGameBtn').textContent = t('newGame');
+  const okunoteBtn = document.getElementById('okunoteBtn');
+  if (!okunoteBtn.disabled) okunoteBtn.textContent = t('okunote');
+  // リザルト
+  document.getElementById('resultNewGame').textContent = t('playAgain');
+  document.getElementById('resultShare').textContent = t('shareOnX');
+  document.getElementById('resultHome').textContent = t('backToHome');
+  // 俺のターン演出テキスト
+  document.querySelector('.my-turn-text').innerHTML = t('myTurn') + '<span class="exclamation">' + t('myTurnExcl') + '</span>';
+  document.querySelector('.eternal-text').innerHTML = t('eternalText');
+  document.querySelector('.eternal-sub').textContent = t('eternalSub');
+  // おすすめゲーム
+  buildRecommendHTML();
+}
+
+function buildRecommendHTML() {
+  const isEn = SurrealI18n.currentLang === 'en';
+  const picks = [
+    { id: 'minesweeper', emoji: '👻', title: 'かいだんマインスイーパー', titleEn: 'Kaidan Minesweeper' },
+    { id: 'escape-room', emoji: '🔑', title: 'かわいい部屋からの脱出', titleEn: 'Escape Room' },
+    { id: 'puzzle-2048', emoji: '🧬', title: 'シュール進化論', titleEn: 'Surreal Evolution' },
+  ];
+  const title = isEn ? '🎮 Play Other Games' : '🎮 他のゲームも遊ぶ';
+  const cards = picks.map(g => `
+    <a href="../${g.id}/index.html" class="result-recommend-card">
+      <span class="result-recommend-emoji">${g.emoji}</span>
+      <span class="result-recommend-name">${isEn ? g.titleEn : g.title}</span>
+    </a>
+  `).join('');
+  document.getElementById('resultRecommend').innerHTML = `
+    <div class="result-recommend-title">${title}</div>
+    <div class="result-recommend-cards">${cards}</div>
+  `;
+}
+
+// Xシェア
+document.getElementById('resultShare').addEventListener('click', () => {
+  const b = document.getElementById('scoreBlack').textContent;
+  const w = document.getElementById('scoreWhite').textContent;
+  const resultText = document.getElementById('resultTitle').textContent;
+  const text = SurrealI18n.t('shareResult', b, w, resultText);
+  const url = 'https://eri-murayama.github.io/surreal-games/games/reversi/';
+  window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+});
+
+// 初回テキスト設定
+updateAllTexts();
+buildRecommendHTML();
+</script>
 </body>
 </html>
