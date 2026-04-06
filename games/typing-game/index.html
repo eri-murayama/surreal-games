@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>シュールタイピング | シュールゲームス</title>
+<meta property="og:title" content="シュールタイピング | シュールゲームス">
+<meta property="og:description" content="シュールなお題をタイピング！何文字打てるかチャレンジ！">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K8QFB33PX7');
+</script>
+<link rel="stylesheet" href="../common/game-common.css">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+.screen.active { display: flex; }
+
+#title-screen h1 {
+  font-size: clamp(1.8rem, 7vw, 2.8rem);
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  margin-bottom: 0.3em;
+}
+#title-screen .subtitle {
+  font-size: clamp(0.85rem, 3vw, 1.1rem);
+  opacity: 0.85;
+  margin-bottom: 2em;
+}
+.start-btn {
+  font-family: inherit;
+  font-size: 1.2rem;
+  padding: 0.8em 2.5em;
+  border: 2px solid #fff;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border-radius: 50px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s;
+}
+.start-btn:hover, .start-btn:active { background: #fff; color: #764ba2; }
+
+/* Game screen */
+#game-screen { width: 100%; max-width: 600px; }
+.timer-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.timer-bar-inner {
+  height: 100%;
+  background: #ffdd57;
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+.word-display {
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
+  font-weight: 900;
+  min-height: 1.5em;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+.word-display .correct { color: #a5ffa5; }
+.word-display .current { color: #ffdd57; text-decoration: underline; }
+.word-display .remaining { color: rgba(255,255,255,0.6); }
+.word-reading {
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  opacity: 0.7;
+  margin-bottom: 15px;
+  min-height: 1.3em;
+}
+.input-area {
+  font-family: 'Courier New', monospace;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  padding: 10px 20px;
+  width: 90%;
+  max-width: 400px;
+  border: 2px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-radius: 12px;
+  text-align: center;
+  outline: none;
+  backdrop-filter: blur(8px);
+}
+.input-area:focus { border-color: #ffdd57; }
+.combo-display {
+  font-size: 1rem;
+  color: #ffdd57;
+  margin-top: 10px;
+  min-height: 1.5em;
+  transition: transform 0.15s;
+}
+
+/* Result screen */
+#result-screen h2 {
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  margin-bottom: 0.5em;
+}
+.result-score {
+  font-size: clamp(3rem, 10vw, 4.5rem);
+  font-weight: 900;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.result-label { opacity: 0.8; margin-bottom: 0.5em; }
+.result-stats {
+  display: flex;
+  gap: 20px;
+  margin: 1em 0 1.5em;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+.result-stats div { text-align: center; }
+.result-stats .num {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+#result-screen button {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.7em 2em;
+  border: 2px solid #fff;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border-radius: 50px;
+  cursor: pointer;
+  margin: 0.3em;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s;
+}
+#result-screen button:hover, #result-screen button:active { background: #fff; color: #764ba2; }
+.back-to-top-link {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.75rem;
+  text-decoration: none;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<div id="title-screen" class="screen active">
+  <h1>⌨️ シュールタイピング</h1>
+  <p class="subtitle" data-i18n="subtitle">シュールなお題をタイピングしまくれ！</p>
+  <button class="start-btn" id="start-btn" data-i18n="startBtn">スタート</button>
+</div>
+
+<div id="game-screen" class="screen">
+  <div class="timer-bar"><div class="timer-bar-inner" id="timer-bar"></div></div>
+  <div class="stats-row">
+    <span id="hud-score" data-i18n="score">スコア: 0</span>
+    <span id="hud-time" data-i18n="time">残り: 30s</span>
+  </div>
+  <div class="word-display" id="word-display"></div>
+  <div class="word-reading" id="word-reading"></div>
+  <input type="text" class="input-area" id="input-area" autocomplete="off" autocapitalize="off" spellcheck="false">
+  <div class="combo-display" id="combo-display"></div>
+</div>
+
+<div id="result-screen" class="screen">
+  <h2 data-i18n="resultTitle">タイムアップ！</h2>
+  <div class="result-score" id="final-score">0</div>
+  <p class="result-label" data-i18n="resultLabel">ポイント</p>
+  <div class="result-stats">
+    <div><span class="num" id="stat-words">0</span><span data-i18n="wordsCleared">クリア語数</span></div>
+    <div><span class="num" id="stat-combo">0</span><span data-i18n="maxCombo">最大コンボ</span></div>
+  </div>
+  <button id="retry-btn" data-i18n="retryBtn">もう一度</button>
+  <button id="share-btn">𝕏 でシェア</button>
+</div>
+
+<a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+<script>
+(function(){
+  'use strict';
+
+  const WORDS_JA = [
+    { word: 'うんこ', reading: 'unko' },
+    { word: 'シュール', reading: 'syu-ru' },
+    { word: 'たぬき', reading: 'tanuki' },
+    { word: 'おにぎり', reading: 'onigiri' },
+    { word: 'ゲームス', reading: 'ge-musu' },
+    { word: 'ぱんだ', reading: 'panda' },
+    { word: 'さくら', reading: 'sakura' },
+    { word: 'つなみ', reading: 'tunami' },
+    { word: 'かみなり', reading: 'kaminari' },
+    { word: 'てんぷら', reading: 'tenpura' },
+    { word: 'にんじゃ', reading: 'ninja' },
+    { word: 'さむらい', reading: 'samurai' },
+    { word: 'すし', reading: 'susi' },
+    { word: 'まんが', reading: 'manga' },
+    { word: 'かいぞく', reading: 'kaizoku' },
+    { word: 'どらごん', reading: 'doragon' },
+    { word: 'おばけ', reading: 'obake' },
+    { word: 'ひまわり', reading: 'himawari' },
+    { word: 'たこやき', reading: 'takoyaki' },
+    { word: 'ろけっと', reading: 'roketto' },
+    { word: 'ぺんぎん', reading: 'pengin' },
+    { word: 'ちょこれーと', reading: 'tyokore-to' },
+    { word: 'はんばーがー', reading: 'hanba-ga-' },
+    { word: 'だいなそー', reading: 'dainaso-' },
+    { word: 'あいすくりーむ', reading: 'aisukuri-mu' },
+    { word: 'ぷろぐらむ', reading: 'puroguramu' },
+    { word: 'きーぼーど', reading: 'ki-bo-do' },
+    { word: 'いんたーねっと', reading: 'inta-netto' },
+    { word: 'すまーとふぉん', reading: 'suma-tofon' },
+    { word: 'ちーずばーがー', reading: 'ti-zuba-ga-' },
+  ];
+
+  const GAME_TIME = 30;
+  let score, combo, maxCombo, wordsCleared, timeLeft, timerInterval, currentWord, typedIndex;
+  let gameRunning = false;
+
+  const titleScreen = document.getElementById('title-screen');
+  const gameScreen = document.getElementById('game-screen');
+  const resultScreen = document.getElementById('result-screen');
+  const wordDisplay = document.getElementById('word-display');
+  const wordReading = document.getElementById('word-reading');
+  const inputArea = document.getElementById('input-area');
+  const comboDisplay = document.getElementById('combo-display');
+  const timerBar = document.getElementById('timer-bar');
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let wordQueue = [];
+
+  function nextWord() {
+    if (wordQueue.length === 0) wordQueue = shuffle(WORDS_JA);
+    currentWord = wordQueue.pop();
+    typedIndex = 0;
+    renderWord();
+    wordReading.textContent = currentWord.reading;
+    inputArea.value = '';
+  }
+
+  function renderWord() {
+    const chars = currentWord.reading.split('');
+    let html = '';
+    chars.forEach((c, i) => {
+      if (i < typedIndex) html += '<span class="correct">' + c + '</span>';
+      else if (i === typedIndex) html += '<span class="current">' + c + '</span>';
+      else html += '<span class="remaining">' + c + '</span>';
+    });
+    wordDisplay.innerHTML = html;
+  }
+
+  function updateHUD() {
+    const prefix = typeof SurrealI18n !== 'undefined' ? (SurrealI18n.t('scorePrefix') || 'スコア') : 'スコア';
+    const timePrefix = typeof SurrealI18n !== 'undefined' ? (SurrealI18n.t('timePrefix') || '残り') : '残り';
+    document.getElementById('hud-score').textContent = prefix + ': ' + score;
+    document.getElementById('hud-time').textContent = timePrefix + ': ' + timeLeft + 's';
+    timerBar.style.width = (timeLeft / GAME_TIME * 100) + '%';
+    if (combo >= 2) {
+      comboDisplay.textContent = '🔥 ' + combo + ' COMBO!';
+      comboDisplay.style.transform = 'scale(1.15)';
+      setTimeout(() => comboDisplay.style.transform = 'scale(1)', 100);
+    } else {
+      comboDisplay.textContent = '';
+    }
+  }
+
+  function startGame() {
+    score = 0; combo = 0; maxCombo = 0; wordsCleared = 0;
+    timeLeft = GAME_TIME;
+    gameRunning = true;
+    wordQueue = shuffle(WORDS_JA);
+    titleScreen.classList.remove('active');
+    resultScreen.classList.remove('active');
+    gameScreen.classList.add('active');
+    nextWord();
+    updateHUD();
+    inputArea.value = '';
+    inputArea.focus();
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateHUD();
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  }
+
+  function endGame() {
+    gameRunning = false;
+    clearInterval(timerInterval);
+    gameScreen.classList.remove('active');
+    resultScreen.classList.add('active');
+    document.getElementById('final-score').textContent = score;
+    document.getElementById('stat-words').textContent = wordsCleared;
+    document.getElementById('stat-combo').textContent = maxCombo;
+    if (typeof SurrealGames !== 'undefined') SurrealGames.reportScore(score);
+  }
+
+  inputArea.addEventListener('input', () => {
+    if (!gameRunning) return;
+    const val = inputArea.value;
+    const target = currentWord.reading;
+
+    // Check if the typed string matches the beginning of the target
+    if (target.startsWith(val)) {
+      typedIndex = val.length;
+      renderWord();
+      if (val === target) {
+        // Word completed
+        combo++;
+        if (combo > maxCombo) maxCombo = combo;
+        const comboBonus = Math.floor(combo / 3) * 5;
+        score += 10 + comboBonus;
+        wordsCleared++;
+        updateHUD();
+        nextWord();
+      }
+    } else {
+      // Wrong input - reset combo
+      combo = 0;
+      inputArea.value = target.substring(0, typedIndex);
+      updateHUD();
+    }
+  });
+
+  document.getElementById('start-btn').addEventListener('click', startGame);
+  document.getElementById('retry-btn').addEventListener('click', startGame);
+})();
+</script>
+<script src="../common/i18n.js"></script>
+<script src="../common/game-common.js"></script>
+<script>
+SurrealI18n.init({
+  ja: { subtitle:'シュールなお題をタイピングしまくれ！', startBtn:'スタート', resultTitle:'タイムアップ！', resultLabel:'ポイント', wordsCleared:'クリア語数', maxCombo:'最大コンボ', retryBtn:'もう一度', scorePrefix:'スコア', timePrefix:'残り', backToTop:'← トップに戻る' },
+  en: { subtitle:'Type surreal words as fast as you can!', startBtn:'START', resultTitle:'Time\'s Up!', resultLabel:'Points', wordsCleared:'Words', maxCombo:'Max Combo', retryBtn:'Retry', scorePrefix:'Score', timePrefix:'Time', backToTop:'← Back to Top' }
+});
+SurrealGames.init('typing-game');
+</script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>シュールシューティング | シュールゲームス</title>
+<meta property="og:title" content="シュールシューティング | シュールゲームス">
+<meta property="og:description" content="シュールな敵を撃ちまくれ！タップで弾を発射するカジュアルSTG！">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K8QFB33PX7');
+</script>
+<link rel="stylesheet" href="../common/game-common.css">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0b0b2a;
+  color: #fff;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+canvas {
+  display: block;
+  background: #0b0b2a;
+  touch-action: none;
+}
+#title-screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background: radial-gradient(ellipse at center, #1a1a4a 0%, #0b0b2a 70%);
+}
+#title-screen h1 {
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  color: #ffdd57;
+  text-shadow: 0 0 20px rgba(255,221,87,0.5);
+  margin-bottom: 0.5em;
+}
+#title-screen .subtitle {
+  font-size: clamp(0.8rem, 3vw, 1rem);
+  color: #aab;
+  margin-bottom: 2em;
+}
+#start-btn {
+  font-family: inherit;
+  font-size: 1.2rem;
+  padding: 0.8em 2.5em;
+  border: 2px solid #ffdd57;
+  background: transparent;
+  color: #ffdd57;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+#start-btn:hover, #start-btn:active {
+  background: #ffdd57;
+  color: #0b0b2a;
+}
+#result-screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background: rgba(11,11,42,0.95);
+}
+#result-screen h2 {
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  color: #ffdd57;
+  margin-bottom: 0.3em;
+}
+#result-screen .final-score {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  color: #fff;
+  font-weight: 900;
+  margin-bottom: 0.2em;
+}
+#result-screen .final-label {
+  color: #aab;
+  margin-bottom: 1.5em;
+}
+#result-screen button {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.7em 2em;
+  border: 2px solid #ffdd57;
+  background: transparent;
+  color: #ffdd57;
+  border-radius: 50px;
+  cursor: pointer;
+  margin: 0.3em;
+  transition: all 0.3s;
+}
+#result-screen button:hover, #result-screen button:active {
+  background: #ffdd57;
+  color: #0b0b2a;
+}
+#hud {
+  position: absolute;
+  top: 8px; left: 12px; right: 12px;
+  display: none;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #ffdd57;
+  z-index: 5;
+  pointer-events: none;
+}
+.back-to-top-link {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #aab;
+  font-size: 0.75rem;
+  text-decoration: none;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+<canvas id="game-canvas"></canvas>
+<div id="hud">
+  <span id="hud-score" data-i18n="score">スコア: 0</span>
+  <span id="hud-time" data-i18n="time">残り: 30</span>
+</div>
+<div id="title-screen">
+  <h1>🚀 シュールシューティング</h1>
+  <p class="subtitle" data-i18n="subtitle">シュールな敵を撃ちまくれ！</p>
+  <button id="start-btn" data-i18n="startBtn">スタート</button>
+</div>
+<div id="result-screen">
+  <h2 data-i18n="resultTitle">ゲーム終了！</h2>
+  <div class="final-score" id="final-score">0</div>
+  <p class="final-label" data-i18n="scoreLabel">ポイント</p>
+  <button id="retry-btn" data-i18n="retryBtn">もう一度</button>
+  <button id="share-btn">𝕏 でシェア</button>
+</div>
+<a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+<script>
+(function(){
+  'use strict';
+  const canvas = document.getElementById('game-canvas');
+  const ctx = canvas.getContext('2d');
+  const titleScreen = document.getElementById('title-screen');
+  const resultScreen = document.getElementById('result-screen');
+  const hud = document.getElementById('hud');
+  const hudScore = document.getElementById('hud-score');
+  const hudTime = document.getElementById('hud-time');
+
+  let W, H, player, bullets, enemies, particles, score, timeLeft, gameRunning, animId;
+  const GAME_TIME = 30;
+  const ENEMY_EMOJIS = ['👽','🤡','💩','👻','🐙','🦑','😈','🎃','👾','🍄'];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function initGame() {
+    player = { x: W / 2, y: H - 80, size: 24 };
+    bullets = [];
+    enemies = [];
+    particles = [];
+    score = 0;
+    timeLeft = GAME_TIME;
+    gameRunning = true;
+    titleScreen.style.display = 'none';
+    resultScreen.style.display = 'none';
+    hud.style.display = 'flex';
+    updateHUD();
+    startTimer();
+    spawnLoop();
+    loop();
+  }
+
+  let timerInterval, spawnInterval;
+  function startTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateHUD();
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  }
+
+  function spawnLoop() {
+    clearInterval(spawnInterval);
+    const spawnRate = 700;
+    spawnInterval = setInterval(() => {
+      if (!gameRunning) return;
+      const emoji = ENEMY_EMOJIS[Math.floor(Math.random() * ENEMY_EMOJIS.length)];
+      const size = 28 + Math.random() * 20;
+      enemies.push({
+        x: Math.random() * (W - 60) + 30,
+        y: -40,
+        size: size,
+        speed: 1.5 + Math.random() * 2,
+        emoji: emoji,
+        hp: 1,
+        wobble: Math.random() * Math.PI * 2
+      });
+    }, spawnRate);
+  }
+
+  function updateHUD() {
+    hudScore.textContent = (typeof SurrealI18n !== 'undefined' ? SurrealI18n.t('scorePrefix') || 'スコア' : 'スコア') + ': ' + score;
+    hudTime.textContent = (typeof SurrealI18n !== 'undefined' ? SurrealI18n.t('timePrefix') || '残り' : '残り') + ': ' + timeLeft;
+  }
+
+  function shoot(tx, ty) {
+    if (!gameRunning) return;
+    const dx = tx - player.x;
+    const dy = ty - player.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    bullets.push({
+      x: player.x, y: player.y,
+      vx: (dx / dist) * 10,
+      vy: (dy / dist) * 10,
+      size: 5
+    });
+  }
+
+  function addParticles(x, y, emoji) {
+    for (let i = 0; i < 8; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 4;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 1,
+        emoji: emoji,
+        size: 12 + Math.random() * 10
+      });
+    }
+  }
+
+  function loop() {
+    if (!gameRunning) return;
+    ctx.clearRect(0, 0, W, H);
+
+    // Stars background
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    for (let i = 0; i < 50; i++) {
+      const sx = (i * 137.5 + Date.now() * 0.005 * (i % 3 + 1)) % W;
+      const sy = (i * 89.3 + Date.now() * 0.01 * (i % 2 + 1)) % H;
+      ctx.fillRect(sx, sy, 1.5, 1.5);
+    }
+
+    // Player
+    ctx.font = player.size + 'px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🚀', player.x, player.y);
+
+    // Bullets
+    ctx.fillStyle = '#ffdd57';
+    ctx.shadowColor = '#ffdd57';
+    ctx.shadowBlur = 8;
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const b = bullets[i];
+      b.x += b.vx;
+      b.y += b.vy;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+      ctx.fill();
+      if (b.x < -20 || b.x > W + 20 || b.y < -20 || b.y > H + 20) bullets.splice(i, 1);
+    }
+    ctx.shadowBlur = 0;
+
+    // Enemies
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      const e = enemies[i];
+      e.y += e.speed;
+      e.wobble += 0.05;
+      const wx = Math.sin(e.wobble) * 15;
+      ctx.font = e.size + 'px serif';
+      ctx.fillText(e.emoji, e.x + wx, e.y);
+
+      // Collision with bullets
+      for (let j = bullets.length - 1; j >= 0; j--) {
+        const b = bullets[j];
+        const dx = (e.x + wx) - b.x;
+        const dy = e.y - b.y;
+        if (Math.sqrt(dx * dx + dy * dy) < e.size * 0.6) {
+          e.hp--;
+          bullets.splice(j, 1);
+          if (e.hp <= 0) {
+            score += 10;
+            updateHUD();
+            addParticles(e.x + wx, e.y, e.emoji);
+            enemies.splice(i, 1);
+          }
+          break;
+        }
+      }
+      if (e.y > H + 50) enemies.splice(i, 1);
+    }
+
+    // Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.03;
+      if (p.life <= 0) { particles.splice(i, 1); continue; }
+      ctx.globalAlpha = p.life;
+      ctx.font = (p.size * p.life) + 'px serif';
+      ctx.fillText(p.emoji, p.x, p.y);
+    }
+    ctx.globalAlpha = 1;
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  function endGame() {
+    gameRunning = false;
+    clearInterval(timerInterval);
+    clearInterval(spawnInterval);
+    cancelAnimationFrame(animId);
+    hud.style.display = 'none';
+    document.getElementById('final-score').textContent = score;
+    resultScreen.style.display = 'flex';
+    if (typeof SurrealGames !== 'undefined') {
+      SurrealGames.reportScore(score);
+    }
+  }
+
+  // Input
+  function getPos(e) {
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX, y: t.clientY };
+  }
+  canvas.addEventListener('pointerdown', (e) => {
+    if (!gameRunning) return;
+    const p = getPos(e);
+    player.x = p.x;
+    shoot(p.x, p.y);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!gameRunning) return;
+    player.x = e.clientX;
+  });
+
+  document.getElementById('start-btn').addEventListener('click', initGame);
+  document.getElementById('retry-btn').addEventListener('click', initGame);
+})();
+</script>
+<script src="../common/i18n.js"></script>
+<script src="../common/game-common.js"></script>
+<script>
+SurrealI18n.init({
+  ja: { subtitle:'シュールな敵を撃ちまくれ！', startBtn:'スタート', resultTitle:'ゲーム終了！', scoreLabel:'ポイント', retryBtn:'もう一度', scorePrefix:'スコア', timePrefix:'残り', backToTop:'← トップに戻る' },
+  en: { subtitle:'Shoot down surreal enemies!', startBtn:'START', resultTitle:'Game Over!', scoreLabel:'Points', retryBtn:'Retry', scorePrefix:'Score', timePrefix:'Time', backToTop:'← Back to Top' }
+});
+SurrealGames.init('shooting');
+</script>
+</body>
+</html>

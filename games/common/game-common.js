@@ -50,6 +50,9 @@
     { id: 'surreal-dash', title: 'シュールダッシュ', titleEn: 'Surreal Dash', emoji: '💩', genre: 'アクション', genreEn: 'Action', desc: 'うんちくんが走る！飛ぶ！エンドレスラン！' },
     { id: 'surreal-beat', title: 'シュールビート', titleEn: 'Surreal Beat', emoji: '🎵', genre: 'リズム', genreEn: 'Rhythm', desc: 'シュールなノーツをリズムに合わせてタップ！' },
     { id: 'surreal-cube', title: 'シュールキューブ', titleEn: 'Surreal Cube', emoji: '🎲', genre: 'アクション', genreEn: 'Action', desc: '3D空間を転がれ！シュールなキューブの大冒険！' },
+    { id: 'shooting', title: 'シュールシューティング', titleEn: 'Surreal Shooting', emoji: '🚀', genre: 'シューティング', genreEn: 'Shooting', desc: 'シュールな敵を撃ちまくれ！タップで弾を発射！' },
+    { id: 'drawing-board', title: 'お絵かきボード', titleEn: 'Drawing Board', emoji: '🎨', genre: 'クリエイティブ', genreEn: 'Creative', desc: '自由にお絵かき！色も太さも変えられる！' },
+    { id: 'typing-game', title: 'シュールタイピング', titleEn: 'Surreal Typing', emoji: '⌨️', genre: 'タイピング', genreEn: 'Typing', desc: 'シュールなお題をタイピングしまくれ！' },
   ];
 
   // ===== 実績定義 =====

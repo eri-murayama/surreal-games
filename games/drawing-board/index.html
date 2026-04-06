@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>お絵かきボード | シュールゲームス</title>
+<meta property="og:title" content="お絵かきボード | シュールゲームス">
+<meta property="og:description" content="自由にお絵かき！色も太さも変えられるシンプルお絵かきアプリ">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K8QFB33PX7');
+</script>
+<link rel="stylesheet" href="../common/game-common.css">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #f5f0eb;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 5;
+}
+.toolbar .title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e85d75;
+  margin-right: 8px;
+}
+.color-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.color-btn.active { border-color: #333; transform: scale(1.2); }
+.tool-btn {
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #555;
+}
+.tool-btn.active { background: #e85d75; color: #fff; border-color: #e85d75; }
+.tool-btn:hover { border-color: #e85d75; }
+.size-slider {
+  width: 60px;
+  accent-color: #e85d75;
+}
+canvas {
+  flex: 1;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+}
+.bottom-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  width: 100%;
+  justify-content: center;
+}
+.bottom-bar button {
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 5px 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  color: #555;
+  transition: all 0.2s;
+}
+.bottom-bar button:hover { border-color: #e85d75; color: #e85d75; }
+.back-to-top-link {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #999;
+  font-size: 0.7rem;
+  text-decoration: none;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <span class="title" data-i18n="title">🎨 お絵かきボード</span>
+  <button class="color-btn active" data-color="#333" style="background:#333"></button>
+  <button class="color-btn" data-color="#e85d75" style="background:#e85d75"></button>
+  <button class="color-btn" data-color="#f0a030" style="background:#f0a030"></button>
+  <button class="color-btn" data-color="#4caf50" style="background:#4caf50"></button>
+  <button class="color-btn" data-color="#2196f3" style="background:#2196f3"></button>
+  <button class="color-btn" data-color="#9c27b0" style="background:#9c27b0"></button>
+  <button class="color-btn" data-color="#fff" style="background:#fff; border-color:#ccc"></button>
+  <input type="range" class="size-slider" id="size-slider" min="1" max="30" value="4">
+  <button class="tool-btn active" id="pen-btn" data-i18n="pen">ペン</button>
+  <button class="tool-btn" id="eraser-btn" data-i18n="eraser">消しゴム</button>
+</div>
+<canvas id="draw-canvas"></canvas>
+<div class="bottom-bar">
+  <button id="undo-btn" data-i18n="undo">↩ 元に戻す</button>
+  <button id="clear-btn" data-i18n="clear">🗑 全消し</button>
+  <button id="save-btn" data-i18n="save">💾 保存</button>
+</div>
+<a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+<script>
+(function(){
+  'use strict';
+  const canvas = document.getElementById('draw-canvas');
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let currentColor = '#333';
+  let brushSize = 4;
+  let isEraser = false;
+  let history = [];
+  let lastX, lastY;
+
+  function resize() {
+    const toolbar = document.querySelector('.toolbar');
+    const bottomBar = document.querySelector('.bottom-bar');
+    const w = window.innerWidth;
+    const h = window.innerHeight - toolbar.offsetHeight - bottomBar.offsetHeight;
+    // Save current drawing
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    canvas.width = w;
+    canvas.height = h;
+    // Fill white background
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, w, h);
+    // Restore drawing
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  function initCanvas() {
+    const toolbar = document.querySelector('.toolbar');
+    const bottomBar = document.querySelector('.bottom-bar');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight - toolbar.offsetHeight - bottomBar.offsetHeight;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    saveState();
+  }
+
+  function saveState() {
+    if (history.length > 30) history.shift();
+    history.push(canvas.toDataURL());
+  }
+
+  function undo() {
+    if (history.length <= 1) return;
+    history.pop();
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = history[history.length - 1];
+  }
+
+  function clearCanvas() {
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    saveState();
+  }
+
+  function saveImage() {
+    const link = document.createElement('a');
+    link.download = 'surreal-drawing.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  }
+
+  function startDraw(e) {
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    lastX = p.x;
+    lastY = p.y;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+
+  function draw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.strokeStyle = isEraser ? '#fff' : currentColor;
+    ctx.lineWidth = isEraser ? brushSize * 3 : brushSize;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    lastX = p.x;
+    lastY = p.y;
+  }
+
+  function endDraw() {
+    if (drawing) {
+      drawing = false;
+      saveState();
+    }
+  }
+
+  canvas.addEventListener('pointerdown', startDraw);
+  canvas.addEventListener('pointermove', draw);
+  canvas.addEventListener('pointerup', endDraw);
+  canvas.addEventListener('pointerleave', endDraw);
+
+  // Color buttons
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentColor = btn.dataset.color;
+      isEraser = false;
+      document.getElementById('pen-btn').classList.add('active');
+      document.getElementById('eraser-btn').classList.remove('active');
+    });
+  });
+
+  // Size slider
+  document.getElementById('size-slider').addEventListener('input', (e) => {
+    brushSize = parseInt(e.target.value);
+  });
+
+  // Pen / Eraser
+  document.getElementById('pen-btn').addEventListener('click', () => {
+    isEraser = false;
+    document.getElementById('pen-btn').classList.add('active');
+    document.getElementById('eraser-btn').classList.remove('active');
+  });
+  document.getElementById('eraser-btn').addEventListener('click', () => {
+    isEraser = true;
+    document.getElementById('eraser-btn').classList.add('active');
+    document.getElementById('pen-btn').classList.remove('active');
+  });
+
+  // Bottom buttons
+  document.getElementById('undo-btn').addEventListener('click', undo);
+  document.getElementById('clear-btn').addEventListener('click', clearCanvas);
+  document.getElementById('save-btn').addEventListener('click', saveImage);
+
+  window.addEventListener('resize', () => { resize(); });
+  initCanvas();
+})();
+</script>
+<script src="../common/i18n.js"></script>
+<script src="../common/game-common.js"></script>
+<script>
+SurrealI18n.init({
+  ja: { title:'🎨 お絵かきボード', pen:'ペン', eraser:'消しゴム', undo:'↩ 元に戻す', clear:'🗑 全消し', save:'💾 保存', backToTop:'← トップに戻る' },
+  en: { title:'🎨 Drawing Board', pen:'Pen', eraser:'Eraser', undo:'↩ Undo', clear:'🗑 Clear', save:'💾 Save', backToTop:'← Back to Top' }
+});
+SurrealGames.init('drawing-board');
+</script>
+</body>
+</html>
