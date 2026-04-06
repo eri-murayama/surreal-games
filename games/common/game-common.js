@@ -34,7 +34,7 @@
     { id: 'party-game', title: 'ぱーてぃーげーむ', emoji: '🎉', genre: 'パーティー', desc: '連打バトルで友達と対戦。' },
     { id: 'pet', title: 'シュールペット', emoji: '🐣', genre: '育成', desc: 'ナゾの生きもの育成記。' },
     { id: 'puzzle-2048', title: 'シュール進化論', emoji: '🧬', genre: 'パズル', desc: '合体せよ、その先の未知へ。' },
-    { id: 'rpg', title: 'お散歩日和', emoji: '⚔️', genre: 'RPG', desc: '冒険の旅に出よう。' },
+    { id: 'rpg', title: 'チー牛な俺がチート商材で無敵なモテ男に転生！？RPG', emoji: '⚔️', genre: 'RPG', desc: '' },
     { id: 'suisei-puzzle', title: 'すいすいパズル', emoji: '☄️', genre: 'パズル', desc: '彗星のごとくブロックを消せ。' },
     { id: 'tower', title: 'シュールの塔', emoji: '🏰', genre: 'ローグライク', desc: '終わりなき階段の先へ。' },
     { id: 'trivia-king', title: '雑学キング決定戦', emoji: '👑', genre: 'クイズ', desc: '無駄な知識で天下を取れ！' },
@@ -453,7 +453,7 @@
         175, 175, 233, 233, 175, 175, 233, 233,
       ]
     },
-    // 恋愛・ロマンチック系（お散歩日和RPG）— 甘くてキュンとするメロディ
+    // 恋愛・ロマンチック系（チー牛RPG）— 甘くてキュンとするメロディ
     romance: {
       tempo: 100, key: 'F', wave: 'sine', volume: 0.10,
       melody: [

@@ -1,5 +1,5 @@
 // ============================================================
-//  お散歩日和 〜じゅまんどぅに届け〜 - 恋愛RPG
+//  チー牛な俺がチート商材で無敵なモテ男に転生！？RPG
 // ============================================================
 
 // ===== 共通モジュール初期化 =====
@@ -206,9 +206,9 @@ const MAP_NAMES = ['ワールドマップ', 'はじまりの町', 'じゅまん�
 
 // NPCデータ
 const NPCS = [
-  { x: 3, y: 2, map: 1, color: '#e66', name: 'おじさんA',
+  { x: 9, y: 8, map: 1, color: '#e66', name: 'おじさんA',
     lines: ['南の城に超かわいい\n「じゅまんどぅ」がいるらしいよ！', '恋愛経験値をためないと\n相手にしてもらえないかもね〜。'] },
-  { x: 3, y: 5, map: 1, color: '#6ae', name: 'おじさんB',
+  { x: 12, y: 9, map: 1, color: '#6ae', name: 'おじさんB',
     lines: ['この村のコンビニは\nなぜかプレゼントだけ売ってる。', 'しかも全部高い。'] },
   { x: 10, y: 4, map: 1, color: '#ea6', name: 'ネコ',
     lines: ['にゃーん。（元気が出てきた）', '＊精神力が回復した！＊'] },
@@ -216,8 +216,8 @@ const NPCS = [
     lines: ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'] },
   { x: 2, y: 3, map: 1, color: '#776655', name: 'ニトオ',
     lines: ['ニトオ「よう、また来たか」'] },
-  { x: 5, y: 9, map: 1, color: '#fa8', name: 'プレゼント屋',
-    lines: ['プレゼント屋'] },
+  { x: 3, y: 5, map: 1, color: '#c86', name: '武器屋',
+    lines: ['武器屋'] },
 ];
 
 // 敵データ（女の子たち）— ハートゲージの最大値がmaxHeart
@@ -259,6 +259,8 @@ function initState() {
     money: 0,                // ギュニー
     unlockedMoves: [],       // 解放された攻撃技（順番に追加）
     presents: {},            // プレゼント在庫 { flower: 2, ring: 1, ... }
+    weapon: null,            // 装備中の武器キー
+    ownedWeapons: {},        // 所持武器 { cologne: true, suit: true, ... }
   };
 }
 
@@ -282,7 +284,65 @@ const PRESENTS = {
   bag:      { name: 'ブランドバッグ',   price: 200000, fill: 120 },
 };
 const PRESENT_ORDER = ['flower', 'choco', 'perfume', 'ring', 'bag'];
+
+// ===== 武器データ =====
+const WEAPONS = {
+  cologne:   { name: 'コロン',           price:   5000, atk: 3,  def: 0 },
+  suit:      { name: 'スーツ',           price:  20000, atk: 5,  def: 2 },
+  watch:     { name: '高級時計',         price:  60000, atk: 8,  def: 3 },
+  car:       { name: '外車のカギ',       price: 150000, atk: 12, def: 5 },
+  mansion:   { name: 'タワマンの鍵',     price: 500000, atk: 20, def: 8 },
+};
+const WEAPON_ORDER = ['cologne', 'suit', 'watch', 'car', 'mansion'];
 initState();
+
+// ===== セーブ・ロード =====
+const SAVE_KEY = 'sg_rpg_save';
+
+function saveGame() {
+  try {
+    const data = {
+      map: state.map, px: state.px, py: state.py, dir: state.dir,
+      hp: state.hp, maxHp: state.maxHp, atk: state.atk, def: state.def,
+      level: state.level, exp: state.exp, nextExp: state.nextExp,
+      girlfriends: state.girlfriends, money: state.money,
+      unlockedMoves: state.unlockedMoves,
+      presents: state.presents,
+      weapon: state.weapon,
+      ownedWeapons: state.ownedWeapons,
+      defeatedBoss: state.defeatedBoss,
+      chiguoIntro: state.chiguoIntro,
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    initState();
+    state.map = data.map;
+    state.px = data.px; state.py = data.py; state.dir = data.dir;
+    state.hp = data.hp; state.maxHp = data.maxHp;
+    state.atk = data.atk; state.def = data.def;
+    state.level = data.level; state.exp = data.exp; state.nextExp = data.nextExp;
+    state.girlfriends = data.girlfriends; state.money = data.money;
+    state.unlockedMoves = data.unlockedMoves || [];
+    state.presents = data.presents || {};
+    state.weapon = data.weapon || null;
+    state.ownedWeapons = data.ownedWeapons || {};
+    state.defeatedBoss = data.defeatedBoss || false;
+    state.chiguoIntro = data.chiguoIntro !== undefined ? data.chiguoIntro : false;
+    state.phase = 'map';
+    return true;
+  } catch(e) { return false; }
+}
+
+function hasSaveData() {
+  try { return !!localStorage.getItem(SAVE_KEY); } catch(e) { return false; }
+}
 
 // ===== 入力 =====
 const keys = {};
@@ -712,6 +772,10 @@ function interactFacing() {
       openShop();
       return;
     }
+    if (npc.name === '武器屋') {
+      openWeaponShop();
+      return;
+    }
     showMsgQueue(npcLines);
     return;
   }
@@ -762,6 +826,7 @@ function updateShopCursor() {
 function closeShop() {
   document.getElementById('shop-overlay').classList.add('hidden');
   state.phase = 'map';
+  saveGame();
 }
 
 function shopBuy(presentKey) {
@@ -781,6 +846,100 @@ document.querySelectorAll('.shop-btn').forEach(btn => {
     if (state.phase !== 'shop') return;
     if (btn.dataset.idx === 'close') { closeShop(); return; }
     shopBuy(btn.dataset.key);
+  });
+});
+
+// ===== 武器屋（ショップ） =====
+function openWeaponShop() {
+  state.phase = 'weaponShop';
+  state.weaponCursor = 0;
+  document.getElementById('weapon-overlay').classList.remove('hidden');
+  renderWeaponShop('なにを 買う？');
+}
+
+function renderWeaponShop(logText) {
+  document.getElementById('weapon-money').textContent = `${state.money.toLocaleString()}ギュニー`;
+  const listEl = document.getElementById('weapon-list');
+  listEl.innerHTML = '';
+  WEAPON_ORDER.forEach(k => {
+    const w = WEAPONS[k];
+    const owned = state.ownedWeapons[k] ? '所持' : '未所持';
+    const equipped = state.weapon === k ? '【装備中】' : '';
+    const row = document.createElement('div');
+    row.className = 'shop-list-item';
+    row.innerHTML = `<span>${w.name}（攻+${w.atk} 防+${w.def}）</span><span class="stock">${equipped || owned}</span>`;
+    listEl.appendChild(row);
+  });
+  const btns = document.querySelectorAll('.weapon-btn');
+  WEAPON_ORDER.forEach((k, i) => {
+    const w = WEAPONS[k];
+    if (state.ownedWeapons[k]) {
+      btns[i].textContent = state.weapon === k ? `${w.name} 装備中` : `${w.name} 装備する`;
+    } else {
+      btns[i].textContent = `${w.name} ${w.price.toLocaleString()}G`;
+    }
+    btns[i].dataset.key = k;
+  });
+  updateWeaponCursor();
+  if (logText !== undefined) document.getElementById('weapon-log').textContent = logText;
+}
+
+function updateWeaponCursor() {
+  const btns = document.querySelectorAll('.weapon-btn');
+  btns.forEach((btn, i) => btn.classList.toggle('selected', i === state.weaponCursor));
+}
+
+function closeWeaponShop() {
+  document.getElementById('weapon-overlay').classList.add('hidden');
+  state.phase = 'map';
+  saveGame();
+}
+
+function weaponBuy(weaponKey) {
+  const w = WEAPONS[weaponKey];
+  if (state.ownedWeapons[weaponKey]) {
+    // 既に所持：装備切り替え
+    if (state.weapon === weaponKey) {
+      renderWeaponShop('もう装備しているぞ！');
+      return;
+    }
+    // 前の武器の補正を外す
+    if (state.weapon) {
+      const old = WEAPONS[state.weapon];
+      state.atk -= old.atk;
+      state.def -= old.def;
+    }
+    state.weapon = weaponKey;
+    state.atk += w.atk;
+    state.def += w.def;
+    updateStatus();
+    renderWeaponShop(`${w.name}を 装備した！`);
+    return;
+  }
+  if (state.money < w.price) {
+    renderWeaponShop('ギュニーが たりない！');
+    return;
+  }
+  state.money -= w.price;
+  state.ownedWeapons[weaponKey] = true;
+  // 購入と同時に装備
+  if (state.weapon) {
+    const old = WEAPONS[state.weapon];
+    state.atk -= old.atk;
+    state.def -= old.def;
+  }
+  state.weapon = weaponKey;
+  state.atk += w.atk;
+  state.def += w.def;
+  updateStatus();
+  renderWeaponShop(`${w.name}を 買って装備した！`);
+}
+
+document.querySelectorAll('.weapon-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (state.phase !== 'weaponShop') return;
+    if (btn.dataset.idx === 'close') { closeWeaponShop(); return; }
+    weaponBuy(btn.dataset.key);
   });
 });
 
@@ -828,6 +987,7 @@ function enterLocation(_tx, _ty, ch) {
     showMsg(tl('exitCastle'));
   }
   updateStatus();
+  saveGame();
 }
 
 // ===== エンカウント =====
@@ -954,6 +1114,7 @@ function endBattle() {
   state.phase = 'map';
   state.battle = null;
   updateStatus();
+  saveGame();
 }
 
 function shakeScreen() {
@@ -1296,6 +1457,34 @@ function gameLoop() {
     } else if (consumeKey('Escape')) {
       closeShop();
     }
+  } else if (state.phase === 'weaponShop') {
+    const btns = document.querySelectorAll('.weapon-btn');
+    const cols = 2;
+    const total = btns.length;
+    if (consumeKey('ArrowLeft')) {
+      if (state.weaponCursor < WEAPON_ORDER.length && state.weaponCursor % cols === 1) { state.weaponCursor--; updateWeaponCursor(); }
+    } else if (consumeKey('ArrowRight')) {
+      if (state.weaponCursor < WEAPON_ORDER.length && state.weaponCursor % cols === 0 && state.weaponCursor + 1 < WEAPON_ORDER.length) { state.weaponCursor++; updateWeaponCursor(); }
+    } else if (consumeKey('ArrowUp')) {
+      if (state.weaponCursor === total - 1) {
+        state.weaponCursor = WEAPON_ORDER.length - 1;
+      } else if (state.weaponCursor >= cols) {
+        state.weaponCursor -= cols;
+      }
+      updateWeaponCursor();
+    } else if (consumeKey('ArrowDown')) {
+      if (state.weaponCursor < WEAPON_ORDER.length) {
+        const next = state.weaponCursor + cols;
+        state.weaponCursor = next < WEAPON_ORDER.length ? next : (total - 1);
+        updateWeaponCursor();
+      }
+    } else if (consumeKey(' ') || consumeKey('Enter')) {
+      const sel = btns[state.weaponCursor];
+      if (sel.dataset.idx === 'close') closeWeaponShop();
+      else weaponBuy(sel.dataset.key);
+    } else if (consumeKey('Escape')) {
+      closeWeaponShop();
+    }
   } else if (state.phase === 'title') {
     if (consumeKey(' ') || consumeKey('Enter')) {
       document.getElementById('start-btn').click();
@@ -1311,6 +1500,11 @@ function gameLoop() {
 }
 
 // ===== タイトル画面 =====
+// セーブデータがあれば「つづきから」ボタンを表示
+if (hasSaveData()) {
+  document.getElementById('continue-btn').classList.remove('hidden');
+}
+
 document.getElementById('start-btn').addEventListener('click', () => {
   sg.onGameStart();
   document.getElementById('title-screen').classList.add('hidden');
@@ -1320,9 +1514,26 @@ document.getElementById('start-btn').addEventListener('click', () => {
   showMsgQueue(tl('introLines'));
 });
 
+document.getElementById('continue-btn').addEventListener('click', () => {
+  sg.onGameStart();
+  document.getElementById('title-screen').classList.add('hidden');
+  if (loadGame()) {
+    updateStatus();
+    showMsg('セーブデータを ロードした！');
+  } else {
+    initState();
+    state.phase = 'map';
+    updateStatus();
+    showMsgQueue(tl('introLines'));
+  }
+});
+
 document.getElementById('victory-btn').addEventListener('click', () => {
   document.getElementById('victory-screen').classList.add('hidden');
   document.getElementById('title-screen').classList.remove('hidden');
+  if (hasSaveData()) {
+    document.getElementById('continue-btn').classList.remove('hidden');
+  }
 });
 
 // スタート

@@ -11,11 +11,11 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>お散歩日和 〜じゅまんどぅに届け〜</title>
+  <title>チー牛な俺がチート商材で無敵なモテ男に転生！？RPG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
-  <meta property="og:title" content="お散歩日和 〜じゅまんどぅに届け〜 | シュールゲームス">
+  <meta property="og:title" content="チー牛な俺がチート商材で無敵なモテ男に転生！？RPG | シュールゲームス">
   <meta property="og:description" content="恋愛経験値をためて本命に告白！シュールな恋愛RPG。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/rpg/index.html">
@@ -26,7 +26,7 @@
 </head>
 <body>
   <div id="game-wrapper" data-sg-scale="480x750">
-    <h1 class="game-title">お散歩日和 〜じゅまんどぅに届け〜</h1>
+    <h1 class="game-title">チー牛な俺がチート商材で無敵なモテ男に転生！？RPG</h1>
 
     <!-- ゲーム画面 -->
     <div id="screen">
@@ -85,11 +85,29 @@
         </div>
       </div>
 
+      <!-- 武器屋画面 -->
+      <div id="weapon-overlay" class="hidden">
+        <div id="weapon-header">
+          <span id="weapon-title">武器屋</span>
+          <span id="weapon-money">0ギュニー</span>
+        </div>
+        <div id="weapon-list"></div>
+        <div id="weapon-log">なにを 買う？</div>
+        <div id="weapon-menu">
+          <button class="weapon-btn" data-idx="0"></button>
+          <button class="weapon-btn" data-idx="1"></button>
+          <button class="weapon-btn" data-idx="2"></button>
+          <button class="weapon-btn" data-idx="3"></button>
+          <button class="weapon-btn" data-idx="4"></button>
+          <button class="weapon-btn weapon-close" data-idx="close">とじる</button>
+        </div>
+      </div>
+
       <!-- タイトル画面 -->
       <div id="title-screen">
-        <div id="title-logo">お散歩日和</div>
-        <div id="title-sub">- じゅまんどぅに届け -</div>
+        <div id="title-logo">チー牛RPG</div>
         <button id="start-btn">恋の旅にでる</button>
+        <button id="continue-btn" class="hidden">つづきから</button>
         <p id="title-hint">矢印キーで移動 / スペースで調べる</p>
       </div>
 
