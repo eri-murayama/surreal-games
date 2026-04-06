@@ -347,6 +347,263 @@ html, body {
   transform: translate(-50%, -50%) scale(1);
 }
 
+/* 奥の手ボタン */
+.btn.okunote {
+  background: linear-gradient(135deg, #8b0000, #cc3300, #ff6600);
+  border: 2px solid #ff9900;
+  color: #fff;
+  font-weight: 900;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  letter-spacing: 1px;
+  animation: okunoteGlow 2s ease-in-out infinite;
+}
+.btn.okunote:hover {
+  background: linear-gradient(135deg, #aa0000, #ee4400, #ff8800);
+  border-color: #ffbb33;
+  box-shadow: 0 0 16px rgba(255,100,0,0.5);
+}
+.btn.okunote:disabled {
+  background: rgba(80,60,40,0.3);
+  border-color: rgba(100,80,60,0.3);
+  color: rgba(150,130,110,0.4);
+  animation: none;
+  cursor: not-allowed;
+  text-shadow: none;
+}
+@keyframes okunoteGlow {
+  0%, 100% { box-shadow: 0 0 6px rgba(255,100,0,0.3); }
+  50% { box-shadow: 0 0 18px rgba(255,100,0,0.6), 0 0 30px rgba(255,60,0,0.2); }
+}
+
+/* 俺のターン演出 */
+.my-turn-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 300;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+.my-turn-overlay.show {
+  animation: myTurnFlash 2s ease-out forwards;
+}
+.my-turn-overlay .my-turn-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle, rgba(255,60,0,0.6) 0%, rgba(200,0,0,0.4) 40%, rgba(0,0,0,0.9) 70%);
+  animation: myTurnBgPulse 2s ease-out forwards;
+}
+.my-turn-overlay .my-turn-text {
+  position: relative;
+  font-size: clamp(48px, 15vw, 100px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow:
+    0 0 20px #ff6600,
+    0 0 40px #ff3300,
+    0 0 80px #cc0000,
+    0 0 120px #ff0000,
+    0 0 160px rgba(255,100,0,0.5),
+    0 6px 12px rgba(0,0,0,0.9);
+  letter-spacing: 10px;
+  animation: myTurnTextPop 2s ease-out forwards;
+  -webkit-text-stroke: 2px rgba(255,150,0,0.3);
+}
+.my-turn-overlay .my-turn-text .exclamation {
+  display: inline-block;
+  animation: exclamationBounce 0.5s ease-out 0.3s both;
+  color: #ffdd00;
+  text-shadow: 0 0 30px #ffdd00, 0 0 60px #ff8800, 0 0 100px #ff4400;
+}
+.my-turn-overlay .my-turn-line {
+  position: absolute;
+  width: 120%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #ff6600, #ffcc00, #ff6600, transparent);
+  box-shadow: 0 0 20px #ff6600, 0 0 40px rgba(255,100,0,0.5);
+  animation: myTurnLineSlash 0.6s ease-out 0.2s both;
+}
+.my-turn-overlay .my-turn-line.top { top: 35%; transform: rotate(-3deg); }
+.my-turn-overlay .my-turn-line.bottom { bottom: 35%; transform: rotate(3deg); }
+@keyframes myTurnFlash {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes myTurnBgPulse {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  30% { opacity: 0.7; }
+  45% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes myTurnTextPop {
+  0% { transform: scale(0) rotate(-20deg); opacity: 0; filter: blur(10px); }
+  15% { transform: scale(1.6) rotate(5deg); opacity: 1; filter: blur(0); }
+  25% { transform: scale(0.85) rotate(-3deg); }
+  35% { transform: scale(1.2) rotate(2deg); }
+  45% { transform: scale(1) rotate(0deg); }
+  75% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(0deg); opacity: 0; filter: blur(8px); }
+}
+@keyframes exclamationBounce {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-30px) scale(1.8) rotate(15deg); }
+  60% { transform: translateY(5px) scale(0.9) rotate(-5deg); }
+  100% { transform: translateY(0) scale(1) rotate(0deg); }
+}
+@keyframes myTurnLineSlash {
+  0% { transform: scaleX(0); opacity: 0; }
+  50% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0.6; }
+}
+
+/* 永遠に俺のターン演出 */
+.eternal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 300;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  opacity: 0;
+}
+.eternal-overlay.show {
+  animation: eternalFlash 3.5s ease-out forwards;
+}
+.eternal-overlay .eternal-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle, rgba(255,215,0,0.7) 0%, rgba(255,60,0,0.5) 30%, rgba(180,0,0,0.4) 50%, rgba(0,0,0,0.95) 70%);
+  animation: eternalBgFlicker 3.5s ease-out forwards;
+}
+.eternal-overlay .eternal-text {
+  position: relative;
+  font-size: clamp(36px, 11vw, 80px);
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow:
+    0 0 20px #ffd700,
+    0 0 40px #ff8c00,
+    0 0 80px #ff4500,
+    0 0 120px #ff0000,
+    0 0 180px rgba(255,0,0,0.6),
+    0 0 240px rgba(255,215,0,0.3),
+    0 6px 12px rgba(0,0,0,0.9);
+  letter-spacing: 8px;
+  animation: eternalTextPop 3.5s ease-out forwards;
+  text-align: center;
+  line-height: 1.4;
+  -webkit-text-stroke: 2px rgba(255,200,0,0.3);
+}
+.eternal-overlay .eternal-sub {
+  position: relative;
+  font-size: clamp(16px, 5vw, 28px);
+  color: #ffcc00;
+  font-weight: 700;
+  text-shadow: 0 0 15px #ff6600, 0 0 30px rgba(255,100,0,0.5);
+  margin-top: 12px;
+  animation: eternalSubFade 3.5s ease-out forwards;
+  letter-spacing: 4px;
+}
+.eternal-overlay .eternal-ring {
+  position: absolute;
+  width: clamp(200px, 50vw, 400px);
+  height: clamp(200px, 50vw, 400px);
+  border: 4px solid rgba(255,215,0,0.4);
+  border-radius: 50%;
+  animation: eternalRingExpand 2s ease-out 0.3s forwards;
+  opacity: 0;
+}
+@keyframes eternalFlash {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes eternalBgFlicker {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  20% { opacity: 0.6; }
+  30% { opacity: 1; }
+  40% { opacity: 0.8; }
+  50% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes eternalTextPop {
+  0% { transform: scale(0) rotate(-20deg); opacity: 0; filter: blur(12px); }
+  12% { transform: scale(2) rotate(8deg); opacity: 1; filter: blur(0); }
+  20% { transform: scale(0.8) rotate(-4deg); }
+  28% { transform: scale(1.4) rotate(3deg); }
+  36% { transform: scale(0.95) rotate(-1deg); }
+  44% { transform: scale(1.1) rotate(0deg); }
+  50% { transform: scale(1) rotate(0deg); }
+  78% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(2) rotate(0deg); opacity: 0; filter: blur(12px); }
+}
+@keyframes eternalSubFade {
+  0% { opacity: 0; transform: translateY(30px); }
+  20% { opacity: 0; transform: translateY(30px); }
+  35% { opacity: 1; transform: translateY(0); }
+  78% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes eternalRingExpand {
+  0% { transform: scale(0.5); opacity: 0; }
+  30% { opacity: 0.6; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* 永遠モード時のボード演出 */
+.board-wrapper.eternal-mode {
+  box-shadow: 0 0 30px rgba(255,215,0,0.4), 0 0 60px rgba(255,100,0,0.2), 0 4px 20px rgba(0,0,0,0.6);
+  border-color: rgba(255,215,0,0.5);
+  animation: eternalBoardPulse 2s ease-in-out infinite;
+}
+@keyframes eternalBoardPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 4px 20px rgba(0,0,0,0.6); }
+  50% { box-shadow: 0 0 40px rgba(255,215,0,0.5), 0 0 60px rgba(255,100,0,0.3), 0 4px 20px rgba(0,0,0,0.6); }
+}
+
+/* 俺のターン中のインジケーター */
+.turn-indicator.my-turn-active {
+  background: linear-gradient(135deg, rgba(255,60,0,0.4), rgba(200,50,0,0.3));
+  border-color: #ff6600;
+  color: #ffcc00;
+  animation: myTurnIndicatorPulse 1s ease-in-out infinite;
+}
+.turn-indicator.eternal-active {
+  background: linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,100,0,0.3));
+  border-color: #ffd700;
+  color: #ffd700;
+  animation: myTurnIndicatorPulse 0.7s ease-in-out infinite;
+}
+@keyframes myTurnIndicatorPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* 火花エフェクト */
+.spark {
+  position: fixed;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  z-index: 310;
+  pointer-events: none;
+  animation: sparkFly linear forwards;
+}
+@keyframes sparkFly {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0); }
+}
+
 /* Responsive sizing */
 .board {
   width: min(86vw, 86vh - 160px, 400px);
@@ -411,6 +668,7 @@ html, body {
       <button class="diff-btn" data-diff="hard">つよい</button>
     </div>
     <button class="btn primary" id="newGameBtn">新しいゲーム</button>
+    <button class="btn okunote" id="okunoteBtn">⚡ 奥の手</button>
   </div>
 </div>
 
@@ -423,6 +681,20 @@ html, body {
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="my-turn-overlay" id="myTurnOverlay">
+  <div class="my-turn-bg"></div>
+  <div class="my-turn-line top"></div>
+  <div class="my-turn-text">俺のターン<span class="exclamation">！</span></div>
+  <div class="my-turn-line bottom"></div>
+</div>
+
+<div class="eternal-overlay" id="eternalOverlay">
+  <div class="eternal-bg"></div>
+  <div class="eternal-ring"></div>
+  <div class="eternal-text">永遠に<br>俺のターン！</div>
+  <div class="eternal-sub">― どこにでも置ける ―</div>
+</div>
 
 <script>
 (() => {
@@ -443,6 +715,10 @@ html, body {
   ];
 
   let board, currentPlayer, difficulty, gameOver, cpuThinking;
+  let okunoTeCount = 0;       // 奥の手の使用回数
+  let myTurnRemaining = 0;     // 俺のターン残り手数（2回置ける）
+  let eternalMode = false;     // 永遠に俺のターン（どこでも置ける）
+  const ETERNAL_THRESHOLD = 5; // 永遠モード発動までの回数
 
   // DOM
   const boardEl = document.getElementById('board');
@@ -453,6 +729,10 @@ html, body {
   const resultTitle = document.getElementById('resultTitle');
   const resultScore = document.getElementById('resultScore');
   const toastEl = document.getElementById('toast');
+  const okunoteBtn = document.getElementById('okunoteBtn');
+  const myTurnOverlay = document.getElementById('myTurnOverlay');
+  const eternalOverlay = document.getElementById('eternalOverlay');
+  const boardWrapper = document.querySelector('.board-wrapper');
 
   // Init board cells
   function createBoardCells() {
@@ -476,6 +756,11 @@ html, body {
     currentPlayer = BLACK;
     gameOver = false;
     cpuThinking = false;
+    okunoTeCount = 0;
+    myTurnRemaining = 0;
+    eternalMode = false;
+    okunoteBtn.disabled = false;
+    boardWrapper.classList.remove('eternal-mode');
     overlay.classList.remove('show');
     renderBoard();
     updateScore();
@@ -495,7 +780,14 @@ html, body {
           oldStone.remove();
         }
         // Set hint
-        const isHint = !gameOver && currentPlayer === BLACK && hints.some(m => m[0] === r && m[1] === c);
+        let isHint = false;
+        if (!gameOver && currentPlayer === BLACK) {
+          if (eternalMode) {
+            isHint = board[r][c] === EMPTY;
+          } else {
+            isHint = hints.some(m => m[0] === r && m[1] === c);
+          }
+        }
         cell.classList.toggle('hint', isHint);
 
         if (board[r][c] !== EMPTY && !oldStone) {
@@ -607,9 +899,86 @@ html, body {
   // Player move
   function onCellClick(r, c) {
     if (gameOver || cpuThinking || currentPlayer !== BLACK) return;
+
+    // 永遠モード: 空きマスならどこでも置ける（ひっくり返せる石があればひっくり返す）
+    if (eternalMode && board[r][c] === EMPTY) {
+      const flips = getFlips(board, r, c, BLACK);
+      makeMoveOkunote(r, c, BLACK, flips);
+      return;
+    }
+
     const flips = getFlips(board, r, c, BLACK);
     if (flips.length === 0) return;
-    makeMove(r, c, BLACK, flips);
+
+    if (myTurnRemaining > 0) {
+      makeMoveOkunote(r, c, BLACK, flips);
+    } else {
+      makeMove(r, c, BLACK, flips);
+    }
+  }
+
+  // 奥の手用の着手（2回置いたらCPUに渡す）
+  function makeMoveOkunote(r, c, player, flips) {
+    board[r][c] = player;
+    placeStoneAnimated(r, c, player);
+    if (!eternalMode) myTurnRemaining--;
+
+    for (const cell of boardEl.children) cell.classList.remove('hint');
+
+    flips.forEach((f, i) => {
+      setTimeout(() => {
+        board[f[0]][f[1]] = player;
+        flipStoneAnimated(f[0], f[1], player);
+        updateScore();
+      }, 80 + i * 60);
+    });
+
+    const totalDelay = 80 + flips.length * 60 + 200;
+    setTimeout(() => {
+      updateScore();
+
+      if (eternalMode) {
+        // 永遠モード: 置ける場所がある限り続行
+        const empty = getEmptyCells();
+        if (empty.length === 0) { endGame(); return; }
+        renderBoard();
+        updateTurnForOkunote();
+        return;
+      }
+
+      if (myTurnRemaining > 0) {
+        // まだ残り手数がある→もう1回置ける
+        const myMoves = getValidMoves(board, BLACK);
+        if (myMoves.length === 0) {
+          myTurnRemaining = 0;
+          nextTurn();
+        } else {
+          renderBoard();
+          updateTurnForOkunote();
+        }
+      } else {
+        // 2回置き終わった→通常のターン切り替え
+        nextTurn();
+      }
+    }, totalDelay);
+  }
+
+  function getEmptyCells() {
+    const cells = [];
+    for (let r = 0; r < 8; r++)
+      for (let c = 0; c < 8; c++)
+        if (board[r][c] === EMPTY) cells.push([r, c]);
+    return cells;
+  }
+
+  function updateTurnForOkunote() {
+    if (eternalMode) {
+      turnEl.textContent = '∞ 俺のターン ∞';
+      turnEl.className = 'turn-indicator eternal-active';
+    } else if (myTurnRemaining > 0) {
+      turnEl.textContent = `⚡ 俺のターン！(残り${myTurnRemaining})`;
+      turnEl.className = 'turn-indicator my-turn-active';
+    }
   }
 
   function makeMove(r, c, player, flips) {
@@ -636,6 +1005,19 @@ html, body {
   }
 
   function nextTurn() {
+    // 永遠モード中はCPUに渡さない
+    if (eternalMode) {
+      currentPlayer = BLACK;
+      const empty = getEmptyCells();
+      if (empty.length > 0) {
+        updateTurnForOkunote();
+        renderBoard();
+        return;
+      }
+      endGame();
+      return;
+    }
+
     const opponent = currentPlayer === BLACK ? WHITE : BLACK;
     const oppMoves = getValidMoves(board, opponent);
     const curMoves = getValidMoves(board, currentPlayer);
@@ -880,6 +1262,125 @@ html, body {
       difficulty = btn.dataset.diff;
     });
   });
+
+  // 奥の手ボタン
+  okunoteBtn.addEventListener('click', () => {
+    if (gameOver || cpuThinking || currentPlayer !== BLACK) return;
+    if (eternalMode) return;
+    if (myTurnRemaining > 0) return; // 既に発動中
+
+    okunoTeCount++;
+    myTurnRemaining = 2; // 2回石を置ける
+
+    if (okunoTeCount >= ETERNAL_THRESHOLD) {
+      // 永遠に俺のターン！
+      eternalMode = true;
+      myTurnRemaining = 0; // 永遠モードでは残り手数は関係ない
+      okunoteBtn.disabled = true;
+      showEternalEffect();
+      spawnSparks(80, ['#ffd700','#ff8c00','#ff4500','#ff0000','#ffff00','#fff']);
+      boardWrapper.classList.add('eternal-mode');
+      setTimeout(() => {
+        renderBoard();
+        updateTurnForOkunote();
+      }, 3000);
+    } else {
+      // 俺のターン！
+      showMyTurnEffect();
+      spawnSparks(60, ['#ff6600','#ff3300','#ffcc00','#ff9900','#ff0000']);
+      setTimeout(() => {
+        renderBoard();
+        updateTurnForOkunote();
+      }, 2000);
+    }
+  });
+
+  // 俺のターン演出
+  function showMyTurnEffect() {
+    myTurnOverlay.classList.remove('show');
+    void myTurnOverlay.offsetWidth;
+    myTurnOverlay.classList.add('show');
+    // 画面シェイク
+    document.body.animate([
+      { transform: 'translate(0,0)' },
+      { transform: 'translate(-6px,3px)' },
+      { transform: 'translate(6px,-3px)' },
+      { transform: 'translate(-3px,6px)' },
+      { transform: 'translate(3px,-6px)' },
+      { transform: 'translate(-4px,-2px)' },
+      { transform: 'translate(4px,2px)' },
+      { transform: 'translate(0,0)' },
+    ], { duration: 400, iterations: 2 });
+    // 画面フラッシュ
+    const flash = document.createElement('div');
+    flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,100,0,0.3);z-index:299;pointer-events:none;';
+    document.body.appendChild(flash);
+    flash.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
+    setTimeout(() => flash.remove(), 350);
+    setTimeout(() => myTurnOverlay.classList.remove('show'), 2100);
+  }
+
+  // 永遠に俺のターン演出
+  function showEternalEffect() {
+    eternalOverlay.classList.remove('show');
+    void eternalOverlay.offsetWidth;
+    eternalOverlay.classList.add('show');
+    // 激しい画面シェイク
+    document.body.animate([
+      { transform: 'translate(0,0)' },
+      { transform: 'translate(-8px,4px)' },
+      { transform: 'translate(8px,-4px)' },
+      { transform: 'translate(-4px,8px)' },
+      { transform: 'translate(4px,-8px)' },
+      { transform: 'translate(-6px,-3px)' },
+      { transform: 'translate(6px,3px)' },
+      { transform: 'translate(0,0)' },
+    ], { duration: 400, iterations: 4 });
+    // 3連フラッシュ
+    [0, 200, 400].forEach(delay => {
+      setTimeout(() => {
+        const flash = document.createElement('div');
+        flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,215,0,0.5);z-index:299;pointer-events:none;';
+        document.body.appendChild(flash);
+        flash.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' });
+        setTimeout(() => flash.remove(), 300);
+      }, delay);
+    });
+    spawnConfetti();
+    // 2回目の紙吹雪（豪華に）
+    setTimeout(() => spawnConfetti(), 800);
+    setTimeout(() => eternalOverlay.classList.remove('show'), 3100);
+  }
+
+  // 火花エフェクト
+  function spawnSparks(count, colors) {
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'spark';
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 50 + Math.random() * 250;
+        const x = cx + Math.cos(angle) * dist;
+        const y = cy + Math.sin(angle) * dist;
+        el.style.left = cx + 'px';
+        el.style.top = cy + 'px';
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.boxShadow = `0 0 6px ${el.style.background}`;
+        el.style.width = (3 + Math.random() * 5) + 'px';
+        el.style.height = el.style.width;
+        const dur = 0.4 + Math.random() * 0.6;
+        el.style.animationDuration = dur + 's';
+        el.animate([
+          { left: cx + 'px', top: cy + 'px', opacity: 1 },
+          { left: x + 'px', top: y + 'px', opacity: 0 }
+        ], { duration: dur * 1000, fill: 'forwards' });
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), dur * 1000 + 50);
+      }, i * 15);
+    }
+  }
 
   // New game
   document.getElementById('newGameBtn').addEventListener('click', initGame);
