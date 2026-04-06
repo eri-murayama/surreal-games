@@ -56,7 +56,7 @@ const LANG_RPG = {
     npcLines: {
       'おじさんA': ['南の城に超かわいい\n「じゅまんどぅ」がいるらしいよ！', '恋愛経験値をためないと\n相手にしてもらえないかもね〜。'],
       'おじさんB': ['この町にはプレゼント屋が\nあるぞ。女にモテたいなら\n買っていきな。', 'しかも全部高い。ギュニー貯めないとな。'],
-      'ネコ': ['にゃーん。（元気が出てきた）', '＊精神力が回復した！＊'],
+      'ネコ': ['ネコ「にゃーん」', 'チギュオ「はあああん\nねこちゃんねこちゃん！！\nくんくんくんあああ', 'ネコ吸いネコ吸い\nふああああん」', '＊精神力が回復した！＊'],
       'じゅまんどぅ': ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'],
     },
   },
@@ -104,7 +104,7 @@ const LANG_RPG = {
     npcLines: {
       'おじさんA': ['I hear a super cute girl named\n"Jumandou" lives in the southern castle!', "You'll need love experience\nor she won't give you the time of day~"],
       'おじさんB': ["This town has a gift shop.\nIf you want to score with ladies,\nbuy some stuff.", "They're all expensive though.\nSave up your Gyuney."],
-      'ネコ': ['Meow~ (You feel energized!)', '* Spirit restored! *'],
+      'ネコ': ['Cat: "Meow~"', 'Chiguo: "Aaahhh kitty kitty!!\nSniff sniff sniff ahhh', 'Cat huffing cat huffing\nfuaaaaahhh~"', '* Spirit restored! *'],
       'じゅまんどぅ': ["Hmm, you made it this far.\nYou think you can win me over?"],
     },
   },
@@ -211,7 +211,7 @@ const NPCS = [
   { x: 12, y: 9, map: 1, color: '#6ae', name: 'おじさんB',
     lines: ['この村のコンビニは\nなぜかプレゼントだけ売ってる。', 'しかも全部高い。'] },
   { x: 10, y: 4, map: 1, color: '#ea6', name: 'ネコ',
-    lines: ['にゃーん。（元気が出てきた）', '＊精神力が回復した！＊'] },
+    lines: ['ネコ「にゃーん」', 'チギュオ「はあああん\nねこちゃんねこちゃん！！\nくんくんくんあああ', 'ネコ吸いネコ吸い\nふああああん」', '＊精神力が回復した！＊'] },
   { x: 7, y: 5, map: 2, color: '#f6f', name: 'じゅまんどぅ',
     lines: ['ふーん、ここまで来たんだ。\nあたしを落とせると思ってる？'] },
   { x: 2, y: 3, map: 1, color: '#776655', name: 'ニトオ',
