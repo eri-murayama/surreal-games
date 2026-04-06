@@ -1,9 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>さんすうバトル - ぐっぴょん</title>
+  <title>さんすうバトル｜ゲロゲーロ学園</title>
+  <meta property="og:title" content="さんすうバトル｜ゲロゲーロ学園">
+  <meta property="og:description" content="計算力を鍛えるバトル形式の算数ゲーム！子ども向け無料知育ゲーム">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/guppyon/games/math-battle/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -1395,6 +1409,11 @@ function endGame(won) {
   document.getElementById('result-message').textContent = message;
 
   showScreen('result-screen');
+  geroShare('#result-screen', {
+    gameTitle: 'さんすうバトル',
+    resultText: title,
+    age: 'kid'
+  });
 
   // Victory particles
   if (won) {
@@ -1408,5 +1427,6 @@ function endGame(won) {
 initStars();
 </script>
 
+<script src="../../js/share-gate.js"></script>
 </body>
 </html>

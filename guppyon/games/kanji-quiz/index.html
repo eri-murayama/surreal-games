@@ -1,9 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>漢字クイズ - ゲロゲーロ学園</title>
+  <title>漢字クイズ｜ゲロゲーロ学園</title>
+  <meta property="og:title" content="漢字クイズ｜ゲロゲーロ学園">
+  <meta property="og:description" content="漢字の読み方をクイズで学ぼう！小学生向け無料知育ゲーム">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/guppyon/games/kanji-quiz/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -907,6 +921,12 @@
         sfxCelebration();
         spawnConfetti();
       }
+
+      geroShare('#resultScreen', {
+        gameTitle: '漢字クイズ',
+        resultText: 'ランク' + rank,
+        age: 'kid'
+      });
     }
 
     /* ===================================================
@@ -947,5 +967,6 @@
     showScreen(titleScreen);
   })();
   </script>
+<script src="../../js/share-gate.js"></script>
 </body>
 </html>

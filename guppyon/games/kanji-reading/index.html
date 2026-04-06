@@ -1,9 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>難読漢字チャレンジ - ゲロゲーロ学園</title>
+  <title>難読漢字チャレンジ｜ゲロゲーロ学園</title>
+  <meta property="og:title" content="難読漢字チャレンジ｜ゲロゲーロ学園">
+  <meta property="og:description" content="難しい漢字の読み方を当てる脳トレゲーム。難読漢字15問チャレンジ！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/guppyon/games/kanji-reading/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="description" content="難しい漢字の読み方を当てる大人向け脳トレゲーム。難読漢字15問チャレンジ！">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1394,6 +1408,12 @@
       const factQ = questionPool[Math.floor(Math.random() * questionPool.length)];
       document.getElementById('fact-text').innerHTML =
         `<strong>「${factQ.kanji}」（${factQ.correct}）</strong><br>${factQ.fact}`;
+
+      geroShare('#result-screen', {
+        gameTitle: '難読漢字チャレンジ',
+        resultText: rank,
+        age: 'adult'
+      });
     }
 
     /* ==============================
@@ -1412,5 +1432,6 @@
     initBgPattern();
   })();
   </script>
+<script src="../../js/share-gate.js"></script>
 </body>
 </html>

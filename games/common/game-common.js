@@ -15,7 +15,7 @@
   const SITE_BASE = '../../';
 
   // ===== 正式リリース済みゲームID =====
-  const RELEASED_IDS = ['drive', 'escape-room', 'whack-kanikani', 'business-analysis'];
+  const RELEASED_IDS = ['drive', 'escape-room', 'whack-kanikani', 'business-analysis', 'minesweeper', 'unko-cone'];
 
   // ===== ゲームカタログ =====
   const GAME_CATALOG = [

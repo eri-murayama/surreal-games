@@ -1,9 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>かたちパズル｜ぐっぴょん</title>
+  <title>かたちパズル｜ゲロゲーロ学園</title>
+  <meta property="og:title" content="かたちパズル｜ゲロゲーロ学園">
+  <meta property="og:description" content="いろいろなかたちを覚えよう！子ども向け無料知育ゲーム">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/guppyon/games/shape-puzzle/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="description" content="いろいろなかたちをおぼえよう！まる・さんかく・しかくなど、たのしくかたちをまなべるゲーム。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1274,6 +1288,12 @@
       $('#resultScore').textContent = state.score + ' てん';
       $('#resultDetail').textContent =
         state.totalRounds + 'もんちゅう ' + state.correct + 'もんせいかい！';
+
+      geroShare('#resultScreen', {
+        gameTitle: 'かたちパズル',
+        resultText: stars + 'つぼし',
+        age: 'toddler'
+      });
     }
 
     // ===== Event Listeners =====
@@ -1291,5 +1311,6 @@
       showScreen('start');
     });
   </script>
+<script src="../../js/share-gate.js"></script>
 </body>
 </html>
