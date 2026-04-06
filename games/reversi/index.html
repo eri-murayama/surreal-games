@@ -627,6 +627,133 @@ html, body {
   100% { transform: scale(3); opacity: 0; }
 }
 
+/* オールリバース演出 */
+.allreverse-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 300;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  opacity: 0;
+}
+.allreverse-overlay.show {
+  animation: allreverseFlash 4s ease-out forwards;
+}
+.allreverse-overlay .allreverse-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle, rgba(0,0,0,0.95) 0%, rgba(20,0,60,0.95) 30%, rgba(80,0,180,0.7) 50%, rgba(0,0,0,0.98) 70%);
+  animation: allreverseBgPulse 4s ease-out forwards;
+}
+.allreverse-overlay .allreverse-text {
+  position: relative;
+  font-size: clamp(32px, 10vw, 72px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow:
+    0 0 20px #bf00ff,
+    0 0 40px #8000ff,
+    0 0 80px #4000cc,
+    0 0 120px #bf00ff,
+    0 0 180px rgba(150,0,255,0.6),
+    0 6px 12px rgba(0,0,0,0.9);
+  letter-spacing: 8px;
+  animation: allreverseTextPop 4s ease-out forwards;
+  text-align: center;
+  line-height: 1.4;
+  -webkit-text-stroke: 2px rgba(180,0,255,0.3);
+}
+.allreverse-overlay .allreverse-sub {
+  position: relative;
+  font-size: clamp(14px, 4vw, 24px);
+  color: #df80ff;
+  font-weight: 700;
+  text-shadow: 0 0 15px #8000ff, 0 0 30px rgba(150,0,255,0.5);
+  margin-top: 12px;
+  animation: allreverseSubFade 4s ease-out forwards;
+  letter-spacing: 4px;
+}
+.allreverse-overlay .allreverse-ring {
+  position: absolute;
+  width: clamp(180px, 45vw, 360px);
+  height: clamp(180px, 45vw, 360px);
+  border: 3px solid rgba(180,0,255,0.5);
+  border-radius: 50%;
+  animation: allreverseRingExpand 2s ease-out 0.5s forwards;
+  opacity: 0;
+}
+.allreverse-overlay .allreverse-ring2 {
+  position: absolute;
+  width: clamp(120px, 30vw, 240px);
+  height: clamp(120px, 30vw, 240px);
+  border: 2px solid rgba(100,0,255,0.4);
+  border-radius: 50%;
+  animation: allreverseRingExpand 2.5s ease-out 0.8s forwards;
+  opacity: 0;
+}
+@keyframes allreverseFlash {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes allreverseBgPulse {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  15% { opacity: 0.5; }
+  20% { opacity: 1; }
+  25% { opacity: 0.7; }
+  30% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes allreverseTextPop {
+  0% { transform: scale(0) rotate(30deg); opacity: 0; filter: blur(16px); }
+  8% { transform: scale(2.5) rotate(-10deg); opacity: 1; filter: blur(0); }
+  14% { transform: scale(0.7) rotate(5deg); }
+  20% { transform: scale(1.6) rotate(-3deg); }
+  26% { transform: scale(0.9) rotate(1deg); }
+  32% { transform: scale(1.15) rotate(0deg); }
+  38% { transform: scale(1) rotate(0deg); }
+  75% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(2.5) rotate(0deg); opacity: 0; filter: blur(16px); }
+}
+@keyframes allreverseSubFade {
+  0% { opacity: 0; transform: translateY(30px); }
+  25% { opacity: 0; transform: translateY(30px); }
+  40% { opacity: 1; transform: translateY(0); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes allreverseRingExpand {
+  0% { transform: scale(0.3); opacity: 0; }
+  30% { opacity: 0.7; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+/* オールリバースボタン */
+.btn.allreverse {
+  background: linear-gradient(135deg, #4b0082, #8000ff, #bf00ff);
+  border: 2px solid #df80ff;
+  color: #fff;
+  font-weight: 900;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  letter-spacing: 1px;
+  animation: allreverseGlow 2s ease-in-out infinite;
+}
+.btn.allreverse:hover {
+  background: linear-gradient(135deg, #5b0092, #9020ff, #cf20ff);
+  border-color: #efb0ff;
+  box-shadow: 0 0 20px rgba(150,0,255,0.6);
+}
+@keyframes allreverseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(150,0,255,0.4); }
+  50% { box-shadow: 0 0 24px rgba(150,0,255,0.7), 0 0 40px rgba(100,0,200,0.3); }
+}
+
 /* 永遠モード時のボード演出 */
 .board-wrapper.eternal-mode {
   box-shadow: 0 0 30px rgba(255,215,0,0.4), 0 0 60px rgba(255,100,0,0.2), 0 4px 20px rgba(0,0,0,0.6);
@@ -766,6 +893,14 @@ html, body {
   <div class="eternal-sub">― どこにでも置ける ―</div>
 </div>
 
+<div class="allreverse-overlay" id="allreverseOverlay">
+  <div class="allreverse-bg"></div>
+  <div class="allreverse-ring"></div>
+  <div class="allreverse-ring2"></div>
+  <div class="allreverse-text">オール<br>リバース</div>
+  <div class="allreverse-sub">― 全てが黒に染まる ―</div>
+</div>
+
 <script>
 (() => {
   // Constants
@@ -785,6 +920,7 @@ html, body {
   ];
 
   let board, currentPlayer, difficulty, gameOver, cpuThinking;
+  let isAnimating = false;     // アニメーション中のクリック防止フラグ
   let okunoTeCount = 0;       // 奥の手の使用回数
   let myTurnRemaining = 0;     // 俺のターン残り手数（2回置ける）
   let eternalMode = false;     // 永遠に俺のターン（どこでも置ける）
@@ -802,7 +938,9 @@ html, body {
   const okunoteBtn = document.getElementById('okunoteBtn');
   const myTurnOverlay = document.getElementById('myTurnOverlay');
   const eternalOverlay = document.getElementById('eternalOverlay');
+  const allreverseOverlay = document.getElementById('allreverseOverlay');
   const boardWrapper = document.querySelector('.board-wrapper');
+  let allReverseUsed = false;  // オールリバース使用済みフラグ
 
   // Init board cells
   function createBoardCells() {
@@ -826,10 +964,14 @@ html, body {
     currentPlayer = BLACK;
     gameOver = false;
     cpuThinking = false;
+    isAnimating = false;
     okunoTeCount = 0;
     myTurnRemaining = 0;
     eternalMode = false;
+    allReverseUsed = false;
     okunoteBtn.disabled = false;
+    okunoteBtn.className = 'btn okunote';
+    okunoteBtn.textContent = t('okunote');
     boardWrapper.classList.remove('eternal-mode');
     overlay.classList.remove('show');
     renderBoard();
@@ -844,27 +986,39 @@ html, body {
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
         const cell = cells[r * 8 + c];
-        // Remove old stone
         const oldStone = cell.querySelector('.stone');
-        if (oldStone && board[r][c] === EMPTY) {
-          oldStone.remove();
+        const expected = board[r][c];
+
+        if (expected === EMPTY) {
+          // 空きマスなのに石がある場合は削除
+          if (oldStone) oldStone.remove();
+        } else {
+          const colorClass = expected === BLACK ? 'black' : 'white';
+          if (oldStone) {
+            // 石の色がデータと不一致なら修正（アニメーション中でなければ）
+            if (!oldStone.classList.contains(colorClass) &&
+                !oldStone.classList.contains('flip-to-black') &&
+                !oldStone.classList.contains('flip-to-white')) {
+              oldStone.className = `stone ${colorClass}`;
+            }
+          } else {
+            // 石がないので追加
+            const stone = document.createElement('div');
+            stone.className = `stone ${colorClass}`;
+            cell.appendChild(stone);
+          }
         }
+
         // Set hint
         let isHint = false;
         if (!gameOver && currentPlayer === BLACK) {
           if (eternalMode) {
-            isHint = board[r][c] === EMPTY;
+            isHint = expected === EMPTY;
           } else {
             isHint = hints.some(m => m[0] === r && m[1] === c);
           }
         }
         cell.classList.toggle('hint', isHint);
-
-        if (board[r][c] !== EMPTY && !oldStone) {
-          const stone = document.createElement('div');
-          stone.className = `stone ${board[r][c] === BLACK ? 'black' : 'white'}`;
-          cell.appendChild(stone);
-        }
       }
     }
   }
@@ -972,7 +1126,7 @@ html, body {
 
   // Player move
   function onCellClick(r, c) {
-    if (gameOver || cpuThinking || currentPlayer !== BLACK) return;
+    if (gameOver || cpuThinking || isAnimating || currentPlayer !== BLACK) return;
 
     // 永遠モード: 空きマスならどこでも置ける（ひっくり返せる石があればひっくり返す）
     if (eternalMode && board[r][c] === EMPTY) {
@@ -993,6 +1147,7 @@ html, body {
 
   // 奥の手用の着手（2回置いたらCPUに渡す）
   function makeMoveOkunote(r, c, player, flips) {
+    isAnimating = true;
     board[r][c] = player;
     placeStoneAnimated(r, c, player);
     if (!eternalMode) myTurnRemaining--;
@@ -1010,11 +1165,13 @@ html, body {
     const totalDelay = 80 + flips.length * 60 + 200;
     setTimeout(() => {
       updateScore();
+      isAnimating = false;
 
       if (eternalMode) {
         // 永遠モード: 置ける場所がある限り続行
         const empty = getEmptyCells();
         if (empty.length === 0) { endGame(); return; }
+        updateOkunoteButton();
         renderBoard();
         updateTurnForOkunote();
         return;
@@ -1056,6 +1213,7 @@ html, body {
   }
 
   function makeMove(r, c, player, flips) {
+    isAnimating = true;
     board[r][c] = player;
     placeStoneAnimated(r, c, player);
 
@@ -1074,6 +1232,7 @@ html, body {
     const totalDelay = 80 + flips.length * 60 + 200;
     setTimeout(() => {
       updateScore();
+      isAnimating = false;
       nextTurn();
     }, totalDelay);
   }
@@ -1339,9 +1498,18 @@ html, body {
 
   // 奥の手ボタン
   okunoteBtn.addEventListener('click', () => {
-    if (gameOver || cpuThinking || currentPlayer !== BLACK) return;
-    if (eternalMode) return;
+    if (gameOver || cpuThinking || isAnimating || currentPlayer !== BLACK) return;
     if (myTurnRemaining > 0) return; // 既に発動中
+
+    // 永遠モード中に負けていたら → オールリバース発動！
+    if (eternalMode && !allReverseUsed) {
+      const { black, white } = countStones(board);
+      if (black < white) {
+        activateAllReverse();
+        return;
+      }
+    }
+    if (eternalMode) return;
 
     okunoTeCount++;
     myTurnRemaining = 2; // 2回石を置ける
@@ -1350,11 +1518,12 @@ html, body {
       // 永遠に俺のターン！
       eternalMode = true;
       myTurnRemaining = 0; // 永遠モードでは残り手数は関係ない
-      okunoteBtn.disabled = true;
       showEternalEffect();
       spawnSparks(80, ['#ffd700','#ff8c00','#ff4500','#ff0000','#ffff00','#fff']);
       boardWrapper.classList.add('eternal-mode');
       setTimeout(() => {
+        // 永遠モード突入時に負けていたらボタンをオールリバースに変更
+        updateOkunoteButton();
         renderBoard();
         updateTurnForOkunote();
       }, 3000);
@@ -1368,6 +1537,98 @@ html, body {
       }, 2000);
     }
   });
+
+  // 永遠モード時、負けていたらボタンをオールリバースに変更
+  function updateOkunoteButton() {
+    if (!eternalMode || allReverseUsed) {
+      okunoteBtn.disabled = true;
+      return;
+    }
+    const { black, white } = countStones(board);
+    if (black < white) {
+      okunoteBtn.disabled = false;
+      okunoteBtn.className = 'btn allreverse';
+      okunoteBtn.textContent = t('allReverse');
+    } else {
+      okunoteBtn.disabled = true;
+      okunoteBtn.className = 'btn okunote';
+    }
+  }
+
+  // オールリバース発動！
+  function activateAllReverse() {
+    allReverseUsed = true;
+    isAnimating = true;
+    okunoteBtn.disabled = true;
+    okunoteBtn.className = 'btn okunote';
+
+    // 演出開始
+    showAllReverseEffect();
+    spawnSparks(100, ['#bf00ff','#8000ff','#df80ff','#4b0082','#fff','#ff00ff']);
+
+    // 画面を激しくシェイク
+    document.body.animate([
+      { transform: 'translate(0,0)' },
+      { transform: 'translate(-10px,5px)' },
+      { transform: 'translate(10px,-5px)' },
+      { transform: 'translate(-5px,10px)' },
+      { transform: 'translate(5px,-10px)' },
+      { transform: 'translate(-8px,-4px)' },
+      { transform: 'translate(8px,4px)' },
+      { transform: 'translate(-3px,8px)' },
+      { transform: 'translate(3px,-8px)' },
+      { transform: 'translate(0,0)' },
+    ], { duration: 500, iterations: 3 });
+
+    // 3連フラッシュ（紫）
+    [0, 250, 500].forEach(delay => {
+      setTimeout(() => {
+        const flash = document.createElement('div');
+        flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(150,0,255,0.5);z-index:299;pointer-events:none;';
+        document.body.appendChild(flash);
+        flash.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
+        setTimeout(() => flash.remove(), 350);
+      }, delay);
+    });
+
+    // 2秒後に全石をひっくり返し開始
+    setTimeout(() => {
+      const whitePositions = [];
+      for (let r = 0; r < 8; r++)
+        for (let c = 0; c < 8; c++)
+          if (board[r][c] === WHITE) whitePositions.push([r, c]);
+
+      // ランダム順でひっくり返す（ドラマチックに）
+      whitePositions.sort(() => Math.random() - 0.5);
+
+      whitePositions.forEach(([r, c], i) => {
+        setTimeout(() => {
+          board[r][c] = BLACK;
+          flipStoneAnimated(r, c, BLACK);
+          updateScore();
+        }, i * 50);
+      });
+
+      // 全部ひっくり返し終わったら紙吹雪＆ゲーム終了
+      const flipDone = whitePositions.length * 50 + 600;
+      setTimeout(() => {
+        spawnConfetti();
+        setTimeout(() => spawnConfetti(), 300);
+        setTimeout(() => spawnConfetti(), 600);
+        updateScore();
+        isAnimating = false;
+        endGame();
+      }, flipDone);
+    }, 2000);
+  }
+
+  // オールリバース演出
+  function showAllReverseEffect() {
+    allreverseOverlay.classList.remove('show');
+    void allreverseOverlay.offsetWidth;
+    allreverseOverlay.classList.add('show');
+    setTimeout(() => allreverseOverlay.classList.remove('show'), 4100);
+  }
 
   // 俺のターン演出
   function showMyTurnEffect() {
@@ -1498,6 +1759,9 @@ SurrealI18n.init({
     eternalTurn: '∞ 俺のターン ∞',
     eternalText: '永遠に<br>俺のターン！',
     eternalSub: '― どこにでも置ける ―',
+    allReverse: '💀 オールリバース',
+    allReverseText: 'オール<br>リバース',
+    allReverseSub: '― 全てが黒に染まる ―',
     backToTop: '← トップに戻る',
     shareResult: (b, w, result) => `【リバーシ】${result} 黒${b} vs 白${w}\n#シュールゲームス`,
   },
@@ -1527,6 +1791,9 @@ SurrealI18n.init({
     eternalTurn: '∞ MY TURN ∞',
     eternalText: 'ETERNAL<br>MY TURN!',
     eternalSub: '― Place anywhere ―',
+    allReverse: '💀 ALL REVERSE',
+    allReverseText: 'ALL<br>REVERSE',
+    allReverseSub: '― Everything turns black ―',
     backToTop: '← Back to Top',
     shareResult: (b, w, result) => `[Reversi] ${result} Black ${b} vs White ${w}\n#SurrealGames`,
   },
@@ -1556,6 +1823,8 @@ function updateAllTexts() {
   document.querySelector('.my-turn-text').innerHTML = t('myTurn') + '<span class="exclamation">' + t('myTurnExcl') + '</span>';
   document.querySelector('.eternal-text').innerHTML = t('eternalText');
   document.querySelector('.eternal-sub').textContent = t('eternalSub');
+  document.querySelector('.allreverse-text').innerHTML = t('allReverseText');
+  document.querySelector('.allreverse-sub').textContent = t('allReverseSub');
   // おすすめゲーム
   buildRecommendHTML();
 }
