@@ -16,9 +16,8 @@
   gtag('js', new Date());
   gtag('config', 'G-K8QFB33PX7');
 </script>
+<link rel="stylesheet" href="../common/game-common.css">
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
 html, body {
   width: 100%; height: 100%;
   overflow: hidden;
@@ -629,13 +628,12 @@ html, body {
   }
 }
 </style>
-<link rel="stylesheet" href="../common/game-common.css">
 </head>
 <body>
 
-<div id="lang-switch" style="position:fixed;top:10px;right:10px;z-index:1000;display:flex;gap:4px;">
-  <button class="lang-btn active" data-lang="ja" onclick="if(window.SurrealI18n)SurrealI18n.setLang('ja')" style="padding:6px 14px;border:2px solid rgba(255,255,255,0.3);border-radius:6px;background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.7);font-size:13px;font-weight:bold;cursor:pointer;backdrop-filter:blur(4px);">JP</button>
-  <button class="lang-btn" data-lang="en" onclick="if(window.SurrealI18n)SurrealI18n.setLang('en')" style="padding:6px 14px;border:2px solid rgba(255,255,255,0.3);border-radius:6px;background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.7);font-size:13px;font-weight:bold;cursor:pointer;backdrop-filter:blur(4px);">EN</button>
+<div class="sg-lang-toggle">
+  <button class="sg-lang-btn active" data-lang="ja" onclick="if(window.SurrealI18n)SurrealI18n.setLang('ja')">JP</button>
+  <button class="sg-lang-btn" data-lang="en" onclick="if(window.SurrealI18n)SurrealI18n.setLang('en')">EN</button>
 </div>
 
 <div id="app">
