@@ -29,12 +29,47 @@ const LANG_RPG = {
     cantRunBoss: 'じゅまんどぅからは にげられない！',
     ranAway: 'うまく にげきれた！',
     cantRun: 'にげられなかった！',
-    reactions: (name, dmg) => [
-      `${name}は つめたい視線を\nむけてきた！精神力 -${dmg}`,
-      `${name}に「キモい」と\n言われた！精神力 -${dmg}`,
-      `${name}は スマホを\nいじりだした！精神力 -${dmg}`,
-      `${name}に ため息を\nつかれた！精神力 -${dmg}`,
-    ],
+    reactions: (name, dmg, key) => {
+      const table = {
+        busunko: [
+          `${name}の「ガン無視」！\n精神力 -${dmg}`,
+          `${name}の「舌打ち」！\n精神力 -${dmg}`,
+          `${name}の「早足で立ち去る」！\n精神力 -${dmg}`,
+          `${name}の「は？誰？」！\n精神力 -${dmg}`,
+        ],
+        futsunnu: [
+          `${name}の「苦笑い」！\n精神力 -${dmg}`,
+          `${name}の「既読スルー」！\n精神力 -${dmg}`,
+          `${name}の「友達に相談するね」！\n精神力 -${dmg}`,
+          `${name}の「ごめん忙しい」！\n精神力 -${dmg}`,
+        ],
+        choikawami: [
+          `${name}の「髪かきあげ」！\n精神力 -${dmg}`,
+          `${name}の「インスタチェック」！\n精神力 -${dmg}`,
+          `${name}の「え、まだいたの？」！\n精神力 -${dmg}`,
+          `${name}の「あー……うん」！\n精神力 -${dmg}`,
+        ],
+        modekawa: [
+          `${name}の「高笑い」！\n精神力 -${dmg}`,
+          `${name}の「彼氏いるんで」！\n精神力 -${dmg}`,
+          `${name}の「写真撮らないで」！\n精神力 -${dmg}`,
+          `${name}の「通報しよっかな」！\n精神力 -${dmg}`,
+        ],
+        takanen: [
+          `${name}の「セレブオーラ」！\n精神力 -${dmg}`,
+          `${name}の「年収いくら？」！\n精神力 -${dmg}`,
+          `${name}の「私に話しかけないで」！\n精神力 -${dmg}`,
+          `${name}の「SPを呼ぶわよ」！\n精神力 -${dmg}`,
+        ],
+        boss: [
+          `${name}の「デスウインク」！\n精神力 -${dmg}`,
+          `${name}の「あなた面白いわね」！\n精神力 -${dmg}`,
+          `${name}の「じゅまんどぅビーム」！\n精神力 -${dmg}`,
+          `${name}の「小悪魔スマイル」！\n精神力 -${dmg}`,
+        ],
+      };
+      return table[key] || table.busunko;
+    },
     bossDefeated: 'じゅまんどぅが デレた！',
     gotGirlfriend: (name, exp) => `${name}が 彼女になった！\n恋愛経験値 +${exp}！`,
     levelUp: (lv) => `恋愛レベルアップ！ Lv.${lv}！\nモテ力が上がった！`,
@@ -77,12 +112,47 @@ const LANG_RPG = {
     cantRunBoss: "Can't escape from Jumandou!",
     ranAway: 'Got away safely!',
     cantRun: "Couldn't escape!",
-    reactions: (name, dmg) => [
-      `${name} gave you\nan icy stare! Spirit -${dmg}`,
-      `${name} said "Ew."\nSpirit -${dmg}`,
-      `${name} started\nscrolling their phone! Spirit -${dmg}`,
-      `${name} sighed\nat you! Spirit -${dmg}`,
-    ],
+    reactions: (name, dmg, key) => {
+      const table = {
+        busunko: [
+          `${name} used "Total Ignore"!\nSpirit -${dmg}`,
+          `${name} used "Tch..."!\nSpirit -${dmg}`,
+          `${name} used "Speed Walk Away"!\nSpirit -${dmg}`,
+          `${name} used "Who are you?"!\nSpirit -${dmg}`,
+        ],
+        futsunnu: [
+          `${name} used "Awkward Smile"!\nSpirit -${dmg}`,
+          `${name} used "Left on Read"!\nSpirit -${dmg}`,
+          `${name} used "Ask My Friends"!\nSpirit -${dmg}`,
+          `${name} used "Sorry, I'm Busy"!\nSpirit -${dmg}`,
+        ],
+        choikawami: [
+          `${name} used "Hair Flip"!\nSpirit -${dmg}`,
+          `${name} used "Insta Check"!\nSpirit -${dmg}`,
+          `${name} used "You're Still Here?"!\nSpirit -${dmg}`,
+          `${name} used "Uh... Yeah"!\nSpirit -${dmg}`,
+        ],
+        modekawa: [
+          `${name} used "Mocking Laugh"!\nSpirit -${dmg}`,
+          `${name} used "I Have a BF"!\nSpirit -${dmg}`,
+          `${name} used "No Photos Please"!\nSpirit -${dmg}`,
+          `${name} used "Calling Security"!\nSpirit -${dmg}`,
+        ],
+        takanen: [
+          `${name} used "Celebrity Aura"!\nSpirit -${dmg}`,
+          `${name} used "What's Your Salary?"!\nSpirit -${dmg}`,
+          `${name} used "Don't Talk to Me"!\nSpirit -${dmg}`,
+          `${name} used "Calling My Bodyguard"!\nSpirit -${dmg}`,
+        ],
+        boss: [
+          `${name} used "Death Wink"!\nSpirit -${dmg}`,
+          `${name} used "You're Funny"!\nSpirit -${dmg}`,
+          `${name} used "Jumandou Beam"!\nSpirit -${dmg}`,
+          `${name} used "Devil Smile"!\nSpirit -${dmg}`,
+        ],
+      };
+      return table[key] || table.busunko;
+    },
     bossDefeated: 'Jumandou fell for you!',
     gotGirlfriend: (name, exp) => `${name} became your GF!\nLove EXP +${exp}!`,
     levelUp: (lv) => `Love Level UP! Lv.${lv}!\nCharm power increased!`,
@@ -1247,7 +1317,7 @@ function enemyTurn() {
     setBattleLog(chiReactions[Math.min(b.turnCount - 1, chiReactions.length - 1)]);
   } else {
     // リアクション台詞ランダム
-    const reactions = tl('reactions', b.enemy.name, dmg);
+    const reactions = tl('reactions', b.enemy.name, dmg, b.key);
     setBattleLog(reactions[Math.floor(Math.random() * reactions.length)]);
   }
 
