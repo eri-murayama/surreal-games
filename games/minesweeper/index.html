@@ -178,6 +178,42 @@ h1 {
   transform: scale(0.92);
 }
 
+/* 旗モードボタン */
+.flag-toggle {
+  font-size: clamp(20px, 5vw, 30px);
+  background: #1a1a2a;
+  border: 2px solid #3a3a4a;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 2px 8px;
+  transition: all 0.15s;
+  line-height: 1.2;
+  position: relative;
+}
+.flag-toggle:hover {
+  background: #2a2a3a;
+  border-color: #5a5a6a;
+}
+.flag-toggle:active {
+  transform: scale(0.92);
+}
+.flag-toggle.active {
+  background: #2a1a1a;
+  border-color: #aa4444;
+  box-shadow: 0 0 12px rgba(200, 50, 50, 0.4);
+}
+.flag-hint {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #888;
+  white-space: nowrap;
+  font-family: 'Noto Serif JP', serif;
+  pointer-events: none;
+}
+
 /* Board */
 .board-container {
   display: flex;
@@ -559,6 +595,7 @@ h1 {
 
 <div class="status-bar" id="statusBar">
   <div class="lcd" id="mineCount">010</div>
+  <button class="flag-toggle" id="flagToggle" onclick="toggleFlagMode()">🚩<span class="flag-hint">旗モード</span></button>
   <button class="face-btn" id="faceBtn" onclick="initGame()">👻</button>
   <div class="lcd" id="timer">000</div>
 </div>
@@ -805,8 +842,7 @@ let timerInterval = null;
 let elapsedTime = 0;
 let firstClick = true;
 let rows, cols, mineCount;
-let longPressTimer = null;
-let longPressTriggered = false;
+let flagMode = false;
 
 // ===== ハイスコア =====
 function getHighscore(diffName) {
@@ -839,6 +875,8 @@ function initGame() {
   elapsedTime = 0;
   gameState = 'idle';
   firstClick = true;
+  flagMode = false;
+  document.getElementById('flagToggle').classList.remove('active');
 
   const diff = DIFFICULTIES[currentDiff];
   rows = diff.rows;
@@ -901,7 +939,6 @@ function renderBoard() {
       cell.addEventListener('contextmenu', e => e.preventDefault());
       cell.addEventListener('touchstart', onTouchStart, {passive: false});
       cell.addEventListener('touchend', onTouchEnd, {passive: false});
-      cell.addEventListener('touchmove', onTouchMove, {passive: false});
 
       boardEl.appendChild(cell);
     }
@@ -915,7 +952,7 @@ function onMouseDown(e) {
   e.preventDefault();
   const r = +e.currentTarget.dataset.r;
   const c = +e.currentTarget.dataset.c;
-  if (e.button === 2) {
+  if (e.button === 2 || (e.button === 0 && flagMode)) {
     toggleFlag(r, c);
   } else if (e.button === 0) {
     revealCell(r, c);
@@ -924,29 +961,18 @@ function onMouseDown(e) {
 
 function onTouchStart(e) {
   e.preventDefault();
-  const cell = e.currentTarget;
-  longPressTriggered = false;
-  longPressTimer = setTimeout(() => {
-    longPressTriggered = true;
-    const r = +cell.dataset.r;
-    const c = +cell.dataset.c;
-    toggleFlag(r, c);
-  }, 400);
 }
 
 function onTouchEnd(e) {
   e.preventDefault();
-  clearTimeout(longPressTimer);
-  if (!longPressTriggered) {
-    const cell = e.currentTarget;
-    const r = +cell.dataset.r;
-    const c = +cell.dataset.c;
+  const cell = e.currentTarget;
+  const r = +cell.dataset.r;
+  const c = +cell.dataset.c;
+  if (flagMode) {
+    toggleFlag(r, c);
+  } else {
     revealCell(r, c);
   }
-}
-
-function onTouchMove(e) {
-  clearTimeout(longPressTimer);
 }
 
 function placeMines(safeR, safeC) {
@@ -1019,6 +1045,12 @@ function toggleFlag(r, c) {
   const cell = getCellDOM(r, c);
   cell.classList.toggle('flagged', flagged[r][c]);
   updateMineCounter();
+}
+
+function toggleFlagMode() {
+  flagMode = !flagMode;
+  const btn = document.getElementById('flagToggle');
+  btn.classList.toggle('active', flagMode);
 }
 
 function updateMineCounter() {
