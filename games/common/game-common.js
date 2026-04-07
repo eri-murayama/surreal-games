@@ -1565,16 +1565,31 @@
       const data = this._get();
       data.totalPlays = (data.totalPlays || 0) + 1;
       data.uniqueGamesPlayed = data.uniqueGamesPlayed || {};
-      data.uniqueGamesPlayed[gameId] = true;
+      // 後方互換: true → 1 に変換しつつカウント
+      if (data.uniqueGamesPlayed[gameId] === true) {
+        data.uniqueGamesPlayed[gameId] = 2;
+      } else {
+        data.uniqueGamesPlayed[gameId] = (data.uniqueGamesPlayed[gameId] || 0) + 1;
+      }
       this._save(data);
     },
 
     getSummary() {
       const data = this._get();
+      const played = data.uniqueGamesPlayed || {};
+      // お気に入りゲーム（最多プレイ）を算出
+      let favoriteId = null;
+      let maxPlays = 0;
+      for (const [id, count] of Object.entries(played)) {
+        const c = count === true ? 1 : count;
+        if (c > maxPlays) { maxPlays = c; favoriteId = id; }
+      }
       return {
         totalPlays: data.totalPlays || 0,
-        uniqueGames: Object.keys(data.uniqueGamesPlayed || {}).length,
+        uniqueGames: Object.keys(played).length,
         highScoreUpdates: data.highScoreUpdates || 0,
+        favoriteGameId: favoriteId,
+        favoriteGamePlays: maxPlays,
       };
     }
   };
@@ -1603,7 +1618,10 @@
 
       if (newlyUnlocked.length > 0) {
         localStorage.setItem(this._key, JSON.stringify(unlocked));
-        newlyUnlocked.forEach(a => this._showNotification(a));
+        newlyUnlocked.forEach(a => {
+          this._showNotification(a);
+          SG_GA.trackEvent('achievement_unlock', { achievement_id: a.id, achievement_name: a.title });
+        });
       }
 
       return newlyUnlocked;
@@ -1664,10 +1682,16 @@
   // ===== ゲーム間導線（おすすめゲーム） =====
   // 試作品を除外して正式リリース済みゲームのみ表示
   function createRecommendSection(currentGameId) {
+    const currentGame = GAME_CATALOG.find(g => g.id === currentGameId);
     const released = GAME_CATALOG.filter(g => RELEASED_IDS.includes(g.id) && g.id !== currentGameId);
-    // リリース済みが2つ以下なら全表示、3つ以上ならランダム3つ
-    const shuffled = released.sort(() => Math.random() - 0.5);
-    const picks = shuffled.slice(0, 3);
+    // 同ジャンルを優先し、残りをランダムで埋める
+    const sameGenre = released.filter(g => currentGame && g.genre === currentGame.genre);
+    const otherGenre = released.filter(g => !currentGame || g.genre !== currentGame.genre);
+    const sorted = [
+      ...sameGenre.sort(() => Math.random() - 0.5),
+      ...otherGenre.sort(() => Math.random() - 0.5)
+    ];
+    const picks = sorted.slice(0, 3);
 
     const isEn = (document.documentElement.lang || '').startsWith('en');
     const section = document.createElement('div');
@@ -1778,7 +1802,8 @@
       e.preventDefault();
       var text = '【' + title + '】を遊んだよ！\n#シュールゲームス';
       var url = window.location.href;
-      window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
+      SG_GA.trackEvent('share_click', { game_id: gameId });
+      window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
     });
     document.body.appendChild(btn);
   }
@@ -1829,6 +1854,39 @@
     document.body.appendChild(container);
   }
 
+  // ===== Google Analytics イベントトラッキング =====
+  const SG_GA = {
+    trackEvent(eventName, params) {
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, params || {});
+      }
+    }
+  };
+
+  // ===== Schema.org Game 構造化データ自動挿入 =====
+  function insertGameSchema(gameId) {
+    var game = GAME_CATALOG.find(function (g) { return g.id === gameId; });
+    if (!game) return;
+    var schema = {
+      '@context': 'https://schema.org',
+      '@type': 'VideoGame',
+      'name': game.title,
+      'description': game.desc || '',
+      'genre': game.genre,
+      'url': window.location.href,
+      'inLanguage': 'ja',
+      'author': {
+        '@type': 'Organization',
+        'name': '\u30b7\u30e5\u30fc\u30eb\u30b2\u30fc\u30e0\u30ba'
+      },
+      'gamePlatform': 'Web Browser'
+    };
+    var script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+  }
+
   // ===== 初期化 =====
   function init(gameId) {
     SoundSystem.init();
@@ -1836,6 +1894,7 @@
     createShareButton(gameId);
     createLangToggle();
     initScaling();
+    insertGameSchema(gameId);
 
     // ゲーム間導線をリザルト画面に挿入
     function insertRecommendSections() {
@@ -1891,6 +1950,7 @@
       // ゲーム開始時に呼ぶ
       onGameStart() {
         SoundSystem.play('start');
+        SG_GA.trackEvent('game_start', { game_id: gameId });
         // BGM開始
         const bgmPreset = GAME_BGM_MAP[gameId];
         if (bgmPreset) {
@@ -1908,6 +1968,12 @@
         if (score !== undefined && score !== null) {
           isNewHigh = HighScore.set(gameId, score, extra, lowerIsBetter);
         }
+
+        SG_GA.trackEvent('game_end', {
+          game_id: gameId,
+          score: score !== undefined ? score : 0,
+          is_new_high: isNewHigh
+        });
 
         // 実績チェック（少し遅らせて演出と被らないように）
         setTimeout(() => Achievements.check(), 1000);
@@ -1932,5 +1998,5 @@
   }
 
   // グローバルに公開
-  window.SurrealGames = { init, GAME_CATALOG, SoundSystem, HighScore, Stats, Achievements };
+  window.SurrealGames = { init, GAME_CATALOG, SoundSystem, HighScore, Stats, Achievements, GA: SG_GA };
 })();

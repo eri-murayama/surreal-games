@@ -8,7 +8,7 @@
   if (!loadingScreen) return;
 
   // アニメーション完了後にフェードアウト
-  const minDisplayTime = 1400; // バーアニメ(1.2s) + 余韻
+  const minDisplayTime = 800; // バーアニメ(0.6s) + 余韻
   const start = Date.now();
 
   function dismissLoading() {
@@ -327,6 +327,29 @@ if (logo) {
         '<p class="news-text">' + item.text + '</p>' +
         '</article>';
     }).join('');
+
+    // ニュース構造化データ（JSON-LD）を挿入
+    var newsJsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': 'シュールゲームス お知らせ',
+      'itemListElement': items.map(function(item, i) {
+        return {
+          '@type': 'ListItem',
+          'position': i + 1,
+          'item': {
+            '@type': 'NewsArticle',
+            'headline': item.text,
+            'datePublished': item.date.replace(/\./g, '-'),
+            'author': { '@type': 'Organization', 'name': 'シュールゲームス' }
+          }
+        };
+      })
+    };
+    var script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(newsJsonLd);
+    document.head.appendChild(script);
   }
 
   fetch('data/news.json')

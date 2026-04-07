@@ -162,12 +162,60 @@
 
     .achieve-card--unlocked {
       border-color: rgba(255, 110, 199, 0.3);
+      animation: achieveUnlockAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .achieve-card--unlocked::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.05) 45%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 55%,
+        transparent 60%
+      );
+      animation: achieveShimmer 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes achieveShimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(0deg); }
+    }
+
+    @keyframes achieveUnlockAppear {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .achieve-card--unlocked:hover {
       box-shadow:
         0 12px 30px rgba(0, 0, 0, 0.3),
         0 0 20px rgba(255, 110, 199, 0.15);
+    }
+
+    /* 全解除コンプリート演出 */
+    .progress-section.complete .progress-fill {
+      background: linear-gradient(90deg, #f5af19, #f12711, #ff6ec7, #00fff7);
+      background-size: 300% 100%;
+      animation: progressRainbow 3s linear infinite;
+    }
+
+    .progress-section.complete .progress-text {
+      color: var(--accent-yellow);
+    }
+
+    @keyframes progressRainbow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
     }
 
     .achieve-icon {
@@ -346,6 +394,25 @@
           <div class="stat-value" id="stat-highscores">0</div>
           <div class="stat-label">ハイスコア更新</div>
         </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-favorite">-</div>
+          <div class="stat-label">お気に入り</div>
+        </div>
+      </div>
+
+      <!-- 実績シェアボタン -->
+      <div style="text-align: center; margin-bottom: 1.5rem;" class="fade-in">
+        <button id="share-achievements" style="
+          background: linear-gradient(135deg, #1da1f2, #0d8bd9);
+          color: #fff;
+          border: none;
+          padding: 0.6rem 1.5rem;
+          border-radius: 999px;
+          font-size: 0.9rem;
+          cursor: pointer;
+          font-family: var(--font-body);
+          transition: transform 0.2s, box-shadow 0.2s;
+        ">𝕏 実績をシェア</button>
       </div>
 
       <div class="achieve-grid" id="achieve-grid">
@@ -377,6 +444,15 @@
       document.getElementById('stat-plays').textContent = stats.totalPlays;
       document.getElementById('stat-games').textContent = stats.uniqueGames;
       document.getElementById('stat-highscores').textContent = stats.highScoreUpdates;
+
+      // お気に入りゲーム
+      if (stats.favoriteGameId) {
+        var favGame = SG.GAME_CATALOG.find(function(g) { return g.id === stats.favoriteGameId; });
+        if (favGame) {
+          document.getElementById('stat-favorite').textContent = favGame.emoji;
+          document.getElementById('stat-favorite').title = favGame.title + '（' + stats.favoriteGamePlays + '回）';
+        }
+      }
 
       // 全実績を取得
       const achievements = SG.Achievements.getAll();
@@ -427,6 +503,26 @@
         }, { threshold: 0.1 });
         obs.observe(el);
       });
+
+      // 全解除コンプリート演出
+      if (unlocked === total && total > 0) {
+        document.querySelector('.progress-section').classList.add('complete');
+      }
+
+      // 実績シェアボタン
+      var shareBtn = document.getElementById('share-achievements');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', function () {
+          var text = '【シュールゲームス 実績】\n' +
+            unlocked + ' / ' + total + ' 解除済み（' + pct + '%）\n' +
+            '総プレイ回数: ' + stats.totalPlays + '\n' +
+            '#シュールゲームス';
+          var url = window.location.href;
+          window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
+        });
+        shareBtn.addEventListener('mouseenter', function () { this.style.transform = 'scale(1.05)'; });
+        shareBtn.addEventListener('mouseleave', function () { this.style.transform = 'scale(1)'; });
+      }
 
       // 実績がゼロの場合
       if (stats.totalPlays === 0) {

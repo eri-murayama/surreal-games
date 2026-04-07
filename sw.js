@@ -1,4 +1,4 @@
-const CACHE_NAME = 'surreal-games-v2';
+const CACHE_NAME = 'surreal-games-v3';
 
 const PRE_CACHE = [
   '/surreal-games/',
@@ -10,7 +10,10 @@ const PRE_CACHE = [
   '/surreal-games/characters.html',
   '/surreal-games/achievements.html',
   '/surreal-games/prototypes.html',
-  '/surreal-games/data/news.json'
+  '/surreal-games/data/news.json',
+  '/surreal-games/games/common/game-common.js',
+  '/surreal-games/games/common/game-common.css',
+  '/surreal-games/games/common/i18n.js'
 ];
 
 // Install: pre-cache core assets
@@ -56,7 +59,13 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(() =>
+          caches.match(request).then((cached) => {
+            if (cached) return cached;
+            // オフライン時のフォールバック：トップページを返す
+            return caches.match('/surreal-games/index.html');
+          })
+        )
     );
   } else {
     // Cache-first for static assets (CSS, JS, images, etc.)
