@@ -857,6 +857,8 @@ let elapsedTime = 0;
 let firstClick = true;
 let rows, cols, mineCount;
 let flagMode = false;
+let longPressTimer = null;
+let longPressTriggered = false;
 
 // ===== ハイスコア =====
 function getHighscore(diffName) {
@@ -953,6 +955,7 @@ function renderBoard() {
       cell.addEventListener('contextmenu', e => e.preventDefault());
       cell.addEventListener('touchstart', onTouchStart, {passive: false});
       cell.addEventListener('touchend', onTouchEnd, {passive: false});
+      cell.addEventListener('touchmove', onTouchMove, {passive: false});
 
       boardEl.appendChild(cell);
     }
@@ -975,18 +978,33 @@ function onMouseDown(e) {
 
 function onTouchStart(e) {
   e.preventDefault();
+  const cell = e.currentTarget;
+  longPressTriggered = false;
+  longPressTimer = setTimeout(() => {
+    longPressTriggered = true;
+    const r = +cell.dataset.r;
+    const c = +cell.dataset.c;
+    toggleFlag(r, c);
+  }, 400);
 }
 
 function onTouchEnd(e) {
   e.preventDefault();
-  const cell = e.currentTarget;
-  const r = +cell.dataset.r;
-  const c = +cell.dataset.c;
-  if (flagMode) {
-    toggleFlag(r, c);
-  } else {
-    revealCell(r, c);
+  clearTimeout(longPressTimer);
+  if (!longPressTriggered) {
+    const cell = e.currentTarget;
+    const r = +cell.dataset.r;
+    const c = +cell.dataset.c;
+    if (flagMode) {
+      toggleFlag(r, c);
+    } else {
+      revealCell(r, c);
+    }
   }
+}
+
+function onTouchMove(e) {
+  clearTimeout(longPressTimer);
 }
 
 function placeMines(safeR, safeC) {
