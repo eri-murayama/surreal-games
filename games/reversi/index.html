@@ -413,6 +413,74 @@ html, body {
   transform: translate(-50%, -50%) scale(1);
 }
 
+/* デュエルスタンバイ演出 */
+.duel-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 300;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+}
+.duel-overlay.show {
+  animation: duelFlash 2.2s ease-out forwards;
+}
+.duel-overlay .duel-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle, rgba(255,60,0,0.7) 0%, rgba(150,0,0,0.5) 40%, rgba(0,0,0,0.95) 70%);
+  animation: duelBgPulse 2.2s ease-out forwards;
+}
+.duel-overlay .duel-img {
+  position: relative;
+  animation: duelImgSlam 2.2s ease-out forwards;
+}
+.duel-overlay .duel-text {
+  position: relative;
+  font-size: clamp(28px, 9vw, 60px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow:
+    0 0 15px #ff6600,
+    0 0 30px #ff3300,
+    0 0 60px #cc0000,
+    0 4px 8px rgba(0,0,0,0.9);
+  letter-spacing: 6px;
+  animation: duelTextSlam 2.2s ease-out forwards;
+}
+@keyframes duelFlash {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes duelBgPulse {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes duelImgSlam {
+  0% { transform: scale(3) rotate(-15deg); opacity: 0; filter: blur(10px); }
+  15% { transform: scale(1) rotate(3deg); opacity: 1; filter: blur(0); }
+  25% { transform: scale(1.1) rotate(-2deg); }
+  35% { transform: scale(1) rotate(0deg); }
+  75% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(0deg); opacity: 0; filter: blur(8px); }
+}
+@keyframes duelTextSlam {
+  0% { transform: scale(3) translateY(30px); opacity: 0; filter: blur(8px); }
+  15% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
+  22% { transform: scale(1.15) translateY(-5px); }
+  30% { transform: scale(1) translateY(0); }
+  75% { transform: scale(1) translateY(0); opacity: 1; }
+  100% { transform: scale(1.3) translateY(0); opacity: 0; filter: blur(8px); }
+}
+
 /* 奥の手ボタン */
 .btn.okunote {
   background: linear-gradient(135deg, #8b0000, #cc3300, #ff6600);
@@ -528,103 +596,206 @@ html, body {
   100% { transform: scaleX(1); opacity: 0.6; }
 }
 
-/* 永遠に俺のターン演出 */
+/* ずっと俺のターン演出 — シネマティック演出 */
 .eternal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
   z-index: 300;
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   opacity: 0;
+  overflow: hidden;
 }
 .eternal-overlay.show {
-  animation: eternalFlash 3.5s ease-out forwards;
+  animation: eternalShow 5.5s ease-out forwards;
 }
+/* 集中線背景 */
 .eternal-overlay .eternal-bg {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
-  background: radial-gradient(circle, rgba(255,215,0,0.7) 0%, rgba(255,60,0,0.5) 30%, rgba(180,0,0,0.4) 50%, rgba(0,0,0,0.95) 70%);
-  animation: eternalBgFlicker 3.5s ease-out forwards;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,215,0,0.08) 0deg 3deg, transparent 3deg 9deg),
+    radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.98) 60%);
+  animation: eternalBgSpin 5.5s linear forwards;
 }
+/* シネマティック黒帯 */
+.eternal-overlay .eternal-cinema-top,
+.eternal-overlay .eternal-cinema-bottom {
+  position: absolute; left: 0; width: 100%; height: 10%; background: #000; z-index: 5;
+}
+.eternal-overlay .eternal-cinema-top { top: 0; animation: cinemaSlideDown 0.4s ease-out 0.1s both; }
+.eternal-overlay .eternal-cinema-bottom { bottom: 0; animation: cinemaSlideUp 0.4s ease-out 0.1s both; }
+/* キャラ画像 — 左からスライドイン、大きく表示 */
+.eternal-overlay .eternal-img {
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  animation: eternalImgSlide 5.5s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.eternal-overlay .eternal-img img {
+  width: clamp(180px, 50vw, 340px) !important;
+  filter: drop-shadow(0 0 40px #ffd700) drop-shadow(0 0 80px #ff4500) drop-shadow(0 0 120px rgba(255,0,0,0.5)) !important;
+}
+/* メインテキスト — 右側に大きく叩きつけ */
 .eternal-overlay .eternal-text {
-  position: relative;
-  font-size: clamp(36px, 11vw, 80px);
+  position: absolute;
+  right: 5%; top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(44px, 14vw, 100px);
   font-weight: 900;
   color: #ffd700;
   text-shadow:
     0 0 20px #ffd700,
-    0 0 40px #ff8c00,
-    0 0 80px #ff4500,
-    0 0 120px #ff0000,
-    0 0 180px rgba(255,0,0,0.6),
-    0 0 240px rgba(255,215,0,0.3),
-    0 6px 12px rgba(0,0,0,0.9);
-  letter-spacing: 8px;
-  animation: eternalTextPop 3.5s ease-out forwards;
-  text-align: center;
-  line-height: 1.4;
-  -webkit-text-stroke: 2px rgba(255,200,0,0.3);
+    0 0 50px #ff8c00,
+    0 0 100px #ff4500,
+    0 0 150px #ff0000,
+    0 8px 16px rgba(0,0,0,0.95);
+  letter-spacing: 6px;
+  text-align: right;
+  line-height: 1.2;
+  z-index: 4;
+  animation: eternalTextSlam 5.5s cubic-bezier(0.16,1,0.3,1) forwards;
+  -webkit-text-stroke: 2px rgba(255,200,0,0.4);
+  writing-mode: vertical-rl;
 }
+/* サブテキスト */
 .eternal-overlay .eternal-sub {
-  position: relative;
-  font-size: clamp(16px, 5vw, 28px);
+  position: absolute;
+  right: 5%; bottom: 14%;
+  font-size: clamp(14px, 4vw, 22px);
   color: #ffcc00;
   font-weight: 700;
-  text-shadow: 0 0 15px #ff6600, 0 0 30px rgba(255,100,0,0.5);
-  margin-top: 12px;
-  animation: eternalSubFade 3.5s ease-out forwards;
-  letter-spacing: 4px;
+  text-shadow: 0 0 20px #ff6600, 0 0 40px rgba(255,100,0,0.6);
+  letter-spacing: 6px;
+  z-index: 4;
+  animation: eternalSubReveal 5.5s ease-out forwards;
 }
+/* ゴールドライン — 横にスキャン */
 .eternal-overlay .eternal-ring {
   position: absolute;
-  width: clamp(200px, 50vw, 400px);
-  height: clamp(200px, 50vw, 400px);
-  border: 4px solid rgba(255,215,0,0.4);
-  border-radius: 50%;
-  animation: eternalRingExpand 2s ease-out 0.3s forwards;
-  opacity: 0;
+  top: 50%; left: 0;
+  width: 100%; height: 4px;
+  border: none; border-radius: 0;
+  background: linear-gradient(90deg, transparent, #ffd700, #fff, #ffd700, transparent);
+  box-shadow: 0 0 30px #ffd700, 0 0 60px rgba(255,215,0,0.5);
+  z-index: 6;
+  animation: eternalGoldSweep 1s ease-out 0.3s both;
 }
-@keyframes eternalFlash {
+
+@keyframes eternalShow {
   0% { opacity: 0; }
+  4% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes eternalBgSpin {
+  0% { transform: rotate(0deg); opacity: 0; }
   8% { opacity: 1; }
-  78% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: rotate(30deg); opacity: 0; }
+}
+@keyframes eternalImgSlide {
+  0% { transform: translateY(-50%) translateX(-120%) scale(0.5); opacity: 0; }
+  10% { transform: translateY(-50%) translateX(0%) scale(1.1); opacity: 1; }
+  16% { transform: translateY(-50%) translateX(5%) scale(1); }
+  85% { transform: translateY(-50%) translateX(0%) scale(1); opacity: 1; }
+  100% { transform: translateY(-50%) translateX(0%) scale(1.1); opacity: 0; }
+}
+@keyframes eternalTextSlam {
+  0% { transform: translateY(-50%) scale(3); opacity: 0; filter: blur(16px); }
+  8% { transform: translateY(-50%) scale(1); opacity: 1; filter: blur(0); }
+  12% { transform: translateY(-50%) scale(1.15); }
+  18% { transform: translateY(-50%) scale(1); }
+  85% { transform: translateY(-50%) scale(1); opacity: 1; }
+  100% { transform: translateY(-50%) scale(1.05); opacity: 0; filter: blur(8px); }
+}
+@keyframes eternalSubReveal {
+  0%, 15% { opacity: 0; transform: translateY(20px); }
+  25% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
   100% { opacity: 0; }
 }
-@keyframes eternalBgFlicker {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  20% { opacity: 0.6; }
-  30% { opacity: 1; }
-  40% { opacity: 0.8; }
-  50% { opacity: 1; }
-  78% { opacity: 1; }
-  100% { opacity: 0; }
+@keyframes eternalGoldSweep {
+  0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
+  40% { transform: translateY(-50%) scaleX(1); opacity: 1; }
+  100% { transform: translateY(-50%) scaleX(1); opacity: 0; }
 }
-@keyframes eternalTextPop {
-  0% { transform: scale(0) rotate(-20deg); opacity: 0; filter: blur(12px); }
-  12% { transform: scale(2) rotate(8deg); opacity: 1; filter: blur(0); }
-  20% { transform: scale(0.8) rotate(-4deg); }
-  28% { transform: scale(1.4) rotate(3deg); }
-  36% { transform: scale(0.95) rotate(-1deg); }
-  44% { transform: scale(1.1) rotate(0deg); }
-  50% { transform: scale(1) rotate(0deg); }
-  78% { transform: scale(1) rotate(0deg); opacity: 1; }
-  100% { transform: scale(2) rotate(0deg); opacity: 0; filter: blur(12px); }
+
+/* デュエルスタンバイ演出 — カード召喚風 */
+.duel-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 300;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
 }
-@keyframes eternalSubFade {
-  0% { opacity: 0; transform: translateY(30px); }
-  20% { opacity: 0; transform: translateY(30px); }
-  35% { opacity: 1; transform: translateY(0); }
-  78% { opacity: 1; }
-  100% { opacity: 0; }
+.duel-overlay.show { animation: duelShow 2.8s ease-out forwards; }
+.duel-overlay .duel-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(20,0,50,0.9) 50%, rgba(0,0,0,0.95) 100%);
 }
-@keyframes eternalRingExpand {
-  0% { transform: scale(0.5); opacity: 0; }
-  30% { opacity: 0.6; }
-  100% { transform: scale(3); opacity: 0; }
+.duel-overlay .duel-cinema-top,
+.duel-overlay .duel-cinema-bottom {
+  position: absolute; left: 0; width: 100%; height: 12%; background: #000; z-index: 2;
+}
+.duel-overlay .duel-cinema-top { top: 0; animation: cinemaSlideDown 0.3s ease-out 0.1s both; }
+.duel-overlay .duel-cinema-bottom { bottom: 0; animation: cinemaSlideUp 0.3s ease-out 0.1s both; }
+.duel-overlay .duel-line {
+  position: absolute; width: 120%; height: 3px; left: -10%;
+  background: linear-gradient(90deg, transparent 0%, #ff6600 20%, #ffcc00 50%, #ff6600 80%, transparent 100%);
+  box-shadow: 0 0 20px #ff6600, 0 0 40px rgba(255,100,0,0.4);
+  z-index: 3;
+}
+.duel-overlay .duel-line-top { top: 38%; animation: duelLineSweep 0.5s ease-out 0.2s both; }
+.duel-overlay .duel-line-bottom { bottom: 38%; animation: duelLineSweep 0.5s ease-out 0.35s both; }
+.duel-overlay .duel-img {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  animation: duelCardFlip 2.8s ease-out forwards;
+}
+.duel-overlay .duel-text {
+  position: absolute;
+  left: 50%; bottom: 22%;
+  transform: translateX(-50%);
+  font-size: clamp(28px, 9vw, 64px);
+  font-weight: 900;
+  color: #fff;
+  white-space: nowrap;
+  text-shadow: 0 0 30px #ff6600, 0 0 60px #cc0000, 0 4px 8px rgba(0,0,0,0.9);
+  letter-spacing: 8px;
+  z-index: 5;
+  animation: duelTextReveal 2.8s ease-out forwards;
+  -webkit-text-stroke: 1px rgba(255,150,0,0.3);
+}
+@keyframes duelShow {
+  0% { opacity: 0; } 6% { opacity: 1; } 78% { opacity: 1; } 100% { opacity: 0; }
+}
+@keyframes cinemaSlideDown {
+  0% { transform: translateY(-100%); } 100% { transform: translateY(0); }
+}
+@keyframes cinemaSlideUp {
+  0% { transform: translateY(100%); } 100% { transform: translateY(0); }
+}
+@keyframes duelLineSweep {
+  0% { transform: scaleX(0); opacity: 0; } 60% { transform: scaleX(1); opacity: 1; } 100% { opacity: 0.5; }
+}
+@keyframes duelCardFlip {
+  0% { transform: translate(-50%,-50%) perspective(800px) rotateY(90deg) scale(0.3); opacity: 0; }
+  15% { transform: translate(-50%,-50%) perspective(800px) rotateY(0deg) scale(1.3); opacity: 1; }
+  25% { transform: translate(-50%,-50%) perspective(800px) rotateY(-8deg) scale(1); }
+  35% { transform: translate(-50%,-50%) perspective(800px) rotateY(0deg) scale(1.05); }
+  78% { transform: translate(-50%,-50%) scale(1.05); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(1.2); opacity: 0; }
+}
+@keyframes duelTextReveal {
+  0% { transform: translateX(-50%) scaleX(0); opacity: 0; letter-spacing: 30px; }
+  12% { transform: translateX(-50%) scaleX(1); opacity: 1; letter-spacing: 8px; }
+  78% { opacity: 1; } 100% { opacity: 0; }
 }
 
 /* オールリバース演出 */
@@ -860,7 +1031,7 @@ html, body {
       <button class="diff-btn" data-diff="hard">つよい</button>
     </div>
     <button class="btn primary" id="newGameBtn">新しいゲーム</button>
-    <button class="btn okunote" id="okunoteBtn">⚡ 奥の手</button>
+    <button class="btn okunote" id="okunoteBtn">🃏 リバースカード</button>
   </div>
 </div>
 
@@ -888,9 +1059,22 @@ html, body {
 
 <div class="eternal-overlay" id="eternalOverlay">
   <div class="eternal-bg"></div>
+  <div class="eternal-cinema-top"></div>
+  <div class="eternal-cinema-bottom"></div>
   <div class="eternal-ring"></div>
-  <div class="eternal-text">永遠に<br>俺のターン！</div>
+  <div class="eternal-img"><img src="character.png" alt=""></div>
+  <div class="eternal-text">ずっと俺のターン！</div>
   <div class="eternal-sub">― どこにでも置ける ―</div>
+</div>
+
+<div class="duel-overlay" id="duelOverlay">
+  <div class="duel-bg"></div>
+  <div class="duel-cinema-top"></div>
+  <div class="duel-cinema-bottom"></div>
+  <div class="duel-line duel-line-top"></div>
+  <div class="duel-line duel-line-bottom"></div>
+  <div class="duel-img"><img src="character.png" alt="" style="width:clamp(140px,40vw,260px);filter:drop-shadow(0 0 30px #ff6600) drop-shadow(0 0 60px #cc0000);"></div>
+  <div class="duel-text">デュエルスタンバイ！</div>
 </div>
 
 <div class="allreverse-overlay" id="allreverseOverlay">
@@ -1496,7 +1680,8 @@ html, body {
     });
   });
 
-  // 奥の手ボタン
+  // リバースカードボタン
+  const duelOverlay = document.getElementById('duelOverlay');
   okunoteBtn.addEventListener('click', () => {
     if (gameOver || cpuThinking || isAnimating || currentPlayer !== BLACK) return;
     if (myTurnRemaining > 0) return; // 既に発動中
@@ -1511,31 +1696,39 @@ html, body {
     }
     if (eternalMode) return;
 
+    isAnimating = true;
     okunoTeCount++;
-    myTurnRemaining = 2; // 2回石を置ける
 
-    if (okunoTeCount >= ETERNAL_THRESHOLD) {
-      // 永遠に俺のターン！
-      eternalMode = true;
-      myTurnRemaining = 0; // 永遠モードでは残り手数は関係ない
-      showEternalEffect();
-      spawnSparks(80, ['#ffd700','#ff8c00','#ff4500','#ff0000','#ffff00','#fff']);
-      boardWrapper.classList.add('eternal-mode');
-      setTimeout(() => {
-        // 永遠モード突入時に負けていたらボタンをオールリバースに変更
-        updateOkunoteButton();
-        renderBoard();
-        updateTurnForOkunote();
-      }, 3000);
-    } else {
-      // 俺のターン！
-      showMyTurnEffect();
-      spawnSparks(60, ['#ff6600','#ff3300','#ffcc00','#ff9900','#ff0000']);
-      setTimeout(() => {
-        renderBoard();
-        updateTurnForOkunote();
-      }, 2000);
-    }
+    // まず「デュエルスタンバイ！」演出
+    showDuelStandbyEffect();
+
+    setTimeout(() => {
+      myTurnRemaining = 2; // 2回石を置ける
+
+      if (okunoTeCount >= ETERNAL_THRESHOLD) {
+        // ずっと俺のターン！
+        eternalMode = true;
+        myTurnRemaining = 0;
+        showEternalEffect();
+        spawnSparks(80, ['#ffd700','#ff8c00','#ff4500','#ff0000','#ffff00','#fff']);
+        boardWrapper.classList.add('eternal-mode');
+        setTimeout(() => {
+          updateOkunoteButton();
+          renderBoard();
+          updateTurnForOkunote();
+          isAnimating = false;
+        }, 5500);
+      } else {
+        // 俺のターン！
+        showMyTurnEffect();
+        spawnSparks(60, ['#ff6600','#ff3300','#ffcc00','#ff9900','#ff0000']);
+        setTimeout(() => {
+          renderBoard();
+          updateTurnForOkunote();
+          isAnimating = false;
+        }, 2000);
+      }
+    }, 2500); // デュエルスタンバイ演出の後
   });
 
   // 永遠モード時、負けていたらボタンをオールリバースに変更
@@ -1630,6 +1823,35 @@ html, body {
     setTimeout(() => allreverseOverlay.classList.remove('show'), 4100);
   }
 
+  // デュエルスタンバイ！演出
+  function showDuelStandbyEffect() {
+    duelOverlay.querySelector('.duel-text').textContent = t('duelStandby');
+    duelOverlay.classList.remove('show');
+    void duelOverlay.offsetWidth;
+    duelOverlay.classList.add('show');
+    // カード登場時の衝撃シェイク（画像が着地する0.4秒後）
+    setTimeout(() => {
+      document.body.animate([
+        { transform: 'translate(0,0)' },
+        { transform: 'translate(-6px,3px)' },
+        { transform: 'translate(6px,-3px)' },
+        { transform: 'translate(-3px,6px)' },
+        { transform: 'translate(3px,-6px)' },
+        { transform: 'translate(0,0)' },
+      ], { duration: 350, iterations: 2 });
+    }, 400);
+    // 白フラッシュ（カード登場の瞬間）
+    setTimeout(() => {
+      const flash = document.createElement('div');
+      flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.5);z-index:299;pointer-events:none;';
+      document.body.appendChild(flash);
+      flash.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
+      setTimeout(() => flash.remove(), 350);
+    }, 350);
+    spawnSparks(50, ['#ff6600','#ffcc00','#fff','#ffd700','#ff3300']);
+    setTimeout(() => duelOverlay.classList.remove('show'), 2500);
+  }
+
   // 俺のターン演出
   function showMyTurnEffect() {
     myTurnOverlay.classList.remove('show');
@@ -1655,36 +1877,37 @@ html, body {
     setTimeout(() => myTurnOverlay.classList.remove('show'), 2100);
   }
 
-  // 永遠に俺のターン演出
+  // ずっと俺のターン演出
   function showEternalEffect() {
     eternalOverlay.classList.remove('show');
     void eternalOverlay.offsetWidth;
     eternalOverlay.classList.add('show');
-    // 激しい画面シェイク
-    document.body.animate([
-      { transform: 'translate(0,0)' },
-      { transform: 'translate(-8px,4px)' },
-      { transform: 'translate(8px,-4px)' },
-      { transform: 'translate(-4px,8px)' },
-      { transform: 'translate(4px,-8px)' },
-      { transform: 'translate(-6px,-3px)' },
-      { transform: 'translate(6px,3px)' },
-      { transform: 'translate(0,0)' },
-    ], { duration: 400, iterations: 4 });
-    // 3連フラッシュ
-    [0, 200, 400].forEach(delay => {
-      setTimeout(() => {
-        const flash = document.createElement('div');
-        flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,215,0,0.5);z-index:299;pointer-events:none;';
-        document.body.appendChild(flash);
-        flash.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' });
-        setTimeout(() => flash.remove(), 300);
-      }, delay);
-    });
-    spawnConfetti();
-    // 2回目の紙吹雪（豪華に）
-    setTimeout(() => spawnConfetti(), 800);
-    setTimeout(() => eternalOverlay.classList.remove('show'), 3100);
+    // 着地の衝撃シェイク（0.3秒後に発動）
+    setTimeout(() => {
+      document.body.animate([
+        { transform: 'translate(0,0)' },
+        { transform: 'translate(-10px,5px)' },
+        { transform: 'translate(10px,-5px)' },
+        { transform: 'translate(-5px,10px)' },
+        { transform: 'translate(5px,-10px)' },
+        { transform: 'translate(-8px,-4px)' },
+        { transform: 'translate(8px,4px)' },
+        { transform: 'translate(0,0)' },
+      ], { duration: 500, iterations: 3 });
+    }, 300);
+    // ゴールドフラッシュ（ゴールドライン通過時）
+    setTimeout(() => {
+      const flash = document.createElement('div');
+      flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,215,0,0.6);z-index:299;pointer-events:none;';
+      document.body.appendChild(flash);
+      flash.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' });
+      setTimeout(() => flash.remove(), 550);
+    }, 350);
+    // 紙吹雪を豪華に3連
+    setTimeout(() => spawnConfetti(), 500);
+    setTimeout(() => spawnConfetti(), 1200);
+    setTimeout(() => spawnConfetti(), 2500);
+    setTimeout(() => eternalOverlay.classList.remove('show'), 5200);
   }
 
   // 火花エフェクト
@@ -1752,13 +1975,14 @@ SurrealI18n.init({
     shareOnX: '𝕏 シェア',
     backToHome: '🏠 トップページへ',
     otherGames: '🎮 他のゲームも遊ぶ',
-    okunote: '⚡ 奥の手',
+    okunote: '🃏 リバースカード',
     myTurn: '俺のターン',
     myTurnExcl: '！',
-    myTurnRemaining: (n) => `⚡ 俺のターン！(残り${n})`,
-    eternalTurn: '∞ 俺のターン ∞',
-    eternalText: '永遠に<br>俺のターン！',
+    myTurnRemaining: (n) => `🃏 俺のターン！(残り${n})`,
+    eternalTurn: '∞ ずっと俺のターン ∞',
+    eternalText: 'ずっと俺のターン！',
     eternalSub: '― どこにでも置ける ―',
+    duelStandby: 'デュエルスタンバイ！',
     allReverse: '💀 オールリバース',
     allReverseText: 'オール<br>リバース',
     allReverseSub: '― 全てが黒に染まる ―',
@@ -1784,13 +2008,14 @@ SurrealI18n.init({
     shareOnX: '𝕏 Share',
     backToHome: '🏠 Home',
     otherGames: '🎮 Play Other Games',
-    okunote: '⚡ Trump Card',
+    okunote: '🃏 Reverse Card',
     myTurn: 'MY TURN',
     myTurnExcl: '!',
-    myTurnRemaining: (n) => `⚡ MY TURN! (${n} left)`,
-    eternalTurn: '∞ MY TURN ∞',
-    eternalText: 'ETERNAL<br>MY TURN!',
+    myTurnRemaining: (n) => `🃏 MY TURN! (${n} left)`,
+    eternalTurn: '∞ ALWAYS MY TURN ∞',
+    eternalText: 'ALWAYS MY TURN!',
     eternalSub: '― Place anywhere ―',
+    duelStandby: 'DUEL, STANDBY!',
     allReverse: '💀 ALL REVERSE',
     allReverseText: 'ALL<br>REVERSE',
     allReverseSub: '― Everything turns black ―',
@@ -1821,8 +2046,9 @@ function updateAllTexts() {
   document.getElementById('resultHome').textContent = t('backToHome');
   // 俺のターン演出テキスト
   document.querySelector('.my-turn-text').innerHTML = t('myTurn') + '<span class="exclamation">' + t('myTurnExcl') + '</span>';
-  document.querySelector('.eternal-text').innerHTML = t('eternalText');
+  document.querySelector('.eternal-text').textContent = t('eternalText');
   document.querySelector('.eternal-sub').textContent = t('eternalSub');
+  document.querySelector('.duel-text').textContent = t('duelStandby');
   document.querySelector('.allreverse-text').innerHTML = t('allReverseText');
   document.querySelector('.allreverse-sub').textContent = t('allReverseSub');
   // おすすめゲーム
