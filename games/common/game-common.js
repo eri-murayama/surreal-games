@@ -67,6 +67,20 @@
     { id: 'high_scorer', title: 'ハイスコアラー', titleEn: 'High Scorer', desc: 'ハイスコアを10回更新した', descEn: 'Beat your high score 10 times', emoji: '📈', condition: (stats) => stats.highScoreUpdates >= 10 },
     { id: 'night_owl', title: '夜更かしゲーマー', titleEn: 'Night Owl', desc: '深夜0時〜4時にプレイした', descEn: 'Played between 12 AM and 4 AM', emoji: '🦉', condition: () => { const h = new Date().getHours(); return h >= 0 && h < 4; } },
     { id: 'early_bird', title: '早起きゲーマー', titleEn: 'Early Bird', desc: '朝5時〜7時にプレイした', descEn: 'Played between 5 AM and 7 AM', emoji: '🐔', condition: () => { const h = new Date().getHours(); return h >= 5 && h < 7; } },
+    { id: 'play_100', title: 'シュール廃人', titleEn: 'Surreal Addict', desc: '100回ゲームをプレイした', descEn: 'Played games 100 times', emoji: '💀', condition: (stats) => stats.totalPlays >= 100 },
+    { id: 'play_200', title: '伝説のシュール人', titleEn: 'Legendary Surrealist', desc: '200回ゲームをプレイした', descEn: 'Played games 200 times', emoji: '🐉', condition: (stats) => stats.totalPlays >= 200 },
+    { id: 'explorer_5', title: 'つまみ食い', titleEn: 'Sampler', desc: '5種類のゲームをプレイした', descEn: 'Played 5 different games', emoji: '🍡', condition: (stats) => stats.uniqueGames >= 5 },
+    { id: 'high_scorer_3', title: 'ハイスコア初心者', titleEn: 'Score Chaser', desc: 'ハイスコアを3回更新した', descEn: 'Beat your high score 3 times', emoji: '📊', condition: (stats) => stats.highScoreUpdates >= 3 },
+    { id: 'high_scorer_30', title: 'スコアの鬼', titleEn: 'Score Demon', desc: 'ハイスコアを30回更新した', descEn: 'Beat your high score 30 times', emoji: '🔥', condition: (stats) => stats.highScoreUpdates >= 30 },
+    { id: 'weekend_gamer', title: '週末ゲーマー', titleEn: 'Weekend Gamer', desc: '土日にプレイした', descEn: 'Played on a weekend', emoji: '🛋️', condition: () => { const d = new Date().getDay(); return d === 0 || d === 6; } },
+    { id: 'lunch_break', title: 'お昼休みゲーマー', titleEn: 'Lunch Break Gamer', desc: '12時〜13時にプレイした', descEn: 'Played during lunch (12-1 PM)', emoji: '🍱', condition: () => { const h = new Date().getHours(); return h === 12; } },
+    { id: 'devotee', title: '推しが決まった', titleEn: 'Devoted Fan', desc: '同じゲームを10回プレイした', descEn: 'Played the same game 10 times', emoji: '💕', condition: (stats) => stats.favoriteGamePlays >= 10 },
+    { id: 'super_devotee', title: '沼にハマった', titleEn: 'Down the Rabbit Hole', desc: '同じゲームを30回プレイした', descEn: 'Played the same game 30 times', emoji: '🕳️', condition: (stats) => stats.favoriteGamePlays >= 30 },
+    { id: 'new_year', title: '新年ゲーマー', titleEn: 'New Year Gamer', desc: '1月1日にプレイした', descEn: 'Played on January 1st', emoji: '🎍', condition: () => { const d = new Date(); return d.getMonth() === 0 && d.getDate() === 1; } },
+    { id: 'christmas', title: 'クリスマスゲーマー', titleEn: 'Christmas Gamer', desc: '12月25日にプレイした', descEn: 'Played on Christmas Day', emoji: '🎄', condition: () => { const d = new Date(); return d.getMonth() === 11 && d.getDate() === 25; } },
+    { id: 'halloween', title: 'ハロウィンゲーマー', titleEn: 'Halloween Gamer', desc: '10月31日にプレイした', descEn: 'Played on Halloween', emoji: '🎃', condition: () => { const d = new Date(); return d.getMonth() === 9 && d.getDate() === 31; } },
+    { id: 'sound_explorer', title: '音の冒険者', titleEn: 'Sound Explorer', desc: 'サウンドをONにしてプレイした', descEn: 'Played with sound enabled', emoji: '🔊', condition: () => SoundSystem.enabled },
+    { id: 'silent_gamer', title: '静寂の戦士', titleEn: 'Silent Warrior', desc: 'サウンドをOFFにしてプレイした', descEn: 'Played with sound disabled', emoji: '🔇', condition: () => !SoundSystem.enabled },
   ];
 
   // ===== BGMシステム =====
