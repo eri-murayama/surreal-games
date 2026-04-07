@@ -25,7 +25,7 @@ body{
 
 /* タイトル画面 */
 #title-screen{padding-top:20px}
-#title-emoji{font-size:80px;animation:float 3s ease-in-out infinite}
+#title-emoji{width:120px;height:120px;margin:0 auto;animation:float 3s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 #title-catchphrase{
   font-size:.95rem;color:#aaa;margin:16px 0;font-style:italic;
@@ -89,6 +89,19 @@ body{
   position:relative;
   transition:background .15s;
   user-select:none;
+  overflow:hidden;
+}
+.cell img{
+  width:85%;
+  height:85%;
+  object-fit:contain;
+  pointer-events:none;
+}
+.evo-icon{
+  height:1.4em;
+  width:auto;
+  vertical-align:middle;
+  margin-right:2px;
 }
 .cell[data-level="1"]{background:#1e3a5f}
 .cell[data-level="2"]{background:#1e5f3a}

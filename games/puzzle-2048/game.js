@@ -2,50 +2,50 @@
 
 /* ── 定数 ── */
 const SIZE = 5;
-const EVOLUTION = [
-  '',        // 0: 空
-  '🫧',     // 1: 泡
-  '🥚',     // 2: 卵
-  '🐣',     // 3: ひよこ
-  '🐸',     // 4: カエル
-  '🐙',     // 5: タコ
-  '👽',     // 6: 宇宙人
-  '🤖',     // 7: ロボット
-  '🦄',     // 8: ユニコーン
-  '🐉',     // 9: ドラゴン
-  '👑',     // 10: 王冠
-  '🌟',     // 11: 星
-  '🌌',     // 12: 銀河
+const EVO_IMAGES = [
+  '',                         // 0: 空
+  'images/softcream.png',     // 1: ソフトクリーム
+  'images/protagonist.png',   // 2: 主人公
+  'images/manmen-no-emi.png', // 3: 満面の笑み
+  'images/illust10.png',      // 4: 謎の生物
+  'images/atsushi.png',       // 5: 篤
+  'images/kaidan-ghost.png',  // 6: おばけ
+  'images/unko-char.png',     // 7: うんこ
+  'images/illust9.png',       // 8: さくらんぼちゃん
+  'images/hakase-mount.png',  // 9: 博士
+  'images/yoshinori.png',     // 10: ヨシノリ
+  'images/kanikani.png',      // 11: かにかに
+  'images/character.png',     // 12: カードキング
 ];
 
 const EVO_NAMES = [
-  '','泡','卵','ひよこ','カエル','タコ',
-  '宇宙人','ロボット','ユニコーン','ドラゴン','王冠','星','銀河'
+  '','ソフトクリーム','主人公','満面の笑み','謎の生物','篤','おばけ',
+  'うんこ','さくらんぼちゃん','博士','ヨシノリ','かにかに','カードキング'
 ];
 
 const MERGE_COMMENTS = [
   '',
-  '泡がぷくぷく...',
-  '卵が割れそう！',
-  'ぴよぴよ！進化の予感！',
-  'ケロケロ！両生類を超えろ！',
-  'タコの足は8本、可能性は無限大',
-  '宇宙人「やぁ、地球人」',
-  'ロボ起動！ガシャンガシャン！',
-  'ユニコーンが虹を残した！',
-  'ドラゴンの咆哮が響く！',
-  '王冠が輝く...真の王者！',
-  '星が生まれた...宇宙の始まり',
-  '銀河誕生！！これは...シュール！',
+  'ソフトクリーム登場！甘い香り...',
+  '主人公が現れた！冒険の始まり！',
+  '満面の笑みがこぼれる！',
+  '謎の生物が目覚めた！',
+  '篤「俺は天才だ」',
+  'おばけが現れた...！こわ！',
+  'うんこ降臨！くっさ～！',
+  'さくらんぼちゃん参上！',
+  '博士が四つん這いで突進！',
+  'ヨシノリ「筋肉は裏切らない」',
+  'かにかに降臨！ハサミでチョキチョキ！',
+  'カードキング爆誕！！これは...シュール！',
 ];
 
 const GAMEOVER_COMMENTS = [
   '「進化の道は一つではない...」',
-  '「泡に始まり泡に終わる、それもまたシュール」',
+  '「ソフトクリームに始まりソフトクリームに終わる」',
   '「この盤面、芸術作品では？」',
   '「ダーウィンもびっくり」',
-  '「次こそ銀河を目指せ」',
-  '「カエルに戻ってやり直したい人生」',
+  '「次こそカードキングを目指せ」',
+  '「かにかにに戻ってやり直したい人生」',
   '「シュールの神は言った：もう一回」',
 ];
 
@@ -87,9 +87,10 @@ function init(){
   bestScore = parseInt(localStorage.getItem(BEST_KEY)) || 0;
   updateBestDisplay();
 
-  // タイトルの絵文字をランダムに
-  const titleEmojis = ['🫧','🥚','🐣','🐸','🐙','👽','🤖','🦄','🐉'];
-  dom.titleEmoji.textContent = titleEmojis[Math.floor(Math.random()*titleEmojis.length)];
+  // タイトルのキャラをランダムに
+  const titleImages = EVO_IMAGES.filter(x=>x);
+  const randomImg = titleImages[Math.floor(Math.random()*titleImages.length)];
+  dom.titleEmoji.innerHTML = '<img src="'+randomImg+'" alt="キャラクター" style="width:100%;height:100%;object-fit:contain;">';
 
   // セーブデータチェック
   const save = loadSave();
@@ -185,18 +186,28 @@ function render(){
       div.className = 'cell';
       const lv = grid[r][c];
       if(lv>0){
-        div.textContent = EVOLUTION[Math.min(lv,EVOLUTION.length-1)];
-        div.setAttribute('data-level', Math.min(lv,12));
+        const lvClamped = Math.min(lv,12);
+        div.setAttribute('data-level', lvClamped);
+        const img = document.createElement('img');
+        img.src = EVO_IMAGES[lvClamped];
+        img.alt = EVO_NAMES[lvClamped];
+        img.draggable = false;
+        div.appendChild(img);
       }
       dom.board.appendChild(div);
     }
   }
 }
 
+function evoDisplay(lv){
+  const lvClamped = Math.min(lv, 12);
+  return '<img src="'+EVO_IMAGES[lvClamped]+'" alt="'+EVO_NAMES[lvClamped]+'" class="evo-icon"> '+EVO_NAMES[lvClamped];
+}
+
 function updateHUD(){
   dom.score.textContent = 'スコア: '+score;
   dom.best.textContent = 'ベスト: '+bestScore;
-  dom.maxEvo.textContent = EVOLUTION[Math.min(maxLevel,EVOLUTION.length-1)] +' '+ EVO_NAMES[Math.min(maxLevel,EVO_NAMES.length-1)];
+  dom.maxEvo.innerHTML = evoDisplay(maxLevel);
   if(bestScore>0){
     dom.highscoreDisp.textContent = '🏆 ベストスコア: '+bestScore;
   }
@@ -322,11 +333,12 @@ function isGameOver(){
 }
 
 function showGameOver(){
-  const highestEvo = EVOLUTION[Math.min(maxLevel,EVOLUTION.length-1)]+' '+EVO_NAMES[Math.min(maxLevel,EVO_NAMES.length-1)];
+  const highestEvoName = EVO_NAMES[Math.min(maxLevel,EVO_NAMES.length-1)];
+  const highestEvo = highestEvoName;
   dom.goStats.innerHTML =
     '🏆 スコア: <strong>'+score+'</strong><br>'+
     '🔄 手数: '+moveCount+'<br>'+
-    '🧬 最高進化: '+highestEvo;
+    '🧬 最高進化: '+evoDisplay(maxLevel);
   dom.goComment.textContent = GAMEOVER_COMMENTS[Math.floor(Math.random()*GAMEOVER_COMMENTS.length)];
 
   // シェアボタン（既存があれば削除して再生成）
