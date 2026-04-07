@@ -761,6 +761,18 @@ section {
   border-color: #d4a050;
 }
 
+/* --- リバーシ --- */
+.card-flip-back__img--reversi {
+  width: 200%;
+  top: -40%;
+  left: -50%;
+}
+.reversi-speech {
+  color: #cc6600;
+  box-shadow: 0 4px 20px rgba(204, 102, 0, 0.3);
+  border-color: #ff9900;
+}
+
 /* NEW バッジ */
 .new-badge {
   position: absolute;

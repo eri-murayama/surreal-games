@@ -378,10 +378,16 @@
         </article>
 
         <!-- ゲームカード: リバーシ -->
-        <article class="game-card fade-in">
-          <div class="game-card__image">
-            <div class="placeholder-art" style="background: url('games/reversi/character.png') center/cover, linear-gradient(135deg, #2a1a0a, #4a3a2a);">
-              <span class="placeholder-emoji"></span>
+        <article class="game-card game-card--flip fade-in">
+          <div class="game-card__image card-flip-zone">
+            <div class="card-flip-inner">
+              <div class="card-flip-front placeholder-art" style="background: linear-gradient(135deg, #2a1a0a, #4a3a2a);">
+                <span class="placeholder-emoji">⚫⚪</span>
+              </div>
+              <div class="card-flip-back" style="background: linear-gradient(135deg, #2a1a0a, #4a3a2a);">
+                <img src="games/reversi/character.png" alt="リバーシキャラ" class="card-flip-back__img card-flip-back__img--reversi">
+                <div class="card-flip-back__speech reversi-speech">デュエルスタンバイ！</div>
+              </div>
             </div>
           </div>
           <div class="game-card__body">
