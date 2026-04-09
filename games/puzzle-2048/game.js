@@ -169,31 +169,34 @@ function startBGM(){
     if(!ctx) return;
     if(ctx.state==='suspended') ctx.resume();
     const master = ctx.createGain();
-    master.gain.value = 0.14;
+    master.gain.value = 0.35;
     master.connect(ctx.destination);
 
     const timers = [];
     const oscs = [];
 
-    // ── 深宇宙ドローン（超低音のうねり）──
-    const drone = ctx.createOscillator();
-    const droneG = ctx.createGain();
-    drone.type = 'sine';
-    drone.frequency.value = 40;
-    droneG.gain.value = 0.3;
-    drone.connect(droneG);
-    droneG.connect(master);
-    drone.start();
-    oscs.push(drone);
+    // ── 宇宙ドローン（聞こえる低音の和音）──
+    const droneFreqs = [110, 165]; // A2 + E3（完全5度の響き）
+    droneFreqs.forEach(f=>{
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.value = 0.2;
+      o.connect(g);
+      g.connect(master);
+      o.start();
+      oscs.push(o);
+    });
 
-    // ドローンのゆっくりした呼吸
+    // ドローンのゆっくりした呼吸（音量が波打つ）
     const breathLfo = ctx.createOscillator();
     const breathLfoG = ctx.createGain();
     breathLfo.type = 'sine';
-    breathLfo.frequency.value = 0.03;
-    breathLfoG.gain.value = 0.12;
+    breathLfo.frequency.value = 0.07;
+    breathLfoG.gain.value = 0.08;
     breathLfo.connect(breathLfoG);
-    breathLfoG.connect(droneG.gain);
+    breathLfoG.connect(master.gain);
     breathLfo.start();
     oscs.push(breathLfo);
 
@@ -233,36 +236,41 @@ function startBGM(){
         o.stop(t+dur+0.1);
 
         scheduleWarp();
-      }, 5000+Math.random()*8000));
+      }, 4000+Math.random()*6000));
     }
-    scheduleWarp();
+    // 初回は1秒後
+    timers.push(setTimeout(scheduleWarp, 1000));
 
     // ── ピカピカ音（高音のキラキラが連続で鳴る）──
+    function doSparkle(){
+      if(!bgmPlaying || isMuted()) return;
+      const t = ctx.currentTime;
+      const count = 3 + Math.floor(Math.random()*4);
+      for(let i=0;i<count;i++){
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        const freq = 1200+Math.random()*2000;
+        o.frequency.value = freq;
+        const start = t + i*0.12;
+        g.gain.setValueAtTime(0, start);
+        g.gain.linearRampToValueAtTime(0.06, start+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, start+0.5);
+        o.connect(g);
+        g.connect(master);
+        o.start(start);
+        o.stop(start+0.5);
+      }
+    }
     function scheduleSparkle(){
       if(!bgmPlaying) return;
       timers.push(setTimeout(()=>{
-        if(!bgmPlaying || isMuted()){ scheduleSparkle(); return; }
-        const t = ctx.currentTime;
-        // 3〜6連のキラキラ
-        const count = 3 + Math.floor(Math.random()*4);
-        for(let i=0;i<count;i++){
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type = 'sine';
-          const freq = 1200+Math.random()*2000;
-          o.frequency.value = freq;
-          const start = t + i*0.12;
-          g.gain.setValueAtTime(0, start);
-          g.gain.linearRampToValueAtTime(0.05, start+0.02);
-          g.gain.exponentialRampToValueAtTime(0.001, start+0.4);
-          o.connect(g);
-          g.connect(master);
-          o.start(start);
-          o.stop(start+0.4);
-        }
+        doSparkle();
         scheduleSparkle();
-      }, 2000+Math.random()*4000));
+      }, 2000+Math.random()*3000));
     }
+    // 初回は即座に鳴らす
+    doSparkle();
     scheduleSparkle();
 
     // ── 宇宙通信音（ピポパポ的なランダムビープ）──
