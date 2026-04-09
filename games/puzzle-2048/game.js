@@ -158,7 +158,7 @@ function sfxSpawn(){
   playTone(600,0.06,'sine',0.04);
 }
 
-/* ── BGMシステム（宇宙SFXアンビエント） ── */
+/* ── BGMシステム（癒し系スペースアンビエント） ── */
 let bgmNodes = null;
 let bgmPlaying = false;
 
@@ -169,169 +169,130 @@ function startBGM(){
     if(!ctx) return;
     if(ctx.state==='suspended') ctx.resume();
     const master = ctx.createGain();
-    master.gain.value = 0.35;
+    master.gain.value = 0.4;
     master.connect(ctx.destination);
 
     const timers = [];
     const oscs = [];
 
-    // ── 宇宙ドローン（聞こえる低音の和音）──
-    const droneFreqs = [110, 165]; // A2 + E3（完全5度の響き）
-    droneFreqs.forEach(f=>{
+    // ── 温かいパッド（ゆっくり変化する和音）──
+    // Cmaj7の構成音をゆっくりうねらせる
+    const padNotes = [130.8, 164.8, 196.0, 246.9]; // C3,E3,G3,B3
+    const padOscs = [];
+    padNotes.forEach(f=>{
       const o = ctx.createOscillator();
       const g = ctx.createGain();
       o.type = 'sine';
       o.frequency.value = f;
-      g.gain.value = 0.2;
+      g.gain.value = 0.15;
       o.connect(g);
       g.connect(master);
       o.start();
       oscs.push(o);
+      padOscs.push(o);
+
+      // 各音に微妙なデチューンLFOで揺らぎ
+      const lfo = ctx.createOscillator();
+      const lfoG = ctx.createGain();
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.1 + Math.random()*0.1;
+      lfoG.gain.value = f * 0.006;
+      lfo.connect(lfoG);
+      lfoG.connect(o.frequency);
+      lfo.start();
+      oscs.push(lfo);
     });
 
-    // ドローンのゆっくりした呼吸（音量が波打つ）
+    // パッドの音量を呼吸のようにうねらせる
     const breathLfo = ctx.createOscillator();
-    const breathLfoG = ctx.createGain();
+    const breathG = ctx.createGain();
     breathLfo.type = 'sine';
-    breathLfo.frequency.value = 0.07;
-    breathLfoG.gain.value = 0.08;
-    breathLfo.connect(breathLfoG);
-    breathLfoG.connect(master.gain);
+    breathLfo.frequency.value = 0.05;
+    breathG.gain.value = 0.06;
+    breathLfo.connect(breathG);
+    breathG.connect(master.gain);
     breathLfo.start();
     oscs.push(breathLfo);
 
-    // ── ワープ音（周期的にヒュィーーンと鳴る）──
-    function scheduleWarp(){
+    // ── コード進行（ゆっくり和音が変わる）──
+    const chordSets = [
+      [130.8, 164.8, 196.0, 246.9], // Cmaj7
+      [146.8, 174.6, 220.0, 261.6], // Dmaj7 / Fmaj7的
+      [110.0, 138.6, 164.8, 207.7], // Am(add9)的
+      [123.5, 155.6, 185.0, 233.1], // Ebmaj7的（浮遊感）
+    ];
+    let chordIdx = 0;
+    const chordTimer = setInterval(()=>{
       if(!bgmPlaying) return;
-      timers.push(setTimeout(()=>{
-        if(!bgmPlaying || isMuted()){ scheduleWarp(); return; }
-        const t = ctx.currentTime;
-        const dur = 1.5 + Math.random()*1.5;
+      chordIdx = (chordIdx+1) % chordSets.length;
+      const chord = chordSets[chordIdx];
+      const t = ctx.currentTime;
+      padOscs.forEach((o,i)=>{
+        o.frequency.linearRampToValueAtTime(chord[i], t+4.0);
+      });
+    }, 8000);
+    timers.push(chordTimer);
 
-        // 上昇スイープ
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = 'sawtooth';
-        const startF = 60 + Math.random()*40;
-        o.frequency.setValueAtTime(startF, t);
-        o.frequency.exponentialRampToValueAtTime(startF*12, t+dur*0.7);
-        o.frequency.exponentialRampToValueAtTime(startF*15, t+dur);
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(0.06, t+dur*0.1);
-        g.gain.linearRampToValueAtTime(0.04, t+dur*0.5);
-        g.gain.exponentialRampToValueAtTime(0.001, t+dur);
-
-        // ローパスフィルターで柔らかく
-        const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.setValueAtTime(300, t);
-        lp.frequency.exponentialRampToValueAtTime(3000, t+dur*0.7);
-        lp.frequency.exponentialRampToValueAtTime(200, t+dur);
-        lp.Q.value = 5;
-
-        o.connect(lp);
-        lp.connect(g);
-        g.connect(master);
-        o.start(t);
-        o.stop(t+dur+0.1);
-
-        scheduleWarp();
-      }, 4000+Math.random()*6000));
-    }
-    // 初回は1秒後
-    timers.push(setTimeout(scheduleWarp, 1000));
-
-    // ── ピカピカ音（高音のキラキラが連続で鳴る）──
-    function doSparkle(){
+    // ── 星のきらめき（高音のベルが優しく鳴る）──
+    function playChime(){
       if(!bgmPlaying || isMuted()) return;
       const t = ctx.currentTime;
-      const count = 3 + Math.floor(Math.random()*4);
-      for(let i=0;i<count;i++){
+      const notes = [523.3, 659.3, 784.0, 880.0, 1047, 1175, 1319];
+      const freq = notes[Math.floor(Math.random()*notes.length)];
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.08, t+0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, t+2.5);
+      o.connect(g);
+      g.connect(master);
+      o.start(t);
+      o.stop(t+2.5);
+    }
+    function scheduleChime(){
+      if(!bgmPlaying) return;
+      timers.push(setTimeout(()=>{
+        playChime();
+        scheduleChime();
+      }, 1500+Math.random()*2500));
+    }
+    playChime();
+    scheduleChime();
+
+    // ── ゆったりメロディ（長い音符でぽつりぽつり）──
+    const melodyNotes = [
+      523.3, 0, 659.3, 784.0, 0, 0,
+      880.0, 784.0, 0, 659.3, 0, 0,
+      784.0, 0, 1047, 880.0, 0, 0,
+      659.3, 0, 523.3, 0, 0, 0,
+    ];
+    let melodyIdx = 0;
+    function playMelodyNote(){
+      if(!bgmPlaying) return;
+      const freq = melodyNotes[melodyIdx % melodyNotes.length];
+      melodyIdx++;
+      if(freq > 0 && !isMuted()){
+        const t = ctx.currentTime;
         const o = ctx.createOscillator();
         const g = ctx.createGain();
-        o.type = 'sine';
-        const freq = 1200+Math.random()*2000;
+        o.type = 'triangle';
         o.frequency.value = freq;
-        const start = t + i*0.12;
-        g.gain.setValueAtTime(0, start);
-        g.gain.linearRampToValueAtTime(0.06, start+0.02);
-        g.gain.exponentialRampToValueAtTime(0.001, start+0.5);
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.1, t+0.1);
+        g.gain.linearRampToValueAtTime(0.06, t+1.0);
+        g.gain.exponentialRampToValueAtTime(0.001, t+2.5);
         o.connect(g);
         g.connect(master);
-        o.start(start);
-        o.stop(start+0.5);
+        o.start(t);
+        o.stop(t+2.5);
       }
+      timers.push(setTimeout(playMelodyNote, 1200));
     }
-    function scheduleSparkle(){
-      if(!bgmPlaying) return;
-      timers.push(setTimeout(()=>{
-        doSparkle();
-        scheduleSparkle();
-      }, 2000+Math.random()*3000));
-    }
-    // 初回は即座に鳴らす
-    doSparkle();
-    scheduleSparkle();
+    timers.push(setTimeout(playMelodyNote, 2000));
 
-    // ── 宇宙通信音（ピポパポ的なランダムビープ）──
-    function scheduleBeep(){
-      if(!bgmPlaying) return;
-      timers.push(setTimeout(()=>{
-        if(!bgmPlaying || isMuted()){ scheduleBeep(); return; }
-        const t = ctx.currentTime;
-        const count = 2 + Math.floor(Math.random()*3);
-        for(let i=0;i<count;i++){
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type = 'square';
-          o.frequency.value = 400+Math.random()*800;
-          const start = t + i*0.15;
-          g.gain.setValueAtTime(0, start);
-          g.gain.linearRampToValueAtTime(0.02, start+0.01);
-          g.gain.setValueAtTime(0.02, start+0.06);
-          g.gain.exponentialRampToValueAtTime(0.001, start+0.12);
-          o.connect(g);
-          g.connect(master);
-          o.start(start);
-          o.stop(start+0.12);
-        }
-        scheduleBeep();
-      }, 6000+Math.random()*10000));
-    }
-    scheduleBeep();
-
-    // ── リバース風シュワー（ホワイトノイズ → フェードイン）──
-    function scheduleWhoosh(){
-      if(!bgmPlaying) return;
-      timers.push(setTimeout(()=>{
-        if(!bgmPlaying || isMuted()){ scheduleWhoosh(); return; }
-        const t = ctx.currentTime;
-        const dur = 1.0+Math.random()*1.0;
-        const bufSize = ctx.sampleRate * dur;
-        const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for(let i=0;i<bufSize;i++) data[i] = (Math.random()*2-1)*0.5;
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        const g = ctx.createGain();
-        const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.setValueAtTime(800, t);
-        bp.frequency.linearRampToValueAtTime(2000, t+dur*0.8);
-        bp.Q.value = 1;
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(0.06, t+dur*0.7);
-        g.gain.exponentialRampToValueAtTime(0.001, t+dur);
-        src.connect(bp);
-        bp.connect(g);
-        g.connect(master);
-        src.start(t);
-        scheduleWhoosh();
-      }, 8000+Math.random()*12000));
-    }
-    scheduleWhoosh();
-
-    bgmNodes = { master, oscs, timers };
+    bgmNodes = { master, oscs, timers: [...timers, chordTimer] };
     bgmPlaying = true;
   }catch(e){}
 }
@@ -340,7 +301,10 @@ function stopBGM(){
   if(!bgmNodes) return;
   try{
     bgmNodes.oscs.forEach(o=>{ try{o.stop();}catch(e){} });
-    bgmNodes.timers.forEach(t=>clearTimeout(t));
+    bgmNodes.timers.forEach(t=>{
+      clearTimeout(t);
+      clearInterval(t);
+    });
     bgmNodes.master.disconnect();
   }catch(e){}
   bgmNodes = null;
