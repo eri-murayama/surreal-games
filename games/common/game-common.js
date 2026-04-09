@@ -512,7 +512,7 @@
     'magic-trick': 'magic',
     'party-game': 'action',
     'pet': 'calm',
-    'puzzle-2048': 'retro',
+    // 'puzzle-2048': カスタムBGM使用（game.js内で独自実装）
     'rpg': 'romance',
     'suisei-puzzle': 'cosmic',
     'tower': 'retro',
