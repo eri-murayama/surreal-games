@@ -321,6 +321,15 @@
     .chara-card--hakase .chara-card__image-wrap {
       background: linear-gradient(135deg, #e8f5e9, #66bb6a, #2e7d32);
     }
+    .chara-card--softcream .chara-card__image-wrap {
+      background: linear-gradient(135deg, #f5e6d0, #d2a679, #8b5e3c);
+    }
+    .chara-card--bakemon .chara-card__image-wrap {
+      background: linear-gradient(135deg, #1a1a2e, #4a0e4e, #0d0d1a);
+    }
+    .chara-card--protagonist .chara-card__image-wrap {
+      background: linear-gradient(135deg, #ffe0b2, #ff8a65, #e64a19);
+    }
 
     /* レスポンシブ */
     @media (max-width: 768px) {
@@ -495,6 +504,65 @@
           </div>
         </article>
 
+
+        <!-- バケモン -->
+        <article class="chara-card chara-card--bakemon fade-in">
+          <div class="chara-card__image-wrap">
+            <img src="assets/images/kaidan-ghost.png" alt="バケモン" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name">
+              <span class="chara-card__name-emoji">&#x1f47b;</span>
+              バケモン
+            </h3>
+            <span class="chara-card__game">かいだんマインスイーパー</span>
+            <ul class="chara-card__traits">
+              <li>地雷原に住みついた霊</li>
+              <li>親からもらった名前だけど少し納得いってないよ</li>
+            </ul>
+            <div class="chara-card__quote">成仏…</div>
+          </div>
+        </article>
+
+        <!-- 主人公 -->
+        <article class="chara-card chara-card--protagonist fade-in">
+          <div class="chara-card__image-wrap">
+            <img src="games/unko-cone/character.png" alt="主人公" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name">
+              <span class="chara-card__name-emoji">&#x1f466;</span>
+              主人公
+            </h3>
+            <span class="chara-card__game">うんコーンキャッチャー / かわいい部屋からの脱出</span>
+            <ul class="chara-card__traits">
+              <li>変わった性癖の少年</li>
+              <li>不法侵入犯罪野郎</li>
+              <li>うんコーンをキャッチするよ</li>
+            </ul>
+            <div class="chara-card__quote">エクスタシー！</div>
+          </div>
+        </article>
+
+        <!-- チョコ味のソフトクリーム -->
+        <article class="chara-card chara-card--softcream fade-in">
+          <div class="chara-card__image-wrap">
+            <img src="assets/images/softcream.png" alt="チョコ味のソフトクリーム" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name">
+              <span class="chara-card__name-emoji">&#x1f366;</span>
+              チョコ味のソフトクリーム
+            </h3>
+            <span class="chara-card__game">うんコーンキャッチャー</span>
+            <ul class="chara-card__traits">
+              <li>チョコ味の自称ソフトクリーム</li>
+              <li>貧しい人々に食べてもらいたいと願う善人</li>
+              <li>踏ん張ってねじり出す</li>
+            </ul>
+            <div class="chara-card__quote">やあ、僕はうん…チョコ味のソフトクリーム！</div>
+          </div>
+        </article>
 
       </div>
     </section>
