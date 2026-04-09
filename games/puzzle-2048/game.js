@@ -104,8 +104,11 @@ const sg = SurrealGames.init('puzzle-2048');
 
 /* ── サウンドシステム ── */
 function getAudio(){
-  // game-commonのAudioContextを共有
-  if(sg.sound && sg.sound.ctx) return sg.sound.ctx;
+  if(sg.sound){
+    // ctxがなければ生成を試みる
+    if(!sg.sound.ctx && sg.sound._ensureCtx) sg.sound._ensureCtx();
+    return sg.sound.ctx || null;
+  }
   return null;
 }
 function isMuted(){
@@ -461,7 +464,8 @@ function showScreen(name){
 function startGame(cont){
   sg.onGameStart();
   stopBGM();
-  startBGM();
+  // AudioContextの準備を待ってからBGM開始
+  setTimeout(startBGM, 300);
   animating = false;
   if(cont){
     const save = loadSave();
