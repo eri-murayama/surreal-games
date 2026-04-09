@@ -103,18 +103,19 @@ const BEST_KEY = 'surreal_evo_best';
 const sg = SurrealGames.init('puzzle-2048');
 
 /* ── サウンドシステム ── */
-let audioCtx;
 function getAudio(){
-  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-  return audioCtx;
+  // game-commonのAudioContextを共有
+  if(sg.sound && sg.sound.ctx) return sg.sound.ctx;
+  return null;
 }
 function isMuted(){
-  return typeof sg.isMuted==='function' ? sg.isMuted() : false;
+  return sg.sound ? !sg.sound.enabled : false;
 }
 function playTone(freq,dur,type,vol,delay){
   if(isMuted()) return;
   try{
     const ctx=getAudio();
+    if(!ctx) return;
     const t=ctx.currentTime+(delay||0);
     const osc=ctx.createOscillator();
     const gain=ctx.createGain();
@@ -162,6 +163,7 @@ function startBGM(){
   if(bgmPlaying) return;
   try{
     const ctx = getAudio();
+    if(!ctx) return;
     if(ctx.state==='suspended') ctx.resume();
     const master = ctx.createGain();
     master.gain.value = 0.14;
