@@ -1,3 +1,249 @@
+// ===== サウンドシステム（軽量版） =====
+const sound = {
+  ctx: null,
+  enabled: true,
+  volume: 0.5,
+
+  _ensureCtx() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (this.ctx.state !== 'running') this.ctx.resume();
+    return this.ctx;
+  },
+
+  play(type) {
+    if (!this.enabled) return;
+    this._ensureCtx();
+    if (!this.ctx || this.ctx.state !== 'running') {
+      this.ctx.resume().then(() => this._play(type));
+      return;
+    }
+    this._play(type);
+  },
+
+  _play(type) {
+    if (!this.ctx || this.ctx.state !== 'running') return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+    gain.gain.value = this.volume;
+
+    switch (type) {
+      case 'tap': {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.1);
+        break;
+      }
+      case 'wrong': {
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+        gain.gain.value = this.volume * 0.3;
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.3);
+        break;
+      }
+      case 'modal_open': {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(500, now);
+        osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+        gain.gain.value = this.volume * 0.2;
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.15);
+        break;
+      }
+      case 'modal_close': {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(700, now);
+        osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+        gain.gain.value = this.volume * 0.15;
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.15);
+        break;
+      }
+      case 'door_open': {
+        [330, 440, 523, 659, 784].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          g.gain.value = this.volume * 0.3;
+          g.gain.exponentialRampToValueAtTime(0.01, now + 0.12 * (i + 1) + 0.1);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + 0.12 * i);
+          osc.stop(now + 0.12 * (i + 1) + 0.1);
+        });
+        break;
+      }
+      case 'pickup': {
+        [880, 1100, 1320].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          g.gain.value = this.volume * 0.35;
+          g.gain.exponentialRampToValueAtTime(0.01, now + 0.08 * (i + 1) + 0.08);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + 0.08 * i);
+          osc.stop(now + 0.08 * (i + 1) + 0.08);
+        });
+        break;
+      }
+      case 'examine': {
+        const osc = ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.12);
+        gain.gain.value = this.volume * 0.25;
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.2);
+        break;
+      }
+      case 'unlock': {
+        [440, 660, 880].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          g.gain.value = this.volume * 0.3;
+          g.gain.exponentialRampToValueAtTime(0.01, now + 0.1 * (i + 1) + 0.15);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + 0.1 * i);
+          osc.stop(now + 0.1 * (i + 1) + 0.15);
+        });
+        break;
+      }
+      case 'smash': {
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+        gain.gain.value = this.volume * 0.5;
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.4);
+        break;
+      }
+    }
+  },
+
+  // ===== BGM =====
+  bgmPlaying: false,
+  bgmNodes: [],
+  bgmTimers: [],
+
+  playBgm() {
+    if (!this.enabled) return;
+    this._ensureCtx();
+    if (!this.ctx) return;
+    this.stopBgm();
+    this.bgmPlaying = true;
+    if (this.ctx.state !== 'running') {
+      this.ctx.resume().then(() => { if (this.bgmPlaying) this._loopBgm(); });
+    } else {
+      this._loopBgm();
+    }
+  },
+
+  _loopBgm() {
+    if (!this.bgmPlaying || !this.enabled || !this.ctx) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const beat = 60 / 120; // tempo=120
+    const vol = 0.12;
+    const melody = [
+      523, 587, 659, 784, 659, 784, 880, 784,
+      659, 587, 523, 587, 659, 784, 659, 523,
+      440, 494, 523, 587, 523, 587, 659, 587,
+      523, 494, 440, 494, 523, 587, 523, 440,
+    ];
+    const bass = [
+      262, 262, 330, 330, 349, 349, 392, 392,
+      262, 262, 330, 330, 349, 349, 262, 262,
+      220, 220, 262, 262, 294, 294, 330, 330,
+      220, 220, 262, 262, 220, 220, 220, 220,
+    ];
+    const totalDur = beat * melody.length;
+
+    melody.forEach((freq, i) => {
+      if (!freq) return;
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(vol, now + beat * i);
+      g.gain.exponentialRampToValueAtTime(0.001, now + beat * (i + 1) * 0.9);
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.start(now + beat * i);
+      osc.stop(now + beat * (i + 1) * 0.95);
+      this.bgmNodes.push(osc);
+    });
+
+    bass.forEach((freq, i) => {
+      if (!freq) return;
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(vol * 0.5, now + beat * i);
+      g.gain.exponentialRampToValueAtTime(0.001, now + beat * (i + 1) * 0.9);
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.start(now + beat * i);
+      osc.stop(now + beat * (i + 1) * 0.95);
+      this.bgmNodes.push(osc);
+    });
+
+    const timer = setTimeout(() => this._loopBgm(), totalDur * 1000);
+    this.bgmTimers.push(timer);
+  },
+
+  stopBgm() {
+    this.bgmPlaying = false;
+    this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+    this.bgmNodes = [];
+    this.bgmTimers.forEach(t => clearTimeout(t));
+    this.bgmTimers = [];
+  }
+};
+
+// 初回タッチでAudioContext初期化
+['click', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, () => sound._ensureCtx(), { once: true });
+});
+
+// ===== BGM開始（初回操作で） =====
+let bgmStarted = false;
+function ensureBgm() {
+  if (bgmStarted) return;
+  bgmStarted = true;
+  sound.playBgm();
+}
+
 // ===== ゲーム状態 =====
 const state = {
   inventory: [],
@@ -122,6 +368,7 @@ function checkAllItems() {
   if (all.every(v => v) && !state.doorUnlocked) {
     state.doorUnlocked = true;
     door.classList.add('door-unlocked');
+    sound.play('unlock');
   }
 }
 
@@ -165,10 +412,12 @@ function showItemInspect(icon, name) {
   document.getElementById('item-inspect-icon').textContent = icon;
   document.getElementById('item-inspect-name').textContent = name;
   itemInspectModal.classList.remove('hidden');
+  sound.play('modal_open');
 }
 
 document.getElementById('item-inspect-close-btn').addEventListener('click', () => {
   itemInspectModal.classList.add('hidden');
+  sound.play('modal_close');
 });
 
 // ===== アイテムスロットのクリック =====
@@ -181,11 +430,13 @@ document.querySelectorAll('.item-slot').forEach(slot => {
     if (state.selectedItem === item.id) {
       state.selectedItem = null;
       showDialog(t('itemPutAway', item.name));
+      sound.play('tap');
     } else {
       state.selectedItem = item.id;
 
       if (item.id === 'memo') {
         memoModal.classList.remove('hidden');
+        sound.play('modal_open');
         showDialog(t('memoRead'));
         renderInventory();
         return;
@@ -238,83 +489,99 @@ document.getElementById('item-inspect-close-btn').addEventListener('click', () =
 // ===== 床のメモ =====
 memoOnFloor.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   if (state.memoPickedUp) return;
 
   state.memoPickedUp = true;
   memoOnFloor.classList.add('hidden');
   addItem('memo', '\u{1F4C4}', t('memoItemName'));
   showDialog(t('memoPick'));
+  sound.play('pickup');
   checkItem('memo');
 });
 
 // ===== 懐中電灯 =====
 flashlightOnFloor.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   if (state.flashlightPickedUp) return;
 
   state.flashlightPickedUp = true;
   flashlightOnFloor.classList.add('hidden');
   addItem('flashlight', '\u{1F526}', t('flashlightItemName'));
   showDialog(t('flashlightPick'));
+  sound.play('pickup');
   checkItem('flashlight');
 });
 
 // ===== ほこり =====
 dustOnFloor.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   if (state.dustPickedUp) return;
 
   state.dustPickedUp = true;
   dustOnFloor.classList.add('hidden');
   addItem('dust', '\u{1F4A8}', t('dustItemName'));
   showDialog(t('dustPick'));
+  sound.play('pickup');
 });
 
 // ===== お弁当 =====
 bentoOnFloor.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   if (state.bentoPickedUp) return;
 
   state.bentoPickedUp = true;
   bentoOnFloor.classList.add('hidden');
   addItem('bento', '\u{1F371}', t('bentoItemName'));
   showDialog(t('bentoPick'));
+  sound.play('pickup');
 });
 
 // ===== 絵画 =====
 painting.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   checkItem('painting');
   if (state.paintingDestroyed) {
     showDialog(t('paintingAlready'));
     return;
   }
   paintingModal.classList.remove('hidden');
+  sound.play('modal_open');
   showDialog(t('paintingClick'));
 });
 
 document.getElementById('painting-close-btn').addEventListener('click', () => {
   paintingModal.classList.add('hidden');
+  sound.play('modal_close');
   if (!state.paintingDestroyed) {
     state.paintingDestroyed = true;
     showDialog(t('paintingDestroy'));
     painting.classList.add('painting-destroyed');
+    sound.play('smash');
   }
 });
 
 // ===== 時計 =====
 clock.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   checkItem('clock');
+  sound.play('examine');
   showDialog(t('clockClick'));
 });
 
 // ===== 壁（懐中電灯で隠しメッセージ） =====
 room.addEventListener('click', (e) => {
+  ensureBgm();
   if (e.target === room || e.target.id === 'wall-back' || e.target.id === 'floor') {
     if (state.selectedItem === 'flashlight' && !state.hiddenRevealed) {
       state.hiddenRevealed = true;
       hiddenMessage.classList.add('revealed');
+      sound.play('unlock');
       showDialog(t('wallFlashlight'));
     } else if (state.hiddenRevealed) {
       showDialog(t('wallRevealed'));
@@ -327,6 +594,7 @@ room.addEventListener('click', (e) => {
 // ===== 窓 =====
 windowEl.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   checkItem('window');
   state.windowPeeked = true;
   const frame = document.getElementById('window-peek-frame');
@@ -334,11 +602,13 @@ windowEl.addEventListener('click', (e) => {
   frame.offsetHeight;
   frame.style.animation = '';
   windowModal.classList.remove('hidden');
+  sound.play('modal_open');
   showDialog(t('windowPeek'));
 });
 
 document.getElementById('window-close-btn').addEventListener('click', () => {
   windowModal.classList.add('hidden');
+  sound.play('modal_close');
   showDialog(t('windowClose'));
 });
 
@@ -349,12 +619,14 @@ let safeCode = '';
 
 safe.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   checkItem('safe');
   if (state.safeBroken) {
     showDialog(t('safeBrokenClick'));
     return;
   }
   safeModal.classList.remove('hidden');
+  sound.play('modal_open');
   showDialog(t('safeClick'));
 });
 
@@ -369,6 +641,7 @@ document.querySelectorAll('.numpad-btn').forEach(btn => {
       safeCode = '';
       digits.forEach(d => d.textContent = '_');
       safeResult.textContent = '';
+      sound.play('tap');
     } else if (num === 'enter') {
       if (safeCode.length < 3) return;
       state.safeWrongCount++;
@@ -376,6 +649,7 @@ document.querySelectorAll('.numpad-btn').forEach(btn => {
       safeResult.style.color = '#ff6080';
       safeCode = '';
       digits.forEach(d => d.textContent = '_');
+      sound.play('wrong');
 
       if (state.safeWrongCount >= 3) {
         document.getElementById('safe-smash-btn').classList.remove('hidden');
@@ -388,6 +662,7 @@ document.querySelectorAll('.numpad-btn').forEach(btn => {
       if (safeCode.length >= 3) return;
       safeCode += num;
       digits[safeCode.length - 1].textContent = num;
+      sound.play('tap');
     }
   });
 });
@@ -398,16 +673,19 @@ document.getElementById('safe-smash-btn').addEventListener('click', () => {
   safeModal.classList.add('hidden');
   safe.classList.add('safe-broken');
   addItem('cash', '\u{1F4B0}', t('cashItemName'));
+  sound.play('smash');
   showDialog(t('safeSmashed'));
 });
 
 document.getElementById('safe-close-btn').addEventListener('click', () => {
   safeModal.classList.add('hidden');
+  sound.play('modal_close');
 });
 
 // ===== メモモーダル =====
 document.getElementById('memo-close-btn').addEventListener('click', () => {
   memoModal.classList.add('hidden');
+  sound.play('modal_close');
   if (!state.memoRead) {
     state.memoRead = true;
     showDialog(t('memoClose'));
@@ -420,11 +698,13 @@ document.getElementById('memo-close-btn').addEventListener('click', () => {
 // ===== 扉 =====
 door.addEventListener('click', (e) => {
   e.stopPropagation();
+  ensureBgm();
   checkItem('door');
   if (state.cleared) return;
 
   if (state.doorUnlocked) {
     door.classList.add('door-open');
+    sound.play('door_open');
     showDialog(t('doorOpen'));
 
     setTimeout(() => {
@@ -433,6 +713,7 @@ door.addEventListener('click', (e) => {
     return;
   }
 
+  sound.play('examine');
   showDialog(t('doorLocked'));
 });
 
@@ -473,6 +754,10 @@ function resetGame() {
   const overlay = document.getElementById('clear-overlay');
   if (overlay) overlay.remove();
   document.querySelectorAll('.confetti, .light-particle').forEach(el => el.remove());
+
+  // BGMリセット
+  sound.stopBgm();
+  bgmStarted = false;
 
   // ステート初期化
   state.inventory = [];
