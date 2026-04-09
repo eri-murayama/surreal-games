@@ -762,10 +762,11 @@ section {
 }
 
 /* --- リバーシ --- */
+.card-chara--reversi { width: 65%; }
 .card-flip-back__img--reversi {
-  width: 200%;
-  top: -40%;
-  left: -50%;
+  width: 220%;
+  top: -50%;
+  left: -60%;
 }
 .reversi-speech {
   color: #cc6600;
