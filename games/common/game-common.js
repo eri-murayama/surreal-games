@@ -53,6 +53,7 @@
     { id: 'shooting', title: 'シュールシューティング', titleEn: 'Surreal Shooting', emoji: '🚀', genre: 'シューティング', genreEn: 'Shooting', desc: 'シュールな敵を撃ちまくれ！タップで弾を発射！' },
     { id: 'drawing-board', title: 'お絵かきボード', titleEn: 'Drawing Board', emoji: '🎨', genre: 'クリエイティブ', genreEn: 'Creative', desc: '自由にお絵かき！色も太さも変えられる！' },
     { id: 'typing-game', title: 'シュールタイピング', titleEn: 'Surreal Typing', emoji: '⌨️', genre: 'タイピング', genreEn: 'Typing', desc: 'シュールなお題をタイピングしまくれ！' },
+    { id: 'emoji-catcher', title: 'カブトムシ様のお着換えあそばせ', titleEn: 'Dress Up Lord Beetle', emoji: '🪲', genre: 'カスタマイズ', genreEn: 'Customize', desc: 'カブトムシ様を世界で一人だけのお人へ変身してさしあげろ！' },
   ];
 
   // ===== 実績定義 =====
@@ -492,6 +493,28 @@
         0.9, 0.8, 0.7, 1.2, 0.9, 1.1, 0.8, 1.4,
       ]
     },
+    // 世界に一つだけ系（カブトムシ様のお着換え）— 温かいJ-POPバラード風
+    onlyone: {
+      tempo: 92, key: 'C', wave: 'sine', volume: 0.11,
+      melody: [
+        523, 523, 587, 659, 784, 784, 659, 587,
+        523, 587, 659, 784, 880, 784, 659, 587,
+        440, 523, 587, 659, 587, 523, 440, 494,
+        523, 587, 659, 784, 659, 587, 523, 523,
+      ],
+      bass: [
+        262, 262, 294, 294, 330, 330, 294, 294,
+        262, 262, 330, 330, 349, 349, 294, 294,
+        220, 220, 262, 262, 294, 294, 247, 247,
+        262, 262, 330, 330, 294, 294, 262, 262,
+      ],
+      swing: [
+        1.0, 0.9, 1.0, 1.1, 1.2, 1.0, 0.9, 1.1,
+        1.0, 1.0, 0.9, 1.1, 1.3, 1.1, 0.9, 1.0,
+        1.0, 0.9, 1.0, 1.2, 1.0, 0.9, 1.0, 1.1,
+        1.0, 1.0, 0.9, 1.2, 1.1, 0.9, 1.0, 1.3,
+      ]
+    },
   };
 
   // ゲームID→BGMプリセットのマッピング
@@ -521,6 +544,7 @@
     'surreal-beat': 'action',
     'surreal-dash': 'action',
     'surreal-cube': 'cosmic',
+    'emoji-catcher': 'onlyone',
   };
 
   // ===== サウンドシステム（Web Audio API） =====
