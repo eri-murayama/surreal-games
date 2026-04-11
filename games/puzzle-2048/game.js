@@ -1,51 +1,116 @@
 (function(){'use strict';
 
+/* ── 多言語対応 ── */
+let currentLang = (function() {
+  try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
+  return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+})();
+
+const LANG = {
+  ja: {
+    gameTitle: 'シュール進化論',
+    gameSubtitle: '～合体せよ、その先の未知へ～',
+    catchphrase: '「すべてはかにかにから始まる...」',
+    startBtn: '進化を始める',
+    continueBtn: '続きから',
+    titleHint: '矢印キー / WASD / スワイプでスライド<br>同じ生物を合体させて進化させよう',
+    scoreLabel: 'スコア',
+    bestLabel: 'ベスト',
+    maxEvoLabel: '最高進化',
+    undoBtn: '↩ 戻す',
+    restartBtn: '🔄 やり直す',
+    gameoverTitle: '進化の袋小路...',
+    retryBtn: 'もう一度進化する',
+    shareBtn: '𝕏 結果をシェア',
+    backToTop: '← トップに戻る',
+    bestScoreDisp: (s) => '🏆 ベストスコア: ' + s,
+    hudScore: (s) => 'スコア: ' + s,
+    hudBest: (s) => 'ベスト: ' + s,
+    goStats: (sc, mc, evo) => '🏆 スコア: <strong>' + sc + '</strong><br>🔄 手数: ' + mc + '<br>🧬 最高進化: ' + evo,
+    shareText: (sc, evo, mc) => '\u{1F9EC} シュール進化論\nスコア: ' + sc + '点\n最高進化: ' + evo + '\n手数: ' + mc + '\n\n#シュールゲームス\n',
+    undoComment: '一手戻した！',
+    evoNames: ['','かにかに','さくらんぼちゃん','ヨシノリ','まーくん','主人公','おじさん',
+      'ソフトクリーム','バケモン','篤','博士','勇気'],
+    mergeComments: [
+      '',
+      '腹筋は毎日換気！',
+      '私のお家、どこだろ…',
+      'ノーマッスルノーライフ',
+      '……',
+      'あれれーまた迷っちゃった',
+      '（にっこり）',
+      'うん…ソフトクリームですよ！',
+      '成仏…',
+      '数字が俺を呼んでいる',
+      'ひぃいいなんじゃこりゃ',
+      'ずっと俺のターン！',
+    ],
+    gameoverComments: [
+      '進化完了！お疲れ様！',
+    ],
+  },
+  en: {
+    gameTitle: 'Surreal Evolution',
+    gameSubtitle: '- Merge and Evolve Beyond -',
+    catchphrase: '"It all begins with Kani-Kani..."',
+    startBtn: 'Start Evolution',
+    continueBtn: 'Continue',
+    titleHint: 'Arrow Keys / WASD / Swipe to slide<br>Merge same creatures to evolve!',
+    scoreLabel: 'Score',
+    bestLabel: 'Best',
+    maxEvoLabel: 'Top Evo',
+    undoBtn: '↩ Undo',
+    restartBtn: '🔄 Restart',
+    gameoverTitle: 'Dead End of Evolution...',
+    retryBtn: 'Evolve Again',
+    shareBtn: '𝕏 Share Result',
+    backToTop: '← Back to Top',
+    bestScoreDisp: (s) => '🏆 Best Score: ' + s,
+    hudScore: (s) => 'Score: ' + s,
+    hudBest: (s) => 'Best: ' + s,
+    goStats: (sc, mc, evo) => '🏆 Score: <strong>' + sc + '</strong><br>🔄 Moves: ' + mc + '<br>🧬 Top Evo: ' + evo,
+    shareText: (sc, evo, mc) => '\u{1F9EC} Surreal Evolution\nScore: ' + sc + '\nTop Evo: ' + evo + '\nMoves: ' + mc + '\n\n#SurrealGames\n',
+    undoComment: 'Undone!',
+    evoNames: ['','Kani-Kani','Sakuranbo','Yoshinori','Maa-kun','Hero','Ojisan',
+      'Soft Serve','Bakemon','Atsushi','Professor','Yuuki'],
+    mergeComments: [
+      '',
+      'Train your abs every day!',
+      'Where\'s my home...?',
+      'No muscle, no life',
+      '......',
+      'Huh? Lost again...',
+      '(big smile)',
+      'Yep... I\'m soft serve!',
+      'Rest in peace...',
+      'The numbers are calling me',
+      'Whaaat is this?!',
+      'It\'s still my turn!',
+    ],
+    gameoverComments: [
+      'Evolution complete! Good job!',
+    ],
+  },
+};
+
+function t(key) { return LANG[currentLang][key]; }
+
 /* ── 定数 ── */
 const SIZE = 4;
 const ANIM_MS = 120;
 const EVO_IMAGES = [
   '',                         // 0: 空
-  'images/softcream.png',     // 1: ソフトクリーム
-  'images/protagonist.png',   // 2: 主人公
-  'images/manmen-no-emi.png', // 3: 満面の笑み
+  'images/kanikani.png',      // 1: かにかに
+  'images/illust9.png',       // 2: さくらんぼちゃん
+  'images/yoshinori.png',     // 3: ヨシノリ
   'images/illust10.png',      // 4: 謎の生物
-  'images/atsushi.png',       // 5: 篤
-  'images/kaidan-ghost.png',  // 6: おばけ
-  'images/illust9.png',       // 7: さくらんぼちゃん
-  'images/hakase-mount.png',  // 8: 博士
-  'images/yoshinori.png',     // 9: ヨシノリ
-  'images/kanikani.png',      // 10: かにかに
+  'images/protagonist.png',   // 5: 主人公
+  'images/manmen-no-emi.png', // 6: 満面の笑み
+  'images/softcream.png',     // 7: ソフトクリーム
+  'images/kaidan-ghost.png',  // 8: おばけ
+  'images/atsushi.png',       // 9: 篤
+  'images/hakase-mount.png',  // 10: 博士
   'images/character.png',     // 11: カードキング
-];
-
-const EVO_NAMES = [
-  '','ソフトクリーム','主人公','満面の笑み','謎の生物','篤','おばけ',
-  'さくらんぼちゃん','博士','ヨシノリ','かにかに','カードキング'
-];
-
-const MERGE_COMMENTS = [
-  '',
-  'ソフトクリーム登場！甘い香り...',
-  '主人公が現れた！冒険の始まり！',
-  '満面の笑みがこぼれる！',
-  '謎の生物が目覚めた！',
-  '篤「俺は天才だ」',
-  'おばけが現れた...！こわ！',
-  'さくらんぼちゃん参上！',
-  '博士が四つん這いで突進！',
-  'ヨシノリ「筋肉は裏切らない」',
-  'かにかに降臨！ハサミでチョキチョキ！',
-  'カードキング爆誕！！これは...シュール！',
-];
-
-const GAMEOVER_COMMENTS = [
-  '「進化の道は一つではない...」',
-  '「ソフトクリームに始まりソフトクリームに終わる」',
-  '「この盤面、芸術作品では？」',
-  '「ダーウィンもびっくり」',
-  '「次こそカードキングを目指せ」',
-  '「かにかにに戻ってやり直したい人生」',
-  '「シュールの神は言った：もう一回」',
 ];
 
 const SCORE_PER_LEVEL = [0,0,4,8,16,32,64,128,256,512,1024,2048];
@@ -377,8 +442,9 @@ function updateBoardGlow(){
 /* ── 演出: 進化カットイン ── */
 function showCutIn(level){
   const lvClamped = Math.min(level,11);
-  dom.cutinChar.innerHTML = '<img src="'+EVO_IMAGES[lvClamped]+'" alt="'+EVO_NAMES[lvClamped]+'">';
-  dom.cutinName.textContent = EVO_NAMES[lvClamped]+' 解放！';
+  const evoNames = t('evoNames');
+  dom.cutinChar.innerHTML = '<img src="'+EVO_IMAGES[lvClamped]+'" alt="'+evoNames[lvClamped]+'">';
+  dom.cutinName.textContent = evoNames[lvClamped] + (currentLang === 'ja' ? ' 解放！' : ' Unlocked!');
   dom.cutinOverlay.classList.remove('hidden');
   // アニメーションリセット
   dom.cutinOverlay.style.animation = 'none';
@@ -413,7 +479,7 @@ function init(){
   dom.retryBtn.addEventListener('click',()=>startGame(false));
   dom.undoBtn.addEventListener('click',undo);
   dom.restartBtn.addEventListener('click',()=>{
-    if(confirm('本当にやり直しますか？')) startGame(false);
+    if(confirm(currentLang === 'ja' ? '本当にやり直しますか？' : 'Start over?')) startGame(false);
   });
 
   // キーボード
@@ -421,6 +487,9 @@ function init(){
 
   // スワイプ
   setupSwipe();
+
+  // 初期言語を適用
+  if(currentLang !== 'ja') setLang(currentLang);
 }
 
 function showScreen(name){
@@ -498,7 +567,7 @@ function render(movements){
         div.setAttribute('data-level', lvClamped);
         const img = document.createElement('img');
         img.src = EVO_IMAGES[lvClamped];
-        img.alt = EVO_NAMES[lvClamped];
+        img.alt = t('evoNames')[lvClamped];
         img.draggable = false;
         div.appendChild(img);
 
@@ -532,15 +601,16 @@ function render(movements){
 
 function evoDisplay(lv){
   const lvClamped = Math.min(lv, 11);
-  return '<img src="'+EVO_IMAGES[lvClamped]+'" alt="'+EVO_NAMES[lvClamped]+'" class="evo-icon"> '+EVO_NAMES[lvClamped];
+  const names = t('evoNames');
+  return '<img src="'+EVO_IMAGES[lvClamped]+'" alt="'+names[lvClamped]+'" class="evo-icon"> '+names[lvClamped];
 }
 
 function updateHUD(){
-  dom.score.textContent = 'スコア: '+score;
-  dom.best.textContent = 'ベスト: '+bestScore;
+  dom.score.textContent = t('hudScore')(score);
+  dom.best.textContent = t('hudBest')(bestScore);
   dom.maxEvo.innerHTML = evoDisplay(maxLevel);
   if(bestScore>0){
-    dom.highscoreDisp.textContent = '🏆 ベストスコア: '+bestScore;
+    dom.highscoreDisp.textContent = t('bestScoreDisp')(bestScore);
   }
 }
 
@@ -654,8 +724,8 @@ function move(dir){
   animating = true;
 
   // コメント表示
-  if(mergedMax>0 && mergedMax<MERGE_COMMENTS.length){
-    setComment(MERGE_COMMENTS[mergedMax]);
+  if(mergedMax>0 && mergedMax<t('mergeComments').length){
+    setComment(t('mergeComments')[mergedMax]);
   }
 
   // 合体音
@@ -731,13 +801,13 @@ function isGameOver(){
 
 function showGameOver(){
   stopBGM();
-  const highestEvoName = EVO_NAMES[Math.min(maxLevel,EVO_NAMES.length-1)];
-  const highestEvo = highestEvoName;
-  dom.goStats.innerHTML =
-    '🏆 スコア: <strong>'+score+'</strong><br>'+
-    '🔄 手数: '+moveCount+'<br>'+
-    '🧬 最高進化: '+evoDisplay(maxLevel);
-  dom.goComment.textContent = GAMEOVER_COMMENTS[Math.floor(Math.random()*GAMEOVER_COMMENTS.length)];
+  const evoNames = t('evoNames');
+  const highestEvo = evoNames[Math.min(maxLevel,evoNames.length-1)];
+  dom.goStats.innerHTML = t('goStats')(score, moveCount, evoDisplay(maxLevel));
+  const goComments = t('gameoverComments');
+  dom.goComment.textContent = goComments[Math.floor(Math.random()*goComments.length)];
+  dom.gameoverScreen.querySelector('#gameover-title').textContent = t('gameoverTitle');
+  dom.retryBtn.textContent = t('retryBtn');
 
   // シェアボタン
   const existing = document.getElementById('share-btn');
@@ -745,7 +815,7 @@ function showGameOver(){
 
   const shareBtn = document.createElement('button');
   shareBtn.id = 'share-btn';
-  shareBtn.textContent = '𝕏 結果をシェア';
+  shareBtn.textContent = t('shareBtn');
   shareBtn.style.cssText =
     'display:block;width:80%;max-width:280px;margin:8px auto;'+
     'padding:14px 0;border:none;border-radius:12px;'+
@@ -762,11 +832,7 @@ function showGameOver(){
   });
   shareBtn.addEventListener('click',function(){
     const gameURL = window.location.href;
-    const text = '\u{1F9EC} シュール進化論\n'+
-      'スコア: '+score+'点\n'+
-      '最高進化: '+highestEvo+'\n'+
-      '手数: '+moveCount+'\n\n'+
-      '#シュールゲームス\n'+gameURL;
+    const text = t('shareText')(score, highestEvo, moveCount) + gameURL;
     const url = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(text);
     window.open(url,'_blank','noopener');
   });
@@ -789,7 +855,7 @@ function undo(){
   render();
   updateHUD();
   updateBoardGlow();
-  setComment('一手戻した！');
+  setComment(t('undoComment'));
   saveCurrent();
 }
 
@@ -808,9 +874,48 @@ function loadSave(){
 }
 function updateBestDisplay(){
   if(bestScore>0){
-    dom.highscoreDisp.textContent = '🏆 ベストスコア: '+bestScore;
+    dom.highscoreDisp.textContent = t('bestScoreDisp')(bestScore);
   }
 }
+
+/* ── 言語切り替え ── */
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  try { localStorage.setItem('sg_lang', lang); } catch(e) {}
+  document.title = lang === 'ja' ? 'シュール進化論 - シュールゲームス' : 'Surreal Evolution - Surreal Games';
+  window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
+
+  // タイトル画面
+  document.querySelector('.game-title').textContent = t('gameTitle');
+  document.querySelector('.game-subtitle').textContent = t('gameSubtitle');
+  document.getElementById('title-catchphrase').textContent = t('catchphrase');
+  dom.startBtn.textContent = t('startBtn');
+  dom.continueBtn.textContent = t('continueBtn');
+  document.getElementById('title-hint').innerHTML = t('titleHint');
+
+  // ゲーム画面
+  var evoLabel = document.getElementById('hud-evo-label');
+  if (evoLabel) evoLabel.textContent = t('maxEvoLabel');
+  dom.undoBtn.textContent = t('undoBtn');
+  dom.restartBtn.textContent = t('restartBtn');
+
+  // 戻るリンク
+  const backLink = document.querySelector('.back-to-top-link');
+  if (backLink) backLink.textContent = t('backToTop');
+
+  // HUD・ベストスコア更新
+  updateHUD();
+  updateBestDisplay();
+}
+
+// 言語変更イベントリスナー（共通モジュールの言語ボタンから）
+window.addEventListener('surreal-lang-change', function(e) {
+  if (e.detail && e.detail.lang && e.detail.lang !== currentLang) {
+    currentLang = e.detail.lang;
+    setLang(currentLang);
+  }
+});
 
 /* ── 入力: キーボード ── */
 function handleKey(e){

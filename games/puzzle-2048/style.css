@@ -107,24 +107,24 @@ body{
 }
 
 /* 余白の多い画像を拡大・位置調整 */
-.cell[data-level="1"] img{transform:scale(2.5) translate(8%,10%)}
-.cell[data-level="3"] img{transform:scale(2.5) translate(5%,12%)}
-.cell[data-level="5"] img{transform:scale(1.8)}
-.cell[data-level="7"] img{transform:scale(1.8)}
-.cell[data-level="10"] img{transform:scale(2.2)}
+.cell[data-level="1"] img{transform:scale(1.6)}
+.cell[data-level="2"] img{transform:scale(1.8)}
+.cell[data-level="6"] img{transform:scale(2.5) translate(5%,12%)}
+.cell[data-level="7"] img{transform:scale(2.5) translate(8%,10%)}
+.cell[data-level="9"] img{transform:scale(1.8)}
 
-/* レベル別背景色 */
-.cell[data-level="1"]{background:#1e3a5f}
-.cell[data-level="2"]{background:#1e5f3a}
-.cell[data-level="3"]{background:#5f3a1e}
-.cell[data-level="4"]{background:#5f1e5f}
-.cell[data-level="5"]{background:#1e5f5f}
-.cell[data-level="6"]{background:#5f5f1e}
-.cell[data-level="7"]{background:#5f1e3a}
-.cell[data-level="8"]{background:#3a1e5f}
-.cell[data-level="9"]{background:#1e5f1e}
-.cell[data-level="10"]{background:linear-gradient(135deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);animation:rainbow 2s linear infinite}
-.cell[data-level="11"]{background:linear-gradient(135deg,#ff00ff,#00ffff,#ffff00);animation:rainbow 1.5s linear infinite}
+/* レベル別背景色（パステルカラー） */
+.cell[data-level="1"]{background:#ffd1dc}  /* かにかに：ベビーピンク */
+.cell[data-level="2"]{background:#ffb3ba}  /* さくらんぼちゃん：サーモンピンク */
+.cell[data-level="3"]{background:#ffd9a8}  /* ヨシノリ：ピーチオレンジ */
+.cell[data-level="4"]{background:#fff5b3}  /* 謎の生物：レモンクリーム */
+.cell[data-level="5"]{background:#d4f0a8}  /* 主人公：ライトリーフ */
+.cell[data-level="6"]{background:#b3e8c8}  /* 満面の笑み：ミントグリーン */
+.cell[data-level="7"]{background:#b3e8e8}  /* ソフトクリーム：パウダーブルー */
+.cell[data-level="8"]{background:#b3d1f0}  /* おばけ：ベビーブルー */
+.cell[data-level="9"]{background:#c8b8e8}  /* 篤：ラベンダー */
+.cell[data-level="10"]{background:#e8b3e0} /* 博士：ピンクラベンダー */
+.cell[data-level="11"]{background:linear-gradient(135deg,#ffd1dc,#fff5b3,#b3e8c8,#b3d1f0,#e8b3e0);animation:rainbow 2s linear infinite}
 @keyframes rainbow{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
 
 /* 基本アニメーション */
@@ -133,28 +133,17 @@ body{
 .cell.spawn{animation:spawn .25s ease-out}
 @keyframes spawn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
 
-/* ── キャラ固有アイドルアニメーション ── */
-.cell[data-level="6"] img{animation:ghost-wobble 2.5s ease-in-out infinite}
-@keyframes ghost-wobble{
-  0%,100%{transform:translateY(0) rotate(0deg)}
-  25%{transform:translateY(-3px) rotate(2deg)}
-  75%{transform:translateY(2px) rotate(-2deg)}
+/* ── 全キャラ共通の呼吸アニメーション（控えめ） ── */
+.cell img{animation:cell-breath 2.8s ease-in-out infinite}
+@keyframes cell-breath{
+  0%,100%{opacity:1;filter:brightness(1)}
+  50%{opacity:.92;filter:brightness(1.06)}
 }
-.cell[data-level="9"] img{animation:yoshi-flex 2s ease-in-out infinite}
-@keyframes yoshi-flex{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.06)}
-}
-.cell[data-level="10"] img{animation:kani-shake 1.5s ease-in-out infinite}
-@keyframes kani-shake{
-  0%,100%{transform:rotate(0deg)}
-  25%{transform:rotate(5deg)}
-  75%{transform:rotate(-5deg)}
-}
+/* カードキング(Lv11)だけは特別演出 */
 .cell[data-level="11"] img{animation:king-glow 2s ease-in-out infinite}
 @keyframes king-glow{
-  0%,100%{filter:drop-shadow(0 0 4px rgba(255,0,255,.3))}
-  50%{filter:drop-shadow(0 0 12px rgba(255,0,255,.7))}
+  0%,100%{filter:drop-shadow(0 0 4px rgba(255,0,255,.3)) brightness(1)}
+  50%{filter:drop-shadow(0 0 12px rgba(255,0,255,.7)) brightness(1.08)}
 }
 
 /* ── スコアポップアップ ── */
@@ -293,10 +282,13 @@ body{
 }
 
 .back-to-top-link{
-  display:block;text-align:center;color:#666;
-  font-size:.8rem;text-decoration:none;margin-top:20px;padding:8px;
+  position:fixed;top:12px;left:12px;
+  color:#aaa;font-size:.8rem;text-decoration:none;
+  padding:6px 10px;border-radius:6px;
+  background:rgba(0,0,0,.4);
+  z-index:1000;
 }
-.back-to-top-link:hover{color:#aaa}
+.back-to-top-link:hover{color:#fff;background:rgba(0,0,0,.6)}
 
 @media(max-width:400px){
   .game-title{font-size:1.4rem}
