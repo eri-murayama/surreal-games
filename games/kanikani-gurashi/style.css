@@ -273,9 +273,16 @@ html, body {
 .item.generator {
   background: linear-gradient(135deg, #ffd7a8, #ff9a56);
   border: 2px solid #e87e1a;
+  cursor: pointer;
+  animation: genIdle 2s ease-in-out infinite;
+}
+@keyframes genIdle {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 126, 26, 0.3); }
+  50%      { box-shadow: 0 0 0 5px rgba(232, 126, 26, 0); }
 }
 .item.spawning {
   animation: spawn 0.35s ease-out;
+  will-change: transform;
 }
 @keyframes spawn {
   0% { transform: scale(0) rotate(-180deg); }
@@ -284,6 +291,7 @@ html, body {
 }
 .item.merged-result {
   animation: mergedPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, filter;
 }
 @keyframes mergedPop {
   0%   { transform: scale(0.3); filter: brightness(2.5); }
@@ -572,7 +580,7 @@ html, body {
   position: fixed;
   top: 15%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(0);
   background: rgba(0,0,0,0.85);
   color: #fff;
   padding: 10px 20px;
@@ -581,9 +589,20 @@ html, body {
   font-weight: 700;
   z-index: 9500;
   pointer-events: none;
-  transition: opacity 0.3s;
+  opacity: 1;
+  transition: opacity 0.3s, transform 0.3s;
 }
-.toast.hidden { opacity: 0; }
+.toast.show {
+  animation: toastSlideIn 0.3s ease-out;
+}
+.toast.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-12px);
+}
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
 
 /* ===== 戻るリンク ===== */
 .back-to-top-link {
@@ -618,4 +637,63 @@ html, body {
     border-left: 1px solid #eee;
     border-right: 1px solid #eee;
   }
+}
+
+/* ===== 共通UI位置調整（タブバーとの衝突回避） ===== */
+.sg-sound-toggle {
+  bottom: 62px !important;
+  left: 8px !important;
+  background: rgba(255,255,255,0.7) !important;
+  color: var(--kk-text) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid var(--kk-cell-border) !important;
+}
+.sg-share-btn {
+  bottom: 62px !important;
+  right: 8px !important;
+  background: rgba(255,255,255,0.7) !important;
+  color: var(--kk-text) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid var(--kk-cell-border) !important;
+}
+.sg-lang-toggle {
+  top: auto !important;
+  bottom: 110px !important;
+  right: 6px !important;
+}
+.sg-lang-toggle .sg-lang-btn {
+  background: rgba(255,255,255,0.7) !important;
+  color: var(--kk-text) !important;
+  border-color: var(--kk-cell-border) !important;
+  backdrop-filter: blur(6px) !important;
+  font-size: 11px !important;
+  padding: 4px 10px !important;
+}
+.sg-lang-toggle .sg-lang-btn.active {
+  background: var(--kk-accent) !important;
+  color: #fff !important;
+  border-color: var(--kk-accent-dark) !important;
+}
+
+/* タイトル画面では共通ボタンを隠す */
+#title-screen.active ~ .sg-sound-toggle,
+#title-screen.active ~ .sg-share-btn,
+#title-screen.active ~ .sg-lang-toggle {
+  opacity: 0.3;
+}
+
+/* モーダルの出現アニメ */
+.modal {
+  animation: modalFadeIn 0.25s ease-out;
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.modal-inner {
+  animation: modalSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalSlideUp {
+  from { transform: translateY(30px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
 }

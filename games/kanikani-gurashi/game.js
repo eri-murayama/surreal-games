@@ -221,8 +221,11 @@
   function toast(msg) {
     toastEl.textContent = msg;
     toastEl.classList.remove('hidden');
+    toastEl.classList.remove('show');
+    void toastEl.offsetWidth;
+    toastEl.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function() { toastEl.classList.add('hidden'); }, 1600);
+    toastTimer = setTimeout(function() { toastEl.classList.add('hidden'); toastEl.classList.remove('show'); }, 1600);
   }
 
   function findEmptyCell() {
@@ -327,7 +330,7 @@
     const target = document.elementFromPoint(e.clientX, e.clientY);
     drag.el.style.pointerEvents = '';
     document.querySelectorAll('.cell.drag-over, .cell.merge-target, .cell.recycle-target').forEach(function(c) {
-      c.classList.remove('drag-over', 'merge-target');
+      c.classList.remove('drag-over', 'merge-target', 'recycle-target');
     });
     if (!target) return;
     const cell = target.closest('.cell');
@@ -359,9 +362,10 @@
     const fromIdx = drag.fromIdx;
     drag.el.classList.remove('dragging');
     drag.el.style.transform = '';
+    drag.el.style.transition = '';
     drag = null;
     document.querySelectorAll('.cell.drag-over, .cell.merge-target, .cell.recycle-target').forEach(function(c) {
-      c.classList.remove('drag-over', 'merge-target');
+      c.classList.remove('drag-over', 'merge-target', 'recycle-target');
     });
     if (toIdx >= 0) {
       tryMergeOrMove(fromIdx, toIdx);
