@@ -42,7 +42,7 @@
     { id: 'solitaire', title: 'ソリティア', titleEn: 'Solitaire', emoji: '♠', genre: 'カード', genreEn: 'Card', desc: 'クラシックなクロンダイクソリティア。' },
     { id: 'sudoku', title: '数独', titleEn: 'Sudoku', emoji: '🔢', genre: 'パズル', genreEn: 'Puzzle', desc: '3段階の難易度で遊べる本格数独。' },
     { id: 'minesweeper', title: 'かいだんマインスイーパー', titleEn: 'Kaidan Minesweeper', emoji: '👻', genre: 'パズル', genreEn: 'Puzzle', desc: '怪談を聞きながら地雷を探せ。' },
-    { id: 'reversi', title: 'リバーシ', titleEn: 'Reversi', emoji: '⚫', genre: 'ボード', genreEn: 'Board', desc: 'CPU対戦3段階。石をひっくり返せ。' },
+    { id: 'reversi', title: 'リバーシマスター', titleEn: 'Reversi Master', emoji: '⚫', genre: 'ボード', genreEn: 'Board', desc: 'CPU対戦3段階。石をひっくり返せ。' },
     { id: 'slide-puzzle', title: 'スライドパズル', titleEn: 'Slide Puzzle', emoji: '🧩', genre: 'パズル', genreEn: 'Puzzle', desc: 'タイルをスライドして揃えろ。' },
     { id: 'hashimoto', title: '橋本さん', titleEn: 'Hashimoto-san', emoji: '👤', genre: 'クイズ', genreEn: 'Quiz', desc: '苗字ランキングで勝負だ！' },
     { id: 'ireland', title: 'アイルランドゲーム', titleEn: 'Ireland Game', emoji: '☘️', genre: 'クイズ', genreEn: 'Quiz', desc: '似ているものの中からアイルランドを探せ！' },
@@ -519,7 +519,7 @@
     },
     // カフェ・ボサノバ風（ねこカフェ物語）— おしゃれで温かいジャズカフェ
     cafe: {
-      tempo: 95, key: 'F', wave: 'sine', volume: 0.10,
+      tempo: 95, key: 'F', wave: 'sine', volume: 0.22,
       melody: [
         698, 880, 784, 698, 659, 784, 880, 784,
         698, 587, 659, 698, 784, 880, 784, 659,
