@@ -1058,6 +1058,13 @@ html, body {
   const boardWrapper = document.querySelector('.board-wrapper');
   let allReverseUsed = false;  // オールリバース使用済みフラグ
 
+  // サウンドヘルパー
+  function playSound(name) {
+    if (window.SurrealGames && window.SurrealGames.SoundSystem) {
+      window.SurrealGames.SoundSystem.play(name);
+    }
+  }
+
   // Init board cells
   function createBoardCells() {
     boardEl.innerHTML = '';
@@ -1146,6 +1153,7 @@ html, body {
     const stone = document.createElement('div');
     stone.className = `stone ${color === BLACK ? 'black' : 'white'} drop-in`;
     cell.appendChild(stone);
+    playSound('hit');
   }
 
   function flipStoneAnimated(r, c, toColor) {
@@ -1157,6 +1165,7 @@ html, body {
     // Force reflow
     void stone.offsetWidth;
     stone.classList.add(animClass);
+    playSound('tap');
     stone.addEventListener('animationend', () => {
       stone.className = `stone ${toColor === BLACK ? 'black' : 'white'}`;
     }, { once: true });
@@ -1382,6 +1391,7 @@ html, body {
     } else if (curMoves.length > 0) {
       // Opponent must pass
       showToast(currentPlayer === BLACK ? t('cpuPass') : t('youPass'));
+      playSound('wrong');
       updateTurn();
       renderBoard();
       if (currentPlayer === WHITE) {
@@ -1407,7 +1417,12 @@ html, body {
     resultScore.textContent = t('scoreFormat', black, white);
     setTimeout(() => {
       overlay.classList.add('show');
-      if (isWin) spawnConfetti();
+      if (isWin) {
+        spawnConfetti();
+        playSound('achievement');
+      } else {
+        playSound('result');
+      }
     }, 300);
   }
 
@@ -1749,11 +1764,13 @@ html, body {
     allreverseOverlay.classList.remove('show');
     void allreverseOverlay.offsetWidth;
     allreverseOverlay.classList.add('show');
+    playSound('dramatic');
     setTimeout(() => allreverseOverlay.classList.remove('show'), 4100);
   }
 
   // 黒いつぶ設置完了！演出
   function showDuelStandbyEffect() {
+    playSound('boost');
     duelOverlay.querySelector('.duel-text').textContent = t('duelStandby');
     duelOverlay.classList.remove('show');
     void duelOverlay.offsetWidth;
@@ -1808,6 +1825,7 @@ html, body {
 
   // 永遠の支配演出
   function showEternalEffect() {
+    playSound('dramatic');
     eternalOverlay.classList.remove('show');
     void eternalOverlay.offsetWidth;
     eternalOverlay.classList.add('show');
