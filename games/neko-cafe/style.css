@@ -39,6 +39,11 @@ html, body {
 #title-screen {
   padding: 40px 20px 20px;
   text-align: center;
+  animation: fadeSlideIn 0.6s ease-out;
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .title-deco {
@@ -47,7 +52,6 @@ html, body {
   display: flex;
   justify-content: center;
   gap: 12px;
-  animation: bob 2.5s ease-in-out infinite;
 }
 .title-cat { animation: bob 2s ease-in-out infinite; }
 .title-cup { animation: bob 2s ease-in-out infinite 0.3s; }
@@ -130,7 +134,16 @@ html, body {
 }
 .hud-item:nth-child(2) { flex: 2; }
 .hud-label { font-size: 0.95rem; }
-.hud-value { font-size: 1.1rem; }
+.hud-value { font-size: 1.1rem; transition: transform 0.15s; }
+.hud-value.bounce {
+  animation: coinBounce 0.4s ease-out;
+}
+@keyframes coinBounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.35); color: var(--cafe-gold); }
+  100% { transform: scale(1); }
+}
+
 .xp-bar-wrap {
   flex: 1;
   height: 10px;
@@ -158,6 +171,15 @@ html, body {
   font-weight: 700;
   color: var(--cafe-brown);
   white-space: nowrap;
+  transition: color 0.3s;
+}
+.timer-label.urgent {
+  color: var(--cafe-red);
+  animation: urgentPulse 0.8s ease-in-out infinite;
+}
+@keyframes urgentPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 .day-timer-wrap {
   flex: 1;
@@ -173,6 +195,13 @@ html, body {
   background: linear-gradient(90deg, var(--cafe-pink), #ffb6c1);
   border-radius: 4px;
   transition: width 0.25s linear;
+}
+.day-timer-fill.urgent {
+  animation: timerFlash 0.6s ease-in-out infinite;
+}
+@keyframes timerFlash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 /* ===== カフェエリア ===== */
@@ -192,10 +221,27 @@ html, body {
   pointer-events: none;
   font-size: 1.4rem;
   opacity: 0.5;
+  transition: opacity 0.5s;
 }
 .bg-window { position: absolute; top: 4px; left: 14%; font-size: 1.6rem; }
 .bg-plant  { position: absolute; top: 8px; right: 8%; font-size: 1.8rem; }
 .bg-frame  { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); font-size: 1.3rem; }
+/* 購入した内装アイテム */
+.bg-decor {
+  position: absolute;
+  font-size: 1.3rem;
+  opacity: 0.7;
+  animation: decorFloat 3s ease-in-out infinite;
+}
+.bg-decor:nth-child(4) { bottom: 8px; left: 6%; animation-delay: 0s; }
+.bg-decor:nth-child(5) { bottom: 12px; right: 10%; animation-delay: 0.8s; }
+.bg-decor:nth-child(6) { bottom: 4px; left: 35%; animation-delay: 1.6s; }
+.bg-decor:nth-child(7) { top: 10px; left: 30%; animation-delay: 0.4s; }
+.bg-decor:nth-child(8) { top: 12px; right: 25%; animation-delay: 1.2s; }
+@keyframes decorFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
 
 #tables-wrap {
   position: relative;
@@ -218,13 +264,18 @@ html, body {
   justify-content: flex-end;
   padding: 6px 4px 8px;
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, background 0.15s;
 }
 .table-slot.occupied {
   background: #fff;
   border-style: solid;
   border-color: var(--cafe-brown);
   box-shadow: 0 2px 0 var(--cafe-shadow);
+  animation: tablePopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes tablePopIn {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 .table-slot.locked {
   background: repeating-linear-gradient(45deg, #f0dcc8, #f0dcc8 6px, #e3cbaf 6px, #e3cbaf 12px);
@@ -238,7 +289,12 @@ html, body {
 }
 .table-slot.serving-hover {
   outline: 3px solid var(--cafe-gold);
-  transform: scale(1.04);
+  transform: scale(1.06);
+  animation: serveGlow 0.8s ease-in-out infinite;
+}
+@keyframes serveGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(230, 184, 78, 0.4); }
+  50% { box-shadow: 0 0 12px 4px rgba(230, 184, 78, 0.3); }
 }
 
 .empty-table {
@@ -271,6 +327,11 @@ html, body {
   justify-content: center;
   font-size: 1.3rem;
   box-shadow: 0 2px 4px var(--cafe-shadow);
+  animation: bubblePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes bubblePop {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
 }
 .order-bubble::after {
   content: '';
@@ -295,7 +356,7 @@ html, body {
 .patience-fill {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, #a8d5a8, var(--cafe-gold), var(--cafe-red));
+  background: linear-gradient(90deg, var(--cafe-red), var(--cafe-gold), var(--cafe-green));
   background-size: 200% 100%;
   transition: width 0.25s linear;
 }
@@ -314,6 +375,27 @@ html, body {
   0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
   30% { opacity: 1; transform: translate(-50%, -30px) scale(1.2); }
   100% { opacity: 0; transform: translate(-50%, -60px) scale(1); }
+}
+
+/* コンボ表示 */
+.combo-pop {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--cafe-gold);
+  pointer-events: none;
+  animation: comboPop 1.2s ease-out forwards;
+  z-index: 6;
+  text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff;
+  white-space: nowrap;
+}
+@keyframes comboPop {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.5) rotate(-5deg); }
+  20% { opacity: 1; transform: translate(-50%, -20px) scale(1.3) rotate(3deg); }
+  100% { opacity: 0; transform: translate(-50%, -50px) scale(1) rotate(0deg); }
 }
 
 /* ===== キッチン ===== */
@@ -345,16 +427,47 @@ html, body {
   padding: 6px 2px 4px;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: transform 0.1s, background 0.2s, border-color 0.2s;
   min-height: 72px;
 }
 .station:active { transform: translateY(2px); }
-.station .st-icon { font-size: 1.6rem; display: block; }
+.station .st-icon { font-size: 1.6rem; display: block; transition: transform 0.2s; }
 .station .st-name { font-size: 0.68rem; color: var(--cafe-brown); font-weight: 700; margin-top: 2px; display: block; }
 .station .st-price { font-size: 0.62rem; color: var(--cafe-brown-light); display: block; }
 
-.station.cooking { background: #ffe9c8; border-color: var(--cafe-gold); }
-.station.ready   { background: #d7f5d7; border-color: var(--cafe-green); animation: readyPulse 0.8s ease-in-out infinite; }
+.station.cooking {
+  background: #ffe9c8;
+  border-color: var(--cafe-gold);
+}
+.station.cooking .st-icon {
+  animation: cookShake 0.4s ease-in-out infinite;
+}
+@keyframes cookShake {
+  0%, 100% { transform: rotate(0) translateY(0); }
+  25% { transform: rotate(-5deg) translateY(-2px); }
+  75% { transform: rotate(5deg) translateY(-2px); }
+}
+/* 湯気エフェクト */
+.station.cooking::after {
+  content: '~';
+  position: absolute;
+  top: -2px;
+  right: 8px;
+  font-size: 1rem;
+  color: rgba(200, 155, 123, 0.6);
+  animation: steam 1s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes steam {
+  0% { opacity: 0.8; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-12px) scale(1.5); }
+}
+
+.station.ready {
+  background: #d7f5d7;
+  border-color: var(--cafe-green);
+  animation: readyPulse 0.8s ease-in-out infinite;
+}
 .station.locked  { background: #eaeaea; border-color: #ccc; color: #999; opacity: 0.6; cursor: not-allowed; }
 
 @keyframes readyPulse {
@@ -393,9 +506,13 @@ html, body {
   align-items: center;
   justify-content: center;
   border: 2px solid #fff;
+  animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes badgePop {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
 }
 
-/* 選択中（配膳準備中）のホバー表示 */
 .station.selected {
   outline: 3px solid var(--cafe-gold);
   transform: scale(1.05);
@@ -431,6 +548,7 @@ html, body {
   align-items: center;
   gap: 2px;
   box-shadow: 0 3px 0 var(--cafe-shadow);
+  transition: transform 0.1s;
 }
 .act-btn:active {
   transform: translateY(2px);
@@ -439,7 +557,96 @@ html, body {
 .act-icon { font-size: 1.2rem; }
 .act-label { font-size: 0.72rem; }
 
-/* ===== モーダル画面（ショップ・メニュー・内装・結果） ===== */
+/* ===== 開店スプラッシュ ===== */
+#day-splash {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 247, 236, 0.92);
+  z-index: 200;
+  pointer-events: none;
+  animation: splashFade 1.8s ease-out forwards;
+}
+@keyframes splashFade {
+  0% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.splash-text {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--cafe-brown);
+  text-shadow: 3px 3px 0 #fff, 5px 5px 0 var(--cafe-shadow);
+  animation: splashZoom 1.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes splashZoom {
+  0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  30% { transform: scale(1.2) rotate(3deg); opacity: 1; }
+  50% { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.5) rotate(0deg); opacity: 0; }
+}
+
+/* ===== レベルアップ演出 ===== */
+#levelup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 215, 100, 0.25);
+  z-index: 200;
+  pointer-events: none;
+  animation: lvupFade 2.5s ease-out forwards;
+}
+@keyframes lvupFade {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.lvup-star {
+  font-size: 2rem;
+  animation: lvupStar 2.5s ease-out forwards;
+}
+@keyframes lvupStar {
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  20% { transform: scale(1.5) rotate(0deg); opacity: 1; }
+  40% { transform: scale(1) rotate(10deg); }
+  100% { transform: scale(1.5) rotate(0deg); opacity: 0; }
+}
+.lvup-text {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--cafe-brown);
+  text-shadow: 2px 2px 0 #fff;
+  margin-top: 8px;
+  animation: lvupText 2.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes lvupText {
+  0% { transform: translateY(30px) scale(0.5); opacity: 0; }
+  25% { transform: translateY(-5px) scale(1.1); opacity: 1; }
+  40% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-20px) scale(1); opacity: 0; }
+}
+
+/* パーティクル（紙吹雪） */
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 201;
+  animation: confettiFall 2s ease-in forwards;
+}
+@keyframes confettiFall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+}
+
+/* ===== モーダル画面 ===== */
 #shop-screen, #menu-screen, #decor-screen, #result-screen {
   position: fixed;
   top: 50%;
@@ -455,13 +662,22 @@ html, body {
   z-index: 50;
   box-shadow: 0 8px 30px rgba(0,0,0,0.3);
   overflow-y: auto;
+  animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
 }
-/* 背景オーバーレイ（JSで動的追加） */
+@keyframes modalSlideIn {
+  0% { transform: translate(-50%, -45%) scale(0.9); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
 #modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4);
   z-index: 40;
+  animation: overlayFadeIn 0.2s ease-out;
+}
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-head {
@@ -491,7 +707,9 @@ html, body {
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 2px 0 var(--cafe-shadow);
+  transition: transform 0.1s;
 }
+.close-btn:active { transform: scale(0.9); }
 
 .tab-row {
   display: flex;
@@ -508,6 +726,7 @@ html, body {
   color: var(--cafe-brown);
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s, color 0.15s;
 }
 .tab-btn.active {
   background: var(--cafe-brown);
@@ -534,7 +753,9 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
+  transition: transform 0.1s;
 }
+.shop-item:active { transform: scale(0.98); }
 .shop-item.owned {
   background: #e8f5e8;
   border-color: var(--cafe-green);
@@ -573,7 +794,9 @@ html, body {
   cursor: pointer;
   box-shadow: 0 2px 0 var(--cafe-brown);
   white-space: nowrap;
+  transition: transform 0.1s;
 }
+.shop-buy:active { transform: translateY(1px); }
 .shop-buy:disabled {
   background: #ccc;
   box-shadow: 0 2px 0 #999;
@@ -605,6 +828,26 @@ html, body {
 #result-screen {
   text-align: center;
 }
+.result-stars {
+  font-size: 2.4rem;
+  margin: 8px 0 4px;
+  letter-spacing: 6px;
+}
+.result-stars .star-on {
+  animation: starSpin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+}
+.result-stars .star-on:nth-child(2) { animation-delay: 0.15s; }
+.result-stars .star-on:nth-child(3) { animation-delay: 0.3s; }
+@keyframes starSpin {
+  0% { transform: scale(0) rotate(-90deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.result-comment {
+  font-size: 0.9rem;
+  color: var(--cafe-brown-light);
+  margin-bottom: 10px;
+}
 .result-row {
   font-size: 1.05rem;
   padding: 6px 0;
@@ -626,6 +869,8 @@ html, body {
   z-index: 100;
   pointer-events: none;
   animation: toastIn 0.3s;
+  max-width: 90%;
+  text-align: center;
 }
 @keyframes toastIn {
   from { opacity: 0; transform: translate(-50%, -10px); }

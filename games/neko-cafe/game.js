@@ -131,6 +131,85 @@
     }
   }
 
+  // ===== コンボシステム =====
+  var comboCount = 0;
+  var comboTimer = null;
+  function addCombo() {
+    comboCount++;
+    clearTimeout(comboTimer);
+    comboTimer = setTimeout(function () { comboCount = 0; }, 5000);
+    return comboCount;
+  }
+  function getComboBonus() {
+    if (comboCount < 2) return 0;
+    return Math.floor(comboCount * 3);
+  }
+
+  // ===== 演出: コインバウンス =====
+  function bounceCoinHud() {
+    var el = $('#coins-display');
+    el.classList.remove('bounce');
+    void el.offsetWidth; // reflow
+    el.classList.add('bounce');
+  }
+
+  // ===== 演出: 開店スプラッシュ =====
+  function showDaySplash() {
+    var splash = document.createElement('div');
+    splash.id = 'day-splash';
+    splash.innerHTML = '<div class="splash-text">☀️ Day ' + state.day + ' 開店！</div>';
+    document.body.appendChild(splash);
+    setTimeout(function () { splash.remove(); }, 1800);
+  }
+
+  // ===== 演出: レベルアップ =====
+  function showLevelUpEffect(newLevel) {
+    var overlay = document.createElement('div');
+    overlay.id = 'levelup-overlay';
+    overlay.innerHTML = '<div class="lvup-star">⭐</div><div class="lvup-text">Lv.' + newLevel + ' UP!</div>';
+    document.body.appendChild(overlay);
+    spawnConfetti(12);
+    setTimeout(function () { overlay.remove(); }, 2500);
+  }
+
+  // ===== 演出: 紙吹雪 =====
+  function spawnConfetti(count) {
+    var colors = ['#ffd6e0', '#e6b84e', '#a8d5a8', '#ffa8b6', '#c89b7b', '#ffb6c1'];
+    for (var i = 0; i < count; i++) {
+      (function (idx) {
+        setTimeout(function () {
+          var c = document.createElement('div');
+          c.className = 'confetti';
+          c.style.left = (10 + Math.random() * 80) + '%';
+          c.style.top = '-10px';
+          c.style.background = colors[idx % colors.length];
+          c.style.width = (6 + Math.random() * 6) + 'px';
+          c.style.height = (6 + Math.random() * 6) + 'px';
+          c.style.animationDuration = (1.5 + Math.random()) + 's';
+          document.body.appendChild(c);
+          setTimeout(function () { c.remove(); }, 2500);
+        }, idx * 80);
+      })(i);
+    }
+  }
+
+  // ===== 演出: カフェ背景にデコ表示 =====
+  function updateDecorDisplay() {
+    var bg = $('#cafe-bg');
+    if (!bg) return;
+    // 既存デコを削除（最初の3つ=窓・植物・額は残す）
+    var existing = bg.querySelectorAll('.bg-decor');
+    existing.forEach(function (e) { e.remove(); });
+    state.ownedDecors.forEach(function (id) {
+      var d = DECORS.find(function (x) { return x.id === id; });
+      if (!d) return;
+      var el = document.createElement('div');
+      el.className = 'bg-decor';
+      el.textContent = d.icon;
+      bg.appendChild(el);
+    });
+  }
+
   // ===== 計算系ヘルパ =====
   function xpForLevel(lv) { return Math.floor(40 * Math.pow(1.3, lv - 1)); }
   function speedMult() {
@@ -188,6 +267,8 @@
     if (!bar) return;
     var pct = Math.max(0, (state.dayTimer / DAY_LENGTH) * 100);
     bar.style.width = pct + '%';
+    var label = $('.timer-label');
+    var isUrgent = pct < 20;
     if (pct < 20) {
       bar.style.background = 'var(--cafe-red)';
     } else if (pct < 40) {
@@ -195,6 +276,8 @@
     } else {
       bar.style.background = '';
     }
+    if (label) label.classList.toggle('urgent', isUrgent);
+    bar.classList.toggle('urgent', isUrgent);
   }
 
   // ===== トースト =====
@@ -390,6 +473,9 @@
 
   function leaveHappy(t, menu) {
     var earn = Math.floor(menu.price * tipMult());
+    var combo = addCombo();
+    var bonus = getComboBonus();
+    earn += bonus;
     state.coins += earn;
     state.xp += menu.xp;
     state.reputation += 1;
@@ -401,6 +487,10 @@
     }
     showPop(t.el, '💕', 'happy-pop');
     showCoinPop(t.el, '+' + fmtNum(earn));
+    if (combo >= 2) {
+      showComboPop(t.el, combo, bonus);
+    }
+    bounceCoinHud();
     playSound('tap');
     checkLevelUp();
     clearTable(t);
@@ -443,13 +533,21 @@
     setTimeout(function () { p.remove(); }, 1000);
   }
 
+  function showComboPop(parent, combo, bonus) {
+    var p = document.createElement('div');
+    p.className = 'combo-pop';
+    p.textContent = combo + 'コンボ！ +' + bonus;
+    parent.appendChild(p);
+    setTimeout(function () { p.remove(); }, 1200);
+  }
+
   // ===== レベルアップチェック =====
   function checkLevelUp() {
     var need = xpForLevel(state.level);
     while (state.xp >= need) {
       state.xp -= need;
       state.level++;
-      toast('🎉 レベルアップ！ Lv.' + state.level, 2500);
+      showLevelUpEffect(state.level);
       playSound('tap');
       need = xpForLevel(state.level);
     }
@@ -590,7 +688,10 @@
     state.dayStats = { served: 0, coins: 0, xp: 0, rep: 0 };
     state.dayTimer = DAY_LENGTH;
     lastTime = performance.now();
-    spawnTimer = 1.0;
+    spawnTimer = 1.5;
+    comboCount = 0;
+    showDaySplash();
+    updateDecorDisplay();
     state.tables.forEach(clearTable);
     state.stations.forEach(function (s) {
       s.state = 'idle';
@@ -619,6 +720,25 @@
     $('#res-coins').textContent = fmtNum(s.coins);
     $('#res-xp').textContent = s.xp;
     $('#res-rep').textContent = s.rep;
+    // スター評価
+    var stars = 0;
+    if (s.served >= 1) stars = 1;
+    if (s.served >= 3) stars = 2;
+    if (s.served >= 6) stars = 3;
+    var starsHtml = '';
+    for (var i = 0; i < 3; i++) {
+      starsHtml += i < stars
+        ? '<span class="star-on">⭐</span>'
+        : '<span style="opacity:0.25">☆</span>';
+    }
+    $('#res-stars').innerHTML = starsHtml;
+    var comments = [
+      'まだまだこれから！',
+      'なかなかの繁盛ぶり！',
+      'いい調子！もっといけるよ！',
+      '素晴らしい一日でした！🎉',
+    ];
+    $('#res-comment').textContent = comments[stars];
     $('#result-screen').classList.remove('hidden');
     playSound('tap');
     save();
@@ -677,6 +797,7 @@
           save();
           renderShop();
           toast('新メニュー「' + m.name + '」追加！', 2000);
+          spawnConfetti(6);
           playSound('tap');
         });
         list.appendChild(item);
@@ -763,9 +884,11 @@
         state.coins -= d.cost;
         state.ownedDecors.push(d.id);
         updateHud();
+        updateDecorDisplay();
         save();
         renderDecor();
         toast('お店がすてきになった！');
+        spawnConfetti(8);
         playSound('tap');
       });
       list.appendChild(item);
