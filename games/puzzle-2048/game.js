@@ -30,7 +30,7 @@ const LANG = {
     shareText: (sc, evo, mc) => '\u{1F9EC} シュール進化論\nスコア: ' + sc + '点\n最高進化: ' + evo + '\n手数: ' + mc + '\n\n#シュールゲームス\n',
     undoComment: '一手戻した！',
     evoNames: ['','かにかに','さくらんぼちゃん','ヨシノリ','まーくん','主人公','おじさん',
-      'ソフトクリーム','バケモン','篤','博士','勇気'],
+      'ソフトクリーム','バケモン','篤','博士','リバーシマスター'],
     mergeComments: [
       '',
       '腹筋は毎日換気！',
@@ -43,7 +43,7 @@ const LANG = {
       '成仏…',
       '数字が俺を呼んでいる',
       'ひぃいいなんじゃこりゃ',
-      'ずっと俺のターン！',
+      '吾輩の番だが？',
     ],
     gameoverComments: [
       '進化完了！お疲れ様！',
@@ -72,7 +72,7 @@ const LANG = {
     shareText: (sc, evo, mc) => '\u{1F9EC} Surreal Evolution\nScore: ' + sc + '\nTop Evo: ' + evo + '\nMoves: ' + mc + '\n\n#SurrealGames\n',
     undoComment: 'Undone!',
     evoNames: ['','Kani-Kani','Sakuranbo','Yoshinori','Maa-kun','Hero','Ojisan',
-      'Soft Serve','Bakemon','Atsushi','Professor','Yuuki'],
+      'Soft Serve','Bakemon','Atsushi','Professor','Reversi Master'],
     mergeComments: [
       '',
       'Train your abs every day!',
@@ -85,7 +85,7 @@ const LANG = {
       'Rest in peace...',
       'The numbers are calling me',
       'Whaaat is this?!',
-      'It\'s still my turn!',
+      'It\'s my turn!',
     ],
     gameoverComments: [
       'Evolution complete! Good job!',
@@ -110,7 +110,7 @@ const EVO_IMAGES = [
   'images/kaidan-ghost.png',  // 8: おばけ
   'images/atsushi.png',       // 9: 篤
   'images/hakase-mount.png',  // 10: 博士
-  'images/character.png',     // 11: カードキング
+  'images/character.png',     // 11: リバーシマスター
 ];
 
 const SCORE_PER_LEVEL = [0,0,4,8,16,32,64,128,256,512,1024,2048];

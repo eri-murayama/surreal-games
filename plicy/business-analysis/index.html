@@ -2,11 +2,17 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>経営分析ゲーム～天才たちの戯れ～</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>経営分析ゲーム～天才たちの戯れ～ - シュールゲームス</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="経営分析ゲーム ～天才たちの戯れ～ | シュールゲームス">
+  <meta property="og:description" content="ものごとは二つに分けられる。分析できるか…できないか…だ…！！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/business-analysis/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -105,11 +111,20 @@
         <p id="ending-text"></p>
       </div>
       <div id="ending-buttons" class="hidden">
+        <button class="game-end-btn" id="share-btn">𝕏 でシェア</button>
         <button class="game-end-btn" id="replay-btn">もう一回やる</button>
       </div>
     </div>
 
   </div>
+  <button id="sound-toggle" style="position:fixed;bottom:16px;left:16px;z-index:9999;width:40px;height:40px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;min-width:0;letter-spacing:0;box-shadow:none;">🔊</button>
   <script src="game.js"></script>
+  <script>
+    const soundBtn = document.getElementById('sound-toggle');
+    soundBtn.addEventListener('click', () => {
+      const on = Sound.toggle();
+      soundBtn.textContent = on ? '🔊' : '🔇';
+    });
+  </script>
 </body>
 </html>

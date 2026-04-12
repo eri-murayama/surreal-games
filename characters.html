@@ -111,11 +111,19 @@
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
       z-index: 1;
+      transform: var(--img-scale, scale(1));
     }
 
     .chara-card:hover .chara-card__image-wrap img {
-      transform: scale(1.1) rotate(3deg);
+      transform: var(--img-scale, scale(1)) scale(1.1) rotate(3deg);
     }
+
+    /* キャラごとのサイズ補正（余白が多い画像を拡大して見た目を統一） */
+    .chara-card--atsushi .chara-card__image-wrap img { --img-scale: scale(1.6); }
+    .chara-card--ojisan .chara-card__image-wrap img { --img-scale: scale(1.8); }
+    .chara-card--sakuranbo .chara-card__image-wrap img { --img-scale: scale(1.4); }
+    .chara-card--hakase .chara-card__image-wrap img { --img-scale: scale(1.3); }
+    .chara-card--softcream .chara-card__image-wrap img { --img-scale: scale(1.3); }
 
     .chara-card__emoji-placeholder {
       font-size: 8rem;
@@ -593,23 +601,23 @@
           </div>
         </article>
 
-        <!-- 勇気 -->
-        <article class="chara-card chara-card--yuuki fade-in">
+        <!-- リバーシマスター キャラ -->
+        <article class="chara-card chara-card--reversi fade-in">
           <div class="chara-card__image-wrap">
-            <img src="games/puzzle-2048/images/character.png" alt="勇気" loading="lazy">
+            <img src="games/reversi/character.png" alt="リバーシマスター" loading="lazy">
           </div>
           <div class="chara-card__body">
             <h3 class="chara-card__name">
               <span class="chara-card__name-emoji">&#x1f0cf;</span>
-              勇気
+              リバーシマスター
             </h3>
-            <span class="chara-card__game">シュール進化論</span>
+            <span class="chara-card__game">リバーシマスター</span>
             <ul class="chara-card__traits">
-              <li>カードゲームに人生を捧げた男</li>
-              <li>ターンを絶対に譲らない</li>
-              <li>進化の頂点に立つ存在</li>
+              <li>盤上の支配者を自称するピンクの怪人</li>
+              <li>吾輩の番を永遠に宣言し続ける</li>
+              <li>黒い石への執着が異常</li>
             </ul>
-            <div class="chara-card__quote">ずっと俺のターン！</div>
+            <div class="chara-card__quote">吾輩の番だが？</div>
           </div>
         </article>
 

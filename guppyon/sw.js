@@ -3,14 +3,17 @@
    オフライン対応 & PWA
    ============================================ */
 
-const CACHE_NAME = 'gero-gero-v1';
+const CACHE_NAME = 'gero-gero-v2';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/main.js',
   './js/audio.js',
+  './js/share-gate.js',
   './manifest.json',
+  './safety-guide.html',
+  './privacy.html',
   './games/pop-bubbles/index.html',
   './games/animal-sounds/index.html',
   './games/color-touch/index.html',
@@ -21,6 +24,10 @@ const ASSETS = [
   './games/english-words/index.html',
   './games/memory-cards/index.html',
   './games/shape-puzzle/index.html',
+  './games/kanji-quiz/index.html',
+  './games/kanji-reading/index.html',
+  './games/prefecture-master/index.html',
+  './games/speed-calc/index.html',
 ];
 
 // Install: cache all assets

@@ -34,8 +34,9 @@ function initSubjectFilter() {
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
+      filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
 
       // Re-run filterByAge which now also respects subject
       const savedAge = localStorage.getItem('gero-age') || 'all';

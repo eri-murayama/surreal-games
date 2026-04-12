@@ -774,6 +774,20 @@ section {
   border-color: #ff9900;
 }
 
+/* --- カブトムシ様 --- */
+.card-chara--kabutomushi { width: 55%; }
+.card-flip-back__img--kabutomushi {
+  width: 250%;
+  top: -80%;
+  left: -75%;
+}
+.kabutomushi-speech {
+  color: #ffd700;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+  border-color: #ffd700;
+}
+.placeholder-art--kabutomushi { background: linear-gradient(135deg, #ff6ec7, #0b0b2a, #39ff14); }
+
 /* NEW バッジ */
 .new-badge {
   position: absolute;

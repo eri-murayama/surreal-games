@@ -44,6 +44,8 @@ body {
   justify-content: center;
   z-index: 10;
   padding: 16px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 .screen.active { display: flex; }
 
@@ -258,13 +260,16 @@ body {
 
 .back-to-top-link {
   position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #666;
-  font-size: 0.7rem;
+  top: 12px;
+  left: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
   text-decoration: none;
   z-index: 100;
+  transition: color 0.2s;
+}
+.back-to-top-link:hover {
+  color: #fff;
 }
 </style>
 </head>

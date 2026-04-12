@@ -543,7 +543,7 @@
     // バトル・対戦系（リバーシマスター）— スタッカート＋跳躍＋brass で爽快バトル
     // 他プリセットとの差別化: 休符多め・5度跳躍・ルート-5th交互ベース・短-長ハネ
     battle: {
-      tempo: 170, key: 'Bm', wave: 'sawtooth', volume: 0.22,
+      tempo: 170, key: 'Bm', wave: 'sawtooth', volume: 0.12,
       melody: [
         494, 0, 740, 494, 0, 880, 740, 0,
         988, 0, 740, 0, 587, 740, 880, 988,
@@ -771,8 +771,8 @@
           vibratoG.gain.value = 4;       // 揺れ幅（Hz）
           vibrato.connect(vibratoG);
           vibratoG.connect(osc.frequency);
-          // 音量: メロディより大きめ（邪魔なくらい）
-          const brassVol = vol * 1.8;
+          // 音量: メロディとバランスを取る
+          const brassVol = vol * 1.0;
           g.gain.setValueAtTime(brassVol, now + offsets[i]);
           g.gain.setValueAtTime(brassVol, now + offsets[i] + noteDur * 0.7);
           g.gain.exponentialRampToValueAtTime(0.001, now + offsets[i] + noteDur * 0.95);

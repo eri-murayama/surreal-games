@@ -190,6 +190,8 @@
   function showGame() {
     $('#title-screen').classList.add('hidden');
     $('#game-screen').classList.remove('hidden');
+    var backLink = document.querySelector('.back-to-top-link');
+    if (backLink) backLink.classList.add('game-active');
   }
 
   // ===== 数値フォーマット =====

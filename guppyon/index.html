@@ -9,6 +9,10 @@
   <meta property="og:title" content="ゲロゲーロ学園｜1さいからあそべる！子どもの無料知育ゲーム">
   <meta property="og:description" content="赤ちゃんから小学生まで、ぜんぶ無料であそべる知育ゲームがいっぱい！">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/gerogero-gakuen/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ゲロゲーロ学園｜1さいからあそべる！子どもの無料知育ゲーム">
+  <meta name="twitter:description" content="赤ちゃんから小学生まで、ぜんぶ無料であそべる知育ゲームがいっぱい！">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Kosugi+Maru&display=swap" rel="stylesheet">
@@ -296,22 +300,22 @@
         </div>
       </a>
       <button class="menu-toggle" aria-label="メニュー">☰</button>
-      <nav>
+      <nav aria-label="メインメニュー">
         <ul>
-          <li><a href="#games"><span class="nav-emoji">🎮</span>ゲーム</a></li>
-          <li><a href="#about"><span class="nav-emoji">🐸</span>ゲロゲーロって？</a></li>
-          <li><a href="#parents"><span class="nav-emoji">👨‍👩‍👧</span>おうちの方へ</a></li>
+          <li><a href="#games"><span class="nav-emoji" aria-hidden="true">🎮</span>ゲーム</a></li>
+          <li><a href="#about"><span class="nav-emoji" aria-hidden="true">🐸</span>ゲロゲーロって？</a></li>
+          <li><a href="#parents"><span class="nav-emoji" aria-hidden="true">👨‍👩‍👧</span>おうちの方へ</a></li>
         </ul>
       </nav>
-      <button class="age-change-btn" id="ageChangeBtn" onclick="reopenAgeGate()" style="display:none;" title="ねんれいをかえる">
+      <button class="age-change-btn" id="ageChangeBtn" onclick="reopenAgeGate()" style="display:none;" title="ねんれいをかえる" aria-label="ねんれいをかえる">
         <span id="ageBtnEmoji">🌈</span> <span id="ageBtnLabel">ぜんぶ</span>
       </button>
     </div>
   </header>
 
   <!-- Hero -->
-  <section class="hero">
-    <div class="hero-mascot-container">
+  <section class="hero" aria-label="ようこそ">
+    <div class="hero-mascot-container" aria-hidden="true">
       <span class="mascot-left-hand">👋</span>
       <div class="hero-mascot">🐸</div>
       <span class="mascot-right-hand">✨</span>
@@ -336,16 +340,17 @@
   </div>
 
   <!-- Subject Filter -->
-  <div class="subject-filter fade-in-up delay-3" id="filters">
-    <button class="filter-btn active" data-subject="all">🌈 ぜんぶ</button>
-    <button class="filter-btn" data-subject="touch">👶 タッチあそび</button>
-    <button class="filter-btn" data-subject="math">🔢 さんすう</button>
-    <button class="filter-btn" data-subject="japanese">📝 こくご</button>
-    <button class="filter-btn" data-subject="english">🔤 えいご</button>
-    <button class="filter-btn" data-subject="brain">🧠 のうトレ</button>
+  <div class="subject-filter fade-in-up delay-3" id="filters" role="group" aria-label="ジャンルでしぼる">
+    <button class="filter-btn active" data-subject="all" aria-pressed="true">🌈 ぜんぶ</button>
+    <button class="filter-btn" data-subject="touch" aria-pressed="false">👶 タッチあそび</button>
+    <button class="filter-btn" data-subject="math" aria-pressed="false">🔢 さんすう</button>
+    <button class="filter-btn" data-subject="japanese" aria-pressed="false">📝 こくご</button>
+    <button class="filter-btn" data-subject="english" aria-pressed="false">🔤 えいご</button>
+    <button class="filter-btn" data-subject="brain" aria-pressed="false">🧠 のうトレ</button>
   </div>
 
   <!-- Games Grid -->
+  <main>
   <section class="games-section" id="games">
     <h2 class="fade-in-up delay-3">🎮 ゲームをえらぼう！</h2>
     <div class="games-grid">
@@ -744,15 +749,18 @@
     </div>
   </section>
 
+  </main>
+
   <!-- Footer -->
-  <footer class="site-footer">
-    <div class="footer-mascot">🐸</div>
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-mascot" aria-hidden="true">🐸</div>
     <p>ゲロゲーロ学園｜1さいからあそべる子どもの無料知育ゲーム</p>
     <p style="margin-top: 5px; font-size: 0.75rem; opacity: 0.7;">© 2026 ゲロゲーロ学園 All rights reserved.</p>
-    <div class="footer-links">
+    <nav class="footer-links" aria-label="フッターナビゲーション">
       <a href="safety-guide.html">📖 安全ガイド</a>
+      <a href="privacy.html">🔒 プライバシー</a>
       <a href="../index.html">シュールゲームス</a>
-    </div>
+    </nav>
   </footer>
 
   <script src="js/audio.js"></script>
@@ -812,12 +820,6 @@
         if (matchSubject && matchAge) {
           card.style.display = '';
           card.style.opacity = '1';
-          card.style.order = '0';
-        } else if (matchSubject && !matchAge) {
-          // Show but dimmed for non-matching age
-          card.style.display = '';
-          card.style.opacity = '0.5';
-          card.style.order = '1';
         } else {
           card.style.display = 'none';
         }
@@ -826,11 +828,7 @@
 
     function ageMatches(cardAge, selectedAge) {
       if (selectedAge === 'all') return true;
-      if (selectedAge === 'baby') return cardAge === 'baby';
-      if (selectedAge === 'toddler') return cardAge === 'baby' || cardAge === 'toddler';
-      if (selectedAge === 'kid') return cardAge === 'baby' || cardAge === 'toddler' || cardAge === 'kid';
-      if (selectedAge === 'adult') return cardAge === 'kid' || cardAge === 'adult';
-      return true;
+      return cardAge === selectedAge;
     }
 
     function updateAgeButton(age) {
