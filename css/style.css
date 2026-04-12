@@ -765,7 +765,7 @@ section {
 .card-chara--reversi { width: 65%; }
 .card-flip-back__img--reversi {
   width: 220%;
-  top: -80%;
+  top: -100%;
   left: -60%;
 }
 .reversi-speech {
