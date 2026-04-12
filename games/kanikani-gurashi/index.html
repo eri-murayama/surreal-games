@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>かにかにぐらし | シュールゲームス</title>
+<meta property="og:title" content="かにかにぐらし | シュールゲームス">
+<meta property="og:description" content="上京したかにかにの一人暮らしを応援！アイテムをマージして理想のお部屋を作ろう。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K8QFB33PX7');
+</script>
+<link rel="stylesheet" href="../common/game-common.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== タイトル画面 ===== -->
+<div id="title-screen" class="screen active">
+  <div class="title-inner">
+    <h1 data-i18n="title">かにかにぐらし</h1>
+    <div class="title-char">🦀</div>
+    <p class="subtitle" data-i18n="subtitle">上京したかにかにの<br>一人暮らしを応援しよう！</p>
+    <button class="big-btn" id="start-btn" data-i18n="startBtn">はじめる</button>
+    <button class="small-btn" id="reset-btn" data-i18n="resetBtn">最初から</button>
+  </div>
+</div>
+
+<!-- ===== ゲーム画面 ===== -->
+<div id="game-screen" class="screen">
+
+  <!-- 上部ステータスバー -->
+  <header class="topbar">
+    <div class="stat">
+      <span class="stat-ico">👑</span>
+      <span class="stat-val"><span id="lv-val">1</span></span>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+    </div>
+    <div class="stat">
+      <span class="stat-ico">⚡</span>
+      <span class="stat-val"><span id="energy-val">30</span>/<span id="energy-max">30</span></span>
+    </div>
+    <div class="stat">
+      <span class="stat-ico">⭐</span>
+      <span class="stat-val" id="star-val">0</span>
+    </div>
+  </header>
+
+  <!-- 注文ストリップ -->
+  <div class="orders-strip" id="orders-strip"></div>
+
+  <!-- メイン表示エリア -->
+  <main class="main-area">
+    <!-- マージボード -->
+    <section class="view board-view active" id="board-view">
+      <div class="board" id="board"></div>
+    </section>
+    <!-- お部屋 -->
+    <section class="view room-view" id="room-view">
+      <div class="room-wrap">
+        <div class="room-scene" id="room-scene">
+          <div class="room-floor"></div>
+          <div class="room-window">🪟</div>
+          <div class="room-items" id="room-items"></div>
+          <div class="room-kani">🦀</div>
+        </div>
+        <div class="room-shop" id="room-shop"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- タブ切替 -->
+  <nav class="tabbar">
+    <button class="tab active" data-tab="board">
+      <span class="tab-ico">📦</span>
+      <span class="tab-label" data-i18n="tabBoard">マージ</span>
+    </button>
+    <button class="tab" data-tab="room">
+      <span class="tab-ico">🏠</span>
+      <span class="tab-label" data-i18n="tabRoom">おへや</span>
+    </button>
+    <button class="tab" data-tab="dex">
+      <span class="tab-ico">📖</span>
+      <span class="tab-label" data-i18n="tabDex">ずかん</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ===== 図鑑モーダル ===== -->
+<div id="dex-modal" class="modal hidden">
+  <div class="modal-inner">
+    <h2 data-i18n="dexTitle">📖 ずかん</h2>
+    <div id="dex-list"></div>
+    <button class="big-btn" id="dex-close" data-i18n="closeBtn">とじる</button>
+  </div>
+</div>
+
+<!-- ===== イベントモーダル ===== -->
+<div id="event-modal" class="modal hidden">
+  <div class="modal-inner">
+    <h2 id="event-title">🎉 イベント</h2>
+    <p id="event-desc"></p>
+    <button class="big-btn" id="event-close" data-i18n="okBtn">OK</button>
+  </div>
+</div>
+
+<!-- ===== チュートリアルモーダル ===== -->
+<div id="tuto-modal" class="modal hidden">
+  <div class="modal-inner">
+    <h2 id="tuto-title">🦀 かにかにより</h2>
+    <p id="tuto-text"></p>
+    <button class="big-btn" id="tuto-next" data-i18n="nextBtn">つぎへ</button>
+  </div>
+</div>
+
+<!-- ===== トースト通知 ===== -->
+<div id="toast" class="toast hidden"></div>
+
+<a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+<script src="game.js"></script>
+<script src="../common/i18n.js"></script>
+<script src="../common/game-common.js"></script>
+<script>
+SurrealI18n.init({
+  ja: {
+    title: 'かにかにぐらし',
+    subtitle: '上京したかにかにの\n一人暮らしを応援しよう！',
+    startBtn: 'はじめる',
+    resetBtn: '最初から',
+    tabBoard: 'マージ',
+    tabRoom: 'おへや',
+    tabDex: 'ずかん',
+    dexTitle: '📖 ずかん',
+    closeBtn: 'とじる',
+    okBtn: 'OK',
+    nextBtn: 'つぎへ',
+    backToTop: '← トップに戻る'
+  },
+  en: {
+    title: 'Kani Kani Life',
+    subtitle: 'Help the crab who moved\nto the big city!',
+    startBtn: 'Start',
+    resetBtn: 'Reset',
+    tabBoard: 'Merge',
+    tabRoom: 'Room',
+    tabDex: 'Dex',
+    dexTitle: '📖 Dex',
+    closeBtn: 'Close',
+    okBtn: 'OK',
+    nextBtn: 'Next',
+    backToTop: '← Back to Top'
+  }
+});
+SurrealGames.init('kanikani-gurashi');
+</script>
+</body>
+</html>

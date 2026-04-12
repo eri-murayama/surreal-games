@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ねこカフェ物語 - シュールゲームス</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="ねこカフェ物語 | シュールゲームス">
+  <meta property="og:description" content="かわいいねこ店員とおしゃれカフェを経営しよう！お客さまに料理を提供してお店を大きく育てよう。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/neko-cafe/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen">
+      <div class="title-deco">
+        <div class="title-cat">🐱</div>
+        <div class="title-cup">☕</div>
+        <div class="title-cake">🍰</div>
+      </div>
+      <h1 class="game-title">ねこカフェ<br>物語</h1>
+      <p class="game-sub">～小さなお店を大きく育てよう～</p>
+      <button id="start-btn" class="big-btn">はじめる</button>
+      <button id="continue-btn" class="big-btn hidden">つづきから</button>
+      <button id="reset-btn" class="link-btn hidden">最初からやり直す</button>
+    </div>
+
+    <!-- メインゲーム画面 -->
+    <div id="game-screen" class="screen hidden">
+
+      <!-- 上部HUD -->
+      <div id="hud">
+        <div class="hud-item">
+          <span class="hud-label">💰</span>
+          <span class="hud-value" id="coins-display">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Lv.<span id="level-display">1</span></span>
+          <div class="xp-bar-wrap">
+            <div class="xp-bar" id="xp-bar"></div>
+          </div>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Day</span>
+          <span class="hud-value" id="day-display">1</span>
+        </div>
+      </div>
+
+      <!-- 営業タイマー -->
+      <div id="day-timer">
+        <span class="timer-label">☀️ 営業中</span>
+        <div class="day-timer-wrap">
+          <div class="day-timer-fill" id="day-timer-fill"></div>
+        </div>
+      </div>
+
+      <!-- カフェフロア -->
+      <div id="cafe-area">
+        <div id="cafe-bg">
+          <div class="bg-window">☁️</div>
+          <div class="bg-plant">🪴</div>
+          <div class="bg-frame">🖼️</div>
+        </div>
+        <div id="tables-wrap"></div>
+      </div>
+
+      <!-- キッチン -->
+      <div id="kitchen">
+        <div class="kitchen-label">🍳 キッチン</div>
+        <div id="stations-wrap"></div>
+      </div>
+
+      <!-- 下部アクションバー -->
+      <div id="action-bar">
+        <button class="act-btn" id="btn-shop">
+          <span class="act-icon">🛒</span>
+          <span class="act-label">ショップ</span>
+        </button>
+        <button class="act-btn" id="btn-menu">
+          <span class="act-icon">📖</span>
+          <span class="act-label">メニュー</span>
+        </button>
+        <button class="act-btn" id="btn-decor">
+          <span class="act-icon">🌸</span>
+          <span class="act-label">内装</span>
+        </button>
+        <button class="act-btn" id="btn-endday">
+          <span class="act-icon">🌙</span>
+          <span class="act-label">早じまい</span>
+        </button>
+      </div>
+
+      <!-- 情報メッセージ -->
+      <div id="info-toast" class="hidden"></div>
+    </div>
+
+    <!-- ショップ画面 -->
+    <div id="shop-screen" class="screen hidden">
+      <div class="modal-head">
+        <h2>🛒 ショップ</h2>
+        <button class="close-btn" data-close>✕</button>
+      </div>
+      <div class="tab-row">
+        <button class="tab-btn active" data-tab="menu">メニュー追加</button>
+        <button class="tab-btn" data-tab="upgrade">お店強化</button>
+      </div>
+      <div id="shop-coins" class="shop-coins">💰 <span id="shop-coin-val">0</span></div>
+      <div id="shop-list"></div>
+    </div>
+
+    <!-- メニュー閲覧画面 -->
+    <div id="menu-screen" class="screen hidden">
+      <div class="modal-head">
+        <h2>📖 メニューブック</h2>
+        <button class="close-btn" data-close>✕</button>
+      </div>
+      <div id="menu-list"></div>
+    </div>
+
+    <!-- 内装画面 -->
+    <div id="decor-screen" class="screen hidden">
+      <div class="modal-head">
+        <h2>🌸 内装</h2>
+        <button class="close-btn" data-close>✕</button>
+      </div>
+      <p class="modal-sub">お店を飾って人気アップ！</p>
+      <div id="shop-coins2" class="shop-coins">💰 <span id="shop-coin-val2">0</span></div>
+      <div id="decor-list"></div>
+    </div>
+
+    <!-- 閉店リザルト -->
+    <div id="result-screen" class="screen hidden">
+      <div class="modal-head">
+        <h2>🌙 本日のご来店ありがとうございました</h2>
+      </div>
+      <div id="result-body">
+        <div class="result-row">接客したお客さま <span id="res-served">0</span> 人</div>
+        <div class="result-row">売上 💰 <span id="res-coins">0</span></div>
+        <div class="result-row">経験値 ✨ <span id="res-xp">0</span></div>
+        <div class="result-row">評判 ⭐ <span id="res-rep">0</span></div>
+      </div>
+      <button id="next-day-btn" class="big-btn">次の日へ</button>
+    </div>
+
+  </div>
+
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+  <script>
+    SurrealGames.init('neko-cafe');
+  </script>
+</body>
+</html>

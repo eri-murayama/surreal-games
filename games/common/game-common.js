@@ -54,6 +54,8 @@
     { id: 'drawing-board', title: 'お絵かきボード', titleEn: 'Drawing Board', emoji: '🎨', genre: 'クリエイティブ', genreEn: 'Creative', desc: '自由にお絵かき！色も太さも変えられる！' },
     { id: 'typing-game', title: 'シュールタイピング', titleEn: 'Surreal Typing', emoji: '⌨️', genre: 'タイピング', genreEn: 'Typing', desc: 'シュールなお題をタイピングしまくれ！' },
     { id: 'emoji-catcher', title: 'カブトムシ様のお着換えあそばせ', titleEn: 'Dress Up Lord Beetle', emoji: '🪲', genre: 'カスタマイズ', genreEn: 'Customize', desc: 'カブトムシ様を世界で一人だけのお人へ変身してさしあげろ！' },
+    { id: 'kanikani-gurashi', title: 'かにかにぐらし', titleEn: 'Kani Kani Life', emoji: '🦀', genre: 'マージパズル', genreEn: 'Merge Puzzle', desc: '上京したかにかにの一人暮らしを応援！アイテムをマージして理想のお部屋を作ろう。' },
+    { id: 'neko-cafe', title: 'ねこカフェ物語', titleEn: 'Neko Cafe Story', emoji: '🐱', genre: '経営シミュ', genreEn: 'Simulation', desc: 'かわいいねこカフェを経営して大きく育てよう。' },
   ];
 
   // ===== 実績定義 =====
