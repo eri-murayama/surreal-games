@@ -439,11 +439,17 @@ function updateBoardGlow(){
   dom.board.style.boxShadow = BOARD_GLOW[Math.min(maxLevel,11)] || 'none';
 }
 
+/* ── カットイン専用画像（余白が大きいキャラはトリミング版を使用） ── */
+const CUTIN_IMAGES = {
+  6: 'images/manmen-no-emi-cutin.png', // おじさん
+};
+
 /* ── 演出: 進化カットイン ── */
 function showCutIn(level){
   const lvClamped = Math.min(level,11);
   const evoNames = t('evoNames');
-  dom.cutinChar.innerHTML = '<img src="'+EVO_IMAGES[lvClamped]+'" alt="'+evoNames[lvClamped]+'">';
+  const cutinSrc = CUTIN_IMAGES[lvClamped] || EVO_IMAGES[lvClamped];
+  dom.cutinChar.innerHTML = '<img src="'+cutinSrc+'" alt="'+evoNames[lvClamped]+'">';
   dom.cutinName.textContent = evoNames[lvClamped] + (currentLang === 'ja' ? ' 解放！' : ' Unlocked!');
   dom.cutinOverlay.classList.remove('hidden');
   // アニメーションリセット
@@ -908,6 +914,19 @@ function setLang(lang) {
   updateHUD();
   updateBestDisplay();
 }
+
+// サウンドトグル連動（共通モジュールのミュートボタンでゲーム独自BGMも停止/再開）
+document.addEventListener('click', function(e) {
+  if (e.target.closest('.sg-sound-toggle')) {
+    setTimeout(function() {
+      if (isMuted()) {
+        stopBGM();
+      } else if (!dom.gameScreen.classList.contains('hidden')) {
+        startBGM();
+      }
+    }, 50);
+  }
+});
 
 // 言語変更イベントリスナー（共通モジュールの言語ボタンから）
 window.addEventListener('surreal-lang-change', function(e) {
