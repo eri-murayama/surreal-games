@@ -878,6 +878,9 @@ html, body {
   line-height: 1.4;
   z-index: 3;
   -webkit-text-stroke: 1px rgba(255,100,100,0.3);
+  opacity: 0;
+}
+.neverlose-overlay.show .neverlose-text {
   animation: neverloseTextSlam 5s ease-out forwards;
 }
 .neverlose-overlay .neverlose-sub {
@@ -890,6 +893,8 @@ html, body {
   z-index: 3;
   margin-top: 12px;
   opacity: 0;
+}
+.neverlose-overlay.show .neverlose-sub {
   animation: neverloseSubIn 5s ease-out forwards;
 }
 .neverlose-overlay .neverlose-line {
