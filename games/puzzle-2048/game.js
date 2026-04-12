@@ -30,7 +30,7 @@ const LANG = {
     shareText: (sc, evo, mc) => '\u{1F9EC} シュール進化論\nスコア: ' + sc + '点\n最高進化: ' + evo + '\n手数: ' + mc + '\n\n#シュールゲームス\n',
     undoComment: '一手戻した！',
     evoNames: ['','かにかに','さくらんぼちゃん','ヨシノリ','まーくん','主人公','おじさん',
-      'ソフトクリーム','バケモン','篤','博士','リバーシマスター'],
+      'ソフトクリーム','バケモン','篤','博士','黒石'],
     mergeComments: [
       '',
       '腹筋は毎日換気！',
@@ -72,7 +72,7 @@ const LANG = {
     shareText: (sc, evo, mc) => '\u{1F9EC} Surreal Evolution\nScore: ' + sc + '\nTop Evo: ' + evo + '\nMoves: ' + mc + '\n\n#SurrealGames\n',
     undoComment: 'Undone!',
     evoNames: ['','Kani-Kani','Sakuranbo','Yoshinori','Maa-kun','Hero','Ojisan',
-      'Soft Serve','Bakemon','Atsushi','Professor','Reversi Master'],
+      'Soft Serve','Bakemon','Atsushi','Professor','Kuroishi'],
     mergeComments: [
       '',
       'Train your abs every day!',

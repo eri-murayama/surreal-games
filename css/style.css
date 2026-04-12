@@ -589,7 +589,7 @@ section {
 
 /* --- かいだんマインスイーパー --- */
 .placeholder-art--kaidan {
-  background: linear-gradient(135deg, #0a0a1a, #1a0a2a);
+  background: linear-gradient(135deg, #b0bec5, #607d8b, #37474f);
 }
 
 .card-chara--kaidan {
@@ -1167,10 +1167,10 @@ footer {
   margin-right: 1em;
 }
 
-/* ゲームカード別の背景 */
-.placeholder-art--drive { background: linear-gradient(135deg, #f5e6c8, #ff9933, #cc6600); }
-.placeholder-art--analysis { background: linear-gradient(135deg, #1a0533, #c471ed); }
-.placeholder-art--escape { background: linear-gradient(135deg, #d8c8f0, #b8a0e0); }
+/* ゲームカード別の背景（キャラクター図鑑と統一） */
+.placeholder-art--drive { background: linear-gradient(135deg, #ffe0b2, #ff9800, #e65100); }
+.placeholder-art--analysis { background: linear-gradient(135deg, #ffe082, #ffb300, #ff8f00); }
+.placeholder-art--escape { background: linear-gradient(135deg, #f8bbd0, #e91e63, #ad1457); }
 .placeholder-art--kanikani { background: linear-gradient(135deg, #ffb6c1, #ff69b4); }
 
 /* ゲームカードのサブタイトル */
