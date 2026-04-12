@@ -1,0 +1,297 @@
+.hidden{display:none!important}
+html{font-size:16px}
+body{
+  background:#0a0a2e;
+  color:#e0e0e0;
+  font-family:'Zen Maru Gothic','Hiragino Sans',sans-serif;
+  min-height:100vh;min-height:100dvh;
+  display:flex;
+  justify-content:center;
+}
+#game-wrapper{
+  width:100%;max-width:500px;padding:16px;text-align:center;
+  position:relative;
+}
+.game-title{
+  font-family:'DotGothic16',monospace;
+  font-size:1.8rem;
+  background:linear-gradient(90deg,#00e5ff,#76ff03,#ffea00);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:2px;
+}
+.game-subtitle{
+  font-size:.85rem;color:#8888aa;margin-bottom:12px;
+}
+
+/* タイトル画面 */
+#title-screen{padding-top:20px}
+#title-emoji{width:120px;height:120px;margin:0 auto;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+#title-catchphrase{
+  font-size:.95rem;color:#aaa;margin:16px 0;font-style:italic;
+}
+#highscore-display{font-size:.9rem;color:#76ff03;margin-bottom:12px;min-height:1.2em}
+#start-btn,#continue-btn,#retry-btn{
+  display:block;width:80%;max-width:280px;margin:8px auto;
+  padding:14px 0;border:none;border-radius:12px;
+  font-family:inherit;font-size:1.1rem;font-weight:700;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+}
+#start-btn,#retry-btn{
+  background:linear-gradient(135deg,#00e5ff,#76ff03);color:#0a0a2e;
+}
+#continue-btn{
+  background:linear-gradient(135deg,#ffea00,#ff9100);color:#0a0a2e;
+}
+#start-btn:hover,#continue-btn:hover,#retry-btn:hover{
+  transform:scale(1.04);box-shadow:0 0 20px rgba(118,255,3,.3);
+}
+#title-hint{font-size:.75rem;color:#666;margin-top:16px;line-height:1.6}
+
+/* ゲーム画面 */
+#game-screen{padding-top:4px}
+#game-hud{
+  display:flex;justify-content:space-between;
+  font-family:'DotGothic16',monospace;font-size:.95rem;
+  margin-bottom:4px;
+}
+#hud-score{color:#00e5ff}
+#hud-best{color:#76ff03}
+#hud-evolution{
+  font-size:.8rem;color:#aaa;margin-bottom:8px;
+}
+#hud-max-evo{font-size:1.2rem}
+
+#board-container{
+  display:flex;justify-content:center;
+  margin-bottom:8px;
+  touch-action:none;
+  position:relative;
+}
+#board{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(4,1fr);
+  gap:6px;
+  padding:8px;
+  background:#1a1a3e;
+  border-radius:12px;
+  width:min(85vw,380px);
+  height:min(85vw,380px);
+  position:relative;
+  transition:box-shadow .5s;
+}
+.cell{
+  background:#2a2a4e;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:min(12vw,42px);
+  position:relative;
+  transition:background .15s;
+  user-select:none;
+  overflow:hidden;
+}
+.cell img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+}
+.evo-icon{
+  height:1.4em;
+  width:auto;
+  vertical-align:middle;
+  margin-right:2px;
+}
+
+/* 余白の多い画像を拡大・位置調整 */
+.cell[data-level="1"] img{transform:scale(1.6)}
+.cell[data-level="2"] img{transform:scale(1.8)}
+.cell[data-level="6"] img{transform:scale(2.5) translate(5%,12%)}
+.cell[data-level="7"] img{transform:scale(2.5) translate(8%,10%)}
+.cell[data-level="9"] img{transform:scale(1.8)}
+
+/* レベル別背景色（パステルカラー） */
+.cell[data-level="1"]{background:#ffd1dc}  /* かにかに：ベビーピンク */
+.cell[data-level="2"]{background:#ffb3ba}  /* さくらんぼちゃん：サーモンピンク */
+.cell[data-level="3"]{background:#ffd9a8}  /* ヨシノリ：ピーチオレンジ */
+.cell[data-level="4"]{background:#fff5b3}  /* 謎の生物：レモンクリーム */
+.cell[data-level="5"]{background:#d4f0a8}  /* 主人公：ライトリーフ */
+.cell[data-level="6"]{background:#b3e8c8}  /* 満面の笑み：ミントグリーン */
+.cell[data-level="7"]{background:#b3e8e8}  /* ソフトクリーム：パウダーブルー */
+.cell[data-level="8"]{background:#b3d1f0}  /* おばけ：ベビーブルー */
+.cell[data-level="9"]{background:#c8b8e8}  /* 篤：ラベンダー */
+.cell[data-level="10"]{background:#e8b3e0} /* 博士：ピンクラベンダー */
+.cell[data-level="11"]{background:linear-gradient(135deg,#ffd1dc,#fff5b3,#b3e8c8,#b3d1f0,#e8b3e0);animation:rainbow 2s linear infinite}
+@keyframes rainbow{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+
+/* 基本アニメーション */
+.cell.pop{animation:pop .3s ease-out}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.cell.spawn{animation:spawn .25s ease-out}
+@keyframes spawn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* ── 全キャラ共通の呼吸アニメーション（控えめ） ── */
+.cell img{animation:cell-breath 2.8s ease-in-out infinite}
+@keyframes cell-breath{
+  0%,100%{opacity:1;filter:brightness(1)}
+  50%{opacity:.92;filter:brightness(1.06)}
+}
+/* カードキング(Lv11)だけは特別演出 */
+.cell[data-level="11"] img{animation:king-glow 2s ease-in-out infinite}
+@keyframes king-glow{
+  0%,100%{filter:drop-shadow(0 0 4px rgba(255,0,255,.3)) brightness(1)}
+  50%{filter:drop-shadow(0 0 12px rgba(255,0,255,.7)) brightness(1.08)}
+}
+
+/* ── スコアポップアップ ── */
+.score-popup{
+  position:absolute;
+  font-family:'DotGothic16',monospace;
+  font-weight:700;
+  font-size:1.1rem;
+  color:#ffea00;
+  text-shadow:0 0 6px rgba(255,234,0,.5);
+  pointer-events:none;
+  z-index:10;
+  animation:score-float .8s ease-out forwards;
+}
+@keyframes score-float{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-40px) scale(1.3)}
+}
+
+/* ── 画面シェイク ── */
+#board.shake{animation:shake .3s ease-out}
+@keyframes shake{
+  0%,100%{transform:translate(0)}
+  20%{transform:translate(-4px,2px)}
+  40%{transform:translate(4px,-2px)}
+  60%{transform:translate(-2px,4px)}
+  80%{transform:translate(2px,-4px)}
+}
+
+/* ── コンボテキスト ── */
+.combo-text{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(0);
+  font-family:'DotGothic16',monospace;
+  font-size:2rem;
+  color:#ff6b6b;
+  text-shadow:0 0 10px rgba(255,107,107,.5),0 0 20px rgba(255,107,107,.3);
+  pointer-events:none;
+  z-index:20;
+  white-space:nowrap;
+  animation:combo-pop .8s ease-out forwards;
+}
+@keyframes combo-pop{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:1}
+  30%{transform:translate(-50%,-50%) scale(1.4);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:0}
+}
+
+/* ── パーティクル ── */
+.particle{
+  position:absolute;
+  width:6px;height:6px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:10;
+  animation:particle-fly .6s ease-out forwards;
+}
+@keyframes particle-fly{
+  0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}
+}
+
+/* ── カットイン演出 ── */
+#cutin-overlay{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.75);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  pointer-events:none;
+  animation:cutin-bg 1.4s ease-out forwards;
+}
+#cutin-overlay.hidden{display:none}
+@keyframes cutin-bg{
+  0%{opacity:0}
+  8%{opacity:1}
+  65%{opacity:1}
+  100%{opacity:0}
+}
+#cutin-char{
+  width:180px;height:180px;
+}
+#cutin-char img{
+  width:100%;height:100%;object-fit:contain;
+  animation:cutin-zoom 1.4s ease-out forwards;
+}
+@keyframes cutin-zoom{
+  0%{transform:scale(3) rotate(-10deg);opacity:0}
+  15%{transform:scale(1) rotate(0deg);opacity:1}
+  60%{transform:scale(1.05);opacity:1}
+  100%{transform:scale(1);opacity:0}
+}
+#cutin-name{
+  font-family:'DotGothic16',monospace;
+  font-size:1.6rem;
+  color:#fff;
+  text-shadow:0 0 20px rgba(118,255,3,.6);
+  margin-top:10px;
+  animation:cutin-text 1.4s ease-out forwards;
+}
+@keyframes cutin-text{
+  0%{opacity:0;transform:translateY(20px)}
+  15%{opacity:1;transform:translateY(0)}
+  60%{opacity:1}
+  100%{opacity:0}
+}
+
+/* ── ゲームコメント・ボタン ── */
+#game-comment{
+  font-size:.85rem;color:#ffea00;min-height:1.4em;margin:4px 0 8px;
+  transition:opacity .3s;
+}
+#game-buttons{display:flex;gap:8px;justify-content:center}
+#undo-btn,#restart-btn{
+  padding:8px 16px;border:2px solid #444;border-radius:8px;
+  background:transparent;color:#aaa;font-family:inherit;font-size:.85rem;
+  cursor:pointer;transition:border-color .2s,color .2s;
+}
+#undo-btn:hover,#restart-btn:hover{border-color:#76ff03;color:#76ff03}
+
+/* ゲームオーバー */
+#gameover-screen{padding-top:40px}
+#gameover-title{
+  font-family:'DotGothic16',monospace;
+  font-size:1.6rem;color:#ff5252;margin-bottom:16px;
+}
+#gameover-stats{
+  font-size:1rem;line-height:2;margin-bottom:12px;
+}
+#gameover-comment{
+  font-size:.9rem;color:#ffea00;font-style:italic;margin-bottom:20px;
+}
+
+.back-to-top-link{
+  position:fixed;top:12px;left:12px;
+  color:#aaa;font-size:.8rem;text-decoration:none;
+  padding:6px 10px;border-radius:6px;
+  background:rgba(0,0,0,.4);
+  z-index:1000;
+}
+.back-to-top-link:hover{color:#fff;background:rgba(0,0,0,.6)}
+
+@media(max-width:400px){
+  .game-title{font-size:1.4rem}
+  #board{gap:4px;padding:6px}
+}

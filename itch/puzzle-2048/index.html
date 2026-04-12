@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Surreal Evolution</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1 class="game-title">Surreal Evolution</h1>
+    <p class="game-subtitle">- Merge and Evolve Beyond -</p>
+
+    <!-- Title screen -->
+    <div id="title-screen">
+      <div id="title-emoji"></div>
+      <div id="title-catchphrase">"It all begins with Kani-Kani..."</div>
+      <div id="highscore-display"></div>
+      <button id="start-btn">Start Evolution</button>
+      <button id="continue-btn" class="hidden">Continue</button>
+      <p id="title-hint">Arrow Keys / WASD / Swipe to slide<br>Merge same creatures to evolve!</p>
+    </div>
+
+    <!-- Game screen -->
+    <div id="game-screen" class="hidden">
+      <div id="game-hud">
+        <div id="hud-score">Score: 0</div>
+        <div id="hud-best">Best: 0</div>
+      </div>
+      <div id="hud-evolution"><span id="hud-evo-label">Top Evo</span>: <span id="hud-max-evo">🫧</span></div>
+      <div id="board-container">
+        <div id="board"></div>
+      </div>
+      <div id="game-comment"></div>
+      <div id="game-buttons">
+        <button id="undo-btn">↩ Undo</button>
+        <button id="restart-btn">🔄 Restart</button>
+      </div>
+    </div>
+
+    <!-- Game over screen -->
+    <div id="gameover-screen" class="hidden">
+      <div id="gameover-title">Dead End of Evolution...</div>
+      <div id="gameover-stats"></div>
+      <div id="gameover-comment"></div>
+      <button id="retry-btn">Evolve Again</button>
+    </div>
+
+    <!-- Cut-in overlay -->
+    <div id="cutin-overlay" class="hidden">
+      <div id="cutin-char"></div>
+      <div id="cutin-name"></div>
+    </div>
+
+  </div>
+
+  <!-- Sound toggle -->
+  <button id="sound-toggle" style="position:fixed;bottom:16px;left:16px;z-index:9999;width:40px;height:40px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;min-width:0;letter-spacing:0;box-shadow:none;">🔊</button>
+
+  <script src="game.js"></script>
+  <script>
+    (function(){
+      const btn = document.getElementById('sound-toggle');
+      if(!btn) return;
+      btn.addEventListener('click', function(){
+        if(!window.__sgSound) return;
+        window.__sgSound.enabled = !window.__sgSound.enabled;
+        btn.textContent = window.__sgSound.enabled ? '🔊' : '🔇';
+        if(window.__sgBGM){
+          if(window.__sgSound.enabled) window.__sgBGM.start();
+          else window.__sgBGM.stop();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
