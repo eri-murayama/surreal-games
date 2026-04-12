@@ -354,8 +354,9 @@
     document.removeEventListener('pointermove', onDragMove);
     document.removeEventListener('pointerup', onDragEnd);
     document.removeEventListener('pointercancel', onDragEnd);
-    drag.el.style.pointerEvents = '';
+    drag.el.style.pointerEvents = 'none';
     const target = document.elementFromPoint(e.clientX, e.clientY);
+    drag.el.style.pointerEvents = '';
     const cell = target && target.closest && target.closest('.cell');
     let toIdx = -1;
     if (cell) toIdx = parseInt(cell.dataset.idx, 10);

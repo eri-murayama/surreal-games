@@ -203,7 +203,7 @@ html, body {
 
 /* --- メインエリア --- */
 .main-area {
-  flex: 1;
+  flex: 1 1 0;
   position: relative;
   overflow: hidden;
   min-height: 0;
@@ -215,18 +215,24 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6px;
+  padding: 4px;
+  overflow: hidden;
 }
 .view.active { display: flex; }
 
 /* --- マージボード --- */
+.board-view {
+  justify-content: flex-start !important;
+}
 .board {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 4px;
+  grid-template-rows: repeat(7, 1fr);
+  gap: 3px;
   width: min(100%, 360px);
-  aspect-ratio: 6 / 7;
-  padding: 6px;
+  height: 100%;
+  max-height: min(calc((100vw - 8px) * 7 / 6), calc(100% - 20px));
+  padding: 4px;
   background: rgba(255,255,255,0.5);
   border-radius: 12px;
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
@@ -252,14 +258,14 @@ html, body {
 
 .item {
   position: absolute;
-  inset: 2px;
+  inset: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fff;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  font-size: 1.4rem;
+  font-size: clamp(1rem, 3.5vw, 1.4rem);
   cursor: grab;
   transition: transform 0.15s;
   overflow: hidden;
@@ -620,13 +626,25 @@ html, body {
 
 /* ===== スマホ調整 ===== */
 @media (max-width: 480px) {
-  .topbar { padding: 6px 8px; }
+  .topbar { padding: 4px 8px; }
   .stat { font-size: 0.75rem; }
   .stat-ico { font-size: 1rem; }
-  .orders-strip { min-height: 62px; padding: 4px 8px; }
-  .order-card { width: 64px; }
+  .orders-strip { min-height: 52px; padding: 3px 8px; gap: 4px; }
+  .order-card { width: 58px; padding: 2px; }
+  .order-emoji { font-size: 1.2rem; }
+  .order-name { font-size: 0.5rem; margin: 1px 0; }
+  .order-reward { font-size: 0.55rem; }
+  .tab { padding: 6px 4px; }
   .tab-ico { font-size: 1.1rem; }
   .tab-label { font-size: 0.6rem; }
+}
+
+@media (max-height: 650px) {
+  .topbar { padding: 3px 8px; }
+  .orders-strip { min-height: 48px; padding: 2px 6px; }
+  .order-card { width: 54px; padding: 2px; }
+  .order-emoji { font-size: 1.1rem; }
+  .tab { padding: 4px 4px; }
 }
 
 /* PC時も画面に収まる最大サイズ */
