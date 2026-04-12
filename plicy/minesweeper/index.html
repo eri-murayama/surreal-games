@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>かいだんマインスイーパー</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { -webkit-tap-highlight-color: transparent; }
+html, body { touch-action: manipulation; }
+
+body {
+  background: #0a0a12;
+  color: #c8c8d8;
+  font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  position: relative;
+}
+
+/* 背景の不気味なフォグ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(60, 0, 80, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 30, 60, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(20, 0, 40, 0.1) 0%, transparent 80%);
+  animation: fogDrift 12s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes fogDrift {
+  0% { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+h1 {
+  font-size: clamp(14px, 3.5vw, 22px);
+  margin-top: 6px;
+  margin-bottom: 2px;
+  color: #b8a0d0;
+  letter-spacing: 3px;
+  text-shadow: 0 0 15px rgba(150, 100, 200, 0.4);
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+/* Difficulty selector */
+.difficulty-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 3px;
+  position: relative;
+  z-index: 1;
+}
+.difficulty-bar button {
+  background: #1a1a2a;
+  border: 1px solid #333;
+  color: #888;
+  padding: 2px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.difficulty-bar button:hover {
+  background: #2a2a3a;
+  color: #aaa;
+}
+.difficulty-bar button.active {
+  background: #2a1a3a;
+  border-color: #6644aa;
+  color: #c8a0e8;
+  box-shadow: 0 0 10px rgba(100, 50, 180, 0.3);
+}
+
+/* ハイスコア表示 */
+.highscore-bar {
+  font-family: 'Orbitron', 'Noto Serif JP', monospace;
+  font-size: clamp(10px, 2.6vw, 12px);
+  color: #8866bb;
+  margin-bottom: 3px;
+  position: relative;
+  z-index: 1;
+  letter-spacing: 1px;
+}
+.highscore-bar .crown { color: #c8a0e8; margin-right: 4px; }
+.highscore-bar.new-record {
+  color: #ffcc44;
+  animation: scoreFlash 0.6s ease-out 3;
+}
+@keyframes scoreFlash {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Status bar */
+.status-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: min(95vw, 500px);
+  background: #0d0d18;
+  border: 2px solid #2a2a3a;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+}
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+}
+.status-right { justify-self: end; }
+.lcd {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(18px, 5vw, 28px);
+  color: #cc4444;
+  background: #1a0808;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #2a0a0a;
+  min-width: 60px;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(200, 50, 50, 0.5);
+  letter-spacing: 2px;
+}
+.face-btn {
+  font-size: clamp(24px, 6vw, 36px);
+  background: #1a1a2a;
+  border: 2px solid #3a3a4a;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 2px 8px;
+  transition: all 0.15s;
+  line-height: 1.2;
+}
+.face-btn:hover { background: #2a2a3a; border-color: #5a5a6a; }
+.face-btn:active { transform: scale(0.92); }
+
+/* 旗モードボタン */
+.flag-toggle {
+  font-size: clamp(16px, 4vw, 22px);
+  background: #1a1a2a;
+  border: 1px solid #3a3a4a;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: all 0.15s;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.flag-toggle:hover { background: #2a2a3a; border-color: #5a5a6a; }
+.flag-toggle:active { transform: scale(0.92); }
+.flag-toggle.active {
+  background: #2a1a1a;
+  border-color: #aa4444;
+  box-shadow: 0 0 12px rgba(200, 50, 50, 0.4);
+}
+.flag-hint {
+  font-size: 10px;
+  color: #888;
+  white-space: nowrap;
+  font-family: 'Noto Serif JP', serif;
+  pointer-events: none;
+}
+.flag-toggle.active .flag-hint { color: #cc6666; }
+
+/* Board */
+.board-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.board {
+  display: grid;
+  gap: 1px;
+  background: #080810;
+  border: 2px solid #2a2a3a;
+  border-radius: 4px;
+  padding: 2px;
+}
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  border-radius: 2px;
+  transition: background 0.15s, transform 0.1s;
+}
+.cell.closed {
+  background: linear-gradient(145deg, #2a2a40, #1e1e35);
+  border: 1px solid #3a3a50;
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.05), inset -1px -1px 2px rgba(0,0,0,0.4);
+}
+.cell.closed:hover {
+  background: linear-gradient(145deg, #35354a, #2a2a40);
+  border-color: #4a4a6a;
+}
+.cell.closed:active { transform: scale(0.93); }
+.cell.opened {
+  background: #151520;
+  border: 1px solid #1a1a28;
+  animation: cellOpen 0.2s ease-out;
+}
+@keyframes cellOpen {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.cell.flagged::after { content: '\1F6A9'; font-size: inherit; }
+.cell.mine-hit {
+  background: #880000 !important;
+  animation: explode 0.4s ease-out;
+}
+@keyframes explode {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3); }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.cell.mine-reveal { background: #2a1515; border-color: #3a1a1a; }
+.mine-dot {
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle at 35% 35%, #444, #111);
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0,0,0,0.8);
+}
+
+/* Number colors */
+.n1 { color: #5577cc; }
+.n2 { color: #448844; }
+.n3 { color: #cc4444; }
+.n4 { color: #7733aa; }
+.n5 { color: #885533; }
+.n6 { color: #338888; }
+.n7 { color: #333; }
+.n8 { color: #666; }
+
+/* Victory animation */
+.victory-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(5, 0, 15, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeInOverlay 0.5s;
+  overflow-y: auto;
+  padding: 20px 10px;
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.victory-text {
+  font-size: clamp(28px, 8vw, 48px);
+  font-weight: bold;
+  color: #c8a0e8;
+  text-shadow: 0 0 20px rgba(150, 100, 200, 0.6);
+  animation: victoryPulse 2s infinite alternate;
+  letter-spacing: 6px;
+}
+@keyframes victoryPulse {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(1.05); opacity: 1; }
+}
+.victory-time {
+  font-size: clamp(16px, 4vw, 24px);
+  color: #888;
+  margin-top: 10px;
+  font-family: 'Orbitron', monospace;
+}
+.victory-record {
+  font-size: clamp(16px, 4vw, 22px);
+  color: #ffcc44;
+  margin-top: 8px;
+  text-shadow: 0 0 15px rgba(255, 200, 60, 0.6);
+  animation: recordGlow 0.8s ease-in-out infinite alternate;
+  letter-spacing: 3px;
+}
+@keyframes recordGlow {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* 霊魂パーティクル */
+.confetti {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  z-index: 201;
+  animation: spiritRise linear forwards;
+  box-shadow: 0 0 6px currentColor;
+}
+@keyframes spiritRise {
+  0% { transform: translateY(20px) scale(0); opacity: 0; }
+  20% { opacity: 0.8; transform: translateY(0) scale(1); }
+  100% { transform: translateY(-110vh) scale(0.5); opacity: 0; }
+}
+
+/* 成仏キャラ演出 */
+.jobutsu-ghost {
+  position: fixed;
+  bottom: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(120px, 30vw, 200px);
+  height: auto;
+  z-index: 202;
+  animation: jobutsu 4s ease-out forwards;
+  filter: drop-shadow(0 0 25px rgba(150, 100, 255, 0.7));
+  pointer-events: none;
+}
+@keyframes jobutsu {
+  0% { bottom: -120px; opacity: 0.8; transform: translateX(-50%) scale(1); }
+  30% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+  60% { opacity: 0.8; }
+  100% { bottom: 110vh; opacity: 0; transform: translateX(-50%) scale(0.3); }
+}
+.jobutsu-text {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(20px, 5vw, 32px);
+  color: #c8a0e8;
+  z-index: 202;
+  pointer-events: none;
+  opacity: 0;
+  animation: jobutsuText 4s ease-out 0.5s forwards;
+  white-space: nowrap;
+  text-shadow: 0 0 15px rgba(150, 100, 255, 0.5);
+  letter-spacing: 6px;
+}
+@keyframes jobutsuText {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+}
+
+/* Game over overlay */
+.gameover-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(20, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeInOverlay 0.5s;
+  overflow-y: auto;
+  padding: 20px 10px;
+}
+.gameover-text {
+  font-size: clamp(28px, 8vw, 48px);
+  font-weight: bold;
+  color: #cc3333;
+  text-shadow: 0 0 20px rgba(200, 30, 30, 0.6);
+  animation: shake 0.5s;
+  letter-spacing: 6px;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+.overlay-btn {
+  margin-top: 16px;
+  padding: 8px 24px;
+  font-size: 16px;
+  background: #2a1a3a;
+  border: 1px solid #5a3a7a;
+  color: #c8a0e8;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.overlay-btn:hover { background: #3a2a4a; border-color: #7a5a9a; }
+
+/* リザルト画面のボタン群 */
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.result-actions .overlay-btn { margin-top: 0; font-size: 14px; padding: 7px 18px; }
+.result-btn-share { background: #1a1a2e !important; border-color: #444 !important; }
+.result-btn-share:hover { background: #2a2a3e !important; }
+
+/* 音声コントロール */
+.audio-controls {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 5001;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.audio-btn {
+  background: #1a1a2a;
+  border: 1px solid #3a3a4a;
+  color: #888;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.audio-btn:hover { background: #2a2a3a; color: #bbb; }
+.audio-btn.playing {
+  color: #c8a0e8;
+  border-color: #6644aa;
+  box-shadow: 0 0 10px rgba(100, 50, 180, 0.3);
+}
+.audio-btn .icon { font-size: 16px; }
+
+/* Xシェアボタン（固定・右下） */
+.sg-share-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 5000;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: transform 0.15s, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+}
+.sg-share-btn:hover { transform: scale(1.1); background: rgba(0, 0, 0, 0.7); }
+</style>
+</head>
+<body>
+
+<h1>かいだんマインスイーパー</h1>
+
+<div class="difficulty-bar">
+  <button id="diff-easy" class="active" onclick="setDifficulty(0)">初級</button>
+  <button id="diff-medium" onclick="setDifficulty(1)">中級</button>
+  <button id="diff-hard" onclick="setDifficulty(2)">上級</button>
+</div>
+
+<div class="highscore-bar" id="highscoreBar"><span class="crown">👑</span>最速記録：<span id="highscoreVal">--</span> 秒</div>
+
+<div class="status-bar" id="statusBar">
+  <div class="status-left">
+    <div class="lcd" id="mineCount">010</div>
+    <button class="flag-toggle" id="flagToggle" onclick="toggleFlagMode()">🚩<span class="flag-hint">旗</span></button>
+  </div>
+  <button class="face-btn" id="faceBtn" onclick="initGame()">👻</button>
+  <div class="status-right">
+    <div class="lcd" id="timer">000</div>
+  </div>
+</div>
+
+<div class="board-container">
+  <div class="board" id="board"></div>
+</div>
+
+<!-- 怪談音声 -->
+<audio id="kaidanVoice" loop>
+  <source src="audio/kaidan.mp3" type="audio/mpeg">
+  <source src="audio/kaidan.ogg" type="audio/ogg">
+</audio>
+
+<div class="audio-controls">
+  <button class="audio-btn" id="bgmBtn" onclick="toggleBGM()" title="BGM ON/OFF">
+    <span class="icon">🔇</span>BGM
+  </button>
+  <button class="audio-btn" id="voiceBtn" onclick="toggleVoice()" title="怪談音声 ON/OFF">
+    <span class="icon">👻</span>怪談
+  </button>
+</div>
+
+<!-- Xシェアボタン -->
+<button class="sg-share-btn" id="shareBtn" onclick="shareToX()" title="Xでシェア">𝕏</button>
+
+<script>
+// ===== 怖いBGM（Web Audio API）+ 怪談音声 =====
+let audioCtx = null;
+let bgmPlaying = false;
+let bgmMaster = null;
+let bgmStarted = false;
+
+function startBGM() {
+  if (bgmStarted) {
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    bgmMaster.gain.value = 0.5;
+    bgmPlaying = true;
+    updateBGMBtn();
+    return;
+  }
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  bgmMaster = audioCtx.createGain();
+  bgmMaster.gain.value = 0.5;
+  bgmMaster.connect(audioCtx.destination);
+
+  // 低いドローン音
+  const drone = audioCtx.createOscillator();
+  drone.type = 'sawtooth';
+  drone.frequency.value = 55;
+  const droneGain = audioCtx.createGain();
+  droneGain.gain.value = 0.15;
+  const droneFilter = audioCtx.createBiquadFilter();
+  droneFilter.type = 'lowpass';
+  droneFilter.frequency.value = 200;
+  drone.connect(droneFilter);
+  droneFilter.connect(droneGain);
+  droneGain.connect(bgmMaster);
+
+  // ゆっくり揺らぐLFO
+  const lfo = audioCtx.createOscillator();
+  lfo.type = 'sine';
+  lfo.frequency.value = 0.15;
+  const lfoGain = audioCtx.createGain();
+  lfoGain.gain.value = 10;
+  lfo.connect(lfoGain);
+  lfoGain.connect(drone.frequency);
+
+  // 高いキーン音
+  const highTone = audioCtx.createOscillator();
+  highTone.type = 'sine';
+  highTone.frequency.value = 3800;
+  const highGain = audioCtx.createGain();
+  highGain.gain.value = 0.02;
+  const highLfo = audioCtx.createOscillator();
+  highLfo.type = 'sine';
+  highLfo.frequency.value = 0.08;
+  const highLfoGain = audioCtx.createGain();
+  highLfoGain.gain.value = 0.015;
+  highLfo.connect(highLfoGain);
+  highLfoGain.connect(highGain.gain);
+  highTone.connect(highGain);
+  highGain.connect(bgmMaster);
+
+  // 風の音
+  const bufferSize = audioCtx.sampleRate * 4;
+  const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const output = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    output[i] = Math.random() * 2 - 1;
+  }
+  const wind = audioCtx.createBufferSource();
+  wind.buffer = noiseBuffer;
+  wind.loop = true;
+  const windFilter = audioCtx.createBiquadFilter();
+  windFilter.type = 'bandpass';
+  windFilter.frequency.value = 400;
+  windFilter.Q.value = 0.5;
+  const windGain = audioCtx.createGain();
+  windGain.gain.value = 0.07;
+  const windLfo = audioCtx.createOscillator();
+  windLfo.type = 'sine';
+  windLfo.frequency.value = 0.1;
+  const windLfoGain = audioCtx.createGain();
+  windLfoGain.gain.value = 200;
+  windLfo.connect(windLfoGain);
+  windLfoGain.connect(windFilter.frequency);
+  wind.connect(windFilter);
+  windFilter.connect(windGain);
+  windGain.connect(bgmMaster);
+
+  // 不定期のきしみ音
+  function playCreak() {
+    if (!bgmPlaying || !audioCtx) return;
+    try {
+      const creakOsc = audioCtx.createOscillator();
+      creakOsc.type = 'sine';
+      const startFreq = 200 + Math.random() * 400;
+      const now = audioCtx.currentTime;
+      creakOsc.frequency.setValueAtTime(startFreq, now);
+      creakOsc.frequency.exponentialRampToValueAtTime(startFreq * 0.7, now + 1.5);
+      const creakGain = audioCtx.createGain();
+      creakGain.gain.setValueAtTime(0, now);
+      creakGain.gain.linearRampToValueAtTime(0.05, now + 0.3);
+      creakGain.gain.linearRampToValueAtTime(0, now + 1.5);
+      const creakFilter = audioCtx.createBiquadFilter();
+      creakFilter.type = 'bandpass';
+      creakFilter.frequency.value = startFreq;
+      creakFilter.Q.value = 10;
+      creakOsc.connect(creakFilter);
+      creakFilter.connect(creakGain);
+      creakGain.connect(bgmMaster);
+      creakOsc.start();
+      creakOsc.stop(now + 1.5);
+    } catch(e) {}
+    setTimeout(playCreak, 4000 + Math.random() * 8000);
+  }
+  setTimeout(playCreak, 2000);
+
+  drone.start();
+  lfo.start();
+  highTone.start();
+  highLfo.start();
+  wind.start();
+  windLfo.start();
+
+  bgmStarted = true;
+  bgmPlaying = true;
+
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  updateBGMBtn();
+}
+
+function stopBGM() {
+  bgmPlaying = false;
+  if (bgmMaster) {
+    bgmMaster.gain.value = 0;
+  }
+  updateBGMBtn();
+}
+
+function toggleBGM() {
+  if (!bgmPlaying) {
+    startBGM();
+  } else {
+    stopBGM();
+  }
+}
+
+function updateBGMBtn() {
+  const btn = document.getElementById('bgmBtn');
+  if (bgmPlaying) {
+    btn.classList.add('playing');
+    btn.innerHTML = '<span class="icon">🔊</span>BGM';
+  } else {
+    btn.classList.remove('playing');
+    btn.innerHTML = '<span class="icon">🔇</span>BGM';
+  }
+}
+
+// ===== 怪談音声 =====
+let voicePlaying = false;
+
+function toggleVoice() {
+  const voice = document.getElementById('kaidanVoice');
+  const btn = document.getElementById('voiceBtn');
+  if (!voicePlaying) {
+    voice.volume = 0.8;
+    voice.play().then(() => {
+      voicePlaying = true;
+      btn.classList.add('playing');
+      btn.innerHTML = '<span class="icon">👻</span>怪談ON';
+    }).catch(() => {
+      btn.innerHTML = '<span class="icon">👻</span>ファイルなし';
+      setTimeout(() => { btn.innerHTML = '<span class="icon">👻</span>怪談'; }, 2000);
+    });
+  } else {
+    voice.pause();
+    voicePlaying = false;
+    btn.classList.remove('playing');
+    btn.innerHTML = '<span class="icon">👻</span>怪談';
+  }
+}
+
+// 最初のクリックでBGM+怪談音声を自動開始
+let audioAutoStarted = false;
+document.addEventListener('click', function autoStartAudio() {
+  if (!audioAutoStarted) {
+    audioAutoStarted = true;
+    startBGM();
+    const voice = document.getElementById('kaidanVoice');
+    voice.volume = 0.9;
+    voice.play().then(() => {
+      voicePlaying = true;
+      const btn = document.getElementById('voiceBtn');
+      btn.classList.add('playing');
+      btn.innerHTML = '<span class="icon">👻</span>怪談ON';
+    }).catch(() => {});
+  }
+}, { once: true });
+
+// ===== ゲーム本体 =====
+const DIFFICULTIES = [
+  { name: 'easy', rows: 9, cols: 9, mines: 10 },
+  { name: 'medium', rows: 16, cols: 16, mines: 40 },
+  { name: 'hard', rows: 16, cols: 30, mines: 99 }
+];
+
+let currentDiff = 0;
+let board = [];
+let revealed = [];
+let flagged = [];
+let mineMap = [];
+let gameState = 'idle';
+let timerInterval = null;
+let elapsedTime = 0;
+let firstClick = true;
+let rows, cols, mineCount;
+let flagMode = false;
+let longPressTimer = null;
+let longPressTriggered = false;
+
+// ===== ハイスコア =====
+function getHighscore(diffName) {
+  try {
+    const v = localStorage.getItem('kaidanMS_hi_' + diffName);
+    return v ? parseInt(v, 10) : null;
+  } catch(e) { return null; }
+}
+function setHighscore(diffName, time) {
+  try {
+    localStorage.setItem('kaidanMS_hi_' + diffName, String(time));
+  } catch(e) {}
+}
+function updateHighscoreDisplay() {
+  const diffName = DIFFICULTIES[currentDiff].name;
+  const hi = getHighscore(diffName);
+  const el = document.getElementById('highscoreVal');
+  const bar = document.getElementById('highscoreBar');
+  bar.classList.remove('new-record');
+  el.textContent = hi !== null ? String(hi).padStart(3, '0') : '--';
+}
+
+function setDifficulty(idx) {
+  currentDiff = idx;
+  document.querySelectorAll('.difficulty-bar button').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  initGame();
+}
+
+function initGame() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  elapsedTime = 0;
+  gameState = 'idle';
+  firstClick = true;
+  flagMode = false;
+  document.getElementById('flagToggle').classList.remove('active');
+
+  const diff = DIFFICULTIES[currentDiff];
+  rows = diff.rows;
+  cols = diff.cols;
+  mineCount = diff.mines;
+
+  board = Array.from({length: rows}, () => Array(cols).fill(0));
+  revealed = Array.from({length: rows}, () => Array(cols).fill(false));
+  flagged = Array.from({length: rows}, () => Array(cols).fill(false));
+  mineMap = Array.from({length: rows}, () => Array(cols).fill(false));
+
+  updateMineCounter();
+  document.getElementById('timer').textContent = '000';
+  document.getElementById('faceBtn').textContent = '👻';
+  updateHighscoreDisplay();
+
+  document.querySelectorAll('.victory-overlay, .gameover-overlay, .confetti, .jobutsu-ghost, .jobutsu-text').forEach(e => e.remove());
+
+  renderBoard();
+}
+
+function renderBoard() {
+  const boardEl = document.getElementById('board');
+  boardEl.innerHTML = '';
+
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+  const h1H = document.querySelector('h1').offsetHeight;
+  const diffH = document.querySelector('.difficulty-bar').offsetHeight;
+  const hiH = document.querySelector('.highscore-bar').offsetHeight;
+  const statusBarH = document.getElementById('statusBar').offsetHeight;
+  const statusH = h1H + diffH + hiH + statusBarH + 6 + 3 + 3 + 4 + 12;
+  const availH = vh - statusH;
+  const availW = vw * 0.96;
+
+  const cellFromH = Math.floor((availH - 10) / rows);
+  const cellFromW = Math.floor((availW - 10) / cols);
+  let cellSize = Math.min(cellFromH, cellFromW);
+  cellSize = Math.max(cellSize, 12);
+  cellSize = Math.min(cellSize, 40);
+
+  boardEl.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+  boardEl.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
+
+  const fontSize = Math.max(Math.floor(cellSize * 0.55), 10);
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell closed';
+      cell.style.width = cellSize + 'px';
+      cell.style.height = cellSize + 'px';
+      cell.style.fontSize = fontSize + 'px';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+
+      cell.addEventListener('mousedown', onMouseDown);
+      cell.addEventListener('contextmenu', e => e.preventDefault());
+      cell.addEventListener('touchstart', onTouchStart, {passive: false});
+      cell.addEventListener('touchend', onTouchEnd, {passive: false});
+      cell.addEventListener('touchmove', onTouchMove, {passive: false});
+
+      boardEl.appendChild(cell);
+    }
+  }
+
+  const totalW = cols * (cellSize + 1) + 6;
+  document.getElementById('statusBar').style.width = Math.min(totalW, vw * 0.96) + 'px';
+}
+
+function onMouseDown(e) {
+  e.preventDefault();
+  const r = +e.currentTarget.dataset.r;
+  const c = +e.currentTarget.dataset.c;
+  if (e.button === 2 || (e.button === 0 && flagMode)) {
+    toggleFlag(r, c);
+  } else if (e.button === 0) {
+    revealCell(r, c);
+  }
+}
+
+function onTouchStart(e) {
+  e.preventDefault();
+  const cell = e.currentTarget;
+  longPressTriggered = false;
+  longPressTimer = setTimeout(() => {
+    longPressTriggered = true;
+    const r = +cell.dataset.r;
+    const c = +cell.dataset.c;
+    toggleFlag(r, c);
+  }, 400);
+}
+
+function onTouchEnd(e) {
+  e.preventDefault();
+  clearTimeout(longPressTimer);
+  if (!longPressTriggered) {
+    const cell = e.currentTarget;
+    const r = +cell.dataset.r;
+    const c = +cell.dataset.c;
+    if (flagMode) {
+      toggleFlag(r, c);
+    } else {
+      revealCell(r, c);
+    }
+  }
+}
+
+function onTouchMove(e) {
+  clearTimeout(longPressTimer);
+}
+
+function placeMines(safeR, safeC) {
+  let placed = 0;
+  while (placed < mineCount) {
+    const r = Math.floor(Math.random() * rows);
+    const c = Math.floor(Math.random() * cols);
+    if (mineMap[r][c]) continue;
+    if (Math.abs(r - safeR) <= 1 && Math.abs(c - safeC) <= 1) continue;
+    mineMap[r][c] = true;
+    placed++;
+  }
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (mineMap[r][c]) { board[r][c] = -1; continue; }
+      let count = 0;
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          const nr = r + dr, nc = c + dc;
+          if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && mineMap[nr][nc]) count++;
+        }
+      }
+      board[r][c] = count;
+    }
+  }
+}
+
+function revealCell(r, c) {
+  if (gameState === 'won' || gameState === 'lost') return;
+  if (revealed[r][c] || flagged[r][c]) return;
+
+  if (firstClick) {
+    firstClick = false;
+    gameState = 'playing';
+    placeMines(r, c);
+    startTimer();
+  }
+
+  if (mineMap[r][c]) {
+    gameOver(r, c);
+    return;
+  }
+
+  const stack = [[r, c]];
+  while (stack.length) {
+    const [cr, cc] = stack.pop();
+    if (cr < 0 || cr >= rows || cc < 0 || cc >= cols) continue;
+    if (revealed[cr][cc] || flagged[cr][cc]) continue;
+    revealed[cr][cc] = true;
+    updateCellDOM(cr, cc);
+    if (board[cr][cc] === 0) {
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          stack.push([cr + dr, cc + dc]);
+        }
+      }
+    }
+  }
+
+  document.getElementById('faceBtn').textContent = '👻';
+  checkWin();
+}
+
+function toggleFlag(r, c) {
+  if (gameState === 'won' || gameState === 'lost') return;
+  if (revealed[r][c]) return;
+
+  flagged[r][c] = !flagged[r][c];
+  const cell = getCellDOM(r, c);
+  cell.classList.toggle('flagged', flagged[r][c]);
+  updateMineCounter();
+}
+
+function toggleFlagMode() {
+  flagMode = !flagMode;
+  const btn = document.getElementById('flagToggle');
+  btn.classList.toggle('active', flagMode);
+}
+
+function updateMineCounter() {
+  const flags = flagged.flat().filter(Boolean).length;
+  const remaining = mineCount - flags;
+  document.getElementById('mineCount').textContent = String(Math.max(remaining, 0)).padStart(3, '0');
+}
+
+function startTimer() {
+  elapsedTime = 0;
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    elapsedTime++;
+    if (elapsedTime > 999) elapsedTime = 999;
+    document.getElementById('timer').textContent = String(elapsedTime).padStart(3, '0');
+  }, 1000);
+}
+
+function getCellDOM(r, c) {
+  return document.getElementById('board').children[r * cols + c];
+}
+
+function updateCellDOM(r, c) {
+  const cell = getCellDOM(r, c);
+  cell.className = 'cell opened';
+  cell.style.fontSize = cell.style.fontSize;
+  const val = board[r][c];
+  if (val > 0) {
+    cell.textContent = val;
+    cell.classList.add('n' + val);
+  } else {
+    cell.textContent = '';
+  }
+}
+
+function gameOver(hitR, hitC) {
+  gameState = 'lost';
+  clearInterval(timerInterval);
+  document.getElementById('faceBtn').textContent = '💀';
+
+  const hitCell = getCellDOM(hitR, hitC);
+  hitCell.className = 'cell mine-hit';
+  hitCell.innerHTML = '<div class="mine-dot"></div>';
+
+  let delay = 20;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (r === hitR && c === hitC) continue;
+      if (mineMap[r][c]) {
+        setTimeout(() => {
+          const cell = getCellDOM(r, c);
+          cell.className = 'cell mine-reveal';
+          cell.classList.remove('flagged');
+          cell.innerHTML = '<div class="mine-dot"></div>';
+        }, delay);
+        delay += 8;
+      }
+    }
+  }
+
+  setTimeout(() => {
+    const overlay = document.createElement('div');
+    overlay.className = 'gameover-overlay';
+    overlay.innerHTML = `
+      <div class="gameover-text">お前を呪う</div>
+      <div class="result-actions">
+        <button class="overlay-btn" onclick="closeOverlay(this); initGame();">もう一度</button>
+        <button class="overlay-btn result-btn-share" onclick="shareToX()">𝕏 シェア</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }, delay + 150);
+}
+
+function checkWin() {
+  let openedCount = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (revealed[r][c]) openedCount++;
+    }
+  }
+  if (openedCount === rows * cols - mineCount) {
+    gameState = 'won';
+    clearInterval(timerInterval);
+    document.getElementById('faceBtn').textContent = '🙏';
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (mineMap[r][c] && !flagged[r][c]) {
+          flagged[r][c] = true;
+          getCellDOM(r, c).classList.add('flagged');
+        }
+      }
+    }
+    updateMineCounter();
+
+    const diffName = DIFFICULTIES[currentDiff].name;
+    const prevHi = getHighscore(diffName);
+    const isNewRecord = prevHi === null || elapsedTime < prevHi;
+    if (isNewRecord) {
+      setHighscore(diffName, elapsedTime);
+    }
+
+    setTimeout(() => {
+      playJobutsu(isNewRecord);
+    }, 300);
+  }
+}
+
+function playJobutsu(isNewRecord) {
+  const ghost = document.createElement('img');
+  ghost.src = 'kaidan-ghost.png';
+  ghost.alt = 'おばけ';
+  ghost.className = 'jobutsu-ghost';
+  document.body.appendChild(ghost);
+
+  const text = document.createElement('div');
+  text.className = 'jobutsu-text';
+  text.textContent = '成　仏　...';
+  document.body.appendChild(text);
+
+  spawnSpirits();
+
+  setTimeout(() => {
+    ghost.remove();
+    text.remove();
+    showVictory(isNewRecord);
+  }, 3500);
+}
+
+function showVictory(isNewRecord) {
+  const recordHtml = isNewRecord
+    ? '<div class="victory-record">👑 最速記録更新！</div>'
+    : '';
+  const overlay = document.createElement('div');
+  overlay.className = 'victory-overlay';
+  overlay.innerHTML = `
+    <div class="victory-text">...成仏...</div>
+    <div class="victory-time">${String(elapsedTime).padStart(3, '0')} 秒</div>
+    ${recordHtml}
+    <div class="result-actions">
+      <button class="overlay-btn" onclick="closeOverlay(this); initGame();">もう一度</button>
+      <button class="overlay-btn result-btn-share" onclick="shareToX()">𝕏 シェア</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  updateHighscoreDisplay();
+  if (isNewRecord) {
+    document.getElementById('highscoreBar').classList.add('new-record');
+  }
+}
+
+function spawnSpirits() {
+  const colors = ['#9966ff','#7744cc','#6633aa','#aa88ee','#5522aa','#bb99ff'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.bottom = '-10px';
+    c.style.color = colors[Math.floor(Math.random() * colors.length)];
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.width = (3 + Math.random() * 5) + 'px';
+    c.style.height = (3 + Math.random() * 5) + 'px';
+    c.style.animationDuration = (3 + Math.random() * 4) + 's';
+    c.style.animationDelay = (Math.random() * 2) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 8000);
+  }
+}
+
+function closeOverlay(btn) {
+  const overlay = btn.closest('.victory-overlay, .gameover-overlay');
+  if (overlay) overlay.remove();
+  document.querySelectorAll('.confetti,.jobutsu-ghost,.jobutsu-text').forEach(e => e.remove());
+}
+
+function shareToX() {
+  const diffNames = ['初級','中級','上級'];
+  const diffLabel = diffNames[currentDiff];
+  const siteUrl = 'https://eri-murayama.github.io/surreal-games/games/minesweeper/index.html';
+  let text;
+  if (gameState === 'won') {
+    text = `【かいだんマインスイーパー】${diffLabel}を${elapsedTime}秒でクリア！成仏しました...👻\n#シュールゲームス`;
+  } else {
+    text = '【かいだんマインスイーパー】呪われてしまった...💀\n#シュールゲームス';
+  }
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(siteUrl), '_blank');
+}
+
+window.addEventListener('resize', () => {
+  if (gameState === 'idle') renderBoard();
+});
+
+initGame();
+</script>
+</body>
+</html>
