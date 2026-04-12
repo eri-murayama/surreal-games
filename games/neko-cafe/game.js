@@ -126,9 +126,25 @@
 
   // ===== 効果音 =====
   function playSound(name) {
-    if (typeof SoundSystem !== 'undefined' && SoundSystem.enabled) {
-      SoundSystem.play(name);
-    }
+    try {
+      if (window.SurrealGames && window.SurrealGames.SoundSystem) {
+        window.SurrealGames.SoundSystem.play(name);
+      }
+    } catch (e) { /* ignore */ }
+  }
+  function startBgm() {
+    try {
+      if (window.SurrealGames && window.SurrealGames.SoundSystem) {
+        window.SurrealGames.SoundSystem.playBgm('cafe');
+      }
+    } catch (e) { /* ignore */ }
+  }
+  function stopBgm() {
+    try {
+      if (window.SurrealGames && window.SurrealGames.SoundSystem) {
+        window.SurrealGames.SoundSystem.stopBgm();
+      }
+    } catch (e) { /* ignore */ }
   }
 
   // ===== コンボシステム =====
@@ -420,7 +436,7 @@
       '<div class="order-bubble">' + wants.icon + '</div>' +
       '<div class="patience-bar"><div class="patience-fill"></div></div>';
 
-    playSound('tap');
+    playSound('modal_open');
     updateServingHighlights();
   }
 
@@ -466,7 +482,7 @@
     state.reputation = Math.max(0, state.reputation - 1);
     state.coins = Math.max(0, state.coins - 3);
     toast('お客さまが帰ってしまった…');
-    playSound('tap');
+    playSound('wrong');
     clearTable(t);
     updateHud();
   }
@@ -491,7 +507,7 @@
       showComboPop(t.el, combo, bonus);
     }
     bounceCoinHud();
-    playSound('tap');
+    playSound('correct');
     checkLevelUp();
     clearTable(t);
     updateHud();
@@ -548,7 +564,7 @@
       state.xp -= need;
       state.level++;
       showLevelUpEffect(state.level);
-      playSound('tap');
+      playSound('achievement');
       need = xpForLevel(state.level);
     }
   }
@@ -563,7 +579,7 @@
       st.progress = 0;
       st.el.classList.add('cooking');
       st.el.classList.remove('ready');
-      playSound('tap');
+      playSound('tap'); // 調理開始
 
       if (!state.tutorialDone && tutorialStep === 0) {
         tutorialStep = 1;
@@ -608,7 +624,7 @@
           b.textContent = '!';
           st.el.appendChild(b);
         }
-        playSound('tap');
+        playSound('pickup');
       }
     });
   }
@@ -692,6 +708,8 @@
     comboCount = 0;
     showDaySplash();
     updateDecorDisplay();
+    startBgm();
+    playSound('start');
     state.tables.forEach(clearTable);
     state.stations.forEach(function (s) {
       s.state = 'idle';
@@ -714,6 +732,7 @@
     state.running = false;
     state.paused = false;
     if (rafId) cancelAnimationFrame(rafId);
+    stopBgm();
     state.tables.forEach(function (t) { if (t.occupied) clearTable(t); });
     var s = state.dayStats || { served: 0, coins: 0, xp: 0, rep: 0 };
     $('#res-served').textContent = s.served;
@@ -740,7 +759,7 @@
     ];
     $('#res-comment').textContent = comments[stars];
     $('#result-screen').classList.remove('hidden');
-    playSound('tap');
+    playSound('result');
     save();
   }
 
@@ -798,7 +817,7 @@
           renderShop();
           toast('新メニュー「' + m.name + '」追加！', 2000);
           spawnConfetti(6);
-          playSound('tap');
+          playSound('unlock');
         });
         list.appendChild(item);
       });
@@ -833,7 +852,7 @@
           save();
           renderShop();
           toast('強化完了！');
-          playSound('tap');
+          playSound('unlock');
         });
         list.appendChild(item);
       });
@@ -889,7 +908,7 @@
         renderDecor();
         toast('お店がすてきになった！');
         spawnConfetti(8);
-        playSound('tap');
+        playSound('unlock');
       });
       list.appendChild(item);
     });
@@ -898,6 +917,7 @@
   // ===== モーダル開閉（ポーズ連動 + 背景クリックで閉じる） =====
   function openModal(id) {
     pauseGame();
+    playSound('modal_open');
     var modal = $('#' + id);
     modal.classList.remove('hidden');
     // 背景オーバーレイ
@@ -912,6 +932,7 @@
   }
   function closeModal(el) {
     el.classList.add('hidden');
+    playSound('modal_close');
     var overlay = document.getElementById('modal-overlay');
     if (overlay) overlay.remove();
     if (state.running) resumeGame();
