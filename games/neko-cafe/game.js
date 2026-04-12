@@ -3,7 +3,7 @@
   'use strict';
 
   // ===== メニューアイテム定義 =====
-  const MENU = [
+  var MENU = [
     { id: 'coffee',    icon: '☕', name: 'コーヒー',     nameEn: 'Coffee',        cost: 0,    cookTime: 2.0, price: 12,  xp: 3,  unlockLv: 1 },
     { id: 'muffin',    icon: '🧁', name: 'マフィン',     nameEn: 'Muffin',        cost: 40,   cookTime: 2.5, price: 20,  xp: 5,  unlockLv: 1 },
     { id: 'tea',       icon: '🍵', name: '抹茶ラテ',     nameEn: 'Matcha Latte',  cost: 100,  cookTime: 3.0, price: 30,  xp: 7,  unlockLv: 2 },
@@ -17,7 +17,7 @@
   ];
 
   // ===== 強化アイテム =====
-  const UPGRADES = [
+  var UPGRADES = [
     { id: 'table2',  icon: '🪑', name: 'テーブル2席目',   desc: '同時に接客できる席を追加', cost: 60,   effect: { type: 'table', value: 2 } },
     { id: 'table3',  icon: '🪑', name: 'テーブル3席目',   desc: '席を増やして繁盛させよう', cost: 250,  effect: { type: 'table', value: 3 } },
     { id: 'table4',  icon: '🪑', name: 'テーブル4席目',   desc: 'もっとたくさんお客さまを', cost: 800,  effect: { type: 'table', value: 4 } },
@@ -33,7 +33,7 @@
   ];
 
   // ===== 内装（デコレーション） =====
-  const DECORS = [
+  var DECORS = [
     { id: 'curtain',  icon: '🪟', name: 'かわいいカーテン', desc: 'お客さまの来店頻度+10%', cost: 180,  effect: 0.10 },
     { id: 'flowers',  icon: '💐', name: 'お花のブーケ',     desc: 'お客さまの来店頻度+10%', cost: 450,  effect: 0.10 },
     { id: 'lamp',     icon: '🏮', name: 'あたたかランプ',   desc: 'お客さまの来店頻度+15%', cost: 1100, effect: 0.15 },
@@ -42,14 +42,14 @@
   ];
 
   // ===== 猫キャラバリエーション =====
-  const CAT_EMOJIS = ['🐱', '🐈', '🐈‍⬛', '😺', '😸', '😻', '😽', '🙀'];
+  var CAT_EMOJIS = ['🐱', '🐈', '🐈‍⬛', '😺', '😸', '😻', '😽', '🙀'];
 
   // ===== 営業時間（秒） =====
-  const DAY_LENGTH = 90; // 1日 = 90秒
+  var DAY_LENGTH = 90;
 
   // ===== ゲーム状態 =====
-  const SAVE_KEY = 'neko-cafe-save-v1';
-  const state = {
+  var SAVE_KEY = 'neko-cafe-save-v1';
+  var state = {
     coins: 0,
     level: 1,
     xp: 0,
@@ -68,19 +68,25 @@
     paused: false,
     dayStats: null,
     dayTimer: 0,
+    dayEnding: false, // endDay二重呼び出し防止
   };
 
   // ===== DOMヘルパ =====
-  const $ = (sel) => document.querySelector(sel);
+  function $(sel) { return document.querySelector(sel); }
   function showGame() {
     $('#title-screen').classList.add('hidden');
     $('#game-screen').classList.remove('hidden');
   }
 
+  // ===== 数値フォーマット =====
+  function fmtNum(n) {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
   // ===== セーブ / ロード =====
   function save() {
     try {
-      const data = {
+      var data = {
         coins: state.coins,
         level: state.level,
         xp: state.xp,
@@ -97,9 +103,9 @@
   }
   function load() {
     try {
-      const raw = localStorage.getItem(SAVE_KEY);
+      var raw = localStorage.getItem(SAVE_KEY);
       if (!raw) return false;
-      const data = JSON.parse(raw);
+      var data = JSON.parse(raw);
       Object.assign(state, data);
       return true;
     } catch (e) { return false; }
@@ -128,33 +134,33 @@
   // ===== 計算系ヘルパ =====
   function xpForLevel(lv) { return Math.floor(40 * Math.pow(1.3, lv - 1)); }
   function speedMult() {
-    let m = 1;
-    state.ownedUpgrades.forEach(id => {
-      const u = UPGRADES.find(x => x.id === id);
+    var m = 1;
+    state.ownedUpgrades.forEach(function (id) {
+      var u = UPGRADES.find(function (x) { return x.id === id; });
       if (u && u.effect.type === 'speed') m *= (1 - u.effect.value);
     });
     return m;
   }
   function tipMult() {
-    let m = 1;
-    state.ownedUpgrades.forEach(id => {
-      const u = UPGRADES.find(x => x.id === id);
+    var m = 1;
+    state.ownedUpgrades.forEach(function (id) {
+      var u = UPGRADES.find(function (x) { return x.id === id; });
       if (u && u.effect.type === 'tip') m *= (1 + u.effect.value);
     });
     return m;
   }
   function patienceMult() {
-    let m = 1;
-    state.ownedUpgrades.forEach(id => {
-      const u = UPGRADES.find(x => x.id === id);
+    var m = 1;
+    state.ownedUpgrades.forEach(function (id) {
+      var u = UPGRADES.find(function (x) { return x.id === id; });
       if (u && u.effect.type === 'patience') m *= (1 + u.effect.value);
     });
     return m;
   }
   function arrivalMult() {
-    let m = 1;
-    state.ownedDecors.forEach(id => {
-      const d = DECORS.find(x => x.id === id);
+    var m = 1;
+    state.ownedDecors.forEach(function (id) {
+      var d = DECORS.find(function (x) { return x.id === id; });
       if (d) m *= (1 + d.effect);
     });
     return m;
@@ -162,27 +168,26 @@
 
   // ===== HUD 更新 =====
   function updateHud() {
-    $('#coins-display').textContent = state.coins;
+    $('#coins-display').textContent = fmtNum(state.coins);
     $('#level-display').textContent = state.level;
     $('#day-display').textContent = state.day;
-    const need = xpForLevel(state.level);
-    const pct = Math.min(100, (state.xp / need) * 100);
+    var need = xpForLevel(state.level);
+    var pct = Math.min(100, (state.xp / need) * 100);
     $('#xp-bar').style.width = pct + '%';
     // ショップ内のコイン表示も更新
-    const shopC = $('#shop-coin-val');
-    const shopC2 = $('#shop-coin-val2');
-    if (shopC) shopC.textContent = state.coins;
-    if (shopC2) shopC2.textContent = state.coins;
+    var shopC = $('#shop-coin-val');
+    var shopC2 = $('#shop-coin-val2');
+    if (shopC) shopC.textContent = fmtNum(state.coins);
+    if (shopC2) shopC2.textContent = fmtNum(state.coins);
     // 営業タイマー
     updateDayTimer();
   }
 
   function updateDayTimer() {
-    const bar = $('#day-timer-fill');
+    var bar = $('#day-timer-fill');
     if (!bar) return;
-    const pct = Math.max(0, (state.dayTimer / DAY_LENGTH) * 100);
+    var pct = Math.max(0, (state.dayTimer / DAY_LENGTH) * 100);
     bar.style.width = pct + '%';
-    // 残り少なくなったら色変え
     if (pct < 20) {
       bar.style.background = 'var(--cafe-red)';
     } else if (pct < 40) {
@@ -193,24 +198,24 @@
   }
 
   // ===== トースト =====
-  let toastTimer = null;
+  var toastTimer = null;
   function toast(msg, duration) {
-    const el = $('#info-toast');
+    var el = $('#info-toast');
     el.textContent = msg;
     el.classList.remove('hidden');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.add('hidden'), duration || 1600);
+    toastTimer = setTimeout(function () { el.classList.add('hidden'); }, duration || 1600);
   }
 
   // ===== チュートリアル =====
-  let tutorialStep = 0;
+  var tutorialStep = 0;
   function runTutorial() {
     if (state.tutorialDone) return;
     tutorialStep = 0;
     showTutorialStep();
   }
   function showTutorialStep() {
-    const msgs = [
+    var msgs = [
       '☕ キッチンの「コーヒー」をタップして調理開始！',
       '✅ 緑色に光ったら完成！もう一度タップしてね',
       '🐱 注文吹き出しが合うお客さまをタップ！',
@@ -224,44 +229,77 @@
     }
   }
 
-  // ===== テーブル初期化 =====
+  // ===== テーブル初期化（既存のお客さまを保持） =====
   function buildTables() {
-    const wrap = $('#tables-wrap');
+    var wrap = $('#tables-wrap');
+    // 既存のお客さま情報を保持
+    var oldCustomers = [];
+    state.tables.forEach(function (t) {
+      if (t.occupied && t.cat) {
+        oldCustomers.push({ index: t.index, cat: t.cat });
+      }
+    });
+
     wrap.innerHTML = '';
-    const total = 6;
-    for (let i = 0; i < total; i++) {
-      const slot = document.createElement('div');
+    var total = 6;
+    for (var i = 0; i < total; i++) {
+      var slot = document.createElement('div');
       slot.className = 'table-slot';
       if (i >= state.maxTables) {
         slot.classList.add('locked');
       } else {
-        // 空席にはテーブル表示
         slot.innerHTML = '<div class="empty-table">🪑</div>';
       }
       slot.dataset.index = i;
-      slot.addEventListener('click', () => onTableClick(i));
+      (function (idx) {
+        slot.addEventListener('click', function () { onTableClick(idx); });
+      })(i);
       wrap.appendChild(slot);
       state.tables[i] = { index: i, el: slot, occupied: false, cat: null };
     }
+
+    // 既存のお客さまを復元
+    oldCustomers.forEach(function (oc) {
+      if (oc.index >= state.maxTables) return; // 席が減った場合（通常ないが安全策）
+      var table = state.tables[oc.index];
+      var cat = oc.cat;
+      var wants = MENU.find(function (m) { return m.id === cat.wants; });
+      if (!wants) return;
+      table.occupied = true;
+      table.cat = cat;
+      table.el.classList.add('occupied');
+      table.el.innerHTML =
+        '<div class="cat-customer">' + cat.emoji + '</div>' +
+        '<div class="order-bubble">' + wants.icon + '</div>' +
+        '<div class="patience-bar"><div class="patience-fill"></div></div>';
+      // 忍耐ゲージも復元
+      var pct = Math.max(0, (cat.patience / cat.maxPatience) * 100);
+      var fill = table.el.querySelector('.patience-fill');
+      if (fill) {
+        fill.style.width = pct + '%';
+        fill.style.backgroundPosition = (100 - pct) + '% 0';
+      }
+    });
   }
 
   // ===== ステーション（キッチン）初期化 =====
   function buildStations() {
-    const wrap = $('#stations-wrap');
+    var wrap = $('#stations-wrap');
     wrap.innerHTML = '';
     state.stations = [];
-    MENU.forEach((m) => {
+    MENU.forEach(function (m) {
       if (!state.unlockedMenu.includes(m.id)) return;
-      const el = document.createElement('div');
+      var el = document.createElement('div');
       el.className = 'station';
       el.dataset.menuId = m.id;
       el.innerHTML = '<span class="st-icon">' + m.icon + '</span>' +
         '<span class="st-name">' + m.name + '</span>' +
         '<span class="st-price">💰' + Math.floor(m.price * tipMult()) + '</span>' +
         '<div class="cook-bar"><div class="cook-bar-fill"></div></div>';
-      // 正しいindexをクロージャでキャプチャ
       var idx = state.stations.length;
-      el.addEventListener('click', function () { onStationClick(idx); });
+      (function (i) {
+        el.addEventListener('click', function () { onStationClick(i); });
+      })(idx);
       wrap.appendChild(el);
       state.stations.push({ el: el, menuId: m.id, state: 'idle', progress: 0 });
     });
@@ -362,7 +400,7 @@
       state.dayStats.rep += 1;
     }
     showPop(t.el, '💕', 'happy-pop');
-    showCoinPop(t.el, '+' + earn);
+    showCoinPop(t.el, '+' + fmtNum(earn));
     playSound('tap');
     checkLevelUp();
     clearTable(t);
@@ -423,20 +461,17 @@
     if (!st) return;
 
     if (st.state === 'idle') {
-      // 調理開始
       st.state = 'cooking';
       st.progress = 0;
       st.el.classList.add('cooking');
       st.el.classList.remove('ready');
       playSound('tap');
 
-      // チュートリアル: 初回調理
       if (!state.tutorialDone && tutorialStep === 0) {
         tutorialStep = 1;
         setTimeout(showTutorialStep, 800);
       }
     } else if (st.state === 'ready') {
-      // 配膳モード: このステーションを選択/解除
       if (state.selectedStation === idx) {
         state.selectedStation = -1;
         st.el.classList.remove('selected');
@@ -445,7 +480,6 @@
         state.selectedStation = idx;
         st.el.classList.add('selected');
 
-        // チュートリアル: 完成品選択
         if (!state.tutorialDone && tutorialStep === 1) {
           tutorialStep = 2;
           setTimeout(showTutorialStep, 600);
@@ -455,7 +489,6 @@
       }
       updateServingHighlights();
     }
-    // cooking中のタップは無視
   }
 
   function tickStations(dt) {
@@ -485,7 +518,10 @@
   // ===== テーブルクリック：配膳 =====
   function onTableClick(idx) {
     var t = state.tables[idx];
-    if (!t || !t.occupied) return;
+    if (!t) return;
+    // ロック席は無視
+    if (idx >= state.maxTables) return;
+    if (!t.occupied) return;
     if (state.selectedStation < 0) {
       toast('キッチンの完成した料理を選んでね');
       return;
@@ -550,13 +586,12 @@
   function startDay() {
     state.running = true;
     state.paused = false;
+    state.dayEnding = false;
     state.dayStats = { served: 0, coins: 0, xp: 0, rep: 0 };
     state.dayTimer = DAY_LENGTH;
     lastTime = performance.now();
     spawnTimer = 1.0;
-    // 既存テーブルクリア
     state.tables.forEach(clearTable);
-    // ステーション初期化
     state.stations.forEach(function (s) {
       s.state = 'idle';
       s.progress = 0;
@@ -572,15 +607,16 @@
   }
 
   function endDay() {
+    // 二重呼び出し防止
+    if (state.dayEnding) return;
+    state.dayEnding = true;
     state.running = false;
     state.paused = false;
     if (rafId) cancelAnimationFrame(rafId);
-    // 残っているお客さまを退店（怒りなし）
     state.tables.forEach(function (t) { if (t.occupied) clearTable(t); });
-    // 結果表示
     var s = state.dayStats || { served: 0, coins: 0, xp: 0, rep: 0 };
     $('#res-served').textContent = s.served;
-    $('#res-coins').textContent = s.coins;
+    $('#res-coins').textContent = fmtNum(s.coins);
     $('#res-xp').textContent = s.xp;
     $('#res-rep').textContent = s.rep;
     $('#result-screen').classList.remove('hidden');
@@ -592,7 +628,7 @@
     state.day++;
     $('#result-screen').classList.add('hidden');
     save();
-    buildStations(); // 新メニュー追加反映
+    buildStations();
     updateHud();
     startDay();
   }
@@ -603,7 +639,7 @@
   }
   function resumeGame() {
     state.paused = false;
-    lastTime = performance.now(); // dt飛び防止
+    lastTime = performance.now();
   }
 
   // ===== ショップ描画 =====
@@ -627,11 +663,13 @@
           '</div>' +
           '<button class="shop-buy' + (owned ? ' owned' : '') + '"' +
             (owned || locked || state.coins < m.cost ? ' disabled' : '') + '>' +
-            (owned ? '購入済' : locked ? 'Lv.' + m.unlockLv : '💰' + m.cost) +
+            (owned ? '購入済' : locked ? 'Lv.' + m.unlockLv : '💰' + fmtNum(m.cost)) +
           '</button>';
         var btn = item.querySelector('.shop-buy');
         btn.addEventListener('click', function () {
-          if (owned || locked || state.coins < m.cost) return;
+          if (state.unlockedMenu.includes(m.id)) return;
+          if (state.level < m.unlockLv) return;
+          if (state.coins < m.cost) return;
           state.coins -= m.cost;
           state.unlockedMenu.push(m.id);
           buildStations();
@@ -657,16 +695,17 @@
           '</div>' +
           '<button class="shop-buy' + (owned ? ' owned' : '') + '"' +
             (owned || state.coins < u.cost ? ' disabled' : '') + '>' +
-            (owned ? '購入済' : '💰' + u.cost) +
+            (owned ? '購入済' : '💰' + fmtNum(u.cost)) +
           '</button>';
         var btn = item.querySelector('.shop-buy');
         btn.addEventListener('click', function () {
-          if (owned || state.coins < u.cost) return;
+          if (state.ownedUpgrades.includes(u.id)) return;
+          if (state.coins < u.cost) return;
           state.coins -= u.cost;
           state.ownedUpgrades.push(u.id);
           if (u.effect.type === 'table') {
             state.maxTables = u.effect.value;
-            buildTables();
+            buildTables(); // お客さま保持して再構築
           }
           buildStations();
           updateHud();
@@ -715,11 +754,12 @@
         '</div>' +
         '<button class="shop-buy' + (owned ? ' owned' : '') + '"' +
           (owned || state.coins < d.cost ? ' disabled' : '') + '>' +
-          (owned ? '設置済' : '💰' + d.cost) +
+          (owned ? '設置済' : '💰' + fmtNum(d.cost)) +
         '</button>';
       var btn = item.querySelector('.shop-buy');
       btn.addEventListener('click', function () {
-        if (owned || state.coins < d.cost) return;
+        if (state.ownedDecors.includes(d.id)) return;
+        if (state.coins < d.cost) return;
         state.coins -= d.cost;
         state.ownedDecors.push(d.id);
         updateHud();
@@ -732,13 +772,25 @@
     });
   }
 
-  // ===== モーダル開閉（ポーズ連動） =====
+  // ===== モーダル開閉（ポーズ連動 + 背景クリックで閉じる） =====
   function openModal(id) {
     pauseGame();
-    $('#' + id).classList.remove('hidden');
+    var modal = $('#' + id);
+    modal.classList.remove('hidden');
+    // 背景オーバーレイ
+    var existing = document.getElementById('modal-overlay');
+    if (existing) existing.remove();
+    var overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
+    overlay.addEventListener('click', function () {
+      closeModal(modal);
+    });
+    document.body.appendChild(overlay);
   }
   function closeModal(el) {
     el.classList.add('hidden');
+    var overlay = document.getElementById('modal-overlay');
+    if (overlay) overlay.remove();
     if (state.running) resumeGame();
   }
 
@@ -792,6 +844,13 @@
         shopTab = b.dataset.tab;
         renderShop();
       });
+    });
+
+    // タブ切替・閉じ時に自動セーブ
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') {
+        save();
+      }
     });
   }
 
