@@ -542,7 +542,7 @@
     },
     // バトル・対戦系（リバーシマスター）— 重厚で緊迫感のあるボス戦風
     battle: {
-      tempo: 145, key: 'Dm', wave: 'sawtooth', volume: 0.08,
+      tempo: 145, key: 'Dm', wave: 'sawtooth', volume: 0.22,
       melody: [
         294, 349, 440, 523, 440, 349, 294, 262,
         294, 440, 523, 587, 523, 440, 349, 294,
@@ -1328,6 +1328,64 @@
           gSlot.connect(ctx.destination);
           oscSlot.start(now);
           oscSlot.stop(now + 0.12);
+          break;
+        }
+        case 'battle_cry': {
+          // ドゴォン！ — 重厚なバトル演出音（低音衝撃→上昇音→炸裂）
+          this._duckBgm(2.0);
+          // 低音ドーン
+          const oscBC1 = ctx.createOscillator();
+          const gBC1 = ctx.createGain();
+          oscBC1.type = 'sawtooth';
+          oscBC1.frequency.setValueAtTime(60, now);
+          oscBC1.frequency.exponentialRampToValueAtTime(25, now + 0.6);
+          gBC1.gain.setValueAtTime(this.volume * 0.9, now);
+          gBC1.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+          oscBC1.connect(gBC1);
+          gBC1.connect(ctx.destination);
+          oscBC1.start(now);
+          oscBC1.stop(now + 0.8);
+          // 上昇キュイーン
+          const oscBC2 = ctx.createOscillator();
+          const gBC2 = ctx.createGain();
+          oscBC2.type = 'sawtooth';
+          oscBC2.frequency.setValueAtTime(200, now + 0.1);
+          oscBC2.frequency.exponentialRampToValueAtTime(2400, now + 0.5);
+          oscBC2.frequency.exponentialRampToValueAtTime(1600, now + 0.8);
+          gBC2.gain.setValueAtTime(0.01, now);
+          gBC2.gain.linearRampToValueAtTime(this.volume * 0.6, now + 0.3);
+          gBC2.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+          oscBC2.connect(gBC2);
+          gBC2.connect(ctx.destination);
+          oscBC2.start(now);
+          oscBC2.stop(now + 0.9);
+          // 不協和音の炸裂（0.4秒後）
+          [330, 349, 466, 494].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.value = freq;
+            g.gain.setValueAtTime(this.volume * 0.5, now + 0.4);
+            g.gain.exponentialRampToValueAtTime(0.01, now + 1.0);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(now + 0.4);
+            osc.stop(now + 1.0);
+          });
+          // ノイズ爆発
+          const bufSize = ctx.sampleRate * 0.3;
+          const noiseBuf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+          const noiseData = noiseBuf.getChannelData(0);
+          for (let i = 0; i < bufSize; i++) noiseData[i] = (Math.random() * 2 - 1) * 0.5;
+          const noiseNode = ctx.createBufferSource();
+          noiseNode.buffer = noiseBuf;
+          const gNoise = ctx.createGain();
+          gNoise.gain.setValueAtTime(this.volume * 0.6, now + 0.35);
+          gNoise.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+          noiseNode.connect(gNoise);
+          gNoise.connect(ctx.destination);
+          noiseNode.start(now + 0.35);
+          noiseNode.stop(now + 0.7);
           break;
         }
         case 'boost': {
