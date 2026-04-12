@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>リバーシマスター | シュールゲームス</title>
-<meta property="og:title" content="リバーシマスター | シュールゲームス">
+<title>漆黒のリバーシ | シュールゲームス</title>
+<meta property="og:title" content="漆黒のリバーシ | シュールゲームス">
 <meta property="og:description" content="生死をかけたリバーシバトルが始まる！一体これからどうなっちゃうの？次回「永久に吾輩の番だ」">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+<meta property="og:image" content="https://eri-murayama.github.io/surreal-games/games/reversi/character.png">
 <meta name="twitter:card" content="summary_large_image">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
 <script>
@@ -964,7 +964,9 @@ html, body {
   bottom: 22%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: clamp(32px, 9vw, 72px);
+  width: 96vw;
+  max-width: 96vw;
+  font-size: clamp(22px, 6.5vw, 72px);
   font-weight: 900;
   color: #ff2222;
   white-space: nowrap;
@@ -975,7 +977,7 @@ html, body {
     0 0 80px #cc0000,
     0 0 140px rgba(255,0,0,0.5),
     0 6px 12px rgba(0,0,0,0.9);
-  letter-spacing: 6px;
+  letter-spacing: clamp(2px, 0.8vw, 6px);
   text-align: center;
   line-height: 1.4;
   z-index: 5;
@@ -990,12 +992,15 @@ html, body {
   bottom: 16%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: clamp(14px, 4vw, 22px);
+  width: 96vw;
+  max-width: 96vw;
+  text-align: center;
+  font-size: clamp(12px, 3.4vw, 22px);
   color: #ff6666;
   font-weight: 700;
   white-space: nowrap;
   text-shadow: 0 0 20px #cc0000, 0 0 40px rgba(255,0,0,0.4);
-  letter-spacing: 6px;
+  letter-spacing: clamp(2px, 0.8vw, 6px);
   z-index: 5;
   opacity: 0;
 }
@@ -1172,7 +1177,7 @@ html, body {
 <div id="app">
   <div class="header">
     <a href="../../index.html">&larr; トップに戻る</a>
-    <div class="game-title">リバーシ</div>
+    <div class="game-title">漆黒のリバーシ</div>
     <div style="width:40px;"></div>
   </div>
 
@@ -2271,7 +2276,7 @@ sg.onGameStart();
 // ===== i18n 初期化 =====
 SurrealI18n.init({
   ja: {
-    title: 'リバーシマスター',
+    title: '漆黒のリバーシ',
     yourTurn: 'あなたの番',
     cpuThinking: 'CPU思考中...',
     finished: '終了',
@@ -2304,10 +2309,10 @@ SurrealI18n.init({
     allReverseText: 'オール<br>リバース',
     allReverseSub: '― 全てが黒に染まる ―',
     backToTop: '← トップに戻る',
-    shareResult: (b, w, result) => `【リバーシマスター】${result} 黒${b} vs 白${w}\n#シュールゲームス`,
+    shareResult: (b, w, result) => `【漆黒のリバーシ】${result} 黒${b} vs 白${w}\n#シュールゲームス`,
   },
   en: {
-    title: 'Reversi Master',
+    title: 'Pitch-Black Reversi',
     yourTurn: 'Your Turn',
     cpuThinking: 'CPU thinking...',
     finished: 'Finished',
@@ -2340,7 +2345,7 @@ SurrealI18n.init({
     allReverseText: 'ALL<br>REVERSE',
     allReverseSub: '― Everything turns black ―',
     backToTop: '← Back to Top',
-    shareResult: (b, w, result) => `[Reversi Master] ${result} Black ${b} vs White ${w}\n#SurrealGames`,
+    shareResult: (b, w, result) => `[Pitch-Black Reversi] ${result} Black ${b} vs White ${w}\n#SurrealGames`,
   },
 }, {
   onLangChange: updateAllTexts

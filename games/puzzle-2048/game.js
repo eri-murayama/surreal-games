@@ -110,7 +110,7 @@ const EVO_IMAGES = [
   'images/kaidan-ghost.png',  // 8: おばけ
   'images/atsushi.png',       // 9: 篤
   'images/hakase-mount.png',  // 10: 博士
-  'images/character.png',     // 11: リバーシマスター
+  'images/character.png',     // 11: 漆黒のリバーシ
 ];
 
 const SCORE_PER_LEVEL = [0,0,4,8,16,32,64,128,256,512,1024,2048];

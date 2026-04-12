@@ -297,7 +297,7 @@ body {
 
 /* ===== Game Screen ===== */
 #game-screen {
-  padding-top: 10px;
+  padding-top: 56px;
   min-height: 100vh;
   min-height: 100dvh;
   justify-content: flex-start;
@@ -380,7 +380,12 @@ body {
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 700;
-  white-space: nowrap;
+  text-align: center;
+  max-width: 92vw;
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
   opacity: 0;
   pointer-events: none;
   z-index: 10;

@@ -90,7 +90,7 @@ html, body {
 .sg-recommend {
   width: 100%;
   max-width: 400px;
-  margin: 20px auto 0;
+  margin: 20px auto 24px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 16px;
@@ -144,17 +144,6 @@ html, body {
   background: rgba(255, 255, 255, 0.12);
   padding: 1px 6px;
   border-radius: 8px;
-}
-.sg-recommend-all {
-  display: inline-block;
-  margin-top: 12px;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 0.85rem;
-  transition: color 0.2s;
-}
-.sg-recommend-all:hover {
-  color: #fff;
 }
 
 /* --- 実績通知 --- */
@@ -271,26 +260,11 @@ html, body {
   overflow-y: auto;
 }
 
-/* --- おすすめゲームに余白を確保 --- */
-.sg-recommend {
-  margin-bottom: 24px;
-}
-
 /* --- 固定アスペクト比スケーリング --- */
 /* data-sg-scale 付きの #game-wrapper は JS で absolute + transform 配置される。
    body はスクロール不要になるので overflow: hidden にする。 */
 #game-wrapper[data-sg-scale] {
   box-sizing: border-box;
-}
-
-/* --- レスポンシブ（タブレット） --- */
-@media (max-width: 1024px) {
-  /* 音量ボタンが他の固定要素と被らないよう左下に統一 */
-  .sg-sound-toggle {
-    left: 16px;
-    right: auto;
-    bottom: 16px;
-  }
 }
 
 /* --- レスポンシブ（スマホ） --- */

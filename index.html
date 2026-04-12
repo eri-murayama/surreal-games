@@ -53,6 +53,11 @@
 </head>
 <body>
 
+  <!-- 共通SVGアイコン定義 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="icon-play" viewBox="0 0 24 24"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></symbol>
+  </svg>
+
   <!-- ローディング画面 -->
   <div id="loading-screen" class="loading-screen">
     <div class="loading-logo" data-text="シュールゲームス">シュールゲームス</div>
@@ -113,7 +118,7 @@
 
       <div class="game-grid">
 
-        <!-- ゲームカード: リバーシマスター（NEW） -->
+        <!-- ゲームカード: 漆黒のリバーシ（NEW） -->
         <article class="game-card game-card--flip fade-in">
           <div class="game-card__image card-flip-zone">
             <div class="card-flip-inner">
@@ -128,11 +133,11 @@
             </div>
           </div>
           <div class="game-card__body">
-            <h3 class="game-card__title">リバーシマスター</h3>
+            <h3 class="game-card__title">漆黒のリバーシ</h3>
             <p class="game-card__desc">生死をかけたリバーシバトルが始まる！一体これからどうなっちゃうの？次回「永久に吾輩の番だ」</p>
             <div class="store-links">
               <a href="games/reversi/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>
@@ -151,7 +156,7 @@
             <p class="game-card__desc">シュールでキュートなキャラクターたちを合体して進化させろ！2048パズルゲーム。</p>
             <div class="store-links">
               <a href="games/puzzle-2048/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>
@@ -176,7 +181,7 @@
             <p class="game-card__desc">本当の恐怖はここにある。<br>地雷を探して霊を成仏させろ！</p>
             <div class="store-links">
               <a href="games/minesweeper/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>
@@ -201,7 +206,7 @@
             <p class="game-card__desc">空から落ちてくるうん…ソフトクリームをキャッチ！何段積めるかな？</p>
             <div class="store-links">
               <a href="games/unko-cone/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>
@@ -226,7 +231,7 @@
             <p class="game-card__desc">誰もが憧れるドライバー界の頂点にして最下層、黄金の金色ドライバー。田舎者のヨシノリが挑む！</p>
             <div class="store-links">
               <a href="games/drive/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>
@@ -251,7 +256,7 @@
             <p class="game-card__desc">ものごとは二つに分けられる。分析できるか…できないか…だ…！！</p>
             <div class="store-links">
               <a href="games/business-analysis/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>
@@ -276,7 +281,7 @@
             <p class="game-card__desc">気が付いたらかわいい部屋にいた。一般的には不法侵入だから罪は償おうね。</p>
             <div class="store-links">
               <a href="games/escape-room/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>
@@ -301,7 +306,7 @@
             <p class="game-card__desc">夢の中のヤクザ「かにかに」を叩け！腹筋は毎日換気するよ！30秒の激闘。</p>
             <div class="store-links">
               <a href="games/whack-kanikani/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/></svg>
+                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
             </div>

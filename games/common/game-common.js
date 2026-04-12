@@ -15,7 +15,7 @@
   const SITE_BASE = '../../';
 
   // ===== 正式リリース済みゲームID =====
-  const RELEASED_IDS = ['drive', 'escape-room', 'whack-kanikani', 'business-analysis', 'minesweeper', 'unko-cone'];
+  const RELEASED_IDS = ['reversi', 'puzzle-2048', 'minesweeper', 'unko-cone', 'drive', 'business-analysis', 'escape-room', 'whack-kanikani', 'emoji-catcher', 'kanikani-gurashi', 'neko-cafe'];
 
   // ===== ゲームカタログ =====
   const GAME_CATALOG = [
@@ -42,7 +42,7 @@
     { id: 'solitaire', title: 'ソリティア', titleEn: 'Solitaire', emoji: '♠', genre: 'カード', genreEn: 'Card', desc: 'クラシックなクロンダイクソリティア。' },
     { id: 'sudoku', title: '数独', titleEn: 'Sudoku', emoji: '🔢', genre: 'パズル', genreEn: 'Puzzle', desc: '3段階の難易度で遊べる本格数独。' },
     { id: 'minesweeper', title: 'かいだんマインスイーパー', titleEn: 'Kaidan Minesweeper', emoji: '👻', genre: 'パズル', genreEn: 'Puzzle', desc: '怪談を聞きながら地雷を探せ。' },
-    { id: 'reversi', title: 'リバーシマスター', titleEn: 'Reversi Master', emoji: '⚫', genre: 'ボード', genreEn: 'Board', desc: 'CPU対戦3段階。石をひっくり返せ。' },
+    { id: 'reversi', title: '漆黒のリバーシ', titleEn: 'Pitch-Black Reversi', emoji: '⚫', genre: 'ボード', genreEn: 'Board', desc: 'CPU対戦3段階。石をひっくり返せ。' },
     { id: 'slide-puzzle', title: 'スライドパズル', titleEn: 'Slide Puzzle', emoji: '🧩', genre: 'パズル', genreEn: 'Puzzle', desc: 'タイルをスライドして揃えろ。' },
     { id: 'hashimoto', title: '橋本さん', titleEn: 'Hashimoto-san', emoji: '👤', genre: 'クイズ', genreEn: 'Quiz', desc: '苗字ランキングで勝負だ！' },
     { id: 'ireland', title: 'アイルランドゲーム', titleEn: 'Ireland Game', emoji: '☘️', genre: 'クイズ', genreEn: 'Quiz', desc: '似ているものの中からアイルランドを探せ！' },
@@ -540,7 +540,7 @@
         1.2, 0.8, 1.3, 0.7, 1.2, 0.8, 1.3, 0.7,
       ]
     },
-    // バトル・対戦系（リバーシマスター）— スタッカート＋跳躍＋brass で爽快バトル
+    // バトル・対戦系（漆黒のリバーシ）— スタッカート＋跳躍＋brass で爽快バトル
     // 他プリセットとの差別化: 休符多め・5度跳躍・ルート-5th交互ベース・短-長ハネ
     battle: {
       tempo: 170, key: 'Bm', wave: 'sawtooth', volume: 0.12,

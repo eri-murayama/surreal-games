@@ -7,66 +7,48 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; font-family: 'Zen Kaku Gothic New', sans-serif; color: #fff; }
     h1 { font-size: 1.3rem; margin-bottom: 8px; color: #ff6ec7; }
-
     .controls { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; align-items: center; justify-content: center; }
     label { font-size: 0.85rem; color: #b0a8c8; }
     select, input[type="text"], input[type="file"] { padding: 6px 10px; border-radius: 8px; border: 1px solid #444; background: #2a2a4a; color: #fff; font-size: 0.9rem; }
     select { cursor: pointer; }
-
     canvas { border: 2px solid #444; margin: 16px 0; max-width: 90vw; height: auto; border-radius: 8px; }
-
-    .btn-row { display: flex; gap: 8px; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
     button { padding: 10px 28px; font-size: 1rem; cursor: pointer; border: none; border-radius: 8px; background: #6c5ce7; color: #fff; transition: background 0.2s; }
     button:hover { background: #5a4bd1; }
-    button.secondary { background: #444; }
-    button.secondary:hover { background: #555; }
-
+    button.batch { background: #e17055; }
+    button.batch:hover { background: #d63031; }
     .info { font-size: 0.8rem; color: #666; margin-top: 8px; }
-    .preset-info { font-size: 0.85rem; color: #b0a8c8; margin: 8px 0; text-align: center; }
-
     .field-group { display: flex; flex-direction: column; gap: 4px; }
+    .batch-log { margin-top: 16px; font-size: 0.85rem; color: #b0a8c8; max-height: 200px; overflow-y: auto; width: 100%; max-width: 600px; }
+    .batch-log div { padding: 2px 0; }
+    .batch-log .ok { color: #00b894; }
+    .batch-log .err { color: #e17055; }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
 </head>
 <body>
   <h1>OGP画像生成ツール</h1>
   <p class="info">1200 x 630px — SNSシェア用OGP画像を生成</p>
-
   <div class="controls">
     <div class="field-group">
       <label>プリセット</label>
-      <select id="preset">
-        <option value="site">サイト全体</option>
-        <option value="drive">黄金の金色ドライバー</option>
-        <option value="business-analysis">経営分析ゲーム</option>
-        <option value="escape-room">かわいい部屋からの脱出</option>
-        <option value="whack-kanikani">かにかにパニック！</option>
-        <option value="custom">カスタム</option>
-      </select>
+      <select id="preset"></select>
     </div>
     <div class="field-group">
-      <label>タイトル</label>
-      <input type="text" id="title" value="シュールゲームス" style="width:200px">
-    </div>
-    <div class="field-group">
-      <label>サブタイトル</label>
-      <input type="text" id="subtitle" value="かわいいキャラクターと過ごす、素敵な時間" style="width:260px">
-    </div>
-    <div class="field-group">
-      <label>キャラ画像</label>
+      <label>キャラ画像（差し替え）</label>
       <input type="file" id="charaFile" accept="image/*">
     </div>
   </div>
-
   <canvas id="canvas" width="1200" height="630"></canvas>
-
   <div class="btn-row">
     <button id="redraw">再描画</button>
     <button id="download">PNGダウンロード</button>
+    <button id="batchAll" class="batch">全ゲーム一括ダウンロード</button>
   </div>
-  <p class="info">ダウンロード後、各ゲームフォルダまたは assets/images/ に配置してください</p>
+  <p class="info">ダウンロード後、各ゲームフォルダに ogp.png として配置してください</p>
+  <div class="batch-log" id="batchLog"></div>
 
   <script>
     const W = 1200, H = 630;
@@ -74,74 +56,69 @@
     const ctx = canvas.getContext('2d');
 
     const presets = {
-      site: {
-        title: 'シュール\nゲームス',
-        subtitle: 'かわいいキャラクターと過ごす、\n素敵な時間',
-        charaPath: '../assets/images/illust9.png',
-        bgColors: ['#0d0221', '#1a0a3e', '#2d1b69'],
-        glowColor1: 'rgba(255, 110, 199, 0.18)',
-        glowColor2: 'rgba(0, 255, 247, 0.12)',
-        filename: 'ogp.png'
-      },
-      drive: {
-        title: '黄金の金色\nドライバー',
-        subtitle: '博士のせなかでGO！\nシュールゲームス',
-        charaPath: '../games/drive/yoshinori.png',
-        bgColors: ['#3d1c00', '#cc6600', '#f5e6c8'],
-        glowColor1: 'rgba(255, 153, 0, 0.25)',
-        glowColor2: 'rgba(255, 230, 150, 0.15)',
-        filename: 'drive-ogp.png'
-      },
-      'business-analysis': {
-        title: '経営分析ゲーム',
-        subtitle: '天才たちの戯れ\nシュールゲームス',
-        charaPath: '../assets/images/atsushi.png',
-        bgColors: ['#0d0221', '#1a0533', '#c471ed'],
-        glowColor1: 'rgba(196, 113, 237, 0.2)',
-        glowColor2: 'rgba(123, 47, 247, 0.15)',
-        filename: 'business-analysis-ogp.png'
-      },
-      'escape-room': {
-        title: 'かわいい部屋\nからの脱出',
-        subtitle: 'シュールゲームス',
-        charaPath: '../assets/images/illust9.png',
-        bgColors: ['#2a1545', '#d8c8f0', '#b8a0e0'],
-        glowColor1: 'rgba(216, 200, 240, 0.2)',
-        glowColor2: 'rgba(184, 160, 224, 0.15)',
-        filename: 'escape-room-ogp.png'
-      },
-      'whack-kanikani': {
-        title: 'かにかに\nパニック！',
-        subtitle: 'ヤクザ蟹を叩きまくれ！\nシュールゲームス',
-        charaPath: '../assets/images/kanikani.png',
-        bgColors: ['#4a0020', '#ff69b4', '#ffb6c1'],
-        glowColor1: 'rgba(255, 105, 180, 0.25)',
-        glowColor2: 'rgba(255, 182, 193, 0.15)',
-        filename: 'whack-kanikani-ogp.png'
-      }
+      site: { title: 'シュール\nゲームス', subtitle: 'かわいいキャラクターと過ごす、\n素敵な時間', charaPath: '../assets/images/illust9.png', bgColors: ['#0d0221','#1a0a3e','#2d1b69'], glowColor1: 'rgba(255,110,199,0.18)', glowColor2: 'rgba(0,255,247,0.12)', filename: 'ogp.png', label: 'サイト全体' },
+      reversi: { title: '漆黒の\nリバーシ', subtitle: '吾輩の番だが？\nシュールゲームス', charaPath: '../games/reversi/character.png', bgColors: ['#1a1008','#2c1a0e','#0f0a06'], glowColor1: 'rgba(206,147,216,0.2)', glowColor2: 'rgba(156,39,176,0.15)', filename: 'ogp.png', destDir: 'reversi', label: '漆黒のリバーシ' },
+      'puzzle-2048': { title: 'シュール\n進化論', subtitle: '合体して進化させろ！\nシュールゲームス', charaPath: '../games/puzzle-2048/images/character.png', bgColors: ['#4a3800','#f9a825','#fff9c4'], glowColor1: 'rgba(249,168,37,0.25)', glowColor2: 'rgba(255,249,196,0.15)', filename: 'ogp.png', destDir: 'puzzle-2048', label: 'シュール進化論' },
+      minesweeper: { title: 'かいだん\nマインスイーパー', subtitle: '恐怖の地雷探し\nシュールゲームス', charaPath: '../assets/images/kaidan-ghost.png', bgColors: ['#0a0a1a','#1a1a3a','#2a1545'], glowColor1: 'rgba(100,200,255,0.2)', glowColor2: 'rgba(150,100,255,0.15)', filename: 'ogp.png', destDir: 'minesweeper', label: 'かいだんマインスイーパー' },
+      'unko-cone': { title: 'うんコーン\nキャッチャー', subtitle: '空から降るアレをキャッチ！\nシュールゲームス', charaPath: '../games/unko-cone/unko-char.png', bgColors: ['#3e2723','#8d6e63','#d7ccc8'], glowColor1: 'rgba(215,204,200,0.25)', glowColor2: 'rgba(141,110,99,0.15)', filename: 'ogp.png', destDir: 'unko-cone', label: 'うんコーンキャッチャー' },
+      drive: { title: '黄金の金色\nドライバー', subtitle: '博士のせなかでGO！\nシュールゲームス', charaPath: '../games/drive/yoshinori.png', bgColors: ['#3d1c00','#cc6600','#f5e6c8'], glowColor1: 'rgba(255,153,0,0.25)', glowColor2: 'rgba(255,230,150,0.15)', filename: 'ogp.png', destDir: 'drive', label: '黄金の金色ドライバー' },
+      'business-analysis': { title: '経営分析ゲーム', subtitle: '天才たちの戯れ\nシュールゲームス', charaPath: '../games/business-analysis/atsushi.png', bgColors: ['#0d0221','#1a0533','#c471ed'], glowColor1: 'rgba(196,113,237,0.2)', glowColor2: 'rgba(123,47,247,0.15)', filename: 'ogp.png', destDir: 'business-analysis', label: '経営分析ゲーム' },
+      'escape-room': { title: 'かわいい部屋\nからの脱出', subtitle: '脱出せよ。\nシュールゲームス', charaPath: '../games/escape-room/protagonist.png', bgColors: ['#2a1545','#d8c8f0','#b8a0e0'], glowColor1: 'rgba(216,200,240,0.2)', glowColor2: 'rgba(184,160,224,0.15)', filename: 'ogp.png', destDir: 'escape-room', label: 'かわいい部屋からの脱出' },
+      'whack-kanikani': { title: 'かにかに\nパニック！', subtitle: 'ヤクザ蟹を叩きまくれ！\nシュールゲームス', charaPath: '../games/whack-kanikani/kanikani.png', bgColors: ['#4a0020','#ff69b4','#ffb6c1'], glowColor1: 'rgba(255,105,180,0.25)', glowColor2: 'rgba(255,182,193,0.15)', filename: 'ogp.png', destDir: 'whack-kanikani', label: 'かにかにパニック！' },
+      'emoji-catcher': { title: 'カブトムシ様の\nお着換えあそばせ', subtitle: '世界で一人だけのお人へ\nシュールゲームス', charaPath: '../games/emoji-catcher/kabutomushi.png', bgColors: ['#1e0a3c','#4a148c','#7b1fa2'], glowColor1: 'rgba(156,39,176,0.25)', glowColor2: 'rgba(74,20,140,0.15)', filename: 'ogp.png', destDir: 'emoji-catcher', label: 'カブトムシ様のお着換えあそばせ' },
+      'kanikani-gurashi': { title: 'かにかに\nぐらし', subtitle: 'かにかにの一人暮らしを応援！\nシュールゲームス', charaPath: '../assets/images/kanikani.png', bgColors: ['#1a237e','#3f51b5','#9fa8da'], glowColor1: 'rgba(63,81,181,0.25)', glowColor2: 'rgba(159,168,218,0.15)', filename: 'ogp.png', destDir: 'kanikani-gurashi', label: 'かにかにぐらし' },
+      'neko-cafe': { title: 'ねこカフェ\n物語', subtitle: 'かわいいねこカフェを経営！\nシュールゲームス', emoji: '🐱', bgColors: ['#3e2723','#795548','#d7ccc8'], glowColor1: 'rgba(121,85,72,0.25)', glowColor2: 'rgba(215,204,200,0.2)', filename: 'ogp.png', destDir: 'neko-cafe', label: 'ねこカフェ物語' },
+      solitaire: { title: 'ソリティア', subtitle: 'クラシックなカードゲーム\nシュールゲームス', emoji: '♠', bgColors: ['#004d40','#00695c','#26a69a'], glowColor1: 'rgba(0,105,92,0.25)', glowColor2: 'rgba(38,166,154,0.15)', filename: 'ogp.png', destDir: 'solitaire', label: 'ソリティア' },
+      sudoku: { title: '数独', subtitle: '本格ナンバーパズル\nシュールゲームス', emoji: '🔢', bgColors: ['#1a237e','#283593','#5c6bc0'], glowColor1: 'rgba(40,53,147,0.25)', glowColor2: 'rgba(92,107,192,0.15)', filename: 'ogp.png', destDir: 'sudoku', label: '数独' },
+      'slide-puzzle': { title: 'スライド\nパズル', subtitle: 'タイルをスライドして揃えろ\nシュールゲームス', emoji: '🧩', bgColors: ['#1b5e20','#388e3c','#81c784'], glowColor1: 'rgba(56,142,60,0.25)', glowColor2: 'rgba(129,199,132,0.15)', filename: 'ogp.png', destDir: 'slide-puzzle', label: 'スライドパズル' },
+      hashimoto: { title: '橋本さん', subtitle: '苗字ランキングで勝負だ！\nシュールゲームス', emoji: '👤', bgColors: ['#263238','#455a64','#78909c'], glowColor1: 'rgba(69,90,100,0.25)', glowColor2: 'rgba(120,144,156,0.15)', filename: 'ogp.png', destDir: 'hashimoto', label: '橋本さん' },
+      ireland: { title: 'アイルランド\nゲーム', subtitle: 'アイルランドを探せ！\nシュールゲームス', emoji: '☘️', bgColors: ['#1b5e20','#2e7d32','#66bb6a'], glowColor1: 'rgba(46,125,50,0.25)', glowColor2: 'rgba(102,187,106,0.15)', filename: 'ogp.png', destDir: 'ireland', label: 'アイルランドゲーム' },
+      'yandere-gakuen': { title: 'ヤンデレ学園', subtitle: '逃げられない学園ラブ\nシュールゲームス', emoji: '💘', bgColors: ['#4a0020','#880e4f','#c2185b'], glowColor1: 'rgba(136,14,79,0.25)', glowColor2: 'rgba(194,24,91,0.15)', filename: 'ogp.png', destDir: 'yandere-gakuen', label: 'ヤンデレ学園' },
+      'surreal-dash': { title: 'シュール\nダッシュ', subtitle: 'うんちくんが走る！飛ぶ！\nシュールゲームス', emoji: '💩', bgColors: ['#e65100','#f57c00','#ffb74d'], glowColor1: 'rgba(245,124,0,0.25)', glowColor2: 'rgba(255,183,77,0.15)', filename: 'ogp.png', destDir: 'surreal-dash', label: 'シュールダッシュ' },
+      'surreal-beat': { title: 'シュール\nビート', subtitle: 'リズムに合わせてタップ！\nシュールゲームス', emoji: '🎵', bgColors: ['#4a148c','#7b1fa2','#ce93d8'], glowColor1: 'rgba(123,31,162,0.25)', glowColor2: 'rgba(206,147,216,0.15)', filename: 'ogp.png', destDir: 'surreal-beat', label: 'シュールビート' },
+      'surreal-cube': { title: 'シュール\nキューブ', subtitle: '3D空間を転がれ！\nシュールゲームス', emoji: '🎲', bgColors: ['#0d47a1','#1565c0','#42a5f5'], glowColor1: 'rgba(21,101,192,0.25)', glowColor2: 'rgba(66,165,245,0.15)', filename: 'ogp.png', destDir: 'surreal-cube', label: 'シュールキューブ' },
+      'chaos-stream': { title: 'カオス配信\nシミュレーター', subtitle: 'あなたの配信、カオスです\nシュールゲームス', emoji: '📺', bgColors: ['#1a0a3e','#311b92','#7c4dff'], glowColor1: 'rgba(124,77,255,0.25)', glowColor2: 'rgba(49,27,146,0.15)', filename: 'ogp.png', destDir: 'chaos-stream', label: 'カオス配信シミュレーター' },
+      'cosmic-chain': { title: 'コズミック\nチェイン', subtitle: '星々の連鎖反応を起こせ\nシュールゲームス', emoji: '🌟', bgColors: ['#0d0221','#1a0a3e','#1a237e'], glowColor1: 'rgba(255,235,59,0.2)', glowColor2: 'rgba(100,181,246,0.15)', filename: 'ogp.png', destDir: 'cosmic-chain', label: 'コズミック・チェイン' },
+      'dress-up': { title: 'びじん\nメーカー', subtitle: 'あなただけのびじんを作ろう\nシュールゲームス', emoji: '👗', bgColors: ['#880e4f','#e91e63','#f8bbd0'], glowColor1: 'rgba(233,30,99,0.25)', glowColor2: 'rgba(248,187,208,0.15)', filename: 'ogp.png', destDir: 'dress-up', label: 'びじんメーカー' },
+      'elite-english': { title: 'エリート\nイングリッシュ！', subtitle: 'エリートな英語力を見せつけろ\nシュールゲームス', emoji: '🎓', bgColors: ['#1b5e20','#2e7d32','#4caf50'], glowColor1: 'rgba(46,125,50,0.25)', glowColor2: 'rgba(76,175,80,0.15)', filename: 'ogp.png', destDir: 'elite-english', label: 'エリートイングリッシュ！' },
+      fortune: { title: 'シュール\n前世占い', subtitle: 'あなたの前世は何だった？\nシュールゲームス', emoji: '🔮', bgColors: ['#1a0a3e','#4a148c','#9c27b0'], glowColor1: 'rgba(156,39,176,0.25)', glowColor2: 'rgba(74,20,140,0.15)', filename: 'ogp.png', destDir: 'fortune', label: 'シュール前世占い' },
+      'holo-analysis': { title: 'ホロメン\n経営分析', subtitle: '鼻毛たちの戯れ\nシュールゲームス', emoji: '📈', bgColors: ['#0d0221','#1a0533','#4fc3f7'], glowColor1: 'rgba(79,195,247,0.25)', glowColor2: 'rgba(3,169,244,0.15)', filename: 'ogp.png', destDir: 'holo-analysis', label: 'ホロメン経営分析' },
+      'holo-memory': { title: 'ホロメン\nおぼえてますか？', subtitle: '神経衰弱でホロメンを覚えろ\nシュールゲームス', emoji: '🃏', bgColors: ['#0d0221','#1a0a3e','#00bcd4'], glowColor1: 'rgba(0,188,212,0.25)', glowColor2: 'rgba(0,151,167,0.15)', filename: 'ogp.png', destDir: 'holo-memory', label: 'ホロメンおぼえてますか？' },
+      'magic-trick': { title: '協力者', subtitle: 'テーブル下からイカサマを手伝え！\nシュールゲームス', emoji: '🤝', bgColors: ['#263238','#37474f','#546e7a'], glowColor1: 'rgba(55,71,79,0.25)', glowColor2: 'rgba(84,110,122,0.15)', filename: 'ogp.png', destDir: 'magic-trick', label: '協力者' },
+      'party-game': { title: 'ぱーてぃー\nげーむ', subtitle: '連打バトルで友達と対戦\nシュールゲームス', emoji: '🎉', bgColors: ['#e65100','#ff6d00','#ffab40'], glowColor1: 'rgba(255,109,0,0.25)', glowColor2: 'rgba(255,171,64,0.15)', filename: 'ogp.png', destDir: 'party-game', label: 'ぱーてぃーげーむ' },
+      pet: { title: 'シュール\nペット', subtitle: 'ナゾの生きもの育成記\nシュールゲームス', emoji: '🐣', bgColors: ['#33691e','#558b2f','#aed581'], glowColor1: 'rgba(85,139,47,0.25)', glowColor2: 'rgba(174,213,129,0.15)', filename: 'ogp.png', destDir: 'pet', label: 'シュールペット' },
+      rpg: { title: 'チート商材で\n無敵モテ男RPG', subtitle: 'チー牛が転生！？\nシュールゲームス', emoji: '⚔️', bgColors: ['#1b5e20','#2e7d32','#43a047'], glowColor1: 'rgba(46,125,50,0.25)', glowColor2: 'rgba(67,160,71,0.15)', filename: 'ogp.png', destDir: 'rpg', label: 'RPG' },
+      'suisei-puzzle': { title: 'すいすい\nパズル', subtitle: '彗星のごとくブロックを消せ\nシュールゲームス', emoji: '☄️', bgColors: ['#0d0221','#1a0a3e','#5c6bc0'], glowColor1: 'rgba(92,107,192,0.25)', glowColor2: 'rgba(63,81,181,0.15)', filename: 'ogp.png', destDir: 'suisei-puzzle', label: 'すいすいパズル' },
+      tower: { title: 'シュールの塔', subtitle: '終わりなき階段の先へ\nシュールゲームス', emoji: '🏰', bgColors: ['#263238','#37474f','#607d8b'], glowColor1: 'rgba(55,71,79,0.25)', glowColor2: 'rgba(96,125,139,0.15)', filename: 'ogp.png', destDir: 'tower', label: 'シュールの塔' },
+      'trivia-king': { title: '雑学キング\n決定戦', subtitle: '無駄な知識で天下を取れ！\nシュールゲームス', emoji: '👑', bgColors: ['#4a3800','#f9a825','#fdd835'], glowColor1: 'rgba(249,168,37,0.25)', glowColor2: 'rgba(253,216,53,0.15)', filename: 'ogp.png', destDir: 'trivia-king', label: '雑学キング決定戦' },
+      shooting: { title: 'シュール\nシューティング', subtitle: 'シュールな敵を撃ちまくれ！\nシュールゲームス', emoji: '🚀', bgColors: ['#0d0221','#1a0a3e','#283593'], glowColor1: 'rgba(40,53,147,0.25)', glowColor2: 'rgba(48,63,159,0.15)', filename: 'ogp.png', destDir: 'shooting', label: 'シュールシューティング' },
+      'drawing-board': { title: 'お絵かき\nボード', subtitle: '自由にお絵かき！\nシュールゲームス', emoji: '🎨', bgColors: ['#4a148c','#7b1fa2','#ab47bc'], glowColor1: 'rgba(123,31,162,0.25)', glowColor2: 'rgba(171,71,188,0.15)', filename: 'ogp.png', destDir: 'drawing-board', label: 'お絵かきボード' },
+      'typing-game': { title: 'シュール\nタイピング', subtitle: 'シュールなお題をタイピング！\nシュールゲームス', emoji: '⌨️', bgColors: ['#1a237e','#283593','#3949ab'], glowColor1: 'rgba(40,53,147,0.25)', glowColor2: 'rgba(57,73,171,0.15)', filename: 'ogp.png', destDir: 'typing-game', label: 'シュールタイピング' }
     };
+
+    // プリセットのselectを生成
+    const presetSelect = document.getElementById('preset');
+    Object.keys(presets).forEach(key => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = presets[key].label || key;
+      presetSelect.appendChild(opt);
+    });
 
     let currentChara = new Image();
     let customChara = null;
 
+    function getPreset(key) { return presets[key] || presets.site; }
+
     function getConfig() {
-      const presetKey = document.getElementById('preset').value;
-      const preset = presets[presetKey] || presets.site;
+      const preset = getPreset(presetSelect.value);
       return {
-        title: document.getElementById('title').value || preset.title,
-        subtitle: document.getElementById('subtitle').value || preset.subtitle,
-        bgColors: preset.bgColors,
-        glowColor1: preset.glowColor1,
-        glowColor2: preset.glowColor2,
-        filename: preset.filename || 'ogp.png'
+        bgColors: preset.bgColors, glowColor1: preset.glowColor1, glowColor2: preset.glowColor2,
+        filename: preset.filename || 'ogp.png', emoji: preset.emoji || null
       };
     }
 
-    function draw() {
-      const cfg = getConfig();
-      const titleLines = cfg.title.split('\n');
-      const subLines = cfg.subtitle.split('\n');
-
+    function drawWithConfig(cfg, img) {
       // 背景グラデーション
       const bg = ctx.createLinearGradient(0, 0, W, H);
       cfg.bgColors.forEach((c, i) => bg.addColorStop(i / (cfg.bgColors.length - 1), c));
@@ -149,80 +126,66 @@
       ctx.fillRect(0, 0, W, H);
 
       // 光の演出
-      const g1 = ctx.createRadialGradient(W * 0.2, H * 0.3, 0, W * 0.2, H * 0.3, 350);
-      g1.addColorStop(0, cfg.glowColor1);
-      g1.addColorStop(1, 'transparent');
-      ctx.fillStyle = g1;
-      ctx.fillRect(0, 0, W, H);
+      const g1 = ctx.createRadialGradient(W*0.2, H*0.3, 0, W*0.2, H*0.3, 350);
+      g1.addColorStop(0, cfg.glowColor1); g1.addColorStop(1, 'transparent');
+      ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
+      const g2 = ctx.createRadialGradient(W*0.8, H*0.7, 0, W*0.8, H*0.7, 350);
+      g2.addColorStop(0, cfg.glowColor2); g2.addColorStop(1, 'transparent');
+      ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
 
-      const g2 = ctx.createRadialGradient(W * 0.8, H * 0.7, 0, W * 0.8, H * 0.7, 350);
-      g2.addColorStop(0, cfg.glowColor2);
-      g2.addColorStop(1, 'transparent');
-      ctx.fillStyle = g2;
-      ctx.fillRect(0, 0, W, H);
-
-      // キャラクター画像
-      const img = customChara || currentChara;
-      if (img.complete && img.naturalWidth > 0) {
+      // キャラクター画像（中央に大きく配置、文字なし）
+      if (img && img.complete && img.naturalWidth > 0) {
         ctx.save();
-        const cw = 340, ch = cw * (img.naturalHeight / img.naturalWidth);
-        const cx = 160, cy = (H - ch) / 2 + 10;
-        ctx.translate(cx + cw / 2, cy + ch / 2);
-        ctx.rotate(-3 * Math.PI / 180);
-        ctx.shadowColor = 'rgba(0,0,0,0.4)';
-        ctx.shadowBlur = 30;
-        ctx.shadowOffsetY = 8;
-        ctx.drawImage(img, -cw / 2, -ch / 2, cw, ch);
+        // 高さ基準で最大サイズを決定（上下に少し余白）
+        const maxH = H * 0.85;
+        const maxW = W * 0.7;
+        let ch = maxH;
+        let cw = ch * (img.naturalWidth / img.naturalHeight);
+        if (cw > maxW) { cw = maxW; ch = cw * (img.naturalHeight / img.naturalWidth); }
+        const cx = (W - cw) / 2;
+        const cy = (H - ch) / 2;
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 40;
+        ctx.shadowOffsetY = 10;
+        ctx.drawImage(img, cx, cy, cw, ch);
+        ctx.restore();
+      } else if (cfg.emoji) {
+        ctx.save();
+        ctx.font = '420px "Noto Color Emoji","Segoe UI Emoji","Apple Color Emoji",sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 40;
+        ctx.shadowOffsetY = 10;
+        ctx.fillText(cfg.emoji, W / 2, H / 2);
         ctx.restore();
       }
+    }
 
-      // タイトル（グラデーション）
-      ctx.save();
-      const fontSize = titleLines.some(l => l.length > 6) ? 56 : 72;
-      ctx.font = `700 ${fontSize}px "Hachi Maru Pop", "Zen Maru Gothic", sans-serif`;
-      ctx.textBaseline = 'top';
-      const titleGrad = ctx.createLinearGradient(560, 0, 1050, 0);
-      titleGrad.addColorStop(0, '#ff6ec7');
-      titleGrad.addColorStop(1, '#00fff7');
-      ctx.fillStyle = titleGrad;
-      const titleStartY = 170;
-      titleLines.forEach((line, i) => {
-        ctx.fillText(line, 580, titleStartY + i * (fontSize + 16));
-      });
-      ctx.restore();
-
-      // サブタイトル
-      ctx.save();
-      ctx.font = '400 28px "Zen Kaku Gothic New", sans-serif';
-      ctx.fillStyle = '#b0a8c8';
-      ctx.textBaseline = 'top';
-      const subStartY = titleStartY + titleLines.length * (fontSize + 16) + 30;
-      subLines.forEach((line, i) => {
-        ctx.fillText(line, 580, subStartY + i * 40);
-      });
-      ctx.restore();
+    function draw() {
+      drawWithConfig(getConfig(), customChara || currentChara);
     }
 
     // プリセット変更
-    document.getElementById('preset').addEventListener('change', function () {
+    presetSelect.addEventListener('change', function() {
       const preset = presets[this.value];
-      if (preset) {
-        document.getElementById('title').value = preset.title.replace(/\n/g, '');
-        document.getElementById('subtitle').value = preset.subtitle.replace(/\n/g, '');
-        customChara = null;
+      if (!preset) return;
+      customChara = null;
+      if (preset.charaPath) {
         currentChara = new Image();
-        currentChara.crossOrigin = 'anonymous';
-        currentChara.onload = draw;
+        currentChara.onload = draw; currentChara.onerror = draw;
         currentChara.src = preset.charaPath;
+      } else {
+        currentChara = new Image();
+        draw();
       }
     });
 
     // カスタム画像
-    document.getElementById('charaFile').addEventListener('change', function (e) {
+    document.getElementById('charaFile').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function (ev) {
+      reader.onload = function(ev) {
         customChara = new Image();
         customChara.onload = draw;
         customChara.src = ev.target.result;
@@ -233,21 +196,43 @@
     document.getElementById('redraw').addEventListener('click', draw);
 
     document.getElementById('download').addEventListener('click', () => {
-      const cfg = getConfig();
+      const preset = getPreset(presetSelect.value);
       const a = document.createElement('a');
-      a.download = cfg.filename;
+      a.download = preset.destDir ? preset.destDir + '-ogp.png' : preset.filename;
       a.href = canvas.toDataURL('image/png');
       a.click();
     });
 
-    // テキスト入力でリアルタイム更新
-    document.getElementById('title').addEventListener('input', draw);
-    document.getElementById('subtitle').addEventListener('input', draw);
+    // ===== 一括ダウンロード =====
+    document.getElementById('batchAll').addEventListener('click', async () => {
+      const log = document.getElementById('batchLog');
+      log.innerHTML = '<div>一括生成を開始...</div>';
+      const keys = Object.keys(presets);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i], preset = presets[key];
+        const cfg = { bgColors: preset.bgColors, glowColor1: preset.glowColor1, glowColor2: preset.glowColor2, emoji: preset.emoji || null };
+        let img = null;
+        if (preset.charaPath) {
+          img = await new Promise(resolve => {
+            const im = new Image();
+            im.onload = () => resolve(im);
+            im.onerror = () => resolve(null);
+            im.src = preset.charaPath;
+          });
+        }
+        drawWithConfig(cfg, img);
+        const fname = preset.destDir ? preset.destDir + '-ogp.png' : preset.filename;
+        const a = document.createElement('a');
+        a.download = fname; a.href = canvas.toDataURL('image/png'); a.click();
+        const status = (img && img.naturalWidth > 0) || cfg.emoji ? 'ok' : 'err';
+        log.innerHTML += `<div class="${status}">${i+1}/${keys.length} ${preset.label||key} → ${fname}</div>`;
+        await new Promise(r => setTimeout(r, 300));
+      }
+      log.innerHTML += '<div class="ok">完了！ダウンロードしたファイルを各ゲームフォルダに ogp.png として配置してください。</div>';
+    });
 
     // 初期描画
-    currentChara.crossOrigin = 'anonymous';
-    currentChara.onload = draw;
-    currentChara.onerror = draw;
+    currentChara.onload = draw; currentChara.onerror = draw;
     currentChara.src = '../assets/images/illust9.png';
   </script>
 </body>
