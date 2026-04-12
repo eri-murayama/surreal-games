@@ -836,6 +836,94 @@ html, body {
   100% { transform: scale(4); opacity: 0; }
 }
 
+/* 負けてなるものか演出 */
+.neverlose-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 310;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  opacity: 0;
+}
+.neverlose-overlay.show {
+  animation: neverloseShow 5s ease-out forwards;
+}
+.neverlose-overlay .neverlose-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle, rgba(180,0,0,0.95) 0%, rgba(80,0,0,0.95) 30%, rgba(0,0,0,0.98) 65%);
+}
+.neverlose-overlay .neverlose-cinema-top,
+.neverlose-overlay .neverlose-cinema-bottom {
+  position: absolute; left: 0; width: 100%; height: 10%; background: #000; z-index: 2;
+}
+.neverlose-overlay .neverlose-cinema-top { top: 0; }
+.neverlose-overlay .neverlose-cinema-bottom { bottom: 0; }
+.neverlose-overlay .neverlose-text {
+  position: relative;
+  font-size: clamp(28px, 8vw, 64px);
+  font-weight: 900;
+  color: #ff3333;
+  text-shadow:
+    0 0 20px #ff0000,
+    0 0 40px #cc0000,
+    0 0 80px #990000,
+    0 0 120px rgba(255,0,0,0.6),
+    0 6px 12px rgba(0,0,0,0.9);
+  letter-spacing: 6px;
+  text-align: center;
+  line-height: 1.4;
+  z-index: 3;
+  -webkit-text-stroke: 1px rgba(255,100,100,0.3);
+  animation: neverloseTextSlam 5s ease-out forwards;
+}
+.neverlose-overlay .neverlose-sub {
+  position: relative;
+  font-size: clamp(13px, 3.5vw, 20px);
+  color: #ff6666;
+  font-weight: 700;
+  text-shadow: 0 0 15px #cc0000;
+  letter-spacing: 4px;
+  z-index: 3;
+  margin-top: 12px;
+  opacity: 0;
+  animation: neverloseSubIn 5s ease-out forwards;
+}
+.neverlose-overlay .neverlose-line {
+  position: absolute; width: 120%; height: 3px; left: -10%;
+  background: linear-gradient(90deg, transparent 0%, #ff0000 20%, #ff6600 50%, #ff0000 80%, transparent 100%);
+  box-shadow: 0 0 20px #ff0000, 0 0 40px rgba(255,0,0,0.4);
+  z-index: 3;
+  opacity: 0;
+}
+.neverlose-overlay.show .neverlose-line-top { top: 30%; animation: duelLineSweep 0.6s ease-out 0.3s both; }
+.neverlose-overlay.show .neverlose-line-bottom { bottom: 30%; animation: duelLineSweep 0.6s ease-out 0.5s both; }
+@keyframes neverloseShow {
+  0% { opacity: 0; }
+  6% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes neverloseTextSlam {
+  0% { transform: scale(5) rotate(-10deg); opacity: 0; filter: blur(20px); }
+  6% { transform: scale(0.6) rotate(3deg); opacity: 1; filter: blur(0); }
+  10% { transform: scale(1.4) rotate(-2deg); }
+  14% { transform: scale(0.85) rotate(1deg); }
+  18% { transform: scale(1.1) rotate(0deg); }
+  22% { transform: scale(1) rotate(0deg); }
+  70% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.3) rotate(0deg); opacity: 0; filter: blur(8px); }
+}
+@keyframes neverloseSubIn {
+  0%, 20% { opacity: 0; transform: translateY(20px); }
+  30% { opacity: 1; transform: translateY(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* オールリバースボタン */
 .btn.allreverse {
   background: linear-gradient(135deg, #4b0082, #8000ff, #bf00ff);
@@ -1009,6 +1097,16 @@ html, body {
   <div class="duel-text">黒いつぶ設置完了！</div>
 </div>
 
+<div class="neverlose-overlay" id="neverloseOverlay">
+  <div class="neverlose-bg"></div>
+  <div class="neverlose-cinema-top"></div>
+  <div class="neverlose-cinema-bottom"></div>
+  <div class="neverlose-line neverlose-line-top"></div>
+  <div class="neverlose-line neverlose-line-bottom"></div>
+  <div class="neverlose-text">負けてなるものか…！</div>
+  <div class="neverlose-sub">― 盤面が黒に染まる ―</div>
+</div>
+
 <div class="allreverse-overlay" id="allreverseOverlay">
   <div class="allreverse-bg"></div>
   <div class="allreverse-ring"></div>
@@ -1057,6 +1155,8 @@ html, body {
   const allreverseOverlay = document.getElementById('allreverseOverlay');
   const boardWrapper = document.querySelector('.board-wrapper');
   let allReverseUsed = false;  // オールリバース使用済みフラグ
+  let neverloseUsed = false;   // 負けてなるものか使用済みフラグ
+  const neverloseOverlay = document.getElementById('neverloseOverlay');
 
   // サウンドヘルパー
   function playSound(name) {
@@ -1092,6 +1192,7 @@ html, body {
     myTurnRemaining = 0;
     eternalMode = false;
     allReverseUsed = false;
+    neverloseUsed = false;
     okunoteBtn.disabled = false;
     okunoteBtn.className = 'btn okunote';
     okunoteBtn.textContent = t('okunote');
@@ -1409,6 +1510,15 @@ html, body {
     updateTurn();
     renderBoard();
     const { black, white } = countStones(board);
+
+    // 負けている＆まだ逆転していない → 「負けてなるものか…！」発動
+    if (white > black && !neverloseUsed) {
+      neverloseUsed = true;
+      gameOver = false; // まだ終わらせない
+      activateNeverlose();
+      return;
+    }
+
     let title, isWin = false;
     if (black > white) { title = t('youWin'); isWin = true; }
     else if (white > black) { title = t('cpuWins'); }
@@ -1424,6 +1534,86 @@ html, body {
         playSound('result');
       }
     }, 300);
+  }
+
+  // 「負けてなるものか…！」逆転演出
+  function activateNeverlose() {
+    isAnimating = true;
+
+    // 演出オーバーレイ表示
+    neverloseOverlay.querySelector('.neverlose-text').textContent = t('neverloseText');
+    neverloseOverlay.querySelector('.neverlose-sub').textContent = t('neverloseSub');
+    neverloseOverlay.classList.remove('show');
+    void neverloseOverlay.offsetWidth;
+    neverloseOverlay.classList.add('show');
+    playSound('dramatic');
+
+    // 画面シェイク（激しめ）
+    setTimeout(() => {
+      document.body.animate([
+        { transform: 'translate(0,0)' },
+        { transform: 'translate(-12px,6px)' },
+        { transform: 'translate(12px,-6px)' },
+        { transform: 'translate(-6px,12px)' },
+        { transform: 'translate(6px,-12px)' },
+        { transform: 'translate(-10px,-5px)' },
+        { transform: 'translate(10px,5px)' },
+        { transform: 'translate(-4px,10px)' },
+        { transform: 'translate(4px,-10px)' },
+        { transform: 'translate(0,0)' },
+      ], { duration: 600, iterations: 3 });
+    }, 300);
+
+    // 赤フラッシュ3連
+    [200, 500, 800].forEach(delay => {
+      setTimeout(() => {
+        const flash = document.createElement('div');
+        flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,0,0,0.5);z-index:320;pointer-events:none;';
+        document.body.appendChild(flash);
+        flash.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' });
+        setTimeout(() => flash.remove(), 450);
+      }, delay);
+    });
+    spawnSparks(100, ['#ff0000','#ff3300','#ff6600','#cc0000','#fff','#ff9900']);
+
+    // 2.5秒後に全白石をひっくり返す
+    setTimeout(() => {
+      const whitePositions = [];
+      for (let r = 0; r < 8; r++)
+        for (let c = 0; c < 8; c++)
+          if (board[r][c] === WHITE) whitePositions.push([r, c]);
+
+      // ランダム順でドラマチックにひっくり返す
+      whitePositions.sort(() => Math.random() - 0.5);
+
+      whitePositions.forEach(([r, c], i) => {
+        setTimeout(() => {
+          board[r][c] = BLACK;
+          flipStoneAnimated(r, c, BLACK);
+          updateScore();
+        }, i * 50);
+      });
+
+      // ひっくり返し完了後 → 紙吹雪＆勝利で終了
+      const flipDone = whitePositions.length * 50 + 600;
+      setTimeout(() => {
+        spawnConfetti();
+        setTimeout(() => spawnConfetti(), 300);
+        setTimeout(() => spawnConfetti(), 600);
+        updateScore();
+        isAnimating = false;
+        gameOver = true;
+        const { black: b2, white: w2 } = countStones(board);
+        resultTitle.textContent = t('youWin');
+        resultScore.textContent = t('scoreFormat', b2, w2);
+        setTimeout(() => {
+          overlay.classList.add('show');
+          playSound('achievement');
+        }, 500);
+      }, flipDone);
+    }, 2500);
+
+    setTimeout(() => neverloseOverlay.classList.remove('show'), 5000);
   }
 
   // Toast
@@ -1931,6 +2121,8 @@ SurrealI18n.init({
     eternalText: '永遠の支配！',
     eternalSub: '― どこにでも置ける ―',
     duelStandby: '黒いつぶ設置完了！',
+    neverloseText: '負けてなるものか…！',
+    neverloseSub: '― 盤面が黒に染まる ―',
     allReverse: '💀 オールリバース',
     allReverseText: 'オール<br>リバース',
     allReverseSub: '― 全てが黒に染まる ―',
@@ -1965,6 +2157,8 @@ SurrealI18n.init({
     eternalText: 'ETERNAL DOMINION!',
     eternalSub: '― Place anywhere ―',
     duelStandby: 'BLACK STONE PLACED!',
+    neverloseText: 'I WILL NOT LOSE...!',
+    neverloseSub: '― The board turns black ―',
     allReverse: '💀 ALL REVERSE',
     allReverseText: 'ALL<br>REVERSE',
     allReverseSub: '― Everything turns black ―',
