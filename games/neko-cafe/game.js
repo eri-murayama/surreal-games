@@ -18,27 +18,27 @@
 
   // ===== 強化アイテム =====
   var UPGRADES = [
-    { id: 'table2',  icon: '🪑', name: 'テーブル2席目',   desc: '同時に接客できる席を追加', cost: 60,   effect: { type: 'table', value: 2 } },
-    { id: 'table3',  icon: '🪑', name: 'テーブル3席目',   desc: '席を増やして繁盛させよう', cost: 250,  effect: { type: 'table', value: 3 } },
-    { id: 'table4',  icon: '🪑', name: 'テーブル4席目',   desc: 'もっとたくさんお客さまを', cost: 800,  effect: { type: 'table', value: 4 } },
-    { id: 'table5',  icon: '🪑', name: 'テーブル5席目',   desc: '大繁盛カフェに',           cost: 2200, effect: { type: 'table', value: 5 } },
-    { id: 'table6',  icon: '🪑', name: 'テーブル6席目',   desc: 'マックス6席へ',             cost: 5500, effect: { type: 'table', value: 6 } },
-    { id: 'speed1',  icon: '⚡', name: '調理スピードUP1', desc: '調理時間を10%短縮',        cost: 350,  effect: { type: 'speed', value: 0.10 } },
-    { id: 'speed2',  icon: '⚡', name: '調理スピードUP2', desc: '調理時間をさらに10%短縮',  cost: 1300, effect: { type: 'speed', value: 0.10 } },
-    { id: 'speed3',  icon: '⚡', name: '調理スピードUP3', desc: '調理時間をさらに10%短縮',  cost: 3800, effect: { type: 'speed', value: 0.10 } },
-    { id: 'tip1',    icon: '💸', name: 'チップ増額1',    desc: '売上+15%',                 cost: 500,  effect: { type: 'tip', value: 0.15 } },
-    { id: 'tip2',    icon: '💸', name: 'チップ増額2',    desc: '売上+15%',                 cost: 1800, effect: { type: 'tip', value: 0.15 } },
-    { id: 'tip3',    icon: '💸', name: 'チップ増額3',    desc: '売上+20%',                 cost: 4500, effect: { type: 'tip', value: 0.20 } },
-    { id: 'patience',icon: '😌', name: 'ふかふか椅子',    desc: 'お客さまの待てる時間+30%', cost: 600,  effect: { type: 'patience', value: 0.30 } },
+    { id: 'table2',  icon: '🪑', name: 'テーブル2席目',   nameEn: '2nd Table',       desc: '同時に接客できる席を追加', descEn: 'Add a seat for more guests',      cost: 60,   effect: { type: 'table', value: 2 } },
+    { id: 'table3',  icon: '🪑', name: 'テーブル3席目',   nameEn: '3rd Table',       desc: '席を増やして繁盛させよう', descEn: 'More seats, more business!',      cost: 250,  effect: { type: 'table', value: 3 } },
+    { id: 'table4',  icon: '🪑', name: 'テーブル4席目',   nameEn: '4th Table',       desc: 'もっとたくさんお客さまを', descEn: 'Welcome even more guests',        cost: 800,  effect: { type: 'table', value: 4 } },
+    { id: 'table5',  icon: '🪑', name: 'テーブル5席目',   nameEn: '5th Table',       desc: '大繁盛カフェに',           descEn: 'A booming cafe!',                 cost: 2200, effect: { type: 'table', value: 5 } },
+    { id: 'table6',  icon: '🪑', name: 'テーブル6席目',   nameEn: '6th Table',       desc: 'マックス6席へ',             descEn: 'Maximum 6 seats!',                cost: 5500, effect: { type: 'table', value: 6 } },
+    { id: 'speed1',  icon: '⚡', name: '調理スピードUP1', nameEn: 'Speed UP 1',      desc: '調理時間を10%短縮',        descEn: 'Cook 10% faster',                 cost: 350,  effect: { type: 'speed', value: 0.10 } },
+    { id: 'speed2',  icon: '⚡', name: '調理スピードUP2', nameEn: 'Speed UP 2',      desc: '調理時間をさらに10%短縮',  descEn: 'Cook another 10% faster',         cost: 1300, effect: { type: 'speed', value: 0.10 } },
+    { id: 'speed3',  icon: '⚡', name: '調理スピードUP3', nameEn: 'Speed UP 3',      desc: '調理時間をさらに10%短縮',  descEn: 'Cook even faster!',               cost: 3800, effect: { type: 'speed', value: 0.10 } },
+    { id: 'tip1',    icon: '💸', name: 'チップ増額1',    nameEn: 'Tip Boost 1',     desc: '売上+15%',                 descEn: 'Revenue +15%',                    cost: 500,  effect: { type: 'tip', value: 0.15 } },
+    { id: 'tip2',    icon: '💸', name: 'チップ増額2',    nameEn: 'Tip Boost 2',     desc: '売上+15%',                 descEn: 'Revenue +15%',                    cost: 1800, effect: { type: 'tip', value: 0.15 } },
+    { id: 'tip3',    icon: '💸', name: 'チップ増額3',    nameEn: 'Tip Boost 3',     desc: '売上+20%',                 descEn: 'Revenue +20%',                    cost: 4500, effect: { type: 'tip', value: 0.20 } },
+    { id: 'patience',icon: '😌', name: 'ふかふか椅子',    nameEn: 'Comfy Chair',     desc: 'お客さまの待てる時間+30%', descEn: 'Patience +30%',                   cost: 600,  effect: { type: 'patience', value: 0.30 } },
   ];
 
   // ===== 内装（デコレーション） =====
   var DECORS = [
-    { id: 'curtain',  icon: '🪟', name: 'かわいいカーテン', desc: 'お客さまの来店頻度+10%', cost: 180,  effect: 0.10 },
-    { id: 'flowers',  icon: '💐', name: 'お花のブーケ',     desc: 'お客さまの来店頻度+10%', cost: 450,  effect: 0.10 },
-    { id: 'lamp',     icon: '🏮', name: 'あたたかランプ',   desc: 'お客さまの来店頻度+15%', cost: 1100, effect: 0.15 },
-    { id: 'piano',    icon: '🎹', name: 'おしゃれピアノ',   desc: 'お客さまの来店頻度+20%', cost: 2800, effect: 0.20 },
-    { id: 'chandel',  icon: '✨', name: 'シャンデリア',     desc: 'お客さまの来店頻度+25%', cost: 6500, effect: 0.25 },
+    { id: 'curtain',  icon: '🪟', name: 'かわいいカーテン', nameEn: 'Cute Curtains',   desc: 'お客さまの来店頻度+10%', descEn: 'Visit rate +10%',  cost: 180,  effect: 0.10 },
+    { id: 'flowers',  icon: '💐', name: 'お花のブーケ',     nameEn: 'Flower Bouquet',  desc: 'お客さまの来店頻度+10%', descEn: 'Visit rate +10%',  cost: 450,  effect: 0.10 },
+    { id: 'lamp',     icon: '🏮', name: 'あたたかランプ',   nameEn: 'Warm Lamp',       desc: 'お客さまの来店頻度+15%', descEn: 'Visit rate +15%',  cost: 1100, effect: 0.15 },
+    { id: 'piano',    icon: '🎹', name: 'おしゃれピアノ',   nameEn: 'Stylish Piano',   desc: 'お客さまの来店頻度+20%', descEn: 'Visit rate +20%',  cost: 2800, effect: 0.20 },
+    { id: 'chandel',  icon: '✨', name: 'シャンデリア',     nameEn: 'Chandelier',      desc: 'お客さまの来店頻度+25%', descEn: 'Visit rate +25%',  cost: 6500, effect: 0.25 },
   ];
 
   // ===== 猫キャラバリエーション =====
@@ -70,6 +70,120 @@
     dayTimer: 0,
     dayEnding: false, // endDay二重呼び出し防止
   };
+
+  // ===== i18n =====
+  var currentLang = 'ja';
+  var I18N = {
+    ja: {
+      gameTitle: 'ねこカフェ<br>物語',
+      gameSub: '～小さなお店を大きく育てよう～',
+      startBtn: 'はじめる',
+      continueBtn: 'つづきから',
+      resetBtn: '最初からやり直す',
+      resetConfirm: 'セーブデータを消してはじめから遊びますか？',
+      timerOpen: '☀️ 営業中',
+      kitchenLabel: '🍳 キッチン',
+      shopBtn: 'ショップ',
+      menuBtn: 'メニュー',
+      decorBtn: '内装',
+      enddayBtn: '早じまい',
+      shopTitle: '🛒 ショップ',
+      tabMenu: 'メニュー追加',
+      tabUpgrade: 'お店強化',
+      menuTitle: '📖 メニューブック',
+      decorTitle: '🌸 内装',
+      decorSub: 'お店を飾って人気アップ！',
+      resultTitle: '🌙 本日のご来店ありがとうございました',
+      resServed: '接客したお客さま',
+      resPeople: '人',
+      resSales: '売上',
+      resXp: '経験値',
+      resRep: '評判',
+      nextDayBtn: '次の日へ',
+      toastPickFood: 'キッチンの完成した料理を選んでね',
+      toastWrongOrder: '注文とちがうみたい…',
+      toastServe: '配膳先のお客さまをタップ！',
+      toastAngry: 'お客さまが帰ってしまった…',
+      toastNewMenu: '新メニュー「{name}」追加！',
+      toastUpgrade: '強化完了！',
+      toastDecor: 'お店がすてきになった！',
+      splashOpen: '開店！',
+      lvUp: 'Lv.{lv} UP!',
+      comboText: '{n}コンボ！ +{bonus}',
+      shopOwned: '購入済',
+      shopDecorOwned: '設置済',
+      shopSales: '売上💰{p} / 調理{t}秒 / 必要Lv.{lv}',
+      menuLocked: '必要Lv.{lv}',
+      resultComment0: 'まだまだこれから！',
+      resultComment1: 'なかなかの繁盛ぶり！',
+      resultComment2: 'いい調子！もっといけるよ！',
+      resultComment3: '素晴らしい一日でした！🎉',
+      tutStep0: '☕ キッチンの「コーヒー」をタップして調理開始！',
+      tutStep1: '✅ 緑色に光ったら完成！もう一度タップしてね',
+      tutStep2: '🐱 注文吹き出しが合うお客さまをタップ！',
+    },
+    en: {
+      gameTitle: 'Neko Cafe<br>Story',
+      gameSub: '~Grow your little cafe into something great~',
+      startBtn: 'New Game',
+      continueBtn: 'Continue',
+      resetBtn: 'Start Over',
+      resetConfirm: 'Delete save data and start over?',
+      timerOpen: '☀️ Open',
+      kitchenLabel: '🍳 Kitchen',
+      shopBtn: 'Shop',
+      menuBtn: 'Menu',
+      decorBtn: 'Decor',
+      enddayBtn: 'Close',
+      shopTitle: '🛒 Shop',
+      tabMenu: 'New Menu',
+      tabUpgrade: 'Upgrades',
+      menuTitle: '📖 Menu Book',
+      decorTitle: '🌸 Decor',
+      decorSub: 'Decorate to attract more customers!',
+      resultTitle: '🌙 Thanks for visiting today!',
+      resServed: 'Customers served',
+      resPeople: '',
+      resSales: 'Revenue',
+      resXp: 'EXP',
+      resRep: 'Reputation',
+      nextDayBtn: 'Next Day',
+      toastPickFood: 'Pick a finished dish first',
+      toastWrongOrder: "That's not what they ordered…",
+      toastServe: 'Tap a customer to serve!',
+      toastAngry: 'A customer left upset…',
+      toastNewMenu: 'New menu: {name}!',
+      toastUpgrade: 'Upgrade complete!',
+      toastDecor: 'Your cafe looks lovely!',
+      splashOpen: 'Open!',
+      lvUp: 'Lv.{lv} UP!',
+      comboText: '{n} Combo! +{bonus}',
+      shopOwned: 'Owned',
+      shopDecorOwned: 'Placed',
+      shopSales: '💰{p} / {t}s / Req Lv.{lv}',
+      menuLocked: 'Req Lv.{lv}',
+      resultComment0: 'Keep going!',
+      resultComment1: 'Not bad at all!',
+      resultComment2: 'Great day! Keep it up!',
+      resultComment3: 'Wonderful day! 🎉',
+      tutStep0: '☕ Tap "Coffee" in the kitchen to start cooking!',
+      tutStep1: '✅ When it glows green, tap it again!',
+      tutStep2: '🐱 Tap a customer whose order matches!',
+    }
+  };
+  function t(key, params) {
+    var s = (I18N[currentLang] && I18N[currentLang][key]) || (I18N.ja[key]) || key;
+    if (params) {
+      Object.keys(params).forEach(function (k) {
+        s = s.replace('{' + k + '}', params[k]);
+      });
+    }
+    return s;
+  }
+  function isEn() { return currentLang === 'en'; }
+  function menuName(m) { return isEn() && m.nameEn ? m.nameEn : m.name; }
+  function itemName(item) { return isEn() && item.nameEn ? item.nameEn : item.name; }
+  function itemDesc(item) { return isEn() && item.descEn ? item.descEn : item.desc; }
 
   // ===== DOMヘルパ =====
   function $(sel) { return document.querySelector(sel); }
@@ -173,7 +287,7 @@
   function showDaySplash() {
     var splash = document.createElement('div');
     splash.id = 'day-splash';
-    splash.innerHTML = '<div class="splash-text">☀️ Day ' + state.day + ' 開店！</div>';
+    splash.innerHTML = '<div class="splash-text">☀️ Day ' + state.day + ' ' + t('splashOpen') + '</div>';
     document.body.appendChild(splash);
     setTimeout(function () { splash.remove(); }, 1800);
   }
@@ -182,7 +296,7 @@
   function showLevelUpEffect(newLevel) {
     var overlay = document.createElement('div');
     overlay.id = 'levelup-overlay';
-    overlay.innerHTML = '<div class="lvup-star">⭐</div><div class="lvup-text">Lv.' + newLevel + ' UP!</div>';
+    overlay.innerHTML = '<div class="lvup-star">⭐</div><div class="lvup-text">' + t('lvUp', {lv: newLevel}) + '</div>';
     document.body.appendChild(overlay);
     spawnConfetti(12);
     setTimeout(function () { overlay.remove(); }, 2500);
@@ -314,11 +428,7 @@
     showTutorialStep();
   }
   function showTutorialStep() {
-    var msgs = [
-      '☕ キッチンの「コーヒー」をタップして調理開始！',
-      '✅ 緑色に光ったら完成！もう一度タップしてね',
-      '🐱 注文吹き出しが合うお客さまをタップ！',
-    ];
+    var msgs = [t('tutStep0'), t('tutStep1'), t('tutStep2')];
     if (tutorialStep < msgs.length) {
       toast(msgs[tutorialStep], 4000);
     }
@@ -392,7 +502,7 @@
       el.className = 'station';
       el.dataset.menuId = m.id;
       el.innerHTML = '<span class="st-icon">' + m.icon + '</span>' +
-        '<span class="st-name">' + m.name + '</span>' +
+        '<span class="st-name">' + menuName(m) + '</span>' +
         '<span class="st-price">💰' + Math.floor(m.price * tipMult()) + '</span>' +
         '<div class="cook-bar"><div class="cook-bar-fill"></div></div>';
       var idx = state.stations.length;
@@ -481,7 +591,7 @@
     showPop(t.el, '💢', 'angry-pop');
     state.reputation = Math.max(0, state.reputation - 1);
     state.coins = Math.max(0, state.coins - 3);
-    toast('お客さまが帰ってしまった…');
+    toast(t('toastAngry'));
     playSound('wrong');
     clearTable(t);
     updateHud();
@@ -552,7 +662,7 @@
   function showComboPop(parent, combo, bonus) {
     var p = document.createElement('div');
     p.className = 'combo-pop';
-    p.textContent = combo + 'コンボ！ +' + bonus;
+    p.textContent = t('comboText', {n: combo, bonus: bonus});
     parent.appendChild(p);
     setTimeout(function () { p.remove(); }, 1200);
   }
@@ -598,7 +708,7 @@
           tutorialStep = 2;
           setTimeout(showTutorialStep, 600);
         } else {
-          toast('配膳先のお客さまをタップ！');
+          toast(t('toastServe'));
         }
       }
       updateServingHighlights();
@@ -637,14 +747,14 @@
     if (idx >= state.maxTables) return;
     if (!t.occupied) return;
     if (state.selectedStation < 0) {
-      toast('キッチンの完成した料理を選んでね');
+      toast(t('toastPickFood'));
       return;
     }
     var st = state.stations[state.selectedStation];
     if (!st || st.state !== 'ready') return;
     var menu = MENU.find(function (m) { return m.id === st.menuId; });
     if (t.cat.wants !== menu.id) {
-      toast('注文とちがうみたい…');
+      toast(t('toastWrongOrder'));
       return;
     }
     // 配膳成功
@@ -751,13 +861,7 @@
         : '<span style="opacity:0.25">☆</span>';
     }
     $('#res-stars').innerHTML = starsHtml;
-    var comments = [
-      'まだまだこれから！',
-      'なかなかの繁盛ぶり！',
-      'いい調子！もっといけるよ！',
-      '素晴らしい一日でした！🎉',
-    ];
-    $('#res-comment').textContent = comments[stars];
+    $('#res-comment').textContent = t('resultComment' + stars);
     $('#result-screen').classList.remove('hidden');
     playSound('result');
     save();
@@ -797,12 +901,12 @@
         item.innerHTML =
           '<div class="shop-icon">' + m.icon + '</div>' +
           '<div class="shop-info">' +
-            '<div class="shop-name">' + m.name + '</div>' +
-            '<div class="shop-desc">売上💰' + m.price + ' / 調理' + m.cookTime + '秒 / 必要Lv.' + m.unlockLv + '</div>' +
+            '<div class="shop-name">' + menuName(m) + '</div>' +
+            '<div class="shop-desc">' + t('shopSales', {p: m.price, t: m.cookTime, lv: m.unlockLv}) + '</div>' +
           '</div>' +
           '<button class="shop-buy' + (owned ? ' owned' : '') + '"' +
             (owned || locked || state.coins < m.cost ? ' disabled' : '') + '>' +
-            (owned ? '購入済' : locked ? 'Lv.' + m.unlockLv : '💰' + fmtNum(m.cost)) +
+            (owned ? t('shopOwned') : locked ? 'Lv.' + m.unlockLv : '💰' + fmtNum(m.cost)) +
           '</button>';
         var btn = item.querySelector('.shop-buy');
         btn.addEventListener('click', function () {
@@ -815,7 +919,7 @@
           updateHud();
           save();
           renderShop();
-          toast('新メニュー「' + m.name + '」追加！', 2000);
+          toast(t('toastNewMenu', {name: menuName(m)}), 2000);
           spawnConfetti(6);
           playSound('unlock');
         });
@@ -830,12 +934,12 @@
         item.innerHTML =
           '<div class="shop-icon">' + u.icon + '</div>' +
           '<div class="shop-info">' +
-            '<div class="shop-name">' + u.name + '</div>' +
-            '<div class="shop-desc">' + u.desc + '</div>' +
+            '<div class="shop-name">' + itemName(u) + '</div>' +
+            '<div class="shop-desc">' + itemDesc(u) + '</div>' +
           '</div>' +
           '<button class="shop-buy' + (owned ? ' owned' : '') + '"' +
             (owned || state.coins < u.cost ? ' disabled' : '') + '>' +
-            (owned ? '購入済' : '💰' + fmtNum(u.cost)) +
+            (owned ? t('shopOwned') : '💰' + fmtNum(u.cost)) +
           '</button>';
         var btn = item.querySelector('.shop-buy');
         btn.addEventListener('click', function () {
@@ -851,7 +955,7 @@
           updateHud();
           save();
           renderShop();
-          toast('強化完了！');
+          toast(t('toastUpgrade'));
           playSound('unlock');
         });
         list.appendChild(item);
@@ -869,10 +973,10 @@
       el.innerHTML =
         '<div class="mi-icon">' + m.icon + '</div>' +
         '<div class="mi-body">' +
-          '<div class="mi-name">' + (owned ? m.name : '???') + '</div>' +
+          '<div class="mi-name">' + (owned ? menuName(m) : '???') + '</div>' +
           '<div class="mi-detail">' + (owned
-            ? '💰' + Math.floor(m.price * tipMult()) + ' / ' + m.cookTime + '秒 / ✨' + m.xp
-            : '必要Lv.' + m.unlockLv) + '</div>' +
+            ? '💰' + Math.floor(m.price * tipMult()) + ' / ' + m.cookTime + 's / ✨' + m.xp
+            : t('menuLocked', {lv: m.unlockLv})) + '</div>' +
         '</div>';
       list.appendChild(el);
     });
@@ -889,12 +993,12 @@
       item.innerHTML =
         '<div class="shop-icon">' + d.icon + '</div>' +
         '<div class="shop-info">' +
-          '<div class="shop-name">' + d.name + '</div>' +
-          '<div class="shop-desc">' + d.desc + '</div>' +
+          '<div class="shop-name">' + itemName(d) + '</div>' +
+          '<div class="shop-desc">' + itemDesc(d) + '</div>' +
         '</div>' +
         '<button class="shop-buy' + (owned ? ' owned' : '') + '"' +
           (owned || state.coins < d.cost ? ' disabled' : '') + '>' +
-          (owned ? '設置済' : '💰' + fmtNum(d.cost)) +
+          (owned ? t('shopDecorOwned') : '💰' + fmtNum(d.cost)) +
         '</button>';
       var btn = item.querySelector('.shop-buy');
       btn.addEventListener('click', function () {
@@ -906,7 +1010,7 @@
         updateDecorDisplay();
         save();
         renderDecor();
-        toast('お店がすてきになった！');
+        toast(t('toastDecor'));
         spawnConfetti(8);
         playSound('unlock');
       });
@@ -948,7 +1052,7 @@
       initGame();
     });
     $('#reset-btn').addEventListener('click', function () {
-      if (confirm('セーブデータを消してはじめから遊びますか？')) {
+      if (confirm(t('resetConfirm'))) {
         reset();
         initGame();
       }
@@ -1008,8 +1112,27 @@
     runTutorial();
   }
 
+  // ===== 言語切替対応 =====
+  function onLangChange(lang) {
+    currentLang = lang;
+    // ステーション名を再描画
+    if (state.running || state.dayEnding) {
+      buildStations();
+    }
+  }
+
   // ===== ブート =====
   function boot() {
+    // i18n初期化
+    if (window.SurrealI18n) {
+      SurrealI18n.init(I18N);
+      currentLang = SurrealI18n.getLang ? SurrealI18n.getLang() : 'ja';
+    }
+    // 言語変更リスナー
+    window.addEventListener('surreal-lang-change', function (e) {
+      onLangChange(e.detail.lang);
+    });
+
     bind();
     var hasSave = load();
     if (hasSave) {

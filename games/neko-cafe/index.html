@@ -34,11 +34,11 @@
         <div class="title-cup">☕</div>
         <div class="title-cake">🍰</div>
       </div>
-      <h1 class="game-title">ねこカフェ<br>物語</h1>
-      <p class="game-sub">～小さなお店を大きく育てよう～</p>
-      <button id="start-btn" class="big-btn">はじめる</button>
-      <button id="continue-btn" class="big-btn hidden">つづきから</button>
-      <button id="reset-btn" class="link-btn hidden">最初からやり直す</button>
+      <h1 class="game-title" data-i18n="gameTitle">ねこカフェ<br>物語</h1>
+      <p class="game-sub" data-i18n="gameSub">～小さなお店を大きく育てよう～</p>
+      <button id="start-btn" class="big-btn" data-i18n="startBtn">はじめる</button>
+      <button id="continue-btn" class="big-btn hidden" data-i18n="continueBtn">つづきから</button>
+      <button id="reset-btn" class="link-btn hidden" data-i18n="resetBtn">最初からやり直す</button>
     </div>
 
     <!-- メインゲーム画面 -->
@@ -64,7 +64,7 @@
 
       <!-- 営業タイマー -->
       <div id="day-timer">
-        <span class="timer-label">☀️ 営業中</span>
+        <span class="timer-label" data-i18n="timerOpen">☀️ 営業中</span>
         <div class="day-timer-wrap">
           <div class="day-timer-fill" id="day-timer-fill"></div>
         </div>
@@ -82,7 +82,7 @@
 
       <!-- キッチン -->
       <div id="kitchen">
-        <div class="kitchen-label">🍳 キッチン</div>
+        <div class="kitchen-label" data-i18n="kitchenLabel">🍳 キッチン</div>
         <div id="stations-wrap"></div>
       </div>
 
@@ -90,19 +90,19 @@
       <div id="action-bar">
         <button class="act-btn" id="btn-shop">
           <span class="act-icon">🛒</span>
-          <span class="act-label">ショップ</span>
+          <span class="act-label" data-i18n="shopBtn">ショップ</span>
         </button>
         <button class="act-btn" id="btn-menu">
           <span class="act-icon">📖</span>
-          <span class="act-label">メニュー</span>
+          <span class="act-label" data-i18n="menuBtn">メニュー</span>
         </button>
         <button class="act-btn" id="btn-decor">
           <span class="act-icon">🌸</span>
-          <span class="act-label">内装</span>
+          <span class="act-label" data-i18n="decorBtn">内装</span>
         </button>
         <button class="act-btn" id="btn-endday">
           <span class="act-icon">🌙</span>
-          <span class="act-label">早じまい</span>
+          <span class="act-label" data-i18n="enddayBtn">早じまい</span>
         </button>
       </div>
 
@@ -113,12 +113,12 @@
     <!-- ショップ画面 -->
     <div id="shop-screen" class="screen hidden">
       <div class="modal-head">
-        <h2>🛒 ショップ</h2>
+        <h2 data-i18n="shopTitle">🛒 ショップ</h2>
         <button class="close-btn" data-close>✕</button>
       </div>
       <div class="tab-row">
-        <button class="tab-btn active" data-tab="menu">メニュー追加</button>
-        <button class="tab-btn" data-tab="upgrade">お店強化</button>
+        <button class="tab-btn active" data-tab="menu" data-i18n="tabMenu">メニュー追加</button>
+        <button class="tab-btn" data-tab="upgrade" data-i18n="tabUpgrade">お店強化</button>
       </div>
       <div id="shop-coins" class="shop-coins">💰 <span id="shop-coin-val">0</span></div>
       <div id="shop-list"></div>
@@ -127,7 +127,7 @@
     <!-- メニュー閲覧画面 -->
     <div id="menu-screen" class="screen hidden">
       <div class="modal-head">
-        <h2>📖 メニューブック</h2>
+        <h2 data-i18n="menuTitle">📖 メニューブック</h2>
         <button class="close-btn" data-close>✕</button>
       </div>
       <div id="menu-list"></div>
@@ -136,10 +136,10 @@
     <!-- 内装画面 -->
     <div id="decor-screen" class="screen hidden">
       <div class="modal-head">
-        <h2>🌸 内装</h2>
+        <h2 data-i18n="decorTitle">🌸 内装</h2>
         <button class="close-btn" data-close>✕</button>
       </div>
-      <p class="modal-sub">お店を飾って人気アップ！</p>
+      <p class="modal-sub" data-i18n="decorSub">お店を飾って人気アップ！</p>
       <div id="shop-coins2" class="shop-coins">💰 <span id="shop-coin-val2">0</span></div>
       <div id="decor-list"></div>
     </div>
@@ -147,22 +147,22 @@
     <!-- 閉店リザルト -->
     <div id="result-screen" class="screen hidden">
       <div class="modal-head">
-        <h2>🌙 本日のご来店ありがとうございました</h2>
+        <h2 data-i18n="resultTitle">🌙 本日のご来店ありがとうございました</h2>
       </div>
       <div class="result-stars" id="res-stars"></div>
       <div class="result-comment" id="res-comment"></div>
       <div id="result-body">
-        <div class="result-row">接客したお客さま <span id="res-served">0</span> 人</div>
-        <div class="result-row">売上 💰 <span id="res-coins">0</span></div>
-        <div class="result-row">経験値 ✨ <span id="res-xp">0</span></div>
-        <div class="result-row">評判 ⭐ <span id="res-rep">0</span></div>
+        <div class="result-row"><span data-i18n="resServed">接客したお客さま</span> <span id="res-served">0</span> <span data-i18n="resPeople">人</span></div>
+        <div class="result-row"><span data-i18n="resSales">売上</span> 💰 <span id="res-coins">0</span></div>
+        <div class="result-row"><span data-i18n="resXp">経験値</span> ✨ <span id="res-xp">0</span></div>
+        <div class="result-row"><span data-i18n="resRep">評判</span> ⭐ <span id="res-rep">0</span></div>
       </div>
-      <button id="next-day-btn" class="big-btn">次の日へ</button>
+      <button id="next-day-btn" class="big-btn" data-i18n="nextDayBtn">次の日へ</button>
     </div>
 
   </div>
 
-  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
   <script src="../common/i18n.js"></script>
   <script src="../common/game-common.js"></script>
   <script src="game.js"></script>
