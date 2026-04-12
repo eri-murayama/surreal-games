@@ -60,6 +60,13 @@
     <!-- マージボード -->
     <section class="view board-view active" id="board-view">
       <div class="board" id="board"></div>
+      <div class="board-info">
+        <div class="board-usage">
+          <span id="board-count">0/42</span>
+          <div class="board-usage-bar"><div class="board-usage-fill" id="board-usage-fill"></div></div>
+        </div>
+        <div class="energy-timer" id="energy-timer"></div>
+      </div>
     </section>
     <!-- お部屋 -->
     <section class="view room-view" id="room-view">
@@ -118,6 +125,9 @@
     <button class="big-btn" id="tuto-next" data-i18n="nextBtn">つぎへ</button>
   </div>
 </div>
+
+<!-- ===== コンボ表示 ===== -->
+<div id="combo-display" class="combo-display"></div>
 
 <!-- ===== トースト通知 ===== -->
 <div id="toast" class="toast hidden"></div>

@@ -159,6 +159,61 @@
   // ===== DOM参照 =====
   let boardEl, stripEl, lvVal, xpFill, energyVal, energyMaxEl, starVal;
   let roomSceneItems, roomShopEl, dexList, toastEl;
+  let boardCountEl, boardUsageFill, energyTimerEl, comboDisplayEl;
+
+  // ===== コンボ =====
+  let comboCount = 0;
+  let comboTimer = null;
+  function addCombo() {
+    comboCount++;
+    clearTimeout(comboTimer);
+    if (comboCount >= 2) {
+      comboDisplayEl.textContent = comboCount + ' COMBO!';
+      comboDisplayEl.classList.remove('active');
+      void comboDisplayEl.offsetWidth; // reflow
+      comboDisplayEl.classList.add('active');
+      var bonus = comboCount;
+      state.stars += bonus;
+      toast('🔥 ' + comboCount + 'コンボ! ⭐+' + bonus);
+    }
+    comboTimer = setTimeout(function() {
+      comboCount = 0;
+      comboDisplayEl.classList.remove('active');
+    }, 2500);
+  }
+  function resetCombo() {
+    comboCount = 0;
+    clearTimeout(comboTimer);
+    comboDisplayEl.classList.remove('active');
+  }
+
+  // ===== パーティクル =====
+  function spawnStarParticles(fromEl, count) {
+    var rect = fromEl.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    // ⭐表示位置を取得
+    var starRect = starVal.getBoundingClientRect();
+    var tx = starRect.left + starRect.width / 2;
+    var ty = starRect.top + starRect.height / 2;
+    for (var i = 0; i < count; i++) {
+      (function(delay) {
+        setTimeout(function() {
+          var p = document.createElement('div');
+          p.className = 'star-particle';
+          p.textContent = '⭐';
+          p.style.left = cx + 'px';
+          p.style.top = cy + 'px';
+          var dx = (tx - cx) + (Math.random() - 0.5) * 40;
+          var dy = (ty - cy) + (Math.random() - 0.5) * 40;
+          p.style.setProperty('--dx', dx + 'px');
+          p.style.setProperty('--dy', dy + 'px');
+          document.body.appendChild(p);
+          setTimeout(function() { p.remove(); }, 800);
+        }, delay * 80);
+      })(i);
+    }
+  }
 
   // ===== ユーティリティ =====
   let toastTimer = null;
@@ -166,7 +221,7 @@
     toastEl.textContent = msg;
     toastEl.classList.remove('hidden');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toastEl.classList.add('hidden'), 1600);
+    toastTimer = setTimeout(function() { toastEl.classList.add('hidden'); }, 1600);
   }
 
   function findEmptyCell() {
@@ -181,14 +236,35 @@
   // ===== 描画: トップバー =====
   function renderTopBar() {
     lvVal.textContent = state.level;
-    const cur = state.xp;
-    const prev = XP_TABLE[state.level - 1] || 0;
-    const next = XP_TABLE[state.level] || (cur + 1);
-    const pct = Math.max(0, Math.min(100, ((cur - prev) / (next - prev)) * 100));
+    var cur = state.xp;
+    var prev = XP_TABLE[state.level - 1] || 0;
+    var next = XP_TABLE[state.level] || (cur + 1);
+    var pct = Math.max(0, Math.min(100, ((cur - prev) / (next - prev)) * 100));
     xpFill.style.width = pct + '%';
     energyVal.textContent = state.energy;
     energyMaxEl.textContent = state.energyMax;
     starVal.textContent = state.stars;
+    renderBoardInfo();
+  }
+
+  // ===== 描画: ボード情報バー =====
+  function renderBoardInfo() {
+    var used = state.board.filter(function(c) { return c !== null; }).length;
+    boardCountEl.textContent = used + '/' + CELLS;
+    var pct = (used / CELLS) * 100;
+    boardUsageFill.style.width = pct + '%';
+    boardUsageFill.className = 'board-usage-fill';
+    if (pct >= 90) boardUsageFill.classList.add('danger');
+    else if (pct >= 70) boardUsageFill.classList.add('warning');
+    // エネルギータイマー
+    if (state.energy < state.energyMax) {
+      var elapsed = Date.now() - state.lastEnergyTime;
+      var remain = Math.max(0, 30000 - elapsed);
+      var sec = Math.ceil(remain / 1000);
+      energyTimerEl.textContent = '⚡回復 ' + sec + 's';
+    } else {
+      energyTimerEl.textContent = '⚡MAX';
+    }
   }
 
   // ===== 描画: ボード =====
@@ -293,9 +369,10 @@
 
   function tryMergeOrMove(fromIdx, toIdx) {
     if (fromIdx === toIdx) return;
-    const from = state.board[fromIdx];
-    const to = state.board[toIdx];
+    var from = state.board[fromIdx];
+    var to = state.board[toIdx];
     if (!from || from.chain === 'generator') return;
+    var action = 'move';
     if (!to) {
       // 空セルへ移動
       state.board[toIdx] = from;
@@ -303,53 +380,72 @@
     } else if (to.chain === 'generator') {
       // ジェネレーターにドロップ → リサイクル（アイテム売却）
       state.board[fromIdx] = null;
-      const refund = Math.max(1, Math.floor(from.tier * from.tier * 0.5));
+      var refund = Math.max(1, Math.floor(from.tier * from.tier * 0.5));
       state.stars += refund;
+      action = 'recycle';
       toast('♻️ リサイクル ⭐+' + refund);
     } else if (to.chain === from.chain && to.tier === from.tier &&
                to.tier < CHAINS[from.chain].tiers.length) {
       // 同アイテム同士 → マージ進化
-      const newTier = from.tier + 1;
+      var newTier = from.tier + 1;
       state.board[toIdx] = { chain: from.chain, tier: newTier };
       state.board[fromIdx] = null;
-      const key = from.chain + '-' + newTier;
+      var key = from.chain + '-' + newTier;
+      action = 'merge';
       if (!state.dex[key]) {
         state.dex[key] = true;
-        const t = CHAINS[from.chain].tiers[newTier - 1];
+        var t = CHAINS[from.chain].tiers[newTier - 1];
         toast('✨ ' + t.name + ' 発見!');
       }
+      addCombo();
       gainXP(newTier * 3);
     } else {
       // それ以外 → 入れ替え
       state.board[fromIdx] = to;
       state.board[toIdx] = from;
+      action = 'swap';
     }
     renderBoard();
     renderOrders();
     renderTopBar();
     save();
+    // マージ後のセルにアニメーション
+    if (action === 'merge') {
+      var mergedCell = boardEl.querySelector('[data-idx="' + toIdx + '"]');
+      var mergedItem = mergedCell && mergedCell.querySelector('.item');
+      if (mergedItem) mergedItem.classList.add('merged-result');
+    }
   }
 
   // ===== ジェネレーター =====
   function handleGenTap() {
+    // タップフィードバック（エネルギー不足でも見せる）
+    var genCell = boardEl.querySelector('[data-idx="0"]');
+    var genItem = genCell && genCell.querySelector('.item');
+    if (genItem) {
+      genItem.classList.remove('gen-tap');
+      void genItem.offsetWidth;
+      genItem.classList.add('gen-tap');
+    }
     if (state.energy < 1) { toast('⚡ エネルギーがたりない！'); return; }
-    const idx = findEmptyCell();
+    var idx = findEmptyCell();
     if (idx < 0) { toast('📦 いっぱい！アイテムを📦にドラッグで売れるよ'); return; }
     state.energy -= 1;
-    const unlocked = getUnlockedChains();
-    const chainId = unlocked[Math.floor(Math.random() * unlocked.length)];
-    const maxTier = getMaxSpawnTier();
-    const tier = 1 + Math.floor(Math.random() * maxTier);
+    resetCombo();
+    var unlocked = getUnlockedChains();
+    var chainId = unlocked[Math.floor(Math.random() * unlocked.length)];
+    var maxTier = getMaxSpawnTier();
+    var tier = 1 + Math.floor(Math.random() * maxTier);
     state.board[idx] = { chain: chainId, tier: tier };
-    const key = chainId + '-' + tier;
+    var key = chainId + '-' + tier;
     state.dex[key] = true;
     renderBoard();
     renderOrders();
     renderTopBar();
     save();
     // スポーンアニメーション
-    const spawnedCell = boardEl.querySelector('[data-idx="' + idx + '"]');
-    const spawnedItem = spawnedCell && spawnedCell.querySelector('.item');
+    var spawnedCell = boardEl.querySelector('[data-idx="' + idx + '"]');
+    var spawnedItem = spawnedCell && spawnedCell.querySelector('.item');
     if (spawnedItem) spawnedItem.classList.add('spawning');
   }
 
@@ -419,12 +515,15 @@
   }
 
   function claimOrder(i) {
-    const order = state.orders[i];
+    var order = state.orders[i];
     if (!order) return;
-    const itemIdx = state.board.findIndex(function(c) {
+    var itemIdx = state.board.findIndex(function(c) {
       return c && c.chain === order.chain && c.tier === order.tier;
     });
     if (itemIdx < 0) { toast('該当アイテムなし'); return; }
+    // パーティクル演出：注文カードから⭐が飛ぶ
+    var orderCards = stripEl.querySelectorAll('.order-card');
+    if (orderCards[i]) spawnStarParticles(orderCards[i], Math.min(order.stars, 8));
     state.board[itemIdx] = null;
     state.stars += order.stars;
     gainXP(order.xp);
@@ -517,22 +616,39 @@
   // ===== 図鑑 =====
   function renderDex() {
     dexList.innerHTML = '';
+    var totalAll = 0, foundAll = 0;
     Object.keys(CHAINS).forEach(function(chainId) {
-      const chain = CHAINS[chainId];
+      var chain = CHAINS[chainId];
+      var found = 0;
+      chain.tiers.forEach(function(_, i) {
+        if (state.dex[chainId + '-' + (i + 1)]) found++;
+      });
+      totalAll += chain.tiers.length;
+      foundAll += found;
+      // チェーンヘッダー
+      var header = document.createElement('div');
+      header.style.cssText = 'grid-column:1/-1;font-size:0.75rem;font-weight:700;color:#7a5a3c;margin-top:8px;display:flex;justify-content:space-between;';
+      header.innerHTML = '<span>' + chain.name + '</span><span>' + found + '/' + chain.tiers.length + '</span>';
+      dexList.appendChild(header);
       chain.tiers.forEach(function(t, i) {
-        const cell = document.createElement('div');
+        var cell = document.createElement('div');
         cell.className = 'dex-cell';
-        const key = chainId + '-' + (i + 1);
+        var key = chainId + '-' + (i + 1);
         if (state.dex[key]) {
           cell.classList.add('discovered');
-          cell.innerHTML = t.emoji;
-          cell.title = t.name;
+          cell.innerHTML = '<span title="' + t.name + '">' + t.emoji + '</span>';
+          cell.title = t.name + ' (Lv.' + (i + 1) + ')';
         } else {
           cell.classList.add('locked');
         }
         dexList.appendChild(cell);
       });
     });
+    // 全体進捗
+    var summary = document.createElement('div');
+    summary.style.cssText = 'grid-column:1/-1;text-align:center;font-size:0.8rem;color:#7a5a3c;margin-top:12px;font-weight:700;';
+    summary.textContent = '全発見: ' + foundAll + ' / ' + totalAll + ' (' + Math.floor(foundAll / totalAll * 100) + '%)';
+    dexList.appendChild(summary);
   }
 
   // ===== モーダル =====
@@ -590,6 +706,10 @@
     roomShopEl = document.getElementById('room-shop');
     dexList = document.getElementById('dex-list');
     toastEl = document.getElementById('toast');
+    boardCountEl = document.getElementById('board-count');
+    boardUsageFill = document.getElementById('board-usage-fill');
+    energyTimerEl = document.getElementById('energy-timer');
+    comboDisplayEl = document.getElementById('combo-display');
 
     const saved = load();
     state = saved || createInitialState();
@@ -652,6 +772,8 @@
 
     // エネルギー回復タイマー
     setInterval(energyTick, 5000);
+    // ボード情報バーの毎秒更新（エネルギーカウントダウン）
+    setInterval(renderBoardInfo, 1000);
 
     // ページ離脱時にセーブ
     window.addEventListener('beforeunload', save);
