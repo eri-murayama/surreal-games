@@ -168,6 +168,7 @@
     comboCount++;
     clearTimeout(comboTimer);
     if (comboCount >= 2) {
+      sfxComboSE(comboCount);
       comboDisplayEl.textContent = comboCount + ' COMBO!';
       comboDisplayEl.classList.remove('active');
       void comboDisplayEl.offsetWidth; // reflow
@@ -383,6 +384,7 @@
       var refund = Math.max(1, Math.floor(from.tier * from.tier * 0.5));
       state.stars += refund;
       action = 'recycle';
+      sfxRecycle();
       toast('♻️ リサイクル ⭐+' + refund);
     } else if (to.chain === from.chain && to.tier === from.tier &&
                to.tier < CHAINS[from.chain].tiers.length) {
@@ -392,9 +394,11 @@
       state.board[fromIdx] = null;
       var key = from.chain + '-' + newTier;
       action = 'merge';
+      sfxMerge(newTier);
       if (!state.dex[key]) {
         state.dex[key] = true;
         var t = CHAINS[from.chain].tiers[newTier - 1];
+        sfxDiscover();
         toast('✨ ' + t.name + ' 発見!');
       }
       addCombo();
@@ -427,6 +431,7 @@
       void genItem.offsetWidth;
       genItem.classList.add('gen-tap');
     }
+    sfxGenTap();
     if (state.energy < 1) { toast('⚡ エネルギーがたりない！'); return; }
     var idx = findEmptyCell();
     if (idx < 0) { toast('📦 いっぱい！アイテムを📦にドラッグで売れるよ'); return; }
@@ -443,10 +448,11 @@
     renderOrders();
     renderTopBar();
     save();
-    // スポーンアニメーション
+    // スポーンアニメーション＋SE
     var spawnedCell = boardEl.querySelector('[data-idx="' + idx + '"]');
     var spawnedItem = spawnedCell && spawnedCell.querySelector('.item');
     if (spawnedItem) spawnedItem.classList.add('spawning');
+    sfxSpawn();
   }
 
   // ===== エネルギー回復 =====
@@ -524,6 +530,7 @@
     // パーティクル演出：注文カードから⭐が飛ぶ
     var orderCards = stripEl.querySelectorAll('.order-card');
     if (orderCards[i]) spawnStarParticles(orderCards[i], Math.min(order.stars, 8));
+    sfxClaim();
     state.board[itemIdx] = null;
     state.stars += order.stars;
     gainXP(order.xp);
@@ -552,6 +559,7 @@
       state.energyMax += 3;
       state.energy = state.energyMax;
       leveledUp = true;
+      sfxLevelUp();
       toast('🎉 レベル ' + state.level + ' !');
       if (state.level === 3) showEvent('🎉 家電解放！', '冷蔵庫や洗濯機が出るようになったよ！');
       if (state.level === 5) showEvent('🎉 植物解放！', '種から育てて、グリーンなお部屋にしよう！');
@@ -606,6 +614,7 @@
     if (state.stars < f.cost) { toast('⭐がたりない'); return; }
     state.stars -= f.cost;
     state.ownedFurniture.push(id);
+    sfxBuy();
     toast('🏠 ' + f.name + ' をおいたよ！');
     renderRoomScene();
     renderRoomShop();
@@ -693,6 +702,247 @@
     document.querySelector('.tab[data-tab="' + name + '"]').classList.add('active');
   }
 
+  // ===== サウンド: BGM＆SE =====
+  var sg = window.SurrealGames || {};
+  var bgmNodes = null;
+  var bgmPlaying = false;
+
+  function getCtx() {
+    try {
+      if (sg.sound) {
+        if (!sg.sound.ctx && sg.sound._ensureCtx) sg.sound._ensureCtx();
+        return sg.sound.ctx || null;
+      }
+    } catch (e) {}
+    return null;
+  }
+  function isMuted() {
+    return sg.sound ? !sg.sound.enabled : true;
+  }
+
+  // --- SE（効果音） ---
+  function playTone(freq, dur, type, vol, delay) {
+    if (isMuted()) return;
+    try {
+      var ctx = getCtx(); if (!ctx) return;
+      var t = ctx.currentTime + (delay || 0);
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol || 0.1, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.start(t); osc.stop(t + dur);
+    } catch (e) {}
+  }
+
+  function sfxGenTap() {
+    playTone(440, 0.06, 'sine', 0.08);
+    playTone(660, 0.06, 'sine', 0.06, 0.04);
+  }
+  function sfxSpawn() {
+    playTone(587, 0.08, 'sine', 0.06);
+    playTone(784, 0.1, 'triangle', 0.05, 0.06);
+  }
+  function sfxMerge(tier) {
+    var base = 350 + tier * 60;
+    playTone(base, 0.1, 'sine', 0.1);
+    playTone(base * 1.25, 0.1, 'sine', 0.08, 0.06);
+    playTone(base * 1.5, 0.15, 'triangle', 0.06, 0.12);
+  }
+  function sfxComboSE(count) {
+    for (var i = 0; i < Math.min(count, 5); i++) {
+      playTone(600 + i * 150, 0.08, 'triangle', 0.07, i * 0.06);
+    }
+  }
+  function sfxClaim() {
+    playTone(523, 0.08, 'sine', 0.08);
+    playTone(659, 0.08, 'sine', 0.07, 0.07);
+    playTone(784, 0.08, 'sine', 0.06, 0.14);
+    playTone(1047, 0.2, 'triangle', 0.08, 0.21);
+  }
+  function sfxRecycle() {
+    playTone(500, 0.15, 'sawtooth', 0.04);
+    playTone(300, 0.2, 'sawtooth', 0.03, 0.08);
+  }
+  function sfxLevelUp() {
+    playTone(523, 0.1, 'triangle', 0.1);
+    playTone(659, 0.1, 'triangle', 0.09, 0.1);
+    playTone(784, 0.1, 'triangle', 0.08, 0.2);
+    playTone(1047, 0.3, 'sine', 0.1, 0.3);
+    playTone(1319, 0.4, 'sine', 0.08, 0.45);
+  }
+  function sfxBuy() {
+    playTone(880, 0.06, 'sine', 0.07);
+    playTone(1109, 0.06, 'sine', 0.06, 0.05);
+    playTone(1319, 0.12, 'triangle', 0.07, 0.1);
+  }
+  function sfxDiscover() {
+    playTone(784, 0.15, 'sine', 0.08);
+    playTone(988, 0.15, 'sine', 0.07, 0.12);
+    playTone(1175, 0.25, 'triangle', 0.09, 0.24);
+  }
+
+  // --- BGM（ほのぼのルームライフ風） ---
+  function startBGM() {
+    if (bgmPlaying) return;
+    try {
+      var ctx = getCtx(); if (!ctx) return;
+      if (ctx.state === 'suspended') ctx.resume();
+      var master = ctx.createGain();
+      master.gain.value = 0.30;
+      master.connect(ctx.destination);
+      var timers = [];
+      var oscs = [];
+
+      // ── 温かいパッド（ほのぼの和音）──
+      // Fmaj7: F3, A3, C4, E4
+      var padFreqs = [174.6, 220.0, 261.6, 329.6];
+      var padOscs = [];
+      padFreqs.forEach(function(f) {
+        var o = ctx.createOscillator();
+        var g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = f;
+        g.gain.value = 0.10;
+        o.connect(g); g.connect(master);
+        o.start(); oscs.push(o); padOscs.push(o);
+        // 微妙な揺らぎ
+        var lfo = ctx.createOscillator();
+        var lfoG = ctx.createGain();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.08 + Math.random() * 0.08;
+        lfoG.gain.value = f * 0.005;
+        lfo.connect(lfoG); lfoG.connect(o.frequency);
+        lfo.start(); oscs.push(lfo);
+      });
+
+      // パッドの呼吸（音量の揺らぎ）
+      var breathLfo = ctx.createOscillator();
+      var breathG = ctx.createGain();
+      breathLfo.type = 'sine';
+      breathLfo.frequency.value = 0.06;
+      breathG.gain.value = 0.04;
+      breathLfo.connect(breathG);
+      breathG.connect(master.gain);
+      breathLfo.start(); oscs.push(breathLfo);
+
+      // ── コード進行（優しく移り変わる）──
+      var chords = [
+        [174.6, 220.0, 261.6, 329.6],  // Fmaj7
+        [196.0, 246.9, 293.7, 370.0],  // Gmaj7
+        [164.8, 196.0, 246.9, 329.6],  // Em7
+        [174.6, 220.0, 261.6, 349.2],  // F6
+        [130.8, 164.8, 196.0, 246.9],  // Cmaj7
+        [146.8, 185.0, 220.0, 277.2],  // Dm7
+        [164.8, 207.7, 246.9, 311.1],  // Em7(alt)
+        [196.0, 246.9, 293.7, 370.0],  // Gmaj7
+      ];
+      var chordIdx = 0;
+      var chordTimer = setInterval(function() {
+        if (!bgmPlaying) return;
+        chordIdx = (chordIdx + 1) % chords.length;
+        var chord = chords[chordIdx];
+        var t = ctx.currentTime;
+        padOscs.forEach(function(o, i) {
+          o.frequency.linearRampToValueAtTime(chord[i], t + 3.0);
+        });
+      }, 6000);
+      timers.push(chordTimer);
+
+      // ── きらめきベル（高音チャイム）──
+      var chimeNotes = [523, 587, 659, 698, 784, 880, 988, 1047];
+      function playChime() {
+        if (!bgmPlaying || isMuted()) return;
+        var t = ctx.currentTime;
+        var freq = chimeNotes[Math.floor(Math.random() * chimeNotes.length)];
+        var o = ctx.createOscillator();
+        var g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.06, t + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 2.0);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + 2.0);
+      }
+      function scheduleChime() {
+        if (!bgmPlaying) return;
+        timers.push(setTimeout(function() {
+          playChime();
+          scheduleChime();
+        }, 2000 + Math.random() * 3000));
+      }
+      playChime();
+      scheduleChime();
+
+      // ── ぽつぽつメロディ（かわいいフレーズ）──
+      var melodySeq = [
+        523, 0, 587, 659, 0, 784,
+        659, 0, 587, 523, 0, 0,
+        698, 0, 784, 880, 0, 784,
+        659, 0, 587, 0, 523, 0,
+      ];
+      var melodyIdx = 0;
+      function playMelodyNote() {
+        if (!bgmPlaying) return;
+        var freq = melodySeq[melodyIdx % melodySeq.length];
+        melodyIdx++;
+        if (freq > 0 && !isMuted()) {
+          var t = ctx.currentTime;
+          var o = ctx.createOscillator();
+          var g = ctx.createGain();
+          o.type = 'triangle';
+          o.frequency.value = freq;
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(0.08, t + 0.06);
+          g.gain.linearRampToValueAtTime(0.05, t + 0.6);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+          o.connect(g); g.connect(master);
+          o.start(t); o.stop(t + 1.8);
+        }
+        timers.push(setTimeout(playMelodyNote, 900 + Math.random() * 300));
+      }
+      timers.push(setTimeout(playMelodyNote, 1500));
+
+      // ── そっとベースライン ──
+      var bassNotes = [87.3, 98.0, 82.4, 87.3, 65.4, 73.4, 82.4, 98.0]; // F2,G2,E2...
+      var bassIdx = 0;
+      var bassTimer = setInterval(function() {
+        if (!bgmPlaying || isMuted()) return;
+        var freq = bassNotes[bassIdx % bassNotes.length];
+        bassIdx++;
+        var t = ctx.currentTime;
+        var o = ctx.createOscillator();
+        var g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.08, t + 0.1);
+        g.gain.linearRampToValueAtTime(0.05, t + 2.5);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 5.5);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + 5.5);
+      }, 6000);
+      timers.push(bassTimer);
+
+      bgmNodes = { master: master, oscs: oscs, timers: timers };
+      bgmPlaying = true;
+    } catch (e) {}
+  }
+
+  function stopBGM() {
+    if (!bgmNodes) return;
+    try {
+      bgmNodes.oscs.forEach(function(o) { try { o.stop(); } catch (e) {} });
+      bgmNodes.timers.forEach(function(t) { clearTimeout(t); clearInterval(t); });
+      bgmNodes.master.disconnect();
+    } catch (e) {}
+    bgmNodes = null;
+    bgmPlaying = false;
+  }
+
   // ===== エントリーポイント =====
   function init() {
     boardEl = document.getElementById('board');
@@ -749,6 +999,9 @@
     document.getElementById('start-btn').addEventListener('click', function() {
       document.getElementById('title-screen').classList.remove('active');
       document.getElementById('game-screen').classList.add('active');
+      // SurrealGamesの初期化を待ってからBGM開始
+      sg = window.SurrealGames || {};
+      startBGM();
       if (!state.tutoDone) {
         tutoStep = 0;
         showTutorial();
@@ -775,11 +1028,11 @@
     // ボード情報バーの毎秒更新（エネルギーカウントダウン）
     setInterval(renderBoardInfo, 1000);
 
-    // ページ離脱時にセーブ
-    window.addEventListener('beforeunload', save);
+    // ページ離脱時にセーブ＆BGM制御
+    window.addEventListener('beforeunload', function() { save(); stopBGM(); });
     document.addEventListener('visibilitychange', function() {
-      if (document.hidden) save();
-      else energyTick();
+      if (document.hidden) { save(); stopBGM(); }
+      else { energyTick(); startBGM(); }
     });
   }
 
