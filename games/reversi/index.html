@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>リバーシ | シュールゲームス</title>
-<meta property="og:title" content="リバーシ | シュールゲームス">
-<meta property="og:description" content="CPU対戦リバーシ">
+<title>リバーシマスター | シュールゲームス</title>
+<meta property="og:title" content="リバーシマスター | シュールゲームス">
+<meta property="og:description" content="生死をかけたリバーシバトルが始まる！一体これからどうなっちゃうの？次回「永久に吾輩の番だ」">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -441,7 +441,14 @@ html, body {
   50% { box-shadow: 0 0 18px rgba(255,100,0,0.6), 0 0 30px rgba(255,60,0,0.2); }
 }
 
-/* 俺のターン演出 */
+.okunote-desc {
+  font-size: clamp(10px, 2.5vw, 12px);
+  color: rgba(255,180,100,0.7);
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* 吾輩の番だが？演出 */
 .my-turn-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -528,7 +535,7 @@ html, body {
   100% { transform: scaleX(1); opacity: 0.6; }
 }
 
-/* ずっと俺のターン演出 */
+/* 永遠の支配演出 */
 .eternal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -637,7 +644,7 @@ html, body {
   100% { opacity: 0; }
 }
 
-/* デュエルスタンバイ演出 — カード召喚風 */
+/* 黒いつぶ設置完了演出 */
 .duel-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -671,7 +678,7 @@ html, body {
 .duel-overlay.show .duel-line-bottom { bottom: 38%; animation: duelLineSweep 0.5s ease-out 0.35s both; }
 .duel-overlay .duel-img {
   position: absolute;
-  left: 50%; top: 50%;
+  left: 50%; top: 66%;
   transform: translate(-50%, -50%);
   z-index: 4;
   opacity: 0;
@@ -860,7 +867,7 @@ html, body {
   50% { box-shadow: 0 0 40px rgba(255,215,0,0.5), 0 0 60px rgba(255,100,0,0.3), 0 4px 20px rgba(0,0,0,0.6); }
 }
 
-/* 俺のターン中のインジケーター */
+/* 吾輩の番中のインジケーター */
 .turn-indicator.my-turn-active {
   background: linear-gradient(135deg, rgba(255,60,0,0.4), rgba(200,50,0,0.3));
   border-color: #ff6600;
@@ -955,7 +962,8 @@ html, body {
       <button class="diff-btn" data-diff="hard">つよい</button>
     </div>
     <button class="btn primary" id="newGameBtn">新しいゲーム</button>
-    <button class="btn okunote" id="okunoteBtn">🃏 リバースカード</button>
+    <button class="btn okunote" id="okunoteBtn">🃏 吾輩の番だが？</button>
+    <div class="okunote-desc" id="okunoteDesc">※2回連続で石を置けるぞ！</div>
   </div>
 </div>
 
@@ -977,7 +985,7 @@ html, body {
 <div class="my-turn-overlay" id="myTurnOverlay">
   <div class="my-turn-bg"></div>
   <div class="my-turn-line top"></div>
-  <div class="my-turn-text">俺のターン<span class="exclamation">！</span></div>
+  <div class="my-turn-text">吾輩の番だが<span class="exclamation">？</span></div>
   <div class="my-turn-line bottom"></div>
 </div>
 
@@ -987,7 +995,7 @@ html, body {
   <div class="eternal-cinema-bottom"></div>
   <div class="eternal-ring"></div>
   <div class="eternal-img"><img src="character.png" alt=""></div>
-  <div class="eternal-text">ずっと俺のターン！</div>
+  <div class="eternal-text">永遠の支配！</div>
   <div class="eternal-sub">― どこにでも置ける ―</div>
 </div>
 
@@ -998,7 +1006,7 @@ html, body {
   <div class="duel-line duel-line-top"></div>
   <div class="duel-line duel-line-bottom"></div>
   <div class="duel-img"><img src="character.png" alt="" style="width:clamp(140px,40vw,260px);filter:drop-shadow(0 0 30px #ff6600) drop-shadow(0 0 60px #cc0000);"></div>
-  <div class="duel-text">デュエルスタンバイ！</div>
+  <div class="duel-text">黒いつぶ設置完了！</div>
 </div>
 
 <div class="allreverse-overlay" id="allreverseOverlay">
@@ -1604,7 +1612,7 @@ html, body {
     });
   });
 
-  // リバースカードボタン
+  // 吾輩の番だが？ボタン
   const duelOverlay = document.getElementById('duelOverlay');
   okunoteBtn.addEventListener('click', () => {
     if (gameOver || cpuThinking || isAnimating || currentPlayer !== BLACK) return;
@@ -1623,14 +1631,14 @@ html, body {
     isAnimating = true;
     okunoTeCount++;
 
-    // まず「デュエルスタンバイ！」演出
+    // 「黒いつぶ設置完了！」演出
     showDuelStandbyEffect();
 
     setTimeout(() => {
       myTurnRemaining = 2; // 2回石を置ける
 
       if (okunoTeCount >= ETERNAL_THRESHOLD) {
-        // ずっと俺のターン！
+        // 永遠の支配！
         eternalMode = true;
         myTurnRemaining = 0;
         showEternalEffect();
@@ -1643,16 +1651,13 @@ html, body {
           isAnimating = false;
         }, 5000);
       } else {
-        // 俺のターン！
-        showMyTurnEffect();
+        // 2回連続行動開始
         spawnSparks(60, ['#ff6600','#ff3300','#ffcc00','#ff9900','#ff0000']);
-        setTimeout(() => {
-          renderBoard();
-          updateTurnForOkunote();
-          isAnimating = false;
-        }, 2000);
+        renderBoard();
+        updateTurnForOkunote();
+        isAnimating = false;
       }
-    }, 2500); // デュエルスタンバイ演出の後
+    }, 2500); // 演出の後
   });
 
   // 永遠モード時、負けていたらボタンをオールリバースに変更
@@ -1747,7 +1752,7 @@ html, body {
     setTimeout(() => allreverseOverlay.classList.remove('show'), 4100);
   }
 
-  // デュエルスタンバイ！演出
+  // 黒いつぶ設置完了！演出
   function showDuelStandbyEffect() {
     duelOverlay.querySelector('.duel-text').textContent = t('duelStandby');
     duelOverlay.classList.remove('show');
@@ -1801,7 +1806,7 @@ html, body {
     setTimeout(() => myTurnOverlay.classList.remove('show'), 2100);
   }
 
-  // ずっと俺のターン演出
+  // 永遠の支配演出
   function showEternalEffect() {
     eternalOverlay.classList.remove('show');
     void eternalOverlay.offsetWidth;
@@ -1881,7 +1886,7 @@ SurrealGames.init('reversi');
 // ===== i18n 初期化 =====
 SurrealI18n.init({
   ja: {
-    title: 'リバーシ',
+    title: 'リバーシマスター',
     yourTurn: 'あなたの番',
     cpuThinking: 'CPU思考中...',
     finished: '終了',
@@ -1899,22 +1904,23 @@ SurrealI18n.init({
     shareOnX: '𝕏 シェア',
     backToHome: '🏠 トップページへ',
     otherGames: '🎮 他のゲームも遊ぶ',
-    okunote: '🃏 リバースカード',
-    myTurn: '俺のターン',
-    myTurnExcl: '！',
-    myTurnRemaining: (n) => `🃏 俺のターン！(残り${n})`,
-    eternalTurn: '∞ ずっと俺のターン ∞',
-    eternalText: 'ずっと俺のターン！',
+    okunote: '🃏 吾輩の番だが？',
+    okunoteDesc: '※2回連続で石を置けるぞ！',
+    myTurn: '吾輩の番だが',
+    myTurnExcl: '？',
+    myTurnRemaining: (n) => `🃏 吾輩の番だが？(残り${n})`,
+    eternalTurn: '∞ 永遠の支配 ∞',
+    eternalText: '永遠の支配！',
     eternalSub: '― どこにでも置ける ―',
-    duelStandby: 'デュエルスタンバイ！',
+    duelStandby: '黒いつぶ設置完了！',
     allReverse: '💀 オールリバース',
     allReverseText: 'オール<br>リバース',
     allReverseSub: '― 全てが黒に染まる ―',
     backToTop: '← トップに戻る',
-    shareResult: (b, w, result) => `【リバーシ】${result} 黒${b} vs 白${w}\n#シュールゲームス`,
+    shareResult: (b, w, result) => `【リバーシマスター】${result} 黒${b} vs 白${w}\n#シュールゲームス`,
   },
   en: {
-    title: 'Reversi',
+    title: 'Reversi Master',
     yourTurn: 'Your Turn',
     cpuThinking: 'CPU thinking...',
     finished: 'Finished',
@@ -1932,19 +1938,20 @@ SurrealI18n.init({
     shareOnX: '𝕏 Share',
     backToHome: '🏠 Home',
     otherGames: '🎮 Play Other Games',
-    okunote: '🃏 Reverse Card',
+    okunote: '🃏 My Turn?',
+    okunoteDesc: '※ Place 2 stones in a row!',
     myTurn: 'MY TURN',
-    myTurnExcl: '!',
-    myTurnRemaining: (n) => `🃏 MY TURN! (${n} left)`,
-    eternalTurn: '∞ ALWAYS MY TURN ∞',
-    eternalText: 'ALWAYS MY TURN!',
+    myTurnExcl: '?',
+    myTurnRemaining: (n) => `🃏 My Turn? (${n} left)`,
+    eternalTurn: '∞ ETERNAL DOMINION ∞',
+    eternalText: 'ETERNAL DOMINION!',
     eternalSub: '― Place anywhere ―',
-    duelStandby: 'DUEL, STANDBY!',
+    duelStandby: 'BLACK STONE PLACED!',
     allReverse: '💀 ALL REVERSE',
     allReverseText: 'ALL<br>REVERSE',
     allReverseSub: '― Everything turns black ―',
     backToTop: '← Back to Top',
-    shareResult: (b, w, result) => `[Reversi] ${result} Black ${b} vs White ${w}\n#SurrealGames`,
+    shareResult: (b, w, result) => `[Reversi Master] ${result} Black ${b} vs White ${w}\n#SurrealGames`,
   },
 }, {
   onLangChange: updateAllTexts
@@ -1964,11 +1971,12 @@ function updateAllTexts() {
   document.getElementById('newGameBtn').textContent = t('newGame');
   const okunoteBtn = document.getElementById('okunoteBtn');
   if (!okunoteBtn.disabled) okunoteBtn.textContent = t('okunote');
+  document.getElementById('okunoteDesc').textContent = t('okunoteDesc');
   // リザルト
   document.getElementById('resultNewGame').textContent = t('playAgain');
   document.getElementById('resultShare').textContent = t('shareOnX');
   document.getElementById('resultHome').textContent = t('backToHome');
-  // 俺のターン演出テキスト
+  // 演出テキスト
   document.querySelector('.my-turn-text').innerHTML = t('myTurn') + '<span class="exclamation">' + t('myTurnExcl') + '</span>';
   document.querySelector('.eternal-text').textContent = t('eternalText');
   document.querySelector('.eternal-sub').textContent = t('eternalSub');
