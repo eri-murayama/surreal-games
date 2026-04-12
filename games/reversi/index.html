@@ -2089,7 +2089,8 @@ html, body {
 <script src="../common/i18n.js"></script>
 <script src="../common/game-common.js"></script>
 <script>
-SurrealGames.init('reversi');
+const sg = SurrealGames.init('reversi');
+sg.onGameStart();
 
 // ===== i18n 初期化 =====
 SurrealI18n.init({

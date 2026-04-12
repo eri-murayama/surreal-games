@@ -609,6 +609,8 @@
     bgmGain: null,       // BGM専用GainNode（ダッキング用）
     _duckTimer: null,
 
+    _pendingBgm: null,  // ctx生成前にplayBgmが呼ばれた場合の保留プリセット名
+
     init() {
       const initAudio = () => {
         if (!this.ctx) {
@@ -620,6 +622,12 @@
         document.removeEventListener('click', initAudio);
         document.removeEventListener('touchstart', initAudio);
         document.removeEventListener('pointerdown', initAudio);
+
+        // ctx生成前に呼ばれたplayBgmを再実行
+        if (this._pendingBgm && this.enabled) {
+          this.playBgm(this._pendingBgm);
+          this._pendingBgm = null;
+        }
       };
       document.addEventListener('click', initAudio);
       document.addEventListener('touchstart', initAudio);
@@ -667,7 +675,11 @@
     playBgm(presetName) {
       if (!this.enabled) return;
       this._ensureCtx();
-      if (!this.ctx) return;
+      if (!this.ctx) {
+        // ctx未生成（ユーザー操作前）→ 保留して後で再生
+        this._pendingBgm = presetName;
+        return;
+      }
       const preset = BGM_PRESETS[presetName];
       if (!preset) return;
       this.stopBgm();
