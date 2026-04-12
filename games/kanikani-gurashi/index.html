@@ -168,7 +168,8 @@ SurrealI18n.init({
     backToTop: '← Back to Top'
   }
 });
-SurrealGames.init('kanikani-gurashi');
+var _sgResult = SurrealGames.init('kanikani-gurashi');
+if (window._kanikaniSetSG) window._kanikaniSetSG(_sgResult);
 </script>
 </body>
 </html>
