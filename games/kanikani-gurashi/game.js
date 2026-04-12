@@ -364,9 +364,12 @@
     drag = {
       fromIdx: fromIdx,
       el: itemEl,
+      pointerId: e.pointerId,
       startX: e.clientX,
       startY: e.clientY,
     };
+    // ポインターキャプチャでモバイルでも確実にイベントを追跡
+    try { itemEl.setPointerCapture(e.pointerId); } catch (_) {}
     itemEl.classList.add('dragging');
     itemEl.style.transition = 'none';
     document.addEventListener('pointermove', onDragMove);
@@ -376,6 +379,9 @@
 
   function onDragMove(e) {
     if (!drag) return;
+    e.preventDefault();
+    drag.lastX = e.clientX;
+    drag.lastY = e.clientY;
     const dx = e.clientX - drag.startX;
     const dy = e.clientY - drag.startY;
     drag.el.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(1.15)';
@@ -407,8 +413,13 @@
     document.removeEventListener('pointermove', onDragMove);
     document.removeEventListener('pointerup', onDragEnd);
     document.removeEventListener('pointercancel', onDragEnd);
+    // ポインターキャプチャを解放
+    try { drag.el.releasePointerCapture(drag.pointerId); } catch (_) {}
     drag.el.style.pointerEvents = 'none';
-    const target = document.elementFromPoint(e.clientX, e.clientY);
+    // pointercancel時はclientX/Yが0になる場合があるので最後の位置を使う
+    var cx = e.clientX || drag.lastX || drag.startX;
+    var cy = e.clientY || drag.lastY || drag.startY;
+    const target = document.elementFromPoint(cx, cy);
     drag.el.style.pointerEvents = '';
     const cell = target && target.closest && target.closest('.cell');
     let toIdx = -1;
