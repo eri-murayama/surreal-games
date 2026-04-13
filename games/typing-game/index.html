@@ -16,13 +16,18 @@
   gtag('js', new Date());
   gtag('config', 'G-K8QFB33PX7');
 </script>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../common/game-common.css">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  font-family: 'Zen Maru Gothic', sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%, #fff4fa 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, #fef6e4 0%, transparent 45%),
+    linear-gradient(160deg, #ffd6e7 0%, #ffe6f3 40%, #e6f4ff 100%);
+  color: #5a3a4a;
+  font-family: 'M PLUS Rounded 1c', 'Zen Maru Gothic', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,174 +38,421 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  position: relative;
 }
-.screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+
+/* ぷかぷか浮かぶ背景装飾 */
+.bg-deco {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.8rem;
+  opacity: 0.55;
+  animation: float-deco 6s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(255, 150, 200, 0.3));
+}
+.bg-deco.d1 { top: 8%; left: 8%; animation-delay: 0s; }
+.bg-deco.d2 { top: 14%; right: 10%; animation-delay: 1.2s; font-size: 1.4rem; }
+.bg-deco.d3 { bottom: 18%; left: 6%; animation-delay: 2.4s; font-size: 1.6rem; }
+.bg-deco.d4 { bottom: 10%; right: 8%; animation-delay: 3.6s; }
+.bg-deco.d5 { top: 45%; left: 4%; animation-delay: 4.8s; font-size: 1.3rem; }
+.bg-deco.d6 { top: 50%; right: 5%; animation-delay: 0.6s; font-size: 1.3rem; }
+@keyframes float-deco {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-14px) rotate(5deg); }
+}
+
+.screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; position: relative; z-index: 2; }
 .screen.active { display: flex; }
 
+/* タイトル画面 */
 #title-screen h1 {
-  font-size: clamp(1.8rem, 7vw, 2.8rem);
-  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  margin-bottom: 0.3em;
+  font-size: clamp(1.9rem, 7.5vw, 3rem);
+  font-weight: 900;
+  color: #ff5c9c;
+  text-shadow:
+    2px 2px 0 #fff,
+    4px 4px 0 #ffc0d8,
+    6px 6px 18px rgba(255, 100, 160, 0.35);
+  margin-bottom: 0.2em;
+  letter-spacing: 0.02em;
+  animation: title-bounce 2.4s ease-in-out infinite;
+}
+@keyframes title-bounce {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
 }
 #title-screen .subtitle {
-  font-size: clamp(0.85rem, 3vw, 1.1rem);
-  opacity: 0.85;
-  margin-bottom: 2em;
+  font-size: clamp(0.9rem, 3.2vw, 1.15rem);
+  color: #a06080;
+  margin-bottom: 1.2em;
+  font-weight: 700;
 }
+
+/* かにかにキャラクター（タイトル画面で大きく表示） */
+.kanikani-character {
+  width: clamp(140px, 36vw, 200px);
+  height: clamp(140px, 36vw, 200px);
+  margin: 0 auto 0.6em;
+  background-image: url('kanikani-typing.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  animation: kani-bounce 1.6s ease-in-out infinite;
+}
+/* 画像がまだ無い場合のフォールバック絵文字 */
+.kanikani-character::after {
+  content: '🦀⌨️';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(3rem, 10vw, 4.8rem);
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(255, 120, 170, 0.35));
+}
+/* 画像が読み込まれたらフォールバックを隠す */
+.kanikani-character.loaded::after { display: none; }
+
+@keyframes kani-bounce {
+  0%, 100% { transform: translateY(0) rotate(-3deg) scale(1); }
+  50% { transform: translateY(-8px) rotate(3deg) scale(1.03); }
+}
+
 .start-btn {
   font-family: inherit;
-  font-size: 1.2rem;
-  padding: 0.8em 2.5em;
-  border: 2px solid #fff;
-  background: rgba(255,255,255,0.15);
+  font-size: 1.25rem;
+  font-weight: 900;
+  padding: 0.85em 2.6em;
+  border: none;
+  background: linear-gradient(180deg, #ff7cb0 0%, #ff4e90 100%);
   color: #fff;
-  border-radius: 50px;
+  border-radius: 999px;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: all 0.3s;
+  box-shadow:
+    0 6px 0 #c92d6a,
+    0 10px 20px rgba(255, 100, 160, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 4px rgba(170, 40, 90, 0.35);
 }
-.start-btn:hover, .start-btn:active { background: #fff; color: #764ba2; }
+.start-btn:hover { transform: translateY(-2px); }
+.start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c92d6a, 0 4px 10px rgba(255, 100, 160, 0.3); }
 
-/* Game screen */
-#game-screen { width: 100%; max-width: 600px; }
+/* ゲーム画面 */
+#game-screen { width: 100%; max-width: 620px; }
+
+/* 小さなかにかに（ゲーム画面用） */
+.kanikani-mini {
+  width: clamp(70px, 18vw, 96px);
+  height: clamp(70px, 18vw, 96px);
+  background-image: url('kanikani-typing.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  margin: 0 auto 4px;
+  animation: kani-type 0.5s ease-in-out infinite;
+}
+.kanikani-mini::after {
+  content: '🦀⌨️';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  line-height: 1;
+}
+.kanikani-mini.loaded::after { display: none; }
+.kanikani-mini.cheer { animation: kani-cheer 0.5s ease-out; }
+@keyframes kani-type {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3px) rotate(2deg); }
+}
+@keyframes kani-cheer {
+  0% { transform: scale(1) rotate(0); }
+  30% { transform: scale(1.2) rotate(-8deg); }
+  60% { transform: scale(1.15) rotate(8deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
 .timer-bar {
   width: 100%;
-  height: 6px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 3px;
-  margin-bottom: 20px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  margin-bottom: 12px;
   overflow: hidden;
+  border: 2px solid #ffb6d1;
+  box-shadow: inset 0 2px 4px rgba(255, 150, 190, 0.25);
 }
 .timer-bar-inner {
   height: 100%;
-  background: #ffdd57;
-  border-radius: 3px;
+  background: linear-gradient(90deg, #ffd86b, #ff7cb0, #b47cff);
+  border-radius: 999px;
   transition: width 0.1s linear;
+  box-shadow: 0 0 10px rgba(255, 180, 210, 0.7);
 }
+
 .stats-row {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 15px;
-  font-size: 0.9rem;
-  opacity: 0.9;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #7a2a52;
 }
+.stats-row span {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 2px solid #ffb6d1;
+  box-shadow: 0 2px 0 #ffb6d1;
+}
+
+.word-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid #ffb6d1;
+  border-radius: 24px;
+  padding: 18px 16px 14px;
+  box-shadow:
+    0 8px 0 #ffb6d1,
+    0 14px 32px rgba(255, 140, 180, 0.35);
+  width: 100%;
+  margin-bottom: 14px;
+  position: relative;
+}
+.word-card::before {
+  content: '♡';
+  position: absolute;
+  top: -14px;
+  left: 16px;
+  background: #ff7cb0;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(255, 100, 160, 0.4);
+}
+.word-card::after {
+  content: '♡';
+  position: absolute;
+  top: -14px;
+  right: 16px;
+  background: #b47cff;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(180, 120, 255, 0.4);
+}
+
 .word-japanese {
-  font-size: clamp(1.1rem, 4.5vw, 1.7rem);
-  font-weight: 700;
+  font-size: clamp(1.2rem, 4.8vw, 1.8rem);
+  font-weight: 900;
   min-height: 1.4em;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   word-break: break-word;
-  line-height: 1.45;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.25);
-  max-width: 100%;
+  line-height: 1.4;
+  color: #7a2a52;
+  text-shadow: 1px 1px 0 #fff;
 }
 .word-romaji {
-  font-family: 'Courier New', monospace;
-  font-size: clamp(1.05rem, 4vw, 1.55rem);
-  font-weight: 700;
+  font-family: 'Courier New', 'M PLUS Rounded 1c', monospace;
+  font-size: clamp(1.05rem, 4.2vw, 1.6rem);
+  font-weight: 900;
   letter-spacing: 0.04em;
-  margin-bottom: 18px;
   min-height: 1.5em;
   word-break: break-all;
   line-height: 1.5;
-  max-width: 100%;
 }
-.word-romaji .correct { color: #a5ffa5; }
-.word-romaji .current { color: #ffdd57; text-decoration: underline; }
-.word-romaji .remaining { color: rgba(255,255,255,0.6); }
+.word-romaji .correct { color: #ff4e90; }
+.word-romaji .current { color: #ff7a00; text-decoration: underline wavy #ffb84d; }
+.word-romaji .remaining { color: #b898ac; }
+
 .input-area {
   font-family: 'Courier New', monospace;
   font-size: clamp(1rem, 3.5vw, 1.3rem);
   padding: 10px 18px;
   width: 90%;
   max-width: 400px;
-  border: 2px solid rgba(255,255,255,0.4);
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-  border-radius: 12px;
+  border: 3px solid #ffb6d1;
+  background: rgba(255, 255, 255, 0.92);
+  color: #7a2a52;
+  border-radius: 16px;
   text-align: right;
   outline: none;
-  backdrop-filter: blur(8px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #ffb6d1;
 }
-.input-area:focus { border-color: #ffdd57; }
+.input-area:focus { border-color: #ff7cb0; box-shadow: 0 4px 0 #ff7cb0, 0 0 0 4px rgba(255, 124, 176, 0.2); }
+
 .combo-display {
-  font-size: 1rem;
-  color: #ffdd57;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ff4e90;
   margin-top: 10px;
-  min-height: 1.5em;
+  min-height: 1.6em;
+  text-shadow: 1px 1px 0 #fff, 2px 2px 0 #ffc0d8;
   transition: transform 0.15s;
 }
 
-/* Result screen */
+/* リザルト画面 */
 #result-screen h2 {
-  font-size: clamp(1.4rem, 5vw, 2rem);
-  margin-bottom: 0.5em;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  color: #ff4e90;
+  font-weight: 900;
+  margin-bottom: 0.3em;
+  text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffc0d8;
 }
 .result-score {
-  font-size: clamp(3rem, 10vw, 4.5rem);
+  font-size: clamp(3rem, 11vw, 5rem);
   font-weight: 900;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  color: #ff4e90;
+  text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffc0d8, 6px 6px 18px rgba(255, 100, 160, 0.4);
+  line-height: 1;
 }
-.result-label { opacity: 0.8; margin-bottom: 0.5em; }
+.result-label { color: #a06080; margin-bottom: 0.5em; font-weight: 700; }
 .result-stats {
   display: flex;
-  gap: 20px;
-  margin: 1em 0 1.5em;
+  gap: 16px;
+  margin: 1em 0 1.2em;
   font-size: 0.9rem;
-  opacity: 0.85;
+  color: #7a2a52;
+  font-weight: 700;
 }
-.result-stats div { text-align: center; }
+.result-stats div {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid #ffb6d1;
+  border-radius: 16px;
+  padding: 8px 14px;
+  box-shadow: 0 3px 0 #ffb6d1;
+}
 .result-stats .num {
   display: block;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ff4e90;
 }
 #result-screen button {
   font-family: inherit;
   font-size: 1rem;
+  font-weight: 900;
   padding: 0.7em 2em;
-  border: 2px solid #fff;
-  background: rgba(255,255,255,0.15);
+  border: none;
+  background: linear-gradient(180deg, #ff7cb0 0%, #ff4e90 100%);
   color: #fff;
-  border-radius: 50px;
+  border-radius: 999px;
   cursor: pointer;
   margin: 0.3em;
-  backdrop-filter: blur(8px);
-  transition: all 0.3s;
+  box-shadow: 0 4px 0 #c92d6a, 0 6px 14px rgba(255, 100, 160, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.04em;
 }
-#result-screen button:hover, #result-screen button:active { background: #fff; color: #764ba2; }
+#result-screen button:hover { transform: translateY(-2px); }
+#result-screen button:active { transform: translateY(3px); box-shadow: 0 1px 0 #c92d6a, 0 3px 8px rgba(255, 100, 160, 0.3); }
+
 .back-to-top-link {
   position: fixed;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255,255,255,0.5);
-  font-size: 0.75rem;
+  color: #a06080;
+  font-size: 0.8rem;
   text-decoration: none;
   z-index: 100;
+  font-weight: 700;
+}
+
+/* 浮かぶハート・星エフェクト */
+.float-pop {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.4rem;
+  z-index: 999;
+  animation: float-pop 1s ease-out forwards;
+  filter: drop-shadow(0 2px 4px rgba(255, 150, 200, 0.5));
+}
+@keyframes float-pop {
+  0% { transform: translate(-50%, 0) scale(0.5) rotate(0deg); opacity: 0; }
+  20% { opacity: 1; transform: translate(-50%, -10px) scale(1.2) rotate(-10deg); }
+  100% { transform: translate(-50%, -80px) scale(0.9) rotate(20deg); opacity: 0; }
+}
+
+/* キラキラバースト */
+.sparkle-burst {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.6rem;
+  z-index: 999;
+  animation: sparkle-burst 0.9s ease-out forwards;
+}
+@keyframes sparkle-burst {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  30% { opacity: 1; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.3); }
+  100% { transform: translate(calc(-50% + var(--dx) * 1.6), calc(-50% + var(--dy) * 1.6)) scale(0.6); opacity: 0; }
+}
+
+/* ワードカードをワンテンポ跳ねさせる */
+.word-card.clear-burst { animation: card-burst 0.45s ease-out; }
+@keyframes card-burst {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.06) rotate(-1deg); box-shadow: 0 10px 0 #ff7cb0, 0 20px 40px rgba(255, 100, 160, 0.5); }
+  100% { transform: scale(1); }
+}
+
+.word-card.wrong-shake { animation: card-shake 0.3s ease-in-out; }
+@keyframes card-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
 </style>
 </head>
 <body>
 
+<div class="bg-deco d1">♡</div>
+<div class="bg-deco d2">✿</div>
+<div class="bg-deco d3">★</div>
+<div class="bg-deco d4">♡</div>
+<div class="bg-deco d5">✦</div>
+<div class="bg-deco d6">✿</div>
+
 <div id="title-screen" class="screen active">
+  <div class="kanikani-character" id="kanikani-title"></div>
   <h1>⌨️ シュールタイピング</h1>
-  <p class="subtitle" data-i18n="subtitle">シュールなお題をタイピングしまくれ！</p>
+  <p class="subtitle" data-i18n="subtitle">かにかにと一緒にタイピング！</p>
   <button class="start-btn" id="start-btn" data-i18n="startBtn">スタート</button>
 </div>
 
 <div id="game-screen" class="screen">
+  <div class="kanikani-mini" id="kanikani-game"></div>
   <div class="timer-bar"><div class="timer-bar-inner" id="timer-bar"></div></div>
   <div class="stats-row">
     <span id="hud-score" data-i18n="score">スコア: 0</span>
     <span id="hud-time" data-i18n="time">残り: 60s</span>
   </div>
-  <div class="word-japanese" id="word-japanese"></div>
-  <div class="word-romaji" id="word-romaji"></div>
+  <div class="word-card" id="word-card">
+    <div class="word-japanese" id="word-japanese"></div>
+    <div class="word-romaji" id="word-romaji"></div>
+  </div>
   <input type="text" class="input-area" id="input-area" autocomplete="off" autocapitalize="off" spellcheck="false">
   <div class="combo-display" id="combo-display"></div>
 </div>
@@ -223,10 +475,16 @@ body {
 (function(){
   'use strict';
 
-  // ゲーム一覧の8タイトルから連想されるお題プール（後半ほど長文）
-  // ローマ字はヘボン式（shi/chi/tsu/ji/sha/cho/fu）でユーザーが自然に打ちやすい形
+  // かにかに画像が読み込めたらフォールバック絵文字を隠す
+  const kaniImg = new Image();
+  kaniImg.onload = () => {
+    document.querySelectorAll('.kanikani-character, .kanikani-mini').forEach(el => el.classList.add('loaded'));
+  };
+  kaniImg.src = 'kanikani-typing.png';
+
+  // ===== お題プール =====
   const WORD_POOLS = [
-    // Tier 0: 超ショート（ウォームアップ）
+    // Tier 0
     [
       { ja: 'うんこ', romaji: 'unko' },
       { ja: 'うんち', romaji: 'unchi' },
@@ -240,7 +498,7 @@ body {
       { ja: '黄金', romaji: 'ougon' },
       { ja: '腹筋', romaji: 'fukkin' },
     ],
-    // Tier 1: ショート（ゲームのキーワード）
+    // Tier 1
     [
       { ja: 'シュール', romaji: 'shu-ru' },
       { ja: 'ヤクザ', romaji: 'yakuza' },
@@ -255,7 +513,7 @@ body {
       { ja: '戯れ', romaji: 'tawamure' },
       { ja: '夢の中', romaji: 'yumenonaka' },
     ],
-    // Tier 2: ミディアム（タイトル＋名台詞フレーズ）
+    // Tier 2
     [
       { ja: 'シュール進化論', romaji: 'shu-rushinkaron' },
       { ja: 'かにかにパニック', romaji: 'kanikanipanikku' },
@@ -269,7 +527,7 @@ body {
       { ja: '数字に愛されるオレ', romaji: 'suujiniaisareruore' },
       { ja: '永久に吾輩の番だ', romaji: 'eikyuuniwagahainobanda' },
     ],
-    // Tier 3: 長文（ゲーム説明文・名台詞）
+    // Tier 3
     [
       { ja: '本当の恐怖はここにある', romaji: 'hontounokyoufuhakokoniaru' },
       { ja: '地雷を探して霊を成仏させろ', romaji: 'jiraiwosagashitereiwojoubutsusasero' },
@@ -282,7 +540,7 @@ body {
       { ja: '気が付いたらかわいい部屋にいた', romaji: 'kigatsuitarakawaiiheyaniita' },
       { ja: '空から落ちてくるソフトクリーム', romaji: 'sorakaraochitekurusofutokuri-mu' },
     ],
-    // Tier 4: 超長文（後半のラスボスゾーン）
+    // Tier 4
     [
       { ja: 'はさみがないと何もできない愚かな動物', romaji: 'hasamiganaitonanimodekinaiorokanadoubutsu' },
       { ja: 'シュールでキュートなキャラクターたちを合体して進化させろ', romaji: 'shu-rudekyu-tonakyarakuta-tachiwogattaishiteshinkasasero' },
@@ -296,19 +554,93 @@ body {
     ],
   ];
 
+  // ===== ローマ字トークナイザ =====
+  // 既存のヘボン式ローマ字文字列を「ユニット列」に変換する。
+  // 各ユニットは入力可能な綴りの配列（例: shi → ['shi','si']）。
+  // これで shi/si, chi/ti, tsu/tu, fu/hu, ja/zya, など複数の打ち方に対応できる。
+  const DIGRAPH3 = {
+    shi: ['shi','si'], chi: ['chi','ti'], tsu: ['tsu','tu'],
+    sha: ['sha','sya'], shu: ['shu','syu'], sho: ['sho','syo'],
+    cha: ['cha','tya','cya'], chu: ['chu','tyu','cyu'], cho: ['cho','tyo','cyo'],
+    kya: ['kya'], kyu: ['kyu'], kyo: ['kyo'],
+    gya: ['gya'], gyu: ['gyu'], gyo: ['gyo'],
+    nya: ['nya'], nyu: ['nyu'], nyo: ['nyo'],
+    hya: ['hya'], hyu: ['hyu'], hyo: ['hyo'],
+    bya: ['bya'], byu: ['byu'], byo: ['byo'],
+    pya: ['pya'], pyu: ['pyu'], pyo: ['pyo'],
+    mya: ['mya'], myu: ['myu'], myo: ['myo'],
+    rya: ['rya'], ryu: ['ryu'], ryo: ['ryo'],
+  };
+  const DIGRAPH2 = {
+    ja: ['ja','zya','jya'], ji: ['ji','zi'], ju: ['ju','zyu','jyu'], jo: ['jo','zyo','jyo'],
+    fu: ['fu','hu'],
+  };
+  const VOWELS = 'aiueo';
+  const CONSONANTS = 'kstnhmyrwgzdbpcfjv';
+
+  function tokenize(romaji) {
+    const s = romaji.toLowerCase();
+    const units = [];
+    let i = 0;
+    while (i < s.length) {
+      const c1 = s[i];
+      const c2 = s[i+1] || '';
+      const c3 = s[i+2] || '';
+      const three = c1 + c2 + c3;
+      const two = c1 + c2;
+
+      // 3文字デジラフ
+      if (DIGRAPH3[three]) { units.push(DIGRAPH3[three].slice()); i += 3; continue; }
+      // nn（ん） → n または nn で入力可
+      if (c1 === 'n' && c2 === 'n') { units.push(['n','nn']); i += 2; continue; }
+      // 2文字デジラフ
+      if (DIGRAPH2[two]) { units.push(DIGRAPH2[two].slice()); i += 2; continue; }
+      // 小さい「っ」: 子音が2つ連続 → 最初の子音だけを独立ユニットとして分離
+      if (c1 === c2 && CONSONANTS.includes(c1) && c1 !== 'n') {
+        units.push([c1]);
+        i += 1;
+        continue;
+      }
+      // ん: 子音の前 or 語末
+      if (c1 === 'n' && (c2 === '' || (CONSONANTS.includes(c2) && c2 !== 'y'))) {
+        units.push(['n','nn']);
+        i += 1;
+        continue;
+      }
+      // 子音＋母音（標準2文字）
+      if (CONSONANTS.includes(c1) && VOWELS.includes(c2)) {
+        units.push([two]);
+        i += 2;
+        continue;
+      }
+      // 単独母音・長音記号・その他1文字
+      units.push([c1]);
+      i += 1;
+    }
+    return units;
+  }
+
+  // 任意のユニット配列に対する「代表形（主な綴り）」を連結した文字列を返す
+  function primaryFull(units) {
+    return units.map(u => u[0]).join('');
+  }
+
   const GAME_TIME = 60;
-  let score, combo, maxCombo, wordsCleared, timeLeft, timerInterval, currentWord, typedIndex;
+  let score, combo, maxCombo, wordsCleared, timeLeft, timerInterval, currentWord;
+  let currentUnits, currentUnitIdx, currentUnitTyped, committedText;
   let gameRunning = false;
   let recentJa = [];
 
   const titleScreen = document.getElementById('title-screen');
   const gameScreen = document.getElementById('game-screen');
   const resultScreen = document.getElementById('result-screen');
+  const wordCard = document.getElementById('word-card');
   const wordJapanese = document.getElementById('word-japanese');
   const wordRomaji = document.getElementById('word-romaji');
   const inputArea = document.getElementById('input-area');
   const comboDisplay = document.getElementById('combo-display');
   const timerBar = document.getElementById('timer-bar');
+  const kaniGame = document.getElementById('kanikani-game');
 
   function pickTier() {
     if (wordsCleared < 3) return 0;
@@ -332,21 +664,47 @@ body {
 
   function nextWord() {
     currentWord = pickWord();
-    typedIndex = 0;
+    currentUnits = tokenize(currentWord.romaji);
+    currentUnitIdx = 0;
+    currentUnitTyped = '';
+    committedText = '';
     wordJapanese.textContent = currentWord.ja;
     renderWord();
     inputArea.value = '';
   }
 
   function renderWord() {
-    const chars = currentWord.romaji.split('');
+    // 表示文字列:
+    //   - committedText: 既に確定した綴り
+    //   - currentUnitTyped: 現在ユニットの入力途中
+    //   - 残りユニット: 代表形の連結
+    const remaining = currentUnits.slice(currentUnitIdx + (currentUnitTyped === '' ? 0 : 1));
+    // currentUnitTyped を含む場合、currentUnitIdx のユニットは「今打ってる途中」なので rest から除外
     let html = '';
-    chars.forEach((c, i) => {
-      if (i < typedIndex) html += '<span class="correct">' + c + '</span>';
-      else if (i === typedIndex) html += '<span class="current">' + c + '</span>';
-      else html += '<span class="remaining">' + c + '</span>';
-    });
+    if (committedText) html += '<span class="correct">' + escapeHtml(committedText) + '</span>';
+    if (currentUnitIdx < currentUnits.length) {
+      const currentUnit = currentUnits[currentUnitIdx];
+      // 現在ユニットのうち、既に打った部分を緑、残りを代表形から取って remaining 色で
+      const candidate = currentUnit.find(alt => alt.startsWith(currentUnitTyped)) || currentUnit[0];
+      if (currentUnitTyped) {
+        html += '<span class="correct">' + escapeHtml(currentUnitTyped) + '</span>';
+      }
+      const rest = candidate.slice(currentUnitTyped.length);
+      if (rest) {
+        html += '<span class="current">' + escapeHtml(rest[0]) + '</span>';
+        if (rest.length > 1) html += '<span class="remaining">' + escapeHtml(rest.slice(1)) + '</span>';
+      }
+      // さらに先のユニット
+      const laterUnits = currentUnits.slice(currentUnitIdx + 1);
+      if (laterUnits.length) {
+        html += '<span class="remaining">' + escapeHtml(primaryFull(laterUnits)) + '</span>';
+      }
+    }
     wordRomaji.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   }
 
   function updateHUD() {
@@ -356,12 +714,52 @@ body {
     document.getElementById('hud-time').textContent = timePrefix + ': ' + timeLeft + 's';
     timerBar.style.width = (timeLeft / GAME_TIME * 100) + '%';
     if (combo >= 2) {
-      comboDisplay.textContent = '🔥 ' + combo + ' COMBO!';
+      comboDisplay.textContent = '🔥 ' + combo + ' コンボ!';
       comboDisplay.style.transform = 'scale(1.15)';
       setTimeout(() => comboDisplay.style.transform = 'scale(1)', 100);
     } else {
       comboDisplay.textContent = '';
     }
+  }
+
+  // ===== エフェクト =====
+  function spawnFloatPop(emoji) {
+    const el = document.createElement('div');
+    el.className = 'float-pop';
+    el.textContent = emoji;
+    const rect = wordCard.getBoundingClientRect();
+    const x = rect.left + rect.width / 2 + (Math.random() - 0.5) * rect.width * 0.6;
+    const y = rect.top + rect.height / 2;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  }
+
+  function spawnSparkleBurst() {
+    const rect = wordCard.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const emojis = ['✨', '♡', '★', '✿', '💖', '⭐'];
+    for (let i = 0; i < 10; i++) {
+      const el = document.createElement('div');
+      el.className = 'sparkle-burst';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = cx + 'px';
+      el.style.top = cy + 'px';
+      const angle = (Math.PI * 2 * i) / 10 + Math.random() * 0.3;
+      const dist = 60 + Math.random() * 40;
+      el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      el.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 900);
+    }
+  }
+
+  // ===== SE =====
+  function playSE(type) {
+    if (typeof SurrealGames === 'undefined' || !SurrealGames.SoundSystem) return;
+    SurrealGames.SoundSystem.play(type);
   }
 
   function startGame() {
@@ -376,6 +774,11 @@ body {
     updateHUD();
     inputArea.value = '';
     inputArea.focus();
+    // BGM開始（かにかにパニックと同じ pop プリセット）
+    if (typeof SurrealGames !== 'undefined' && SurrealGames.SoundSystem) {
+      SurrealGames.SoundSystem.play('start');
+      SurrealGames.SoundSystem.playBgm('pop');
+    }
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       timeLeft--;
@@ -392,33 +795,102 @@ body {
     document.getElementById('final-score').textContent = score;
     document.getElementById('stat-words').textContent = wordsCleared;
     document.getElementById('stat-combo').textContent = maxCombo;
-    if (typeof SurrealGames !== 'undefined') SurrealGames.reportScore(score);
+    // BGM停止 & リザルトSE
+    if (typeof SurrealGames !== 'undefined' && SurrealGames.SoundSystem) {
+      SurrealGames.SoundSystem.stopBgm();
+      SurrealGames.SoundSystem.play('result');
+    }
+    // ハイスコア記録
+    if (typeof SurrealGames !== 'undefined' && SurrealGames.HighScore) {
+      SurrealGames.HighScore.set('typing-game', score, { maxCombo: maxCombo });
+    }
+  }
+
+  // ===== 入力処理 =====
+  // 現在のユニットを「committedText に追加して次へ」と処理
+  function advanceUnit(committed) {
+    committedText += committed;
+    currentUnitIdx++;
+    currentUnitTyped = '';
   }
 
   inputArea.addEventListener('input', () => {
     if (!gameRunning) return;
-    const val = inputArea.value.toLowerCase();
-    const target = currentWord.romaji;
+    const raw = inputArea.value.toLowerCase();
+    // 新しく追加された文字数を計算
+    const expectedSoFar = committedText + currentUnitTyped;
+    if (!raw.startsWith(expectedSoFar)) {
+      // バックスペース等：state を巻き戻して入力欄を正規化
+      inputArea.value = expectedSoFar;
+      return;
+    }
+    const addedChars = raw.slice(expectedSoFar.length);
+    let anyCorrect = false;
+    let anyWrong = false;
 
-    if (target.startsWith(val)) {
-      typedIndex = val.length;
-      renderWord();
-      if (val === target) {
-        combo++;
-        if (combo > maxCombo) maxCombo = combo;
-        const comboBonus = Math.floor(combo / 3) * 5;
-        const lengthBonus = Math.floor(target.length / 2);
-        score += 5 + lengthBonus + comboBonus;
-        wordsCleared++;
-        updateHUD();
-        nextWord();
+    for (const ch of addedChars) {
+      if (currentUnitIdx >= currentUnits.length) break;
+      const tryTyped = currentUnitTyped + ch;
+      const unit = currentUnits[currentUnitIdx];
+      // 完全一致するか？
+      const exact = unit.find(alt => alt === tryTyped);
+      // プレフィックスとして有効か？
+      const hasPrefix = unit.some(alt => alt.startsWith(tryTyped));
+      if (exact) {
+        advanceUnit(tryTyped);
+        anyCorrect = true;
+      } else if (hasPrefix) {
+        currentUnitTyped = tryTyped;
+        anyCorrect = true;
+      } else {
+        anyWrong = true;
+        break;
       }
-    } else {
+    }
+
+    if (anyWrong) {
       combo = 0;
-      inputArea.value = target.substring(0, typedIndex);
+      inputArea.value = committedText + currentUnitTyped;
+      playSE('wrong');
+      wordCard.classList.remove('wrong-shake');
+      void wordCard.offsetWidth;
+      wordCard.classList.add('wrong-shake');
       updateHUD();
+      return;
+    }
+
+    if (anyCorrect) {
+      playSE('tap');
+      inputArea.value = committedText + currentUnitTyped;
+      renderWord();
+      // ランダムにハート/星を浮かせる（派手すぎない程度に）
+      if (Math.random() < 0.5) spawnFloatPop(['♡', '✿', '✨', '★'][Math.floor(Math.random() * 4)]);
+    }
+
+    // 単語クリア？
+    if (currentUnitIdx >= currentUnits.length) {
+      combo++;
+      if (combo > maxCombo) maxCombo = combo;
+      const romajiLen = primaryFull(currentUnits).length;
+      const comboBonus = Math.floor(combo / 3) * 5;
+      const lengthBonus = Math.floor(romajiLen / 2);
+      score += 5 + lengthBonus + comboBonus;
+      wordsCleared++;
+      playSE(combo >= 3 ? 'combo' : 'correct');
+      spawnSparkleBurst();
+      wordCard.classList.remove('clear-burst');
+      void wordCard.offsetWidth;
+      wordCard.classList.add('clear-burst');
+      kaniGame.classList.remove('cheer');
+      void kaniGame.offsetWidth;
+      kaniGame.classList.add('cheer');
+      updateHUD();
+      nextWord();
     }
   });
+
+  // 物理キーボードからのフォールバック（input イベントが拾えない場合に備えて focus 維持）
+  gameScreen.addEventListener('click', () => { if (gameRunning) inputArea.focus(); });
 
   document.getElementById('start-btn').addEventListener('click', startGame);
   document.getElementById('retry-btn').addEventListener('click', startGame);
@@ -428,8 +900,8 @@ body {
 <script src="../common/game-common.js"></script>
 <script>
 SurrealI18n.init({
-  ja: { subtitle:'シュールなお題をタイピングしまくれ！', startBtn:'スタート', resultTitle:'タイムアップ！', resultLabel:'ポイント', wordsCleared:'クリア語数', maxCombo:'最大コンボ', retryBtn:'もう一度', scorePrefix:'スコア', timePrefix:'残り', backToTop:'← トップに戻る' },
-  en: { subtitle:'Type surreal words as fast as you can!', startBtn:'START', resultTitle:'Time\'s Up!', resultLabel:'Points', wordsCleared:'Words', maxCombo:'Max Combo', retryBtn:'Retry', scorePrefix:'Score', timePrefix:'Time', backToTop:'← Back to Top' }
+  ja: { subtitle:'かにかにと一緒にタイピング！', startBtn:'スタート', resultTitle:'タイムアップ！', resultLabel:'ポイント', wordsCleared:'クリア語数', maxCombo:'最大コンボ', retryBtn:'もう一度', scorePrefix:'スコア', timePrefix:'残り', backToTop:'← トップに戻る' },
+  en: { subtitle:'Type along with Kani-Kani!', startBtn:'START', resultTitle:'Time\'s Up!', resultLabel:'Points', wordsCleared:'Words', maxCombo:'Max Combo', retryBtn:'Retry', scorePrefix:'Score', timePrefix:'Time', backToTop:'← Back to Top' }
 });
 SurrealGames.init('typing-game');
 </script>

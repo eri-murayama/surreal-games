@@ -625,7 +625,7 @@
     'emoji-catcher': 'onlyone',
     'neko-cafe': 'cafe',
     'reversi': 'battle',
-    'typing-game': 'typing',
+    'typing-game': 'pop',
   };
 
   // ===== サウンドシステム（Web Audio API） =====
