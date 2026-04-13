@@ -85,35 +85,46 @@ body {
   font-size: 0.9rem;
   opacity: 0.9;
 }
-.word-display {
-  font-size: clamp(1.8rem, 6vw, 2.5rem);
-  font-weight: 900;
+.word-japanese {
+  font-size: clamp(1.1rem, 4.5vw, 1.7rem);
+  font-weight: 700;
+  min-height: 1.4em;
+  margin-bottom: 12px;
+  word-break: break-word;
+  line-height: 1.45;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  max-width: 100%;
+}
+.word-romaji {
+  font-family: 'Courier New', monospace;
+  font-size: clamp(1.05rem, 4vw, 1.55rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 18px;
   min-height: 1.5em;
-  margin-bottom: 8px;
-  letter-spacing: 0.05em;
+  word-break: break-all;
+  line-height: 1.5;
+  max-width: 100%;
 }
-.word-display .correct { color: #a5ffa5; }
-.word-display .current { color: #ffdd57; text-decoration: underline; }
-.word-display .remaining { color: rgba(255,255,255,0.6); }
-.word-reading {
-  font-size: clamp(0.9rem, 3vw, 1.1rem);
-  opacity: 0.7;
-  margin-bottom: 15px;
-  min-height: 1.3em;
-}
+.word-romaji .correct { color: #a5ffa5; }
+.word-romaji .current { color: #ffdd57; text-decoration: underline; }
+.word-romaji .remaining { color: rgba(255,255,255,0.6); }
 .input-area {
   font-family: 'Courier New', monospace;
-  font-size: clamp(1.2rem, 4vw, 1.6rem);
-  padding: 10px 20px;
+  font-size: clamp(1rem, 3.5vw, 1.3rem);
+  padding: 10px 18px;
   width: 90%;
   max-width: 400px;
   border: 2px solid rgba(255,255,255,0.4);
   background: rgba(255,255,255,0.1);
   color: #fff;
   border-radius: 12px;
-  text-align: center;
+  text-align: right;
   outline: none;
   backdrop-filter: blur(8px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .input-area:focus { border-color: #ffdd57; }
 .combo-display {
@@ -186,10 +197,10 @@ body {
   <div class="timer-bar"><div class="timer-bar-inner" id="timer-bar"></div></div>
   <div class="stats-row">
     <span id="hud-score" data-i18n="score">スコア: 0</span>
-    <span id="hud-time" data-i18n="time">残り: 30s</span>
+    <span id="hud-time" data-i18n="time">残り: 60s</span>
   </div>
-  <div class="word-display" id="word-display"></div>
-  <div class="word-reading" id="word-reading"></div>
+  <div class="word-japanese" id="word-japanese"></div>
+  <div class="word-romaji" id="word-romaji"></div>
   <input type="text" class="input-area" id="input-area" autocomplete="off" autocapitalize="off" spellcheck="false">
   <div class="combo-display" id="combo-display"></div>
 </div>
@@ -212,81 +223,130 @@ body {
 (function(){
   'use strict';
 
-  const WORDS_JA = [
-    { word: 'うんこ', reading: 'unko' },
-    { word: 'シュール', reading: 'syu-ru' },
-    { word: 'たぬき', reading: 'tanuki' },
-    { word: 'おにぎり', reading: 'onigiri' },
-    { word: 'ゲームス', reading: 'ge-musu' },
-    { word: 'ぱんだ', reading: 'panda' },
-    { word: 'さくら', reading: 'sakura' },
-    { word: 'つなみ', reading: 'tunami' },
-    { word: 'かみなり', reading: 'kaminari' },
-    { word: 'てんぷら', reading: 'tenpura' },
-    { word: 'にんじゃ', reading: 'ninja' },
-    { word: 'さむらい', reading: 'samurai' },
-    { word: 'すし', reading: 'susi' },
-    { word: 'まんが', reading: 'manga' },
-    { word: 'かいぞく', reading: 'kaizoku' },
-    { word: 'どらごん', reading: 'doragon' },
-    { word: 'おばけ', reading: 'obake' },
-    { word: 'ひまわり', reading: 'himawari' },
-    { word: 'たこやき', reading: 'takoyaki' },
-    { word: 'ろけっと', reading: 'roketto' },
-    { word: 'ぺんぎん', reading: 'pengin' },
-    { word: 'ちょこれーと', reading: 'tyokore-to' },
-    { word: 'はんばーがー', reading: 'hanba-ga-' },
-    { word: 'だいなそー', reading: 'dainaso-' },
-    { word: 'あいすくりーむ', reading: 'aisukuri-mu' },
-    { word: 'ぷろぐらむ', reading: 'puroguramu' },
-    { word: 'きーぼーど', reading: 'ki-bo-do' },
-    { word: 'いんたーねっと', reading: 'inta-netto' },
-    { word: 'すまーとふぉん', reading: 'suma-tofon' },
-    { word: 'ちーずばーがー', reading: 'ti-zuba-ga-' },
+  // ゲーム一覧の8タイトルから連想されるお題プール（後半ほど長文）
+  // ローマ字はヘボン式（shi/chi/tsu/ji/sha/cho/fu）でユーザーが自然に打ちやすい形
+  const WORD_POOLS = [
+    // Tier 0: 超ショート（ウォームアップ）
+    [
+      { ja: 'うんこ', romaji: 'unko' },
+      { ja: 'うんち', romaji: 'unchi' },
+      { ja: 'かに', romaji: 'kani' },
+      { ja: 'おばけ', romaji: 'obake' },
+      { ja: '地雷', romaji: 'jirai' },
+      { ja: '進化', romaji: 'shinka' },
+      { ja: '数字', romaji: 'suuji' },
+      { ja: '漆黒', romaji: 'shikkoku' },
+      { ja: '天才', romaji: 'tensai' },
+      { ja: '黄金', romaji: 'ougon' },
+      { ja: '腹筋', romaji: 'fukkin' },
+    ],
+    // Tier 1: ショート（ゲームのキーワード）
+    [
+      { ja: 'シュール', romaji: 'shu-ru' },
+      { ja: 'ヤクザ', romaji: 'yakuza' },
+      { ja: 'リバーシ', romaji: 'riba-shi' },
+      { ja: 'ヨシノリ', romaji: 'yoshinori' },
+      { ja: 'かにみそ', romaji: 'kanimiso' },
+      { ja: '田舎者', romaji: 'inakamono' },
+      { ja: '不法侵入', romaji: 'fuhoushinnyuu' },
+      { ja: '経営分析', romaji: 'keieibunseki' },
+      { ja: '永久に', romaji: 'eikyuuni' },
+      { ja: '成仏', romaji: 'joubutsu' },
+      { ja: '戯れ', romaji: 'tawamure' },
+      { ja: '夢の中', romaji: 'yumenonaka' },
+    ],
+    // Tier 2: ミディアム（タイトル＋名台詞フレーズ）
+    [
+      { ja: 'シュール進化論', romaji: 'shu-rushinkaron' },
+      { ja: 'かにかにパニック', romaji: 'kanikanipanikku' },
+      { ja: '漆黒のリバーシ', romaji: 'shikkokunoriba-shi' },
+      { ja: '30秒の激闘', romaji: 'sanjuubyounogekitou' },
+      { ja: '吾輩の番だが', romaji: 'wagahainobandaga' },
+      { ja: '勝つべくして勝つ', romaji: 'katsubekushitekatsu' },
+      { ja: '黄金の金色ドライバー', romaji: 'ougonnokinnirodoraiba-' },
+      { ja: 'かいだんマインスイーパー', romaji: 'kaidanmainsui-pa-' },
+      { ja: 'シュールゲームス', romaji: 'shu-ruge-musu' },
+      { ja: '数字に愛されるオレ', romaji: 'suujiniaisareruore' },
+      { ja: '永久に吾輩の番だ', romaji: 'eikyuuniwagahainobanda' },
+    ],
+    // Tier 3: 長文（ゲーム説明文・名台詞）
+    [
+      { ja: '本当の恐怖はここにある', romaji: 'hontounokyoufuhakokoniaru' },
+      { ja: '地雷を探して霊を成仏させろ', romaji: 'jiraiwosagashitereiwojoubutsusasero' },
+      { ja: '腹筋は毎日換気するよ', romaji: 'fukkinhamainichikankisuruyo' },
+      { ja: 'はさみがないと何もできない', romaji: 'hasamiganaitonanimodekinai' },
+      { ja: 'ものごとは二つに分けられる', romaji: 'monogotohafutatsuniwakerareru' },
+      { ja: '分析できるかできないかだ', romaji: 'bunsekidekirukadekinaikada' },
+      { ja: '一般的には不法侵入だ', romaji: 'ippantekinihafuhoushinnyuuda' },
+      { ja: 'シュールでキュートなキャラクター', romaji: 'shu-rudekyu-tonakyarakuta-' },
+      { ja: '気が付いたらかわいい部屋にいた', romaji: 'kigatsuitarakawaiiheyaniita' },
+      { ja: '空から落ちてくるソフトクリーム', romaji: 'sorakaraochitekurusofutokuri-mu' },
+    ],
+    // Tier 4: 超長文（後半のラスボスゾーン）
+    [
+      { ja: 'はさみがないと何もできない愚かな動物', romaji: 'hasamiganaitonanimodekinaiorokanadoubutsu' },
+      { ja: 'シュールでキュートなキャラクターたちを合体して進化させろ', romaji: 'shu-rudekyu-tonakyarakuta-tachiwogattaishiteshinkasasero' },
+      { ja: '誰もが憧れるドライバー界の頂点にして最下層', romaji: 'daremogaakogarerudoraiba-kainochoutennishitesaikasou' },
+      { ja: 'ものごとは二つに分けられる分析できるかできないかだ', romaji: 'monogotohafutatsuniwakerarerubunsekidekirukadekinaikada' },
+      { ja: '気が付いたらかわいい部屋にいた一般的には不法侵入だ', romaji: 'kigatsuitarakawaiiheyaniitaippantekinihafuhoushinnyuuda' },
+      { ja: '本当の恐怖はここにある地雷を探して霊を成仏させろ', romaji: 'hontounokyoufuhakokoniarujiraiwosagashitereiwojoubutsusasero' },
+      { ja: '永久に吾輩の番だ吾輩の番だ吾輩の番だ', romaji: 'eikyuuniwagahainobandawagahainobandawagahainobanda' },
+      { ja: '田舎者のヨシノリが黄金の金色ドライバーに挑む', romaji: 'inakamononoyoshinorigaougonnokinnirodoraiba-niidomu' },
+      { ja: '夢の中のヤクザかにかにを叩いて腹筋を換気しろ', romaji: 'yumenonakanoyakuzakanikaniwotataitefukkinwokankishiro' },
+    ],
   ];
 
-  const GAME_TIME = 30;
+  const GAME_TIME = 60;
   let score, combo, maxCombo, wordsCleared, timeLeft, timerInterval, currentWord, typedIndex;
   let gameRunning = false;
+  let recentJa = [];
 
   const titleScreen = document.getElementById('title-screen');
   const gameScreen = document.getElementById('game-screen');
   const resultScreen = document.getElementById('result-screen');
-  const wordDisplay = document.getElementById('word-display');
-  const wordReading = document.getElementById('word-reading');
+  const wordJapanese = document.getElementById('word-japanese');
+  const wordRomaji = document.getElementById('word-romaji');
   const inputArea = document.getElementById('input-area');
   const comboDisplay = document.getElementById('combo-display');
   const timerBar = document.getElementById('timer-bar');
 
-  function shuffle(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
+  function pickTier() {
+    if (wordsCleared < 3) return 0;
+    if (wordsCleared < 6) return 1;
+    if (wordsCleared < 10) return 2;
+    if (wordsCleared < 15) return 3;
+    return 4;
   }
 
-  let wordQueue = [];
+  function pickWord() {
+    const pool = WORD_POOLS[pickTier()];
+    let pick;
+    for (let i = 0; i < 6; i++) {
+      pick = pool[Math.floor(Math.random() * pool.length)];
+      if (!recentJa.includes(pick.ja)) break;
+    }
+    recentJa.push(pick.ja);
+    if (recentJa.length > 4) recentJa.shift();
+    return pick;
+  }
 
   function nextWord() {
-    if (wordQueue.length === 0) wordQueue = shuffle(WORDS_JA);
-    currentWord = wordQueue.pop();
+    currentWord = pickWord();
     typedIndex = 0;
+    wordJapanese.textContent = currentWord.ja;
     renderWord();
-    wordReading.textContent = currentWord.reading;
     inputArea.value = '';
   }
 
   function renderWord() {
-    const chars = currentWord.reading.split('');
+    const chars = currentWord.romaji.split('');
     let html = '';
     chars.forEach((c, i) => {
       if (i < typedIndex) html += '<span class="correct">' + c + '</span>';
       else if (i === typedIndex) html += '<span class="current">' + c + '</span>';
       else html += '<span class="remaining">' + c + '</span>';
     });
-    wordDisplay.innerHTML = html;
+    wordRomaji.innerHTML = html;
   }
 
   function updateHUD() {
@@ -308,7 +368,7 @@ body {
     score = 0; combo = 0; maxCombo = 0; wordsCleared = 0;
     timeLeft = GAME_TIME;
     gameRunning = true;
-    wordQueue = shuffle(WORDS_JA);
+    recentJa = [];
     titleScreen.classList.remove('active');
     resultScreen.classList.remove('active');
     gameScreen.classList.add('active');
@@ -337,25 +397,23 @@ body {
 
   inputArea.addEventListener('input', () => {
     if (!gameRunning) return;
-    const val = inputArea.value;
-    const target = currentWord.reading;
+    const val = inputArea.value.toLowerCase();
+    const target = currentWord.romaji;
 
-    // Check if the typed string matches the beginning of the target
     if (target.startsWith(val)) {
       typedIndex = val.length;
       renderWord();
       if (val === target) {
-        // Word completed
         combo++;
         if (combo > maxCombo) maxCombo = combo;
         const comboBonus = Math.floor(combo / 3) * 5;
-        score += 10 + comboBonus;
+        const lengthBonus = Math.floor(target.length / 2);
+        score += 5 + lengthBonus + comboBonus;
         wordsCleared++;
         updateHUD();
         nextWord();
       }
     } else {
-      // Wrong input - reset combo
       combo = 0;
       inputArea.value = target.substring(0, typedIndex);
       updateHUD();
