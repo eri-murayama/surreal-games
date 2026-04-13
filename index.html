@@ -111,6 +111,38 @@
   </header>
 
   <main>
+    <!-- デイリーチャレンジ & スタンプカード -->
+    <section class="daily-stamp-section fade-in" aria-label="デイリーチャレンジとスタンプカード">
+      <div id="daily-card" class="daily-card">
+        <div class="daily-card__header">
+          <span class="daily-card__label">今日のお題</span>
+          <span class="daily-card__badge">DAILY</span>
+        </div>
+        <div class="daily-card__body">
+          <div id="daily-card-emoji" class="daily-card__emoji">🎲</div>
+          <div class="daily-card__info">
+            <h3 id="daily-card-title" class="daily-card__title">読み込み中…</h3>
+            <p id="daily-card-desc" class="daily-card__desc">毎日ランダムに選ばれるお題ゲーム。遊ぶだけで達成！</p>
+            <a id="daily-card-btn" href="#" class="daily-card__btn">今すぐ遊ぶ</a>
+          </div>
+        </div>
+      </div>
+      <div class="stamp-card-box">
+        <div class="stamp-card-box__header">
+          <span class="stamp-card-box__label">今週のスタンプ</span>
+        </div>
+        <div id="stamp-grid" class="stamp-grid"></div>
+        <p class="stamp-streak">連続 <strong id="stamp-streak-num">0</strong> 日 ／ 累計 <strong id="stamp-total-num">0</strong> 日</p>
+      </div>
+    </section>
+
+    <!-- 称号・死に方図鑑への導線 -->
+    <nav class="extras-nav fade-in" aria-label="やりこみ要素">
+      <a href="titles.html" class="extras-nav__link"><span class="extras-nav__link-emoji">👑</span>称号一覧</a>
+      <a href="death-dex.html" class="extras-nav__link"><span class="extras-nav__link-emoji">💀</span>死に方図鑑</a>
+      <a href="achievements.html" class="extras-nav__link"><span class="extras-nav__link-emoji">🏆</span>実績</a>
+    </nav>
+
     <!-- ゲーム一覧 -->
     <section id="games">
       <h2 class="section-title fade-in">ゲーム一覧</h2>
@@ -213,31 +245,6 @@
             <p class="game-card__desc">空から落ちてくるうん…ソフトクリームをキャッチ！何段積めるかな？</p>
             <div class="store-links">
               <a href="games/unko-cone/index.html" class="store-btn" aria-label="ブラウザでプレイ">
-                <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
-                ブラウザでプレイ
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- ゲームカード: でかうんこ脱出 -->
-        <article class="game-card game-card--flip fade-in">
-          <div class="game-card__image card-flip-zone">
-            <div class="card-flip-inner">
-              <div class="card-flip-front placeholder-art" style="background: linear-gradient(135deg, #5a3a1c, #8d5a2e, #3a1d00);">
-                <div class="card-chara card-chara--dekaunko" aria-hidden="true" style="font-size:5rem; display:flex; align-items:center; justify-content:center; height:100%;">💩</div>
-              </div>
-              <div class="card-flip-back" style="background: linear-gradient(135deg, #5a3a1c, #8d5a2e, #3a1d00);">
-                <div class="card-flip-back__img card-flip-back__img--dekaunko" aria-hidden="true" style="font-size:5rem; display:flex; align-items:center; justify-content:center; height:100%;">💩🚽</div>
-                <div class="card-flip-back__speech dekaunko-speech">トイレまで届けぇー！</div>
-              </div>
-            </div>
-          </div>
-          <div class="game-card__body">
-            <h3 class="game-card__title">でかうんこ脱出</h3>
-            <p class="game-card__desc">食べ物でデカくなったうんこをトイレで縮めろ！時間内にスリムになって脱出だ。</p>
-            <div class="store-links">
-              <a href="games/dekaunko-escape/index.html" class="store-btn" aria-label="ブラウザでプレイ">
                 <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><use href="#icon-play"/></svg>
                 ブラウザでプレイ
               </a>
@@ -474,8 +481,45 @@
     </div>
   </div>
 
+  <script src="games/common/game-common.js"></script>
   <script src="js/main.js"></script>
   <script>
+    // デイリーチャレンジ & スタンプカードの初期化
+    (function () {
+      const SG = window.SurrealGames;
+      if (!SG) return;
+
+      // --- デイリーチャレンジ ---
+      const daily = SG.DailyChallenge.getToday();
+      const card = document.getElementById('daily-card');
+      if (card && daily.game) {
+        document.getElementById('daily-card-emoji').textContent = daily.game.emoji;
+        document.getElementById('daily-card-title').textContent = daily.game.title;
+        document.getElementById('daily-card-desc').textContent = daily.game.desc || '今日のお題。遊べば達成！';
+        const btn = document.getElementById('daily-card-btn');
+        btn.href = 'games/' + daily.gameId + '/index.html';
+        btn.textContent = daily.completed ? '✓ もう一度遊ぶ' : '今すぐ遊ぶ';
+        if (daily.completed) card.classList.add('is-completed');
+      }
+
+      // --- スタンプカード ---
+      const grid = document.getElementById('stamp-grid');
+      if (grid) {
+        const recent = SG.StampCard.getRecent(7);
+        grid.innerHTML = recent.map(function (cell) {
+          const cls = ['stamp-cell'];
+          if (cell.stamped) cls.push('is-stamped');
+          if (cell.isToday) cls.push('is-today');
+          return '<div class="' + cls.join(' ') + '" title="' + cell.date + '">'
+            + '<div class="stamp-cell__day">' + cell.dayLabel + '</div>'
+            + '<div class="stamp-cell__num">' + cell.dayNum + '</div>'
+            + '</div>';
+        }).join('');
+        document.getElementById('stamp-streak-num').textContent = SG.StampCard.getStreak();
+        document.getElementById('stamp-total-num').textContent = SG.StampCard.getAll().length;
+      }
+    })();
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
