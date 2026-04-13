@@ -846,7 +846,9 @@ function showGameOver(){
   dom.retryBtn.parentNode.insertBefore(shareBtn, dom.retryBtn);
 
   localStorage.removeItem(SAVE_KEY);
-  sg.onGameEnd(score);
+  // 死に方図鑑: 2048到達なら reached_2048、それ以外は手詰まり
+  const deathType = maxLevel >= 11 ? 'reached_2048' : 'stuck';
+  sg.onGameEnd(score, { deathType });
   showScreen('gameover');
 }
 

@@ -15,7 +15,7 @@
   const SITE_BASE = '../../';
 
   // ===== 正式リリース済みゲームID =====
-  const RELEASED_IDS = ['reversi', 'puzzle-2048', 'minesweeper', 'unko-cone', 'drive', 'business-analysis', 'escape-room', 'whack-kanikani', 'emoji-catcher', 'kanikani-gurashi', 'neko-cafe'];
+  const RELEASED_IDS = ['reversi', 'puzzle-2048', 'minesweeper', 'unko-cone', 'drive', 'business-analysis', 'escape-room', 'whack-kanikani', 'emoji-catcher', 'kanikani-gurashi', 'neko-cafe', 'dekaunko-escape'];
 
   // ===== ゲームカタログ =====
   const GAME_CATALOG = [
@@ -56,6 +56,7 @@
     { id: 'emoji-catcher', title: 'カブトムシ様のお着換えあそばせ', titleEn: 'Dress Up Lord Beetle', emoji: '🪲', genre: 'カスタマイズ', genreEn: 'Customize', desc: 'カブトムシ様を世界で一人だけのお人へ変身してさしあげろ！' },
     { id: 'kanikani-gurashi', title: 'かにかにぐらし', titleEn: 'Kani Kani Life', emoji: '🦀', genre: 'マージパズル', genreEn: 'Merge Puzzle', desc: '上京したかにかにの一人暮らしを応援！アイテムをマージして理想のお部屋を作ろう。' },
     { id: 'neko-cafe', title: 'ねこカフェ物語', titleEn: 'Neko Cafe Story', emoji: '🐱', genre: '経営シミュ', genreEn: 'Simulation', desc: 'かわいいねこカフェを経営して大きく育てよう。' },
+    { id: 'dekaunko-escape', title: 'でかうんこ脱出', titleEn: 'Big Poop Escape', emoji: '💩', genre: 'アクション', genreEn: 'Action', desc: '食べ物を避けトイレで縮め！でかくなったうんこの脱出劇。' },
   ];
 
   // ===== 実績定義 =====
@@ -1860,6 +1861,468 @@
     }
   };
 
+  // ===== 日付ヘルパー =====
+  function _todayStr() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function _dateStr(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  // 簡易的な日付seeded選択（同じ日なら同じ結果）
+  function _dailySeedIndex(maxExclusive, salt) {
+    const d = _todayStr().replace(/-/g, '');
+    let h = 0;
+    const s = d + (salt || '');
+    for (let i = 0; i < s.length; i++) {
+      h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    }
+    return h % maxExclusive;
+  }
+
+  // ===== デイリーチャレンジ =====
+  // 毎日ランダムに1ゲームがお題になる。クリア（onGameEnd 呼び出し）で達成。
+  const DailyChallenge = {
+    _key: 'sg_daily_challenge',
+
+    _get() {
+      try {
+        return JSON.parse(localStorage.getItem(this._key)) || {};
+      } catch { return {}; }
+    },
+
+    _save(data) {
+      localStorage.setItem(this._key, JSON.stringify(data));
+    },
+
+    // 今日のお題ゲームID
+    getTodayGameId() {
+      const idx = _dailySeedIndex(RELEASED_IDS.length, 'daily');
+      return RELEASED_IDS[idx];
+    },
+
+    // 今日のお題ゲームオブジェクト
+    getToday() {
+      const gameId = this.getTodayGameId();
+      const game = GAME_CATALOG.find(g => g.id === gameId);
+      const data = this._get();
+      const today = _todayStr();
+      const completed = (data.completedDates || []).includes(today);
+      return { gameId, game, completed };
+    },
+
+    // プレイしたゲームが今日のお題なら達成扱いにする
+    markPlayed(gameId) {
+      const today = _todayStr();
+      const todayGameId = this.getTodayGameId();
+      if (gameId !== todayGameId) return false;
+
+      const data = this._get();
+      data.completedDates = data.completedDates || [];
+      if (data.completedDates.includes(today)) return false;
+      data.completedDates.push(today);
+      this._save(data);
+
+      this._showCompleteNotification();
+      SG_GA.trackEvent('daily_challenge_complete', { game_id: gameId });
+      return true;
+    },
+
+    // 達成済みの日付一覧
+    getCompletedDates() {
+      return this._get().completedDates || [];
+    },
+
+    _showCompleteNotification() {
+      const game = GAME_CATALOG.find(g => g.id === this.getTodayGameId());
+      if (!game) return;
+      SoundSystem.play('achievement');
+
+      const isEn = (document.documentElement.lang || '').startsWith('en');
+      const label = isEn ? 'Daily Challenge Cleared!' : 'デイリーチャレンジ達成！';
+      const title = (isEn && game.titleEn) ? game.titleEn : game.title;
+
+      const el = document.createElement('div');
+      el.className = 'sg-achievement-notification';
+      el.innerHTML = `
+        <div class="sg-achievement-icon">${game.emoji}</div>
+        <div class="sg-achievement-info">
+          <div class="sg-achievement-label">${label}</div>
+          <div class="sg-achievement-title">${title}</div>
+          <div class="sg-achievement-desc">${isEn ? 'Come back tomorrow!' : '明日もまた遊びにきてね'}</div>
+        </div>
+      `;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('sg-achievement-show'));
+      setTimeout(() => {
+        el.classList.remove('sg-achievement-show');
+        el.classList.add('sg-achievement-hide');
+        setTimeout(() => el.remove(), 500);
+      }, 3500);
+    }
+  };
+
+  // ===== スタンプカード =====
+  // 1日1スタンプ。連続日数（streak）と累計を管理。
+  const StampCard = {
+    _key: 'sg_stamp_card',
+
+    _get() {
+      try {
+        return JSON.parse(localStorage.getItem(this._key)) || { stamps: [] };
+      } catch { return { stamps: [] }; }
+    },
+
+    _save(data) {
+      localStorage.setItem(this._key, JSON.stringify(data));
+    },
+
+    // 今日のスタンプを押す（同日重複は無視）
+    stampToday() {
+      const data = this._get();
+      const today = _todayStr();
+      if (data.stamps.includes(today)) return false;
+      data.stamps.push(today);
+      data.stamps.sort();
+      this._save(data);
+      SG_GA.trackEvent('stamp_added', { date: today });
+      return true;
+    },
+
+    // 全スタンプ（日付文字列配列）
+    getAll() {
+      return this._get().stamps || [];
+    },
+
+    // 現在の連続日数
+    getStreak() {
+      const stamps = new Set(this.getAll());
+      if (stamps.size === 0) return 0;
+      let streak = 0;
+      const d = new Date();
+      // 今日が無ければ昨日から数える（途切れていないか判定）
+      if (!stamps.has(_dateStr(d))) {
+        d.setDate(d.getDate() - 1);
+        if (!stamps.has(_dateStr(d))) return 0;
+      }
+      while (stamps.has(_dateStr(d))) {
+        streak++;
+        d.setDate(d.getDate() - 1);
+      }
+      return streak;
+    },
+
+    // 過去N日間のスタンプ配列（UI表示用）[{date, stamped}, ...]
+    getRecent(days) {
+      const n = days || 7;
+      const stamps = new Set(this.getAll());
+      const result = [];
+      const base = new Date();
+      for (let i = n - 1; i >= 0; i--) {
+        const d = new Date(base);
+        d.setDate(d.getDate() - i);
+        const ds = _dateStr(d);
+        result.push({
+          date: ds,
+          dayLabel: ['日', '月', '火', '水', '木', '金', '土'][d.getDay()],
+          dayNum: d.getDate(),
+          stamped: stamps.has(ds),
+          isToday: i === 0
+        });
+      }
+      return result;
+    }
+  };
+
+  // ===== 死に方図鑑 =====
+  // ゲーム毎に死因(deathType)を記録。DEATH_DEX_DEFS に表示用メタデータを書く。
+  const DeathDex = {
+    _key: 'sg_death_dex',
+
+    _get() {
+      try {
+        return JSON.parse(localStorage.getItem(this._key)) || {};
+      } catch { return {}; }
+    },
+
+    _save(data) {
+      localStorage.setItem(this._key, JSON.stringify(data));
+    },
+
+    // 死因を記録 ({gameId, deathType, metadata?})
+    record(gameId, deathType, metadata) {
+      if (!gameId || !deathType) return;
+      const data = this._get();
+      data[gameId] = data[gameId] || {};
+      const entry = data[gameId][deathType] || { count: 0, firstDate: null, lastDate: null };
+      entry.count = (entry.count || 0) + 1;
+      const now = new Date().toISOString();
+      if (!entry.firstDate) entry.firstDate = now;
+      entry.lastDate = now;
+      if (metadata) entry.lastMetadata = metadata;
+      data[gameId][deathType] = entry;
+      this._save(data);
+      SG_GA.trackEvent('death_recorded', { game_id: gameId, death_type: deathType });
+
+      // 図鑑に新規登録された死因かどうかチェックして通知
+      if (entry.count === 1) {
+        this._showNewDeathNotification(gameId, deathType);
+      }
+    },
+
+    // 全ゲームの死因統計
+    getAll() {
+      return this._get();
+    },
+
+    // 指定ゲームの死因一覧
+    getForGame(gameId) {
+      return this._get()[gameId] || {};
+    },
+
+    // 全定義の進捗サマリー
+    getSummary() {
+      const data = this._get();
+      let totalDefs = 0;
+      let discovered = 0;
+      for (const gameId of Object.keys(DEATH_DEX_DEFS)) {
+        const defs = DEATH_DEX_DEFS[gameId] || {};
+        const found = data[gameId] || {};
+        for (const typeId of Object.keys(defs)) {
+          totalDefs++;
+          if (found[typeId]) discovered++;
+        }
+      }
+      return { total: totalDefs, discovered };
+    },
+
+    _showNewDeathNotification(gameId, deathType) {
+      const def = (DEATH_DEX_DEFS[gameId] || {})[deathType];
+      if (!def) return;
+      SoundSystem.play('achievement');
+
+      const isEn = (document.documentElement.lang || '').startsWith('en');
+      const label = isEn ? 'New Death Discovered!' : '新しい死に方 発見！';
+
+      const el = document.createElement('div');
+      el.className = 'sg-achievement-notification';
+      el.innerHTML = `
+        <div class="sg-achievement-icon">${def.emoji || '💀'}</div>
+        <div class="sg-achievement-info">
+          <div class="sg-achievement-label">${label}</div>
+          <div class="sg-achievement-title">${def.title || deathType}</div>
+          <div class="sg-achievement-desc">${def.desc || ''}</div>
+        </div>
+      `;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('sg-achievement-show'));
+      setTimeout(() => {
+        el.classList.remove('sg-achievement-show');
+        el.classList.add('sg-achievement-hide');
+        setTimeout(() => el.remove(), 500);
+      }, 3500);
+    }
+  };
+
+  // 死因の定義（gameId → { deathType: { title, desc, emoji } }）
+  const DEATH_DEX_DEFS = {
+    'whack-kanikani': {
+      timeup: { title: '時間切れ', desc: '制限時間まで生き延びた（？）', emoji: '⏰' },
+      low_score: { title: 'カニに負けた', desc: 'ろくに叩けず終わった', emoji: '🦀' },
+      perfect: { title: '蟹みそ大放出', desc: 'すべて叩き切った達人', emoji: '👑' }
+    },
+    'unko-cone': {
+      topple: { title: '崩壊', desc: '積みすぎてうんコーンが崩れた', emoji: '🌀' },
+      miss: { title: 'キャッチミス', desc: '受け止めきれず終了', emoji: '😵' },
+      high_tower: { title: '極みの塔', desc: '10段以上の偉業', emoji: '🏯' }
+    },
+    'dekaunko-escape': {
+      timeup: { title: 'トイレ間に合わず', desc: '時間切れで出られなかった', emoji: '🚽' },
+      oversize: { title: 'でかすぎ無理', desc: '限界まで肥大した', emoji: '💩' },
+      escaped: { title: '脱出成功', desc: 'スリムになってトイレへ！', emoji: '✨' }
+    },
+    'drive': {
+      first: { title: '黄金ドライバー', desc: '1位でゴールした', emoji: '🏆' },
+      second: { title: '銀メダル', desc: '2位でゴールした', emoji: '🥈' },
+      third: { title: '銅メダル', desc: '3位でゴールした', emoji: '🥉' },
+      last: { title: 'ドベ', desc: '最下位でゴールした', emoji: '😿' }
+    },
+    'escape-room': {
+      cleared: { title: '脱出成功', desc: 'かわいい部屋から出られた', emoji: '🚪' }
+    },
+    'minesweeper': {
+      boom: { title: '地雷爆発', desc: '霊に取り憑かれた', emoji: '💣' },
+      cleared: { title: '成仏', desc: '全ての霊を成仏させた', emoji: '🙏' }
+    },
+    'puzzle-2048': {
+      stuck: { title: '手詰まり', desc: 'もう動かせない', emoji: '😭' },
+      reached_2048: { title: '進化完了', desc: '2048に到達した猛者', emoji: '🧬' }
+    },
+    'emoji-catcher': {
+      finished: { title: 'お着替え完了', desc: 'カブトムシ様が光輝いた', emoji: '🪲' }
+    },
+    'kanikani-gurashi': {
+      finished: { title: 'お部屋完成', desc: '理想のお部屋ができた', emoji: '🏠' }
+    },
+    'neko-cafe': {
+      bankrupt: { title: '経営破綻', desc: 'ねこカフェが潰れた', emoji: '💸' },
+      success: { title: '繁盛店主', desc: 'ねこカフェを大成功させた', emoji: '🎉' }
+    },
+    'reversi': {
+      win: { title: '勝利', desc: '漆黒を制した', emoji: '⚫' },
+      lose: { title: '敗北', desc: '吾輩の番に負けた', emoji: '😿' }
+    },
+    'business-analysis': {
+      cleared: { title: '分析完了', desc: '数字に愛された', emoji: '📊' }
+    }
+  };
+
+  // ===== 称号システム =====
+  // 条件ベースで解放。装備中の称号を1つ持てる。
+  const Titles = {
+    _key: 'sg_titles',
+
+    _get() {
+      try {
+        return JSON.parse(localStorage.getItem(this._key)) || { unlocked: {}, current: null };
+      } catch { return { unlocked: {}, current: null }; }
+    },
+
+    _save(data) {
+      localStorage.setItem(this._key, JSON.stringify(data));
+    },
+
+    // 全称号（解放状態付き）
+    getAll() {
+      const data = this._get();
+      const stats = Stats.getSummary();
+      const deathSummary = DeathDex.getSummary();
+      const stampStreak = StampCard.getStreak();
+      const stampTotal = StampCard.getAll().length;
+      const dailyCount = DailyChallenge.getCompletedDates().length;
+      const ctx = { stats, deathSummary, stampStreak, stampTotal, dailyCount };
+
+      return TITLE_DEFS.map(def => ({
+        ...def,
+        unlocked: !!data.unlocked[def.id] || def.condition(ctx),
+        isCurrent: data.current === def.id
+      }));
+    },
+
+    // 未解放の称号をチェックして解放
+    check() {
+      const data = this._get();
+      const stats = Stats.getSummary();
+      const deathSummary = DeathDex.getSummary();
+      const stampStreak = StampCard.getStreak();
+      const stampTotal = StampCard.getAll().length;
+      const dailyCount = DailyChallenge.getCompletedDates().length;
+      const ctx = { stats, deathSummary, stampStreak, stampTotal, dailyCount };
+      const newly = [];
+      for (const def of TITLE_DEFS) {
+        if (!data.unlocked[def.id] && def.condition(ctx)) {
+          data.unlocked[def.id] = { date: new Date().toISOString() };
+          newly.push(def);
+        }
+      }
+      if (newly.length > 0) {
+        this._save(data);
+        newly.forEach(t => {
+          this._showNotification(t);
+          SG_GA.trackEvent('title_unlock', { title_id: t.id });
+        });
+      }
+      return newly;
+    },
+
+    // 装備中の称号
+    getCurrent() {
+      const data = this._get();
+      if (!data.current) return null;
+      return TITLE_DEFS.find(t => t.id === data.current) || null;
+    },
+
+    // 称号を装備
+    setCurrent(titleId) {
+      const data = this._get();
+      // 解放済みのみ装備可能
+      const def = TITLE_DEFS.find(t => t.id === titleId);
+      if (!def) return false;
+      const stats = Stats.getSummary();
+      const deathSummary = DeathDex.getSummary();
+      const stampStreak = StampCard.getStreak();
+      const stampTotal = StampCard.getAll().length;
+      const dailyCount = DailyChallenge.getCompletedDates().length;
+      const ctx = { stats, deathSummary, stampStreak, stampTotal, dailyCount };
+      const unlocked = !!data.unlocked[titleId] || def.condition(ctx);
+      if (!unlocked) return false;
+      data.current = titleId;
+      this._save(data);
+      return true;
+    },
+
+    clearCurrent() {
+      const data = this._get();
+      data.current = null;
+      this._save(data);
+    },
+
+    _showNotification(title) {
+      SoundSystem.play('achievement');
+      const isEn = (document.documentElement.lang || '').startsWith('en');
+      const label = isEn ? 'New Title!' : '新しい称号を獲得！';
+      const el = document.createElement('div');
+      el.className = 'sg-achievement-notification';
+      el.innerHTML = `
+        <div class="sg-achievement-icon">${title.emoji}</div>
+        <div class="sg-achievement-info">
+          <div class="sg-achievement-label">${label}</div>
+          <div class="sg-achievement-title">${title.title}</div>
+          <div class="sg-achievement-desc">${title.desc}</div>
+        </div>
+      `;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('sg-achievement-show'));
+      setTimeout(() => {
+        el.classList.remove('sg-achievement-show');
+        el.classList.add('sg-achievement-hide');
+        setTimeout(() => el.remove(), 500);
+      }, 3500);
+    }
+  };
+
+  // 称号定義 — 条件ベースで自動解放
+  const TITLE_DEFS = [
+    { id: 'novice', emoji: '🌱', title: '駆け出しシュール人', desc: '1回でも遊んだ人', condition: (c) => c.stats.totalPlays >= 1 },
+    { id: 'regular', emoji: '🎮', title: '常連さん', desc: '10回遊んだ', condition: (c) => c.stats.totalPlays >= 10 },
+    { id: 'master', emoji: '👑', title: 'シュールの匠', desc: '50回遊んだ', condition: (c) => c.stats.totalPlays >= 50 },
+    { id: 'legend', emoji: '🐉', title: '伝説のシュール人', desc: '200回遊んだ', condition: (c) => c.stats.totalPlays >= 200 },
+    { id: 'explorer', emoji: '🗺️', title: 'ゲーム冒険家', desc: '10種類以上のゲームを遊んだ', condition: (c) => c.stats.uniqueGames >= 10 },
+    { id: 'completist', emoji: '✨', title: 'コンプリーター', desc: '全ゲームを遊んだ', condition: (c) => c.stats.uniqueGames >= GAME_CATALOG.length },
+    { id: 'oshi', emoji: '💕', title: '沼の住人', desc: '同じゲームを30回遊んだ', condition: (c) => c.stats.favoriteGamePlays >= 30 },
+    { id: 'score_demon', emoji: '🔥', title: 'スコアの鬼', desc: 'ハイスコアを30回更新した', condition: (c) => c.stats.highScoreUpdates >= 30 },
+    { id: 'night_owl', emoji: '🦉', title: '夜更かし侍', desc: '深夜に遊んだことがある', condition: () => { const h = new Date().getHours(); return h >= 0 && h < 4; } },
+    { id: 'morning_star', emoji: '🌅', title: '朝活マスター', desc: '早朝に遊んだことがある', condition: () => { const h = new Date().getHours(); return h >= 5 && h < 7; } },
+    { id: 'death_collector', emoji: '💀', title: '死に方コレクター', desc: '死に方図鑑で10種類発見', condition: (c) => c.deathSummary.discovered >= 10 },
+    { id: 'death_master', emoji: '☠️', title: '死の博物館館長', desc: '死に方図鑑で20種類発見', condition: (c) => c.deathSummary.discovered >= 20 },
+    { id: 'stamp_3', emoji: '📅', title: '三日坊主卒業', desc: '3日連続で遊んだ', condition: (c) => c.stampStreak >= 3 },
+    { id: 'stamp_7', emoji: '🗓️', title: '1週間皆勤賞', desc: '7日連続で遊んだ', condition: (c) => c.stampStreak >= 7 },
+    { id: 'stamp_30', emoji: '🏅', title: '月間MVP', desc: '30日連続で遊んだ', condition: (c) => c.stampStreak >= 30 },
+    { id: 'stamp_total_30', emoji: '📚', title: '常連中の常連', desc: '累計30日遊んだ', condition: (c) => c.stampTotal >= 30 },
+    { id: 'daily_5', emoji: '🎯', title: 'デイリーチャレンジャー', desc: 'デイリーチャレンジを5回達成', condition: (c) => c.dailyCount >= 5 },
+    { id: 'daily_20', emoji: '🎖️', title: 'デイリーの達人', desc: 'デイリーチャレンジを20回達成', condition: (c) => c.dailyCount >= 20 },
+    { id: 'weirdo', emoji: '🌀', title: 'シュール中毒', desc: '100回以上遊んだ変人', condition: (c) => c.stats.totalPlays >= 100 },
+    { id: 'surreal_saint', emoji: '😇', title: 'シュールの聖人', desc: 'すべてのシュールを受け入れた人', condition: (c) => c.stats.totalPlays >= 500 }
+  ];
+
   // ===== i18n ヘルパー（i18n.js が読み込まれていなくても動作する） =====
   function _t(key, fallback) {
     if (window.SurrealI18n && typeof window.SurrealI18n.t === 'function') {
@@ -2148,6 +2611,7 @@
       },
 
       // ゲーム終了時に呼ぶ（スコアは任意、lowerIsBetter: タイム系で低い方が良い場合true）
+      // extra.deathType を渡すと死に方図鑑に登録される
       onGameEnd(score, extra, lowerIsBetter) {
         Stats.recordPlay(gameId);
         SoundSystem.stopBgm();
@@ -2158,16 +2622,33 @@
           isNewHigh = HighScore.set(gameId, score, extra, lowerIsBetter);
         }
 
+        // スタンプカードとデイリーチャレンジを自動更新
+        StampCard.stampToday();
+        DailyChallenge.markPlayed(gameId);
+
+        // 死に方図鑑: extra.deathType が指定されていれば登録
+        if (extra && extra.deathType) {
+          DeathDex.record(gameId, extra.deathType, extra.deathMeta);
+        }
+
         SG_GA.trackEvent('game_end', {
           game_id: gameId,
           score: score !== undefined ? score : 0,
           is_new_high: isNewHigh
         });
 
-        // 実績チェック（少し遅らせて演出と被らないように）
-        setTimeout(() => Achievements.check(), 1000);
+        // 実績・称号チェック（少し遅らせて演出と被らないように）
+        setTimeout(() => {
+          Achievements.check();
+          Titles.check();
+        }, 1000);
 
         return { isNewHigh };
+      },
+
+      // 死因を明示的に記録したいときに使う（ゲーム中の死亡イベント用）
+      recordDeath(deathType, metadata) {
+        DeathDex.record(gameId, deathType, metadata);
       },
 
       // ハイスコア表示用
@@ -2187,5 +2668,11 @@
   }
 
   // グローバルに公開
-  window.SurrealGames = { init, GAME_CATALOG, SoundSystem, HighScore, Stats, Achievements, GA: SG_GA };
+  window.SurrealGames = {
+    init, GAME_CATALOG, RELEASED_IDS,
+    SoundSystem, HighScore, Stats, Achievements,
+    DailyChallenge, StampCard, DeathDex, Titles,
+    DEATH_DEX_DEFS, TITLE_DEFS,
+    GA: SG_GA
+  };
 })();

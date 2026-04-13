@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>図鑑 - シュールゲームス</title>
+  <meta name="description" content="シュールゲームスの図鑑。キャラクター、実績、称号、死に方をひとまとめに。">
+  <meta property="og:title" content="図鑑 - シュールゲームス">
+  <meta property="og:description" content="シュールゲームスの図鑑。キャラクター、実績、称号、死に方をひとまとめに。">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/collection.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="図鑑 - シュールゲームス">
+  <meta name="twitter:description" content="シュールゲームスの図鑑。キャラクター、実績、称号、死に方をひとまとめに。">
+  <meta name="twitter:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== 図鑑ページ固有スタイル ===== */
+    :root {
+      --nav-h: 44px;
+      --tabs-h: 56px;
+    }
+
+    /* 固定ナビ */
+    .page-fixed-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-h);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0 1rem;
+      background: rgba(13, 2, 33, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      z-index: 1000;
+    }
+    .page-fixed-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+    }
+    .page-fixed-nav a:hover { color: var(--accent-pink); background: rgba(255, 110, 199, 0.1); }
+    .page-fixed-nav a.active { color: var(--accent-pink); }
+
+    /* ヒーロー */
+    .col-hero {
+      position: relative;
+      min-height: 26vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0d0221 0%, #1a0933 50%, #2d1b69 100%);
+      padding: calc(var(--nav-h) + 2rem) 1.5rem 1.8rem;
+    }
+    .col-hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      background: linear-gradient(90deg, var(--accent-pink), var(--accent-yellow), var(--accent-cyan));
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+      animation: colHeroShine 8s linear infinite;
+    }
+    @keyframes colHeroShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    .col-hero p {
+      color: var(--text-muted);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+    }
+
+    /* ===== タブバー ===== */
+    .col-tabs {
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 900;
+      display: flex;
+      background: rgba(13, 2, 33, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .col-tabs::-webkit-scrollbar { display: none; }
+
+    .col-tab {
+      flex: 1 1 0;
+      min-width: 80px;
+      padding: 0.8rem 0.6rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      min-height: 56px;
+      transition: color 0.2s;
+    }
+    .col-tab__emoji { font-size: 1.35rem; line-height: 1; }
+    .col-tab:hover { color: #fff; }
+    .col-tab.is-active { color: var(--accent-pink); }
+    .col-tab.is-active::after {
+      content: '';
+      position: absolute;
+      left: 15%;
+      right: 15%;
+      bottom: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan));
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* ===== パネル共通 ===== */
+    .col-panel {
+      display: none;
+      padding: 1.5rem 1rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .col-panel.is-active { display: block; }
+
+    .col-panel__header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .col-panel__title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      color: var(--accent-yellow);
+      margin-bottom: 0.3rem;
+    }
+    .col-panel__sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .col-progress {
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+      text-align: center;
+    }
+    .col-progress__text { font-size: 0.85rem; color: var(--text-muted); }
+    .col-progress__text strong { color: var(--accent-pink); font-size: 1rem; }
+    .col-progress__track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+    .col-progress__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan));
+      border-radius: 6px;
+      transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ===== キャラクターパネル ===== */
+    .chara-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+    .chara-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .chara-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+    .chara-card__image-wrap {
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg, #fce4ec, #f48fb1, #ad1457);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .chara-card__image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: var(--img-scale, scale(1.1));
+      transition: transform 0.4s ease;
+    }
+    .chara-card:hover .chara-card__image-wrap img {
+      transform: var(--img-scale, scale(1.1)) translateY(-4%);
+    }
+    .chara-card--atsushi .chara-card__image-wrap img { --img-scale: scale(1.6); }
+    .chara-card--ojisan .chara-card__image-wrap img { --img-scale: scale(1.8); }
+    .chara-card--sakuranbo .chara-card__image-wrap img { --img-scale: scale(1.4); }
+    .chara-card--hakase .chara-card__image-wrap img { --img-scale: scale(1.3); }
+    .chara-card--softcream .chara-card__image-wrap img { --img-scale: scale(1.3); }
+
+    /* ゲームカードの配色に合わせる */
+    .chara-card--kanikani .chara-card__image-wrap { background: linear-gradient(135deg, #ffb6c1, #ff69b4); } /* かにかにパニック */
+    .chara-card--atsushi .chara-card__image-wrap { background: linear-gradient(135deg, #ffe082, #ffb300, #ff8f00); } /* 経営分析 */
+    .chara-card--yoshinori .chara-card__image-wrap { background: linear-gradient(135deg, #ffe0b2, #ff9800, #e65100); } /* ドライバー */
+    .chara-card--hakase .chara-card__image-wrap { background: linear-gradient(135deg, #ffe0b2, #ff9800, #e65100); } /* ドライバー */
+    .chara-card--sakuranbo .chara-card__image-wrap { background: linear-gradient(135deg, #f8bbd0, #e91e63, #ad1457); } /* 脱出 */
+    .chara-card--softcream .chara-card__image-wrap { background: linear-gradient(135deg, #d7ccc8, #8d6e63, #4e342e); } /* うんコーン */
+    .chara-card--bakemon .chara-card__image-wrap { background: linear-gradient(135deg, #b0bec5, #607d8b, #37474f); } /* かいだんマインスイーパー */
+    .chara-card--protagonist .chara-card__image-wrap { background: linear-gradient(135deg, #d7ccc8, #8d6e63, #4e342e); } /* うんコーン */
+    .chara-card--maakun .chara-card__image-wrap { background: linear-gradient(135deg, #fff9c4, #fff176, #f9a825); } /* シュール進化論 */
+    .chara-card--ojisan .chara-card__image-wrap { background: linear-gradient(135deg, #fff9c4, #fff176, #f9a825); } /* シュール進化論 */
+    .chara-card--reversi .chara-card__image-wrap { background: linear-gradient(135deg, #ce93d8, #9c27b0, #6a1b9a); } /* リバーシ */
+
+    .chara-card__body { padding: 1rem 1.1rem 1.2rem; }
+    .chara-card__name {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      color: var(--accent-yellow);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+    .chara-card__name-emoji { font-size: 1.1rem; }
+    .chara-card__game {
+      display: inline-block;
+      font-size: 0.7rem;
+      color: var(--accent-cyan);
+      margin-bottom: 0.6rem;
+    }
+    .chara-card__traits {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.6rem;
+    }
+    .chara-card__traits li {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      padding: 0.15rem 0 0.15rem 1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .chara-card__traits li::before {
+      content: '★';
+      position: absolute;
+      left: 0;
+      color: var(--accent-pink);
+      font-size: 0.7rem;
+    }
+    .chara-card__quote {
+      font-size: 0.8rem;
+      color: #fff;
+      font-style: italic;
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 2px solid var(--accent-pink);
+      padding: 0.5rem 0.7rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* ===== 実績パネル ===== */
+    .stats-bar {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .stat-item {
+      flex: 1 1 auto;
+      min-width: 80px;
+      max-width: 130px;
+      text-align: center;
+      padding: 0.7rem 0.8rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .stat-value {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      color: var(--accent-yellow);
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .ach-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.9rem;
+    }
+    .ach-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s;
+    }
+    .ach-card:hover { transform: translateY(-2px); }
+    .ach-card--locked { opacity: 0.45; filter: grayscale(0.6); }
+    .ach-card--unlocked { border-color: rgba(255, 110, 199, 0.3); }
+    .ach-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+    .ach-card--locked .ach-icon { filter: grayscale(1); }
+    .ach-info { flex: 1; min-width: 0; }
+    .ach-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: var(--accent-yellow);
+      margin-bottom: 0.2rem;
+    }
+    .ach-card--locked .ach-title { color: var(--text-muted); }
+    .ach-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+    .ach-date { font-size: 0.68rem; color: var(--accent-green); margin-top: 0.3rem; opacity: 0.8; }
+
+    .ach-share {
+      display: block;
+      margin: 0 auto 1.2rem;
+      background: linear-gradient(135deg, #1da1f2, #0d8bd9);
+      color: #fff;
+      border: none;
+      padding: 0.55rem 1.4rem;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .ach-share:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 18px rgba(29, 161, 242, 0.4);
+    }
+
+    /* ===== 称号パネル ===== */
+    .current-title-box {
+      max-width: 520px;
+      margin: 0 auto 1.5rem;
+      padding: 1rem 1.2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    .current-title-box__label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .current-title-box__value {
+      font-size: 1.15rem;
+      color: var(--accent-yellow);
+      font-family: var(--font-heading);
+    }
+    .current-title-box__emoji {
+      font-size: 1.5rem;
+      margin-right: 0.4rem;
+      vertical-align: middle;
+    }
+    .current-title-box__clear {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid var(--card-border);
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .current-title-box__clear:hover { color: var(--accent-pink); border-color: rgba(255, 110, 199, 0.4); }
+
+    .title-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.9rem;
+    }
+    .title-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s;
+    }
+    .title-card:hover { transform: translateY(-2px); }
+    .title-card--locked { opacity: 0.45; filter: grayscale(0.6); }
+    .title-card--unlocked { border-color: rgba(255, 110, 199, 0.3); }
+    .title-card--current {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 0 2px rgba(255, 255, 0, 0.2), 0 0 14px rgba(255, 255, 0, 0.15);
+    }
+    .title-card__emoji { font-size: 2rem; flex-shrink: 0; }
+    .title-card__info { flex: 1; min-width: 0; }
+    .title-card__name {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: var(--accent-yellow);
+      margin-bottom: 0.1rem;
+    }
+    .title-card--locked .title-card__name { color: var(--text-muted); }
+    .title-card__desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+    .title-card__equip {
+      margin-top: 0.4rem;
+      font-size: 0.7rem;
+      background: transparent;
+      color: var(--accent-pink);
+      border: 1px solid rgba(255, 110, 199, 0.4);
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .title-card__equip:hover:not(:disabled) { background: rgba(255, 110, 199, 0.1); }
+    .title-card__equip:disabled { opacity: 0.5; cursor: not-allowed; }
+    .title-card--current .title-card__equip {
+      background: rgba(255, 255, 0, 0.15);
+      color: var(--accent-yellow);
+      border-color: rgba(255, 255, 0, 0.5);
+    }
+
+    /* ===== 死に方図鑑パネル ===== */
+    .dex-game-block {
+      margin-bottom: 1.2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      backdrop-filter: blur(10px);
+    }
+    .dex-game-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-bottom: 0.7rem;
+      margin-bottom: 0.8rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .dex-game-header__emoji { font-size: 1.6rem; }
+    .dex-game-header__title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: var(--accent-pink);
+    }
+    .dex-game-header__count {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .dex-entries {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.6rem;
+    }
+    .dex-entry {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+    .dex-entry--locked { opacity: 0.4; filter: grayscale(0.8); }
+    .dex-entry--unlocked {
+      border-color: rgba(179, 136, 255, 0.4);
+      background: rgba(179, 136, 255, 0.08);
+    }
+    .dex-entry__emoji { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
+    .dex-entry__body { flex: 1; min-width: 0; }
+    .dex-entry__title {
+      font-size: 0.85rem;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+    .dex-entry--locked .dex-entry__title { color: var(--text-muted); }
+    .dex-entry__desc { font-size: 0.7rem; color: var(--text-muted); line-height: 1.45; }
+    .dex-entry__count { font-size: 0.65rem; color: var(--accent-cyan); margin-top: 0.25rem; opacity: 0.85; }
+
+    /* ===== ホームパネル ===== */
+    .home-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .home-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    .home-current-title {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0.9rem 1.2rem;
+      background: linear-gradient(135deg, rgba(255, 255, 0, 0.12), rgba(255, 110, 199, 0.08));
+      border: 1px solid rgba(255, 255, 0, 0.3);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(255, 255, 0, 0.1);
+    }
+    .home-current-title__label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .home-current-title__value {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      color: var(--accent-yellow);
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* ===== 生命について（キャラクターパネル末尾） ===== */
+    .life-section {
+      margin-top: 2.5rem;
+      padding: 1.8rem 1.2rem;
+      background: linear-gradient(135deg, rgba(255, 110, 199, 0.08), rgba(0, 255, 247, 0.05));
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    .life-section__emoji { font-size: 2.5rem; display: block; margin-bottom: 0.8rem; }
+    .life-section p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin: 0.6rem 0;
+    }
+
+    /* ===== 空メッセージ ===== */
+    .col-empty {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    .col-empty a {
+      color: var(--accent-pink);
+      text-decoration: underline;
+    }
+
+    /* ===== モバイル調整 ===== */
+    @media (max-width: 768px) {
+      .page-fixed-nav {
+        gap: 0.25rem;
+        padding: 0 0.4rem;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+      }
+      .page-fixed-nav a {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.55rem;
+        white-space: nowrap;
+      }
+      .col-tab {
+        font-size: 0.75rem;
+        padding: 0.6rem 0.3rem;
+        min-width: 68px;
+      }
+      .col-tab__emoji { font-size: 1.25rem; }
+      .chara-grid,
+      .title-grid,
+      .ach-grid {
+        grid-template-columns: 1fr;
+      }
+      .dex-entries {
+        grid-template-columns: 1fr;
+      }
+      .col-hero {
+        min-height: 20vh;
+        padding: calc(var(--nav-h) + 1.5rem) 1rem 1.2rem;
+      }
+      .col-panel {
+        padding: 1rem 0.8rem 4rem;
+      }
+      .stats-bar { gap: 0.4rem; }
+      .stat-item { min-width: 68px; padding: 0.6rem 0.5rem; }
+      .stat-value { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 固定ナビ -->
+  <nav class="page-fixed-nav">
+    <a href="index.html">トップ</a>
+    <a href="index.html#games">ゲーム</a>
+    <a href="index.html#gallery">ギャラリー</a>
+    <a href="collection.html" class="active">図鑑</a>
+    <a href="index.html#news">お知らせ</a>
+    <a href="index.html#about">スタジオ</a>
+    <a href="index.html#contact">つながる</a>
+  </nav>
+
+  <!-- ヒーロー -->
+  <header class="col-hero">
+    <div class="floating-shapes" aria-hidden="true">
+      <span class="shape shape--1">&#x1f4d6;</span>
+      <span class="shape shape--2">&#x2b50;</span>
+      <span class="shape shape--3">&#x1f3c6;</span>
+      <span class="shape shape--4">&#x1f451;</span>
+      <span class="shape shape--5">&#x1f480;</span>
+      <span class="shape shape--6">&#x2728;</span>
+    </div>
+    <div>
+      <h1>📖 図鑑</h1>
+      <p>シュールゲームスのすべてをここに</p>
+    </div>
+  </header>
+
+  <!-- タブバー -->
+  <nav class="col-tabs" role="tablist" aria-label="図鑑のタブ">
+    <button type="button" class="col-tab is-active" data-tab="home" role="tab" aria-selected="true">
+      <span class="col-tab__emoji">🏠</span>
+      <span>ホーム</span>
+    </button>
+    <button type="button" class="col-tab" data-tab="characters" role="tab" aria-selected="false">
+      <span class="col-tab__emoji">👥</span>
+      <span>キャラ</span>
+    </button>
+    <button type="button" class="col-tab" data-tab="achievements" role="tab" aria-selected="false">
+      <span class="col-tab__emoji">🏆</span>
+      <span>実績</span>
+    </button>
+    <button type="button" class="col-tab" data-tab="titles" role="tab" aria-selected="false">
+      <span class="col-tab__emoji">👑</span>
+      <span>称号</span>
+    </button>
+    <button type="button" class="col-tab" data-tab="deaths" role="tab" aria-selected="false">
+      <span class="col-tab__emoji">💀</span>
+      <span>死に方</span>
+    </button>
+  </nav>
+
+  <main>
+    <!-- ============ ホームパネル ============ -->
+    <section id="panel-home" class="col-panel is-active" role="tabpanel">
+      <div class="col-panel__header">
+        <h2 class="col-panel__title">🏠 ホーム</h2>
+        <p class="col-panel__sub">今日のお題と、今週のスタンプ</p>
+      </div>
+
+      <div class="home-grid">
+        <!-- 今日のお題 -->
+        <div id="daily-card" class="daily-card">
+          <div class="daily-card__header">
+            <span class="daily-card__label">今日のお題</span>
+            <span class="daily-card__badge">DAILY</span>
+          </div>
+          <div class="daily-card__body">
+            <div id="daily-card-emoji" class="daily-card__emoji">🎲</div>
+            <div class="daily-card__info">
+              <h3 id="daily-card-title" class="daily-card__title">読み込み中…</h3>
+              <p id="daily-card-desc" class="daily-card__desc">毎日ランダムに選ばれるお題ゲーム。遊ぶだけで達成！</p>
+              <a id="daily-card-btn" href="#" class="daily-card__btn">今すぐ遊ぶ</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 今週のスタンプ -->
+        <div class="stamp-card-box">
+          <div class="stamp-card-box__header">
+            <span class="stamp-card-box__label">今週のスタンプ</span>
+          </div>
+          <div id="stamp-grid" class="stamp-grid"></div>
+          <p class="stamp-streak">連続 <strong id="stamp-streak-num">0</strong> 日 ／ 累計 <strong id="stamp-total-num">0</strong> 日</p>
+        </div>
+      </div>
+
+      <!-- 現在の装備称号（ハイライト表示） -->
+      <div id="home-current-title" class="home-current-title" style="display:none;">
+        <span class="home-current-title__label">現在の称号</span>
+        <span id="home-current-title-value" class="home-current-title__value"></span>
+      </div>
+    </section>
+
+    <!-- ============ キャラクターパネル ============ -->
+    <section id="panel-characters" class="col-panel" role="tabpanel">
+      <div class="col-panel__header">
+        <h2 class="col-panel__title">キャラクター</h2>
+        <p class="col-panel__sub">シュールゲームスの愉快な住人たち</p>
+      </div>
+
+      <div class="chara-grid">
+
+        <article class="chara-card chara-card--kanikani">
+          <div class="chara-card__image-wrap">
+            <img src="assets/images/kanikani.png" alt="かにかに" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f980;</span>かにかに</h3>
+            <span class="chara-card__game">かにかにパニック！</span>
+            <ul class="chara-card__traits">
+              <li>昨日の夢で見たカニ</li>
+              <li>ヤクザ（おしるこの）</li>
+              <li>磯の臭いは苦手</li>
+            </ul>
+            <div class="chara-card__quote">腹筋は毎日換気！</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--atsushi">
+          <div class="chara-card__image-wrap">
+            <img src="assets/images/atsushi.png" alt="篤（あつし）" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f4ca;</span>篤（あつし）</h3>
+            <span class="chara-card__game">経営分析ゲーム</span>
+            <ul class="chara-card__traits">
+              <li>天才（自称）</li>
+              <li>数字に愛される男</li>
+              <li>分析のことしか考えていない</li>
+            </ul>
+            <div class="chara-card__quote">ものごとは二つに分けられる。分析できるか…できないか…だ…！！</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--yoshinori">
+          <div class="chara-card__image-wrap">
+            <img src="games/drive/yoshinori.png" alt="ヨシノリ" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f3c6;</span>ヨシノリ</h3>
+            <span class="chara-card__game">黄金の金色ドライバー</span>
+            <ul class="chara-card__traits">
+              <li>田舎から出てきたばかりの少年</li>
+              <li>黄金の金色ドライバーを目指している</li>
+              <li>博士をマシンにした</li>
+            </ul>
+            <div class="chara-card__quote">お前がマシンになるんだよ</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--hakase">
+          <div class="chara-card__image-wrap">
+            <img src="games/drive/hakase-mount.png" alt="博士" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f9d1;&#x200d;&#x1f52c;</span>博士</h3>
+            <span class="chara-card__game">黄金の金色ドライバー</span>
+            <ul class="chara-card__traits">
+              <li>ヨシノリに協力するつもりだった</li>
+              <li>四つん這いでレースを走らされる</li>
+              <li>ワシは人間じゃぞ…？</li>
+            </ul>
+            <div class="chara-card__quote">なかなか良いマシンができたのう！</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--sakuranbo">
+          <div class="chara-card__image-wrap">
+            <img src="assets/images/illust9.png" alt="さくらんぼちゃん" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f352;</span>さくらんぼちゃん</h3>
+            <span class="chara-card__game">かわいい部屋からの脱出</span>
+            <ul class="chara-card__traits">
+              <li>絶世の美女</li>
+              <li>基地ゲージがたまると突然叫ぶ</li>
+              <li>家計簿をつけている</li>
+            </ul>
+            <div class="chara-card__quote">ヴぅおおおお！！</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--bakemon">
+          <div class="chara-card__image-wrap">
+            <img src="assets/images/kaidan-ghost.png" alt="バケモン" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f47b;</span>バケモン</h3>
+            <span class="chara-card__game">かいだんマインスイーパー</span>
+            <ul class="chara-card__traits">
+              <li>地雷原に住みついた霊</li>
+              <li>親からもらった名前だけど少し納得いってないよ</li>
+            </ul>
+            <div class="chara-card__quote">成仏…</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--protagonist">
+          <div class="chara-card__image-wrap">
+            <img src="games/unko-cone/character.png" alt="主人公" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f466;</span>主人公</h3>
+            <span class="chara-card__game">うんコーンキャッチャー / 脱出</span>
+            <ul class="chara-card__traits">
+              <li>変わった性癖の少年</li>
+              <li>不法侵入犯罪野郎</li>
+              <li>うんコーンをキャッチするよ</li>
+            </ul>
+            <div class="chara-card__quote">エクスタシー！</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--maakun">
+          <div class="chara-card__image-wrap">
+            <img src="games/puzzle-2048/images/illust10.png" alt="まーくん" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f47d;</span>まーくん</h3>
+            <span class="chara-card__game">シュール進化論</span>
+            <ul class="chara-card__traits">
+              <li>言葉を発しない謎の生き物</li>
+              <li>種族・年齢・性別すべて不明</li>
+              <li>じっと見つめてくる</li>
+            </ul>
+            <div class="chara-card__quote">……</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--ojisan">
+          <div class="chara-card__image-wrap">
+            <img src="games/puzzle-2048/images/manmen-no-emi.png" alt="おじさん" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f60a;</span>おじさん</h3>
+            <span class="chara-card__game">シュール進化論</span>
+            <ul class="chara-card__traits">
+              <li>いつでも満面の笑み</li>
+              <li>何を考えているかは謎</li>
+              <li>表情だけで会話する</li>
+            </ul>
+            <div class="chara-card__quote">（にっこり）</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--reversi">
+          <div class="chara-card__image-wrap">
+            <img src="games/reversi/character.png" alt="黒石" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f0cf;</span>黒石</h3>
+            <span class="chara-card__game">漆黒のリバーシ</span>
+            <ul class="chara-card__traits">
+              <li>盤上の支配者を自称するピンクの怪人</li>
+              <li>吾輩の番を永遠に宣言し続ける</li>
+              <li>黒い石への執着が異常</li>
+            </ul>
+            <div class="chara-card__quote">吾輩の番だが？</div>
+          </div>
+        </article>
+
+        <article class="chara-card chara-card--softcream">
+          <div class="chara-card__image-wrap">
+            <img src="assets/images/softcream.png" alt="チョコ味のソフトクリーム" loading="lazy">
+          </div>
+          <div class="chara-card__body">
+            <h3 class="chara-card__name"><span class="chara-card__name-emoji">&#x1f366;</span>チョコ味のソフトクリーム</h3>
+            <span class="chara-card__game">うんコーンキャッチャー</span>
+            <ul class="chara-card__traits">
+              <li>チョコ味の自称ソフトクリーム</li>
+              <li>貧しい人々に食べてもらいたいと願う善人</li>
+              <li>踏ん張ってねじり出す</li>
+            </ul>
+            <div class="chara-card__quote">やあ、僕はうん…チョコ味のソフトクリーム！</div>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="life-section">
+        <span class="life-section__emoji">🌱</span>
+        <p>シュールゲームスのキャラクターはみんな畜生だけど懸命に生きているよ。</p>
+        <p>このサイトを訪れてくれた、うんち製造機の君も、<br>きっと毎日ふんばっていきんで生きているんだね。</p>
+        <p>とてもすごいことだ。<br>存在してくれてありがとね。</p>
+        <p style="margin-top:1rem;opacity:0.7;">　敬具　うんち</p>
+      </div>
+    </section>
+
+    <!-- ============ 実績パネル ============ -->
+    <section id="panel-achievements" class="col-panel" role="tabpanel">
+      <div class="col-panel__header">
+        <h2 class="col-panel__title">🏆 実績</h2>
+        <p class="col-panel__sub">遊ぶほどに解放されていくよ</p>
+      </div>
+
+      <div class="col-progress">
+        <p class="col-progress__text" id="ach-progress-text">読み込み中...</p>
+        <div class="col-progress__track"><div class="col-progress__fill" id="ach-progress-fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-value" id="stat-plays">0</div>
+          <div class="stat-label">総プレイ</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-games">0</div>
+          <div class="stat-label">遊んだ数</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-highscores">0</div>
+          <div class="stat-label">HS更新</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-favorite">-</div>
+          <div class="stat-label">お気に入り</div>
+        </div>
+      </div>
+
+      <button type="button" class="ach-share" id="share-achievements">𝕏 実績をシェア</button>
+
+      <div class="ach-grid" id="ach-grid"></div>
+    </section>
+
+    <!-- ============ 称号パネル ============ -->
+    <section id="panel-titles" class="col-panel" role="tabpanel">
+      <div class="col-panel__header">
+        <h2 class="col-panel__title">👑 称号</h2>
+        <p class="col-panel__sub">好きな称号を装備できるよ</p>
+      </div>
+
+      <div class="current-title-box">
+        <div class="current-title-box__label">現在の称号</div>
+        <div class="current-title-box__value" id="current-title-display">
+          <span class="current-title-box__emoji">❔</span>
+          <span>まだ称号が装備されていません</span>
+        </div>
+        <button type="button" class="current-title-box__clear" id="clear-title-btn" style="display:none;">称号を外す</button>
+      </div>
+
+      <div class="col-progress">
+        <p class="col-progress__text"><strong id="titles-unlocked">0</strong> / <strong id="titles-total">0</strong> 解放中</p>
+        <div class="col-progress__track"><div class="col-progress__fill" id="titles-progress-fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="title-grid" id="titles-grid"></div>
+    </section>
+
+    <!-- ============ 死に方パネル ============ -->
+    <section id="panel-deaths" class="col-panel" role="tabpanel">
+      <div class="col-panel__header">
+        <h2 class="col-panel__title">💀 死に方図鑑</h2>
+        <p class="col-panel__sub">何度も遊んで、あらゆる終わり方を発見しよう</p>
+      </div>
+
+      <div class="col-progress">
+        <p class="col-progress__text"><strong id="dex-discovered">0</strong> / <strong id="dex-total">0</strong> 種類を発見</p>
+        <div class="col-progress__track"><div class="col-progress__fill" id="dex-progress-fill" style="width:0%"></div></div>
+      </div>
+
+      <div id="dex-container"></div>
+    </section>
+  </main>
+
+  <footer style="padding: 2rem 1.5rem; text-align: center; border-top: 1px solid var(--card-border);">
+    <p style="color: var(--text-muted); font-size: 0.8rem;">
+      <a href="privacy.html" style="color: inherit;">プライバシーポリシー</a>
+      &nbsp;&copy; 2026 シュールゲームス.
+    </p>
+  </footer>
+
+  <script src="games/common/game-common.js"></script>
+  <script>
+    (function () {
+      const SG = window.SurrealGames;
+      if (!SG) return;
+
+      // ===== タブ切替 =====
+      const tabs = document.querySelectorAll('.col-tab');
+      const panels = document.querySelectorAll('.col-panel');
+      const TAB_IDS = ['home', 'characters', 'achievements', 'titles', 'deaths'];
+
+      function switchTab(tabId, updateHash) {
+        if (!TAB_IDS.includes(tabId)) tabId = 'home';
+        tabs.forEach(t => {
+          const active = t.dataset.tab === tabId;
+          t.classList.toggle('is-active', active);
+          t.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        panels.forEach(p => {
+          p.classList.toggle('is-active', p.id === 'panel-' + tabId);
+        });
+        if (updateHash) {
+          history.replaceState(null, '', '#' + tabId);
+        }
+        // パネル切替時はスクロール位置をタブ直下へ
+        const tabBar = document.querySelector('.col-tabs');
+        if (tabBar && window.scrollY > tabBar.offsetTop) {
+          window.scrollTo({ top: tabBar.offsetTop, behavior: 'smooth' });
+        }
+        SG.GA && SG.GA.trackEvent && SG.GA.trackEvent('collection_tab_switch', { tab: tabId });
+      }
+
+      tabs.forEach(t => {
+        t.addEventListener('click', () => switchTab(t.dataset.tab, true));
+      });
+
+      window.addEventListener('hashchange', () => {
+        const h = (location.hash || '').replace('#', '');
+        if (h) switchTab(h, false);
+      });
+
+      // 初期タブ（ハッシュがあればそれを使う）
+      const initialHash = (location.hash || '').replace('#', '');
+      if (initialHash) switchTab(initialHash, false);
+
+      // ===== ホームパネル（デイリー & スタンプ） =====
+      (function renderHome() {
+        // 今日のお題
+        const daily = SG.DailyChallenge.getToday();
+        const card = document.getElementById('daily-card');
+        if (card && daily.game) {
+          document.getElementById('daily-card-emoji').textContent = daily.game.emoji;
+          document.getElementById('daily-card-title').textContent = daily.game.title;
+          document.getElementById('daily-card-desc').textContent = daily.game.desc || '今日のお題。遊べば達成！';
+          const btn = document.getElementById('daily-card-btn');
+          btn.href = 'games/' + daily.gameId + '/index.html';
+          btn.textContent = daily.completed ? '✓ もう一度遊ぶ' : '今すぐ遊ぶ';
+          if (daily.completed) card.classList.add('is-completed');
+        }
+
+        // 今週のスタンプ
+        const grid = document.getElementById('stamp-grid');
+        if (grid) {
+          const recent = SG.StampCard.getRecent(7);
+          grid.innerHTML = recent.map(function (cell) {
+            const cls = ['stamp-cell'];
+            if (cell.stamped) cls.push('is-stamped');
+            if (cell.isToday) cls.push('is-today');
+            return '<div class="' + cls.join(' ') + '" title="' + cell.date + '">'
+              + '<div class="stamp-cell__day">' + cell.dayLabel + '</div>'
+              + '<div class="stamp-cell__num">' + cell.dayNum + '</div>'
+              + '</div>';
+          }).join('');
+          document.getElementById('stamp-streak-num').textContent = SG.StampCard.getStreak();
+          document.getElementById('stamp-total-num').textContent = SG.StampCard.getAll().length;
+        }
+
+        // 現在の称号をハイライト（あれば）
+        const cur = SG.Titles.getCurrent();
+        if (cur) {
+          const box = document.getElementById('home-current-title');
+          box.style.display = 'flex';
+          document.getElementById('home-current-title-value').innerHTML =
+            '<span style="font-size:1.4rem;margin-right:0.4rem;">' + cur.emoji + '</span>' + cur.title;
+        }
+      })();
+
+      // ===== 実績パネル =====
+      (function renderAchievements() {
+        const stats = SG.Stats.getSummary();
+        document.getElementById('stat-plays').textContent = stats.totalPlays;
+        document.getElementById('stat-games').textContent = stats.uniqueGames;
+        document.getElementById('stat-highscores').textContent = stats.highScoreUpdates;
+        if (stats.favoriteGameId) {
+          const favGame = SG.GAME_CATALOG.find(g => g.id === stats.favoriteGameId);
+          if (favGame) {
+            const el = document.getElementById('stat-favorite');
+            el.textContent = favGame.emoji;
+            el.title = favGame.title + '（' + stats.favoriteGamePlays + '回）';
+          }
+        }
+
+        const achievements = SG.Achievements.getAll();
+        const unlockedCount = achievements.filter(a => a.unlocked).length;
+        const total = achievements.length;
+        const pct = total > 0 ? Math.round(unlockedCount / total * 100) : 0;
+        document.getElementById('ach-progress-text').innerHTML = '<strong>' + unlockedCount + '</strong> / ' + total + ' 解除済み（' + pct + '%）';
+        document.getElementById('ach-progress-fill').style.width = pct + '%';
+
+        const sorted = [...achievements].sort((a, b) => {
+          if (a.unlocked && !b.unlocked) return -1;
+          if (!a.unlocked && b.unlocked) return 1;
+          return 0;
+        });
+
+        const grid = document.getElementById('ach-grid');
+        grid.innerHTML = sorted.map(a => {
+          const cls = a.unlocked ? 'ach-card--unlocked' : 'ach-card--locked';
+          const dateStr = a.date ? new Date(a.date).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+          return '<div class="ach-card ' + cls + '">'
+            + '<div class="ach-icon">' + (a.unlocked ? a.emoji : '🔒') + '</div>'
+            + '<div class="ach-info">'
+            +   '<div class="ach-title">' + (a.unlocked ? a.displayTitle : '???') + '</div>'
+            +   '<div class="ach-desc">' + (a.unlocked ? a.displayDesc : 'ゲームをプレイして解除しよう') + '</div>'
+            +   (dateStr ? '<div class="ach-date">' + dateStr + ' に解除</div>' : '')
+            + '</div>'
+            + '</div>';
+        }).join('');
+
+        if (stats.totalPlays === 0) {
+          grid.insertAdjacentHTML('beforebegin', '<div class="col-empty">まだゲームをプレイしていないよ。<br><a href="index.html#games">ゲームを遊ぶ</a></div>');
+        }
+
+        document.getElementById('share-achievements').addEventListener('click', function () {
+          const text = '【シュールゲームス 実績】\n' + unlockedCount + ' / ' + total + ' 解除済み（' + pct + '%）\n総プレイ: ' + stats.totalPlays + '\n#シュールゲームス';
+          window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(window.location.origin + '/collection.html'), '_blank');
+        });
+      })();
+
+      // ===== 称号パネル =====
+      function renderTitles() {
+        SG.Titles.check();
+        const all = SG.Titles.getAll();
+        const unlocked = all.filter(t => t.unlocked);
+        const current = SG.Titles.getCurrent();
+
+        document.getElementById('titles-unlocked').textContent = unlocked.length;
+        document.getElementById('titles-total').textContent = all.length;
+        const pct = all.length > 0 ? Math.round(unlocked.length / all.length * 100) : 0;
+        document.getElementById('titles-progress-fill').style.width = pct + '%';
+
+        const cur = document.getElementById('current-title-display');
+        const clearBtn = document.getElementById('clear-title-btn');
+        if (current) {
+          cur.innerHTML = '<span class="current-title-box__emoji">' + current.emoji + '</span><span>' + current.title + '</span>';
+          clearBtn.style.display = 'inline-block';
+        } else {
+          cur.innerHTML = '<span class="current-title-box__emoji">❔</span><span>まだ称号が装備されていません</span>';
+          clearBtn.style.display = 'none';
+        }
+
+        const sorted = [...all].sort((a, b) => {
+          if (a.unlocked && !b.unlocked) return -1;
+          if (!a.unlocked && b.unlocked) return 1;
+          return 0;
+        });
+
+        const grid = document.getElementById('titles-grid');
+        grid.innerHTML = sorted.map(t => {
+          const classes = ['title-card'];
+          classes.push(t.unlocked ? 'title-card--unlocked' : 'title-card--locked');
+          if (t.isCurrent) classes.push('title-card--current');
+          const btnLabel = !t.unlocked ? '未解放' : (t.isCurrent ? '装備中' : '装備する');
+          const btnDisabled = !t.unlocked ? 'disabled' : '';
+          return '<div class="' + classes.join(' ') + '">'
+            + '<div class="title-card__emoji">' + (t.unlocked ? t.emoji : '🔒') + '</div>'
+            + '<div class="title-card__info">'
+            +   '<div class="title-card__name">' + (t.unlocked ? t.title : '???') + '</div>'
+            +   '<div class="title-card__desc">' + (t.unlocked ? t.desc : '条件を満たすと解放') + '</div>'
+            +   '<button type="button" class="title-card__equip" data-id="' + t.id + '" ' + btnDisabled + '>' + btnLabel + '</button>'
+            + '</div>'
+            + '</div>';
+        }).join('');
+
+        grid.querySelectorAll('.title-card__equip').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            if (SG.Titles.setCurrent(id)) renderTitles();
+          });
+        });
+      }
+
+      document.getElementById('clear-title-btn').addEventListener('click', () => {
+        SG.Titles.clearCurrent();
+        renderTitles();
+      });
+      renderTitles();
+
+      // ===== 死に方パネル =====
+      (function renderDeaths() {
+        const defs = SG.DEATH_DEX_DEFS;
+        const data = SG.DeathDex.getAll();
+        const summary = SG.DeathDex.getSummary();
+
+        document.getElementById('dex-discovered').textContent = summary.discovered;
+        document.getElementById('dex-total').textContent = summary.total;
+        const pct = summary.total > 0 ? Math.round(summary.discovered / summary.total * 100) : 0;
+        document.getElementById('dex-progress-fill').style.width = pct + '%';
+
+        const container = document.getElementById('dex-container');
+        const gameIds = Object.keys(defs);
+        container.innerHTML = gameIds.map(gameId => {
+          const game = SG.GAME_CATALOG.find(g => g.id === gameId);
+          if (!game) return '';
+          const gameDefs = defs[gameId];
+          const found = data[gameId] || {};
+          const defKeys = Object.keys(gameDefs);
+          const discoveredCount = defKeys.filter(k => found[k]).length;
+
+          const entries = defKeys.map(key => {
+            const def = gameDefs[key];
+            const entry = found[key];
+            const unlocked = !!entry;
+            return '<div class="dex-entry ' + (unlocked ? 'dex-entry--unlocked' : 'dex-entry--locked') + '">'
+              + '<div class="dex-entry__emoji">' + (unlocked ? def.emoji : '❓') + '</div>'
+              + '<div class="dex-entry__body">'
+              +   '<div class="dex-entry__title">' + (unlocked ? def.title : '???') + '</div>'
+              +   '<div class="dex-entry__desc">' + (unlocked ? def.desc : 'まだ発見されていない') + '</div>'
+              +   (unlocked ? '<div class="dex-entry__count">発見: ' + entry.count + '回</div>' : '')
+              + '</div>'
+              + '</div>';
+          }).join('');
+
+          return '<section class="dex-game-block">'
+            + '<div class="dex-game-header">'
+            +   '<span class="dex-game-header__emoji">' + game.emoji + '</span>'
+            +   '<span class="dex-game-header__title">' + game.title + '</span>'
+            +   '<span class="dex-game-header__count">' + discoveredCount + ' / ' + defKeys.length + '</span>'
+            + '</div>'
+            + '<div class="dex-entries">' + entries + '</div>'
+            + '</section>';
+        }).join('');
+      })();
+    })();
+  </script>
+</body>
+</html>

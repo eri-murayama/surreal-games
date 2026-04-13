@@ -69,9 +69,8 @@
     <a href="#hero" class="fixed-nav__link">トップ</a>
     <a href="#games" class="fixed-nav__link">ゲーム</a>
     <a href="#gallery" class="fixed-nav__link">ギャラリー</a>
-    <a href="characters.html" class="fixed-nav__link">キャラクター</a>
+    <a href="collection.html" class="fixed-nav__link">図鑑</a>
     <a href="#news" class="fixed-nav__link">お知らせ</a>
-    <a href="achievements.html" class="fixed-nav__link">実績</a>
     <a href="#about" class="fixed-nav__link">スタジオ</a>
     <a href="#contact" class="fixed-nav__link">つながる</a>
   </nav>
@@ -101,9 +100,8 @@
       <nav class="hero-nav">
         <a href="#games" class="nav-link">ゲーム一覧</a>
         <a href="#gallery" class="nav-link">ギャラリー</a>
-        <a href="characters.html" class="nav-link">キャラクター</a>
+        <a href="collection.html" class="nav-link">図鑑</a>
         <a href="#news" class="nav-link">お知らせ</a>
-        <a href="achievements.html" class="nav-link">実績</a>
         <a href="#about" class="nav-link">このスタジオとは</a>
         <a href="#contact" class="nav-link">つながる</a>
       </nav>
@@ -111,38 +109,6 @@
   </header>
 
   <main>
-    <!-- デイリーチャレンジ & スタンプカード -->
-    <section class="daily-stamp-section fade-in" aria-label="デイリーチャレンジとスタンプカード">
-      <div id="daily-card" class="daily-card">
-        <div class="daily-card__header">
-          <span class="daily-card__label">今日のお題</span>
-          <span class="daily-card__badge">DAILY</span>
-        </div>
-        <div class="daily-card__body">
-          <div id="daily-card-emoji" class="daily-card__emoji">🎲</div>
-          <div class="daily-card__info">
-            <h3 id="daily-card-title" class="daily-card__title">読み込み中…</h3>
-            <p id="daily-card-desc" class="daily-card__desc">毎日ランダムに選ばれるお題ゲーム。遊ぶだけで達成！</p>
-            <a id="daily-card-btn" href="#" class="daily-card__btn">今すぐ遊ぶ</a>
-          </div>
-        </div>
-      </div>
-      <div class="stamp-card-box">
-        <div class="stamp-card-box__header">
-          <span class="stamp-card-box__label">今週のスタンプ</span>
-        </div>
-        <div id="stamp-grid" class="stamp-grid"></div>
-        <p class="stamp-streak">連続 <strong id="stamp-streak-num">0</strong> 日 ／ 累計 <strong id="stamp-total-num">0</strong> 日</p>
-      </div>
-    </section>
-
-    <!-- 称号・死に方図鑑への導線 -->
-    <nav class="extras-nav fade-in" aria-label="やりこみ要素">
-      <a href="titles.html" class="extras-nav__link"><span class="extras-nav__link-emoji">👑</span>称号一覧</a>
-      <a href="death-dex.html" class="extras-nav__link"><span class="extras-nav__link-emoji">💀</span>死に方図鑑</a>
-      <a href="achievements.html" class="extras-nav__link"><span class="extras-nav__link-emoji">🏆</span>実績</a>
-    </nav>
-
     <!-- ゲーム一覧 -->
     <section id="games">
       <h2 class="section-title fade-in">ゲーム一覧</h2>
@@ -160,6 +126,7 @@
 
         <!-- ゲームカード: 漆黒のリバーシ（NEW） -->
         <article class="game-card game-card--flip fade-in">
+          <span class="new-badge" aria-label="新着">NEW</span>
           <div class="game-card__image card-flip-zone">
             <div class="card-flip-inner">
               <div class="card-flip-front placeholder-art" style="background: linear-gradient(135deg, #ce93d8, #9c27b0, #6a1b9a);">
@@ -465,14 +432,22 @@
 
   <!-- おすすめゲームルーレット オーバーレイ -->
   <div id="recommend-overlay" class="roulette-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="roulette-title">
+    <div class="roulette-backdrop" aria-hidden="true"></div>
     <div class="roulette-box">
+      <div class="roulette-sparkles" aria-hidden="true">
+        <span>✦</span><span>★</span><span>✧</span><span>❀</span><span>♪</span><span>✦</span><span>★</span><span>✧</span>
+      </div>
       <button type="button" class="roulette-close" id="roulette-close" aria-label="閉じる">×</button>
       <h3 id="roulette-title" class="roulette-title">運命のゲームは…？</h3>
+      <div class="roulette-countdown" id="roulette-countdown" aria-hidden="true"></div>
       <div class="roulette-stage">
+        <div class="roulette-rays" aria-hidden="true"></div>
         <div class="roulette-card" id="roulette-card">
           <div class="roulette-card__image" id="roulette-image"></div>
           <div class="roulette-card__name" id="roulette-name">???</div>
+          <div class="roulette-stamp" aria-hidden="true">決定！</div>
         </div>
+        <div class="roulette-confetti" id="roulette-confetti" aria-hidden="true"></div>
       </div>
       <div class="roulette-actions" id="roulette-actions" hidden>
         <a href="#" class="roulette-btn roulette-btn--play" id="roulette-play">▶ プレイする</a>
@@ -481,45 +456,8 @@
     </div>
   </div>
 
-  <script src="games/common/game-common.js"></script>
   <script src="js/main.js"></script>
   <script>
-    // デイリーチャレンジ & スタンプカードの初期化
-    (function () {
-      const SG = window.SurrealGames;
-      if (!SG) return;
-
-      // --- デイリーチャレンジ ---
-      const daily = SG.DailyChallenge.getToday();
-      const card = document.getElementById('daily-card');
-      if (card && daily.game) {
-        document.getElementById('daily-card-emoji').textContent = daily.game.emoji;
-        document.getElementById('daily-card-title').textContent = daily.game.title;
-        document.getElementById('daily-card-desc').textContent = daily.game.desc || '今日のお題。遊べば達成！';
-        const btn = document.getElementById('daily-card-btn');
-        btn.href = 'games/' + daily.gameId + '/index.html';
-        btn.textContent = daily.completed ? '✓ もう一度遊ぶ' : '今すぐ遊ぶ';
-        if (daily.completed) card.classList.add('is-completed');
-      }
-
-      // --- スタンプカード ---
-      const grid = document.getElementById('stamp-grid');
-      if (grid) {
-        const recent = SG.StampCard.getRecent(7);
-        grid.innerHTML = recent.map(function (cell) {
-          const cls = ['stamp-cell'];
-          if (cell.stamped) cls.push('is-stamped');
-          if (cell.isToday) cls.push('is-today');
-          return '<div class="' + cls.join(' ') + '" title="' + cell.date + '">'
-            + '<div class="stamp-cell__day">' + cell.dayLabel + '</div>'
-            + '<div class="stamp-cell__num">' + cell.dayNum + '</div>'
-            + '</div>';
-        }).join('');
-        document.getElementById('stamp-streak-num').textContent = SG.StampCard.getStreak();
-        document.getElementById('stamp-total-num').textContent = SG.StampCard.getAll().length;
-      }
-    })();
-
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }

@@ -452,6 +452,7 @@ section {
 }
 
 .game-card {
+  position: relative;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 16px;
@@ -1512,14 +1513,11 @@ footer {
 .roulette-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.78);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 9999;
   padding: 1rem;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 .roulette-overlay.is-open {
   display: flex;
@@ -1530,20 +1528,88 @@ footer {
   to { opacity: 1; }
 }
 
+.roulette-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 20, 147, 0.35), rgba(0, 0, 0, 0.85) 60%),
+    rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.roulette-backdrop::before,
+.roulette-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    conic-gradient(from 0deg, transparent 0 15%, rgba(255, 182, 193, 0.08) 15% 20%, transparent 20% 35%, rgba(255, 255, 255, 0.06) 35% 40%, transparent 40% 55%, rgba(255, 182, 193, 0.08) 55% 60%, transparent 60% 75%, rgba(255, 255, 255, 0.06) 75% 80%, transparent 80%);
+  animation: rouletteRayspin 14s linear infinite;
+  pointer-events: none;
+}
+.roulette-backdrop::after {
+  animation-duration: 22s;
+  animation-direction: reverse;
+  opacity: 0.6;
+}
+@keyframes rouletteRayspin {
+  to { transform: rotate(360deg); }
+}
+
 .roulette-box {
   position: relative;
-  width: min(92vw, 420px);
+  width: min(92vw, 440px);
   background: linear-gradient(135deg, #ffffff, #ffe0f0);
   border: 4px solid #ff69b4;
   border-radius: 24px;
   padding: 1.75rem 1.25rem 1.5rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    0 0 0 6px rgba(255, 255, 255, 0.15),
+    0 0 60px rgba(255, 105, 180, 0.55);
   text-align: center;
-  animation: rouletteBoxIn 0.35s ease;
+  animation: rouletteBoxIn 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+  overflow: hidden;
+}
+.roulette-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, transparent 0 20px, rgba(255, 105, 180, 0.05) 20px 22px);
+  pointer-events: none;
 }
 @keyframes rouletteBoxIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from { transform: scale(0.7) rotate(-4deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* 装飾スパークル */
+.roulette-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.roulette-sparkles span {
+  position: absolute;
+  font-size: 1rem;
+  color: #ff69b4;
+  opacity: 0;
+  animation: rouletteSparkle 2.4s ease-in-out infinite;
+  text-shadow: 0 0 6px rgba(255, 105, 180, 0.6);
+}
+.roulette-sparkles span:nth-child(1) { top: 8%; left: 6%;  animation-delay: 0s;    color: #ff1493; }
+.roulette-sparkles span:nth-child(2) { top: 18%; right: 8%; animation-delay: 0.3s; color: #ffd700; }
+.roulette-sparkles span:nth-child(3) { top: 46%; left: 4%;  animation-delay: 0.6s; color: #ff69b4; }
+.roulette-sparkles span:nth-child(4) { top: 58%; right: 5%; animation-delay: 0.9s; color: #c71585; }
+.roulette-sparkles span:nth-child(5) { bottom: 18%; left: 10%; animation-delay: 1.2s; color: #ffd700; }
+.roulette-sparkles span:nth-child(6) { bottom: 30%; right: 12%; animation-delay: 1.5s; color: #ff1493; }
+.roulette-sparkles span:nth-child(7) { top: 30%; left: 50%;  animation-delay: 1.8s; color: #ff69b4; }
+.roulette-sparkles span:nth-child(8) { bottom: 8%; left: 46%; animation-delay: 2.1s; color: #ffd700; }
+@keyframes rouletteSparkle {
+  0%, 100% { opacity: 0; transform: scale(0.4) rotate(0); }
+  30%      { opacity: 1; transform: scale(1.2) rotate(180deg); }
+  60%      { opacity: 0.6; transform: scale(0.9) rotate(300deg); }
 }
 
 .roulette-close {
@@ -1560,25 +1626,91 @@ footer {
   cursor: pointer;
   line-height: 1;
   padding: 0;
+  z-index: 5;
 }
 .roulette-close:hover { color: #ff1493; }
 
 .roulette-title {
-  margin: 0 0 1rem;
-  font-size: 1.3rem;
+  position: relative;
+  margin: 0 0 0.75rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #c71585;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.8), 0 4px 12px rgba(255, 20, 147, 0.3);
+  z-index: 2;
+}
+
+/* カウントダウン「3,2,1,GO!」 */
+.roulette-countdown {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6rem;
+  font-weight: 900;
+  color: #ff1493;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.9), 0 4px 0 #fff, 0 0 40px rgba(255, 20, 147, 0.7);
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+}
+.roulette-countdown.is-active {
+  animation: rouletteCountdown 0.5s ease;
+}
+@keyframes rouletteCountdown {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.4); }
+  70%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
 }
 
 .roulette-stage {
   position: relative;
   margin: 0 auto 1rem;
-  padding: 0.6rem;
+  padding: 0.75rem;
   background: repeating-linear-gradient(45deg, #fff5fa, #fff5fa 10px, #ffe0f0 10px, #ffe0f0 20px);
   border-radius: 18px;
+  box-shadow: inset 0 0 0 2px rgba(255, 105, 180, 0.3);
+  z-index: 2;
+}
+
+/* 放射光（勝者確定時） */
+.roulette-rays {
+  position: absolute;
+  inset: -30%;
+  background: conic-gradient(from 0deg,
+    rgba(255, 215, 0, 0.55) 0 6deg, transparent 6deg 18deg,
+    rgba(255, 215, 0, 0.55) 18deg 24deg, transparent 24deg 36deg,
+    rgba(255, 215, 0, 0.55) 36deg 42deg, transparent 42deg 54deg,
+    rgba(255, 215, 0, 0.55) 54deg 60deg, transparent 60deg 72deg,
+    rgba(255, 215, 0, 0.55) 72deg 78deg, transparent 78deg 90deg,
+    rgba(255, 215, 0, 0.55) 90deg 96deg, transparent 96deg 108deg,
+    rgba(255, 215, 0, 0.55) 108deg 114deg, transparent 114deg 126deg,
+    rgba(255, 215, 0, 0.55) 126deg 132deg, transparent 132deg 144deg,
+    rgba(255, 215, 0, 0.55) 144deg 150deg, transparent 150deg 162deg,
+    rgba(255, 215, 0, 0.55) 162deg 168deg, transparent 168deg 180deg,
+    rgba(255, 215, 0, 0.55) 180deg 186deg, transparent 186deg 198deg,
+    rgba(255, 215, 0, 0.55) 198deg 204deg, transparent 204deg 216deg,
+    rgba(255, 215, 0, 0.55) 216deg 222deg, transparent 222deg 234deg,
+    rgba(255, 215, 0, 0.55) 234deg 240deg, transparent 240deg 252deg,
+    rgba(255, 215, 0, 0.55) 252deg 258deg, transparent 258deg 270deg,
+    rgba(255, 215, 0, 0.55) 270deg 276deg, transparent 276deg 288deg,
+    rgba(255, 215, 0, 0.55) 288deg 294deg, transparent 294deg 306deg,
+    rgba(255, 215, 0, 0.55) 306deg 312deg, transparent 312deg 324deg,
+    rgba(255, 215, 0, 0.55) 324deg 330deg, transparent 330deg 342deg,
+    rgba(255, 215, 0, 0.55) 342deg 348deg, transparent 348deg 360deg);
+  filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.roulette-rays.is-active {
+  opacity: 1;
+  animation: rouletteRayspin 6s linear infinite;
 }
 
 .roulette-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1587,24 +1719,38 @@ footer {
   background: #fff;
   border-radius: 14px;
   min-height: 230px;
+  z-index: 2;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 .roulette-card.is-spinning {
-  animation: rouletteShake 0.08s linear infinite;
+  animation: rouletteShake 0.1s linear infinite;
+}
+.roulette-card.is-spinning .roulette-card__image {
+  animation: rouletteImageFlash 0.15s linear infinite;
 }
 @keyframes rouletteShake {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(-2px, 1px); }
-  50% { transform: translate(2px, -1px); }
-  75% { transform: translate(-1px, -2px); }
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  25%      { transform: translate(-3px, 1px) rotate(-0.5deg); }
+  50%      { transform: translate(2px, -2px) rotate(0.5deg); }
+  75%      { transform: translate(-1px, -2px) rotate(-0.3deg); }
+}
+@keyframes rouletteImageFlash {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.25) saturate(1.3); }
 }
 .roulette-card.is-winner {
-  animation: rouletteWinner 0.7s ease;
+  animation: rouletteWinner 0.9s cubic-bezier(0.2, 1.4, 0.4, 1);
+  box-shadow:
+    0 0 0 4px #ffd700,
+    0 0 30px rgba(255, 215, 0, 0.8),
+    0 8px 30px rgba(255, 20, 147, 0.4);
 }
 @keyframes rouletteWinner {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.18); }
-  65% { transform: scale(0.93); }
-  100% { transform: scale(1); }
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.2) rotate(-3deg); }
+  50%  { transform: scale(0.9) rotate(2deg); }
+  70%  { transform: scale(1.1) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0); }
 }
 
 .roulette-card__image {
@@ -1618,14 +1764,19 @@ footer {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  transition: transform 0.3s ease;
+}
+.roulette-card.is-winner .roulette-card__image {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 20, 147, 0.5);
 }
 .roulette-card__image img {
-  max-width: 78%;
-  max-height: 78%;
+  max-width: 82%;
+  max-height: 82%;
   object-fit: contain;
 }
 .roulette-card__name {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #333;
   line-height: 1.35;
@@ -1634,6 +1785,61 @@ footer {
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+.roulette-card.is-winner .roulette-card__name {
+  color: #c71585;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+/* 「決定！」スタンプ */
+.roulette-stamp {
+  position: absolute;
+  top: 8px;
+  right: -6px;
+  padding: 0.35rem 0.9rem;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, #ff1493, #c71585);
+  border: 3px dashed #fff;
+  border-radius: 8px;
+  transform: rotate(15deg) scale(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.1em;
+  opacity: 0;
+  pointer-events: none;
+}
+.roulette-card.is-winner .roulette-stamp {
+  animation: rouletteStamp 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) 0.2s forwards;
+}
+@keyframes rouletteStamp {
+  0%   { opacity: 0; transform: rotate(15deg) scale(3); }
+  60%  { opacity: 1; transform: rotate(15deg) scale(0.85); }
+  100% { opacity: 1; transform: rotate(15deg) scale(1); }
+}
+
+/* コンフェティ */
+.roulette-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.roulette-confetti span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+}
+.roulette-confetti.is-burst span {
+  animation: rouletteConfettiBurst 1.2s ease-out forwards;
+}
+@keyframes rouletteConfettiBurst {
+  0%   { opacity: 1; transform: translate(-50%, -50%) rotate(0); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); }
 }
 
 .roulette-actions {
@@ -1692,6 +1898,209 @@ footer {
   .roulette-card.is-winner,
   .roulette-overlay.is-open,
   .roulette-box {
+    animation: none;
+  }
+}
+
+/* ======================================== */
+/* デイリーチャレンジ & スタンプカード         */
+/* （collection.html ホームタブで使用）       */
+/* ======================================== */
+.daily-card,
+.stamp-card-box {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 1.2rem 1.4rem;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.daily-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(255, 110, 199, 0.15), transparent 50%);
+  pointer-events: none;
+}
+
+.daily-card__header,
+.stamp-card-box__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.daily-card__label,
+.stamp-card-box__label {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.1rem;
+  color: var(--accent-pink);
+  letter-spacing: 0.05em;
+}
+
+.daily-card__badge {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--accent-cyan);
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(0, 255, 247, 0.4);
+  border-radius: 999px;
+  background: rgba(0, 255, 247, 0.08);
+}
+
+.daily-card__body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.daily-card__emoji {
+  font-size: 3rem;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 10px rgba(255, 110, 199, 0.4));
+}
+
+.daily-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.daily-card__title {
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 0 0 0.3rem;
+  line-height: 1.3;
+}
+
+.daily-card__desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 0 0.8rem;
+  line-height: 1.5;
+}
+
+.daily-card__btn {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  background: linear-gradient(135deg, #ff8ac4, #ff1493);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 20, 147, 0.3);
+}
+.daily-card__btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 16px rgba(255, 20, 147, 0.5);
+}
+
+.daily-card.is-completed .daily-card__btn {
+  background: linear-gradient(135deg, #1dd1a1, #0fb27c);
+  box-shadow: 0 4px 12px rgba(29, 209, 161, 0.35);
+}
+
+.daily-card.is-completed::after {
+  content: '✓ 達成済み';
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  background: rgba(29, 209, 161, 0.2);
+  color: #1dd1a1;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(29, 209, 161, 0.5);
+  z-index: 2;
+}
+
+/* スタンプカード */
+.stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.stamp-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.stamp-cell__day {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.stamp-cell__num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0.5;
+  margin-top: 0.15rem;
+}
+
+.stamp-cell.is-stamped {
+  background: rgba(255, 110, 199, 0.15);
+  border: 2px solid rgba(255, 110, 199, 0.6);
+}
+
+.stamp-cell.is-stamped::after {
+  content: '★';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--accent-pink);
+  filter: drop-shadow(0 0 6px rgba(255, 110, 199, 0.8));
+  animation: stampPulse 2.4s ease-in-out infinite;
+}
+
+.stamp-cell.is-today {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 255, 247, 0.3);
+}
+
+@keyframes stampPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.12); opacity: 0.85; }
+}
+
+.stamp-streak {
+  margin-top: 0.9rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.stamp-streak strong {
+  color: var(--accent-yellow);
+  font-size: 1.1rem;
+  font-family: var(--font-heading, inherit);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-cell.is-stamped::after,
+  .daily-card__btn {
     animation: none;
   }
 }

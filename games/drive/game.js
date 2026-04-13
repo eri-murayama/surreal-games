@@ -1275,9 +1275,10 @@
     resultTime.textContent = `${t('timeLabel')}: ${sec}${t('seconds')}`;
 
     // ハイスコア (タイム系: lower is better, 1位のみ記録)
+    const posToDeath = ['first', 'second', 'third', 'last'];
     const { isNewHigh } = sg.onGameEnd(
       position === 1 ? secNum : 9999,
-      { position },
+      { position, deathType: posToDeath[position - 1] || 'last' },
       true
     );
 

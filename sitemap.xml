@@ -6,14 +6,9 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://eri-murayama.github.io/surreal-games/characters.html</loc>
+    <loc>https://eri-murayama.github.io/surreal-games/collection.html</loc>
     <lastmod>2026-04-13</lastmod>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://eri-murayama.github.io/surreal-games/achievements.html</loc>
-    <lastmod>2026-04-13</lastmod>
-    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/prototypes.html</loc>

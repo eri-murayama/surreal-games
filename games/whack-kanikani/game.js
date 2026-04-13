@@ -365,7 +365,11 @@ function endGame() {
   const ranks = t('ranks');
   const matched = ranks.find(r => score >= r.min);
 
-  const { isNewHigh } = sg.onGameEnd(state.score, { maxCombo: state.maxCombo });
+  // 死因判定: スコアに応じて死に方図鑑へ登録
+  let deathType = 'low_score';
+  if (score >= 80) deathType = 'perfect';
+  else if (score >= 1) deathType = 'timeup';
+  const { isNewHigh } = sg.onGameEnd(state.score, { maxCombo: state.maxCombo, deathType });
 
   document.getElementById('result-score').textContent = t('resultScore')(score, maxCombo);
   document.getElementById('result-rank').textContent = matched.rank;

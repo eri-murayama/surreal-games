@@ -518,7 +518,7 @@
 
   // ===== エンディング =====
   function playEnding() {
-    sg.onGameEnd();
+    sg.onGameEnd(undefined, { deathType: 'cleared' });
     typeText($('ending-text'), t().endingLine, ENDING_SPEED, () => {
       $('ending-buttons').classList.remove('hidden');
     });

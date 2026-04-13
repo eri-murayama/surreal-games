@@ -406,8 +406,12 @@
 
     // スコア: クリア時は残り時間+ボーナス、失敗時は減った体重
     const score = isClear ? (100 + Math.round(state.time) * 10) : Math.max(0, START_WEIGHT - w);
+    // 死に方図鑑: 終了理由を死因として登録
+    let deathType = 'timeup';
+    if (isClear) deathType = 'escaped';
+    else if (reasonKey === 'overWeight') deathType = 'oversize';
     if (sgHandle) {
-      const res = sgHandle.onGameEnd(score);
+      const res = sgHandle.onGameEnd(score, { deathType });
       if (res && res.isNewHigh) {
         resultMsg.textContent += '  🎉 ' + t('newRecord', 'NEW RECORD!');
       }

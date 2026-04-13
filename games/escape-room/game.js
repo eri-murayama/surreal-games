@@ -493,7 +493,7 @@ function gameClear() {
   const timeStr = t('clearTime', min, sec);
 
   // ハイスコア（ベストタイム）判定
-  const { isNewHigh } = sg.onGameEnd(elapsed, { min, sec }, true);
+  const { isNewHigh } = sg.onGameEnd(elapsed, { min, sec, deathType: 'cleared' }, true);
 
   const ranks = t('ranks');
   const rankData = ranks.find(r => elapsed <= r.max) || ranks[ranks.length - 1];

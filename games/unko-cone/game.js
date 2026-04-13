@@ -608,7 +608,11 @@
     if (animationId) cancelAnimationFrame(animationId);
 
     maxStack = stackCount;
-    sg.onGameEnd(score);
+    // 死に方図鑑: スタック数で死因を振り分け
+    let deathType = 'miss';
+    if (maxStack >= 10) deathType = 'high_tower';
+    else if (maxStack >= 3) deathType = 'topple';
+    sg.onGameEnd(score, { deathType });
 
     $('final-score').textContent = score;
     $('final-stack').textContent = maxStack;
