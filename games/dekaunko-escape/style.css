@@ -1,0 +1,283 @@
+/* でかうんこ脱出 */
+
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at center, #3d2e1f 0%, #1a0f08 80%);
+  color: #fff;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#game-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 500px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* ===== 共通スクリーン ===== */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.screen.active { display: flex; }
+
+/* ===== タイトル画面 ===== */
+#title-screen {
+  background: radial-gradient(ellipse at center, #5a3a1c 0%, #2a1a0a 75%);
+}
+.title-inner {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+.title-poop {
+  font-size: clamp(4rem, 15vw, 6rem);
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+  animation: poopBounce 2s ease-in-out infinite;
+}
+@keyframes poopBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.05); }
+}
+.game-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  color: #ffd27a;
+  text-shadow: 0 0 16px rgba(255, 180, 80, 0.5), 0 3px 0 #5a3010;
+  margin: 6px 0 2px;
+}
+.game-subtitle {
+  font-size: clamp(0.8rem, 2.8vw, 0.95rem);
+  color: #e8c9a0;
+  margin-bottom: 10px;
+}
+.highscore-display {
+  font-size: 0.8rem;
+  color: #ffd27a;
+  margin-bottom: 10px;
+  min-height: 1.2em;
+}
+.btn-primary, .btn-secondary {
+  font-family: inherit;
+  font-size: clamp(1rem, 3.5vw, 1.15rem);
+  font-weight: 700;
+  padding: 0.65em 2em;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.2s;
+  margin: 6px 0;
+  display: inline-block;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #ffb347, #ff7a00);
+  color: #3a1d00;
+  border: 3px solid #ffd27a;
+  box-shadow: 0 4px 0 #5a2b00, 0 0 20px rgba(255, 140, 0, 0.4);
+}
+.btn-primary:hover, .btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #5a2b00, 0 0 20px rgba(255, 140, 0, 0.4);
+}
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+
+.controls-help {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 12px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #f0e0c8;
+}
+.help-title {
+  font-weight: 700;
+  color: #ffd27a;
+  margin-bottom: 4px;
+}
+.help-ops {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+/* ===== ゲーム画面 ===== */
+#game-screen {
+  background: linear-gradient(180deg, #2a1a0a 0%, #1a0f08 100%);
+  justify-content: flex-start;
+  padding: 8px 8px 0;
+}
+.game-hud {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 480px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+}
+.hud-item {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 200, 120, 0.3);
+}
+.hud-label {
+  font-size: 0.7rem;
+  color: #ffd27a;
+}
+.hud-value {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+.hud-unit {
+  font-size: 0.7rem;
+  color: #e8c9a0;
+}
+
+.weight-bar-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  border: 1.5px solid rgba(255, 200, 120, 0.3);
+}
+.weight-bar {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg, #4ade80, #facc15, #f97316, #ef4444);
+  transition: width 0.3s ease;
+}
+.weight-bar-goal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: #4ade80;
+  box-shadow: 0 0 6px #4ade80;
+}
+
+#game-canvas {
+  flex: 1;
+  width: 100%;
+  max-width: 480px;
+  background: #1a0a00;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 200, 120, 0.25);
+  box-shadow: 0 0 30px rgba(255, 120, 40, 0.1) inset;
+  touch-action: none;
+}
+
+.effect-text {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 2rem;
+  color: #ffd27a;
+  text-shadow: 0 0 20px rgba(255, 200, 100, 0.8), 0 3px 0 #5a2b00;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.4s;
+}
+.effect-text.show {
+  opacity: 1;
+  transform: translate(-50%, -70%);
+}
+
+/* ===== リザルト画面 ===== */
+#result-screen {
+  background: radial-gradient(ellipse at center, #5a3a1c 0%, #1a0f08 80%);
+}
+.result-inner {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  border: 2px solid rgba(255, 200, 120, 0.3);
+}
+.result-icon {
+  font-size: 4rem;
+  margin-bottom: 4px;
+}
+.result-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  color: #ffd27a;
+  text-shadow: 0 2px 0 #5a2b00;
+  margin-bottom: 6px;
+}
+.result-msg {
+  font-size: 0.9rem;
+  color: #e8c9a0;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.result-stats {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 0.85rem;
+}
+.result-label { color: #e8c9a0; }
+.result-value {
+  color: #fff;
+  font-weight: 700;
+  font-family: 'Hachi Maru Pop', cursive;
+}
+
+/* ===== 戻るリンク ===== */
+.back-to-top-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  text-decoration: none;
+  z-index: 100;
+}
+.back-to-top-link:hover { color: #fff; }
+
+@media (max-width: 480px) {
+  .controls-help { font-size: 0.72rem; padding: 8px 12px; }
+  .hud-value { font-size: 1rem; }
+  .effect-text { font-size: 1.6rem; }
+}

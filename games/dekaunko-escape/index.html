@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>でかうんこ脱出 - シュールゲームス</title>
+  <!-- OGP -->
+  <meta property="og:title" content="でかうんこ脱出 | シュールゲームス">
+  <meta property="og:description" content="でかくなりすぎた主人公がトイレを目指して脱出！食べ物を避け、トイレに入って小さくなろう。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/dekaunko-escape/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <!-- スタイル -->
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <div class="title-inner">
+        <div class="title-poop">💩</div>
+        <h1 class="game-title" data-i18n="title">でかうんこ脱出</h1>
+        <p class="game-subtitle" data-i18n="subtitle">食べすぎた…トイレまで逃げろ！</p>
+        <div id="highscore-display" class="highscore-display"></div>
+        <button id="start-btn" class="btn-primary" data-i18n="startBtn">▶ スタート</button>
+        <div class="controls-help">
+          <p class="help-title" data-i18n="howTitle">あそびかた</p>
+          <p data-i18n="how1">🍰 食べ物に触れるとデカくなる（だめ）</p>
+          <p data-i18n="how2">🚽 トイレに入ると小さくなる（いい）</p>
+          <p data-i18n="how3">⏱ 時間内にサイズ0で脱出成功！</p>
+          <p class="help-ops" data-i18n="howOps">PC: 矢印キー / スマホ: 画面タッチで移動</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-screen" class="screen">
+      <div class="game-hud">
+        <div class="hud-item">
+          <span class="hud-label" data-i18n="weight">たいじゅう</span>
+          <span id="weight-val" class="hud-value">100</span><span class="hud-unit">kg</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label" data-i18n="timeLabel">のこり</span>
+          <span id="time-val" class="hud-value">60</span><span class="hud-unit">s</span>
+        </div>
+      </div>
+      <div class="weight-bar-wrap">
+        <div id="weight-bar" class="weight-bar"></div>
+        <div class="weight-bar-goal"></div>
+      </div>
+      <canvas id="game-canvas"></canvas>
+      <div id="effect-text" class="effect-text" aria-hidden="true"></div>
+    </div>
+
+    <!-- リザルト画面 -->
+    <div id="result-screen" class="screen">
+      <div class="result-inner">
+        <div id="result-icon" class="result-icon">💩</div>
+        <h2 id="result-title" class="result-title" data-i18n="gameOver">ゲームオーバー</h2>
+        <p id="result-msg" class="result-msg"></p>
+        <div class="result-stats">
+          <div class="result-row">
+            <span class="result-label" data-i18n="finalWeight">さいしゅうたいじゅう</span>
+            <span id="final-weight" class="result-value">100kg</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label" data-i18n="surviveTime">のがれた時間</span>
+            <span id="final-time" class="result-value">0s</span>
+          </div>
+        </div>
+        <button id="retry-btn" class="btn-primary" data-i18n="retry">もう一度</button>
+        <button id="title-btn" class="btn-secondary" data-i18n="backTitle">タイトルへ</button>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+  <script>
+    SurrealI18n.init({
+      ja: {
+        title: 'でかうんこ脱出',
+        subtitle: '食べすぎた…トイレまで逃げろ！',
+        startBtn: '▶ スタート',
+        howTitle: 'あそびかた',
+        how1: '🍰 食べ物に触れるとデカくなる（だめ）',
+        how2: '🚽 トイレに入ると小さくなる（いい）',
+        how3: '⏱ 時間内にサイズ0で脱出成功！',
+        howOps: 'PC: 矢印キー / スマホ: 画面タッチで移動',
+        weight: 'たいじゅう',
+        timeLabel: 'のこり',
+        gameOver: 'ゲームオーバー',
+        clear: '脱出せいこう！',
+        overWeight: '限界突破！デカすぎて動けない…',
+        timeUp: '時間切れ…トイレに間に合わず…',
+        escapeOk: 'トイレに滑り込み成功！すっきり！',
+        finalWeight: 'さいしゅうたいじゅう',
+        surviveTime: 'のがれた時間',
+        retry: 'もう一度',
+        backTitle: 'タイトルへ',
+        high: 'ハイスコア',
+        eatFood: 'デブった！',
+        useToilet: 'すっきり！'
+      },
+      en: {
+        title: 'Big Poop Escape',
+        subtitle: 'Too much food... run to the toilet!',
+        startBtn: '▶ Start',
+        howTitle: 'How to Play',
+        how1: '🍰 Food makes you bigger (bad)',
+        how2: '🚽 Toilets shrink you (good)',
+        how3: '⏱ Reach size 0 before time runs out!',
+        howOps: 'PC: Arrow keys / Mobile: Tap to move',
+        weight: 'Weight',
+        timeLabel: 'Time',
+        gameOver: 'Game Over',
+        clear: 'Escaped!',
+        overWeight: 'Too big to move...',
+        timeUp: 'Time up! Toilet missed...',
+        escapeOk: 'Made it to the toilet! Refreshing!',
+        finalWeight: 'Final Weight',
+        surviveTime: 'Escape Time',
+        retry: 'Retry',
+        backTitle: 'Title',
+        high: 'High Score',
+        eatFood: 'Fatter!',
+        useToilet: 'Relief!'
+      }
+    });
+  </script>
+</body>
+</html>
