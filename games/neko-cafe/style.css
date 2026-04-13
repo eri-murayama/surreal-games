@@ -559,6 +559,12 @@ html, body {
 .act-icon { font-size: 1.1rem; }
 .act-label { font-size: 0.65rem; }
 
+/* 共通ボタン（音量・シェア）が下部アクションバーと重ならないよう上にオフセット */
+body:has(#game-screen:not(.hidden)) .sg-sound-toggle,
+body:has(#game-screen:not(.hidden)) .sg-share-btn {
+  bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+
 /* ===== 開店スプラッシュ ===== */
 #day-splash {
   position: fixed;

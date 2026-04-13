@@ -720,6 +720,12 @@ body {
   100% { transform: scale(2); opacity: 0; }
 }
 
+/* 共通ボタン（音量・シェア）がタップボタンと重ならないよう上にオフセット */
+body:has(#game-screen.active) .sg-sound-toggle,
+body:has(#game-screen.active) .sg-share-btn {
+  bottom: 80px;
+}
+
 /* ===== レスポンシブ ===== */
 @media (max-height: 600px) {
   .game-title { font-size: 1.8rem; }

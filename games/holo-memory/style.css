@@ -1487,12 +1487,19 @@ body {
   width: 100%;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
-  padding: 8px 16px;
+  padding: 8px 64px;
   text-align: center;
   font-size: 0.65rem;
   color: #aaa;
   border-top: 1px solid #eee;
   z-index: 100;
+  box-sizing: border-box;
+}
+
+/* 共通の音量・シェアボタンをディスクレイマーの上に逃がす */
+.sg-sound-toggle,
+.sg-share-btn {
+  bottom: calc(8px + 2.4em + 16px);
 }
 
 /* ==============================
