@@ -1201,6 +1201,7 @@
               color: '#00aaff',
             });
           }
+          if (ob.isBoss && ob === state.boss) state.boss = null;
           state.obstacles.splice(i, 1);
           if (GameManager) GameManager.sound.play('tap');
           continue;
