@@ -357,3 +357,273 @@ if (logo) {
     .then(renderNews)
     .catch(function() { renderNews(fallbackNews); });
 })();
+
+// ========================================
+// おすすめゲームルーレット
+// ========================================
+(function () {
+  const btn = document.getElementById('recommend-btn');
+  const overlay = document.getElementById('recommend-overlay');
+  if (!btn || !overlay) return;
+
+  const card = document.getElementById('roulette-card');
+  const imageEl = document.getElementById('roulette-image');
+  const nameEl = document.getElementById('roulette-name');
+  const titleEl = document.getElementById('roulette-title');
+  const actionsEl = document.getElementById('roulette-actions');
+  const playLink = document.getElementById('roulette-play');
+  const retryBtn = document.getElementById('roulette-retry');
+  const closeBtn = document.getElementById('roulette-close');
+
+  let games = [];
+  let spinTimer = null;
+
+  function collectGames() {
+    const cards = document.querySelectorAll('#games .game-grid > .game-card');
+    const list = [];
+    cards.forEach(function (c) {
+      const titleNode = c.querySelector('.game-card__title');
+      const link = c.querySelector('.store-btn');
+      const img = c.querySelector('.game-card__image img');
+      const front = c.querySelector('.card-flip-front') || c.querySelector('.placeholder-art');
+      if (!titleNode || !link) return;
+      let bg = '';
+      if (front) {
+        const style = front.getAttribute('style') || '';
+        const m = style.match(/background\s*:\s*([^;]+)/);
+        if (m) bg = m[1];
+      }
+      list.push({
+        name: titleNode.innerText.replace(/\s+/g, ' ').trim(),
+        url: link.getAttribute('href'),
+        imgSrc: img ? img.getAttribute('src') : null,
+        bg: bg
+      });
+    });
+    return list;
+  }
+
+  function renderGame(game) {
+    imageEl.innerHTML = game.imgSrc ? '<img src="' + game.imgSrc + '" alt="">' : '';
+    imageEl.style.background = game.bg || 'linear-gradient(135deg, #ffe0f0, #ff69b4)';
+    nameEl.textContent = game.name;
+  }
+
+  function stopRoulette() {
+    if (spinTimer) {
+      clearTimeout(spinTimer);
+      spinTimer = null;
+    }
+    card.classList.remove('is-spinning', 'is-winner');
+  }
+
+  function startRoulette() {
+    stopRoulette();
+    actionsEl.hidden = true;
+    titleEl.textContent = '運命のゲームは…？';
+    card.classList.add('is-spinning');
+
+    const n = games.length;
+    if (n === 0) return;
+    const winnerIdx = Math.floor(Math.random() * n);
+    const totalSteps = 25;
+    let currentIdx = ((winnerIdx - (totalSteps - 1)) % n + n * 10) % n;
+    let step = 0;
+
+    function tick() {
+      renderGame(games[currentIdx]);
+      step++;
+      if (step >= totalSteps) {
+        card.classList.remove('is-spinning');
+        card.classList.add('is-winner');
+        titleEl.textContent = '🎉 このゲームで決まり！';
+        playLink.setAttribute('href', games[currentIdx].url);
+        actionsEl.hidden = false;
+        spinTimer = null;
+        return;
+      }
+      currentIdx = (currentIdx + 1) % n;
+      const remaining = totalSteps - step;
+      let delay;
+      if (remaining > 15) delay = 70;
+      else if (remaining > 9) delay = 110;
+      else if (remaining > 5) delay = 180;
+      else if (remaining > 2) delay = 320;
+      else delay = 520;
+      spinTimer = setTimeout(tick, delay);
+    }
+    tick();
+  }
+
+  function openOverlay() {
+    games = collectGames();
+    if (games.length === 0) return;
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    startRoulette();
+  }
+
+  function closeOverlay() {
+    stopRoulette();
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', openOverlay);
+  retryBtn.addEventListener('click', startRoulette);
+  closeBtn.addEventListener('click', closeOverlay);
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeOverlay();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+  });
+})();
+
+// ========================================
+// おすすめゲームルーレット
+// ========================================
+(function () {
+  const btn = document.getElementById('recommend-btn');
+  const overlay = document.getElementById('recommend-overlay');
+  if (!btn || !overlay) return;
+
+  const card = document.getElementById('roulette-card');
+  const imageEl = document.getElementById('roulette-image');
+  const nameEl = document.getElementById('roulette-name');
+  const titleEl = document.getElementById('roulette-title');
+  const actionsEl = document.getElementById('roulette-actions');
+  const playLink = document.getElementById('roulette-play');
+  const retryBtn = document.getElementById('roulette-retry');
+  const closeBtn = document.getElementById('roulette-close');
+
+  let games = [];
+  let spinTimer = null;
+
+  function collectGames() {
+    const list = [];
+    const cards = document.querySelectorAll('#games .game-grid > .game-card');
+    cards.forEach(function (c) {
+      const titleNode = c.querySelector('.game-card__title');
+      const linkNode = c.querySelector('.store-btn');
+      if (!titleNode || !linkNode) return;
+      const imgNode = c.querySelector('.game-card__image img');
+      const front = c.querySelector('.card-flip-front') || c.querySelector('.placeholder-art');
+      let bg = '';
+      if (front) {
+        const style = front.getAttribute('style') || '';
+        const m = style.match(/background\s*:\s*([^;]+)/);
+        if (m) {
+          bg = m[1];
+        } else if (front.classList.contains('placeholder-art--kaidan')) {
+          bg = 'linear-gradient(135deg, #3a3a5c, #1a1a2e, #0f0f1a)';
+        } else if (front.classList.contains('placeholder-art--drive')) {
+          bg = 'linear-gradient(135deg, #ffe082, #ffb300, #ff6f00)';
+        } else if (front.classList.contains('placeholder-art--analysis')) {
+          bg = 'linear-gradient(135deg, #b3e5fc, #0288d1, #01579b)';
+        } else if (front.classList.contains('placeholder-art--escape')) {
+          bg = 'linear-gradient(135deg, #f8bbd0, #ec407a, #ad1457)';
+        } else if (front.classList.contains('placeholder-art--kanikani')) {
+          bg = 'linear-gradient(135deg, #ffcdd2, #ef5350, #b71c1c)';
+        }
+      }
+      list.push({
+        name: titleNode.innerText.replace(/\s+/g, ' ').trim(),
+        url: linkNode.getAttribute('href'),
+        imgSrc: imgNode ? imgNode.getAttribute('src') : null,
+        bg: bg
+      });
+    });
+    return list;
+  }
+
+  function renderGame(game) {
+    if (game.imgSrc) {
+      imageEl.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = game.imgSrc;
+      img.alt = '';
+      imageEl.appendChild(img);
+    } else {
+      imageEl.innerHTML = '';
+    }
+    imageEl.style.background = game.bg || 'linear-gradient(135deg, #ffe0f0, #ff69b4)';
+    nameEl.textContent = game.name;
+  }
+
+  function stopRoulette() {
+    if (spinTimer) {
+      clearTimeout(spinTimer);
+      spinTimer = null;
+    }
+    card.classList.remove('is-spinning', 'is-winner');
+  }
+
+  function startRoulette() {
+    stopRoulette();
+    actionsEl.hidden = true;
+    titleEl.textContent = '運命のゲームは…？';
+    card.classList.add('is-spinning');
+
+    const n = games.length;
+    if (n === 0) return;
+    const winnerIdx = Math.floor(Math.random() * n);
+    const totalSteps = 24;
+    // 最後のtickがwinnerIdxに着地するよう逆算
+    let currentIdx = ((winnerIdx - (totalSteps - 1)) % n + n * 100) % n;
+    let step = 0;
+
+    function tick() {
+      renderGame(games[currentIdx]);
+      step++;
+      if (step >= totalSteps) {
+        // 勝者確定
+        card.classList.remove('is-spinning');
+        card.classList.add('is-winner');
+        titleEl.textContent = 'このゲームで決まり！';
+        playLink.setAttribute('href', games[currentIdx].url);
+        actionsEl.hidden = false;
+        spinTimer = null;
+        return;
+      }
+      currentIdx = (currentIdx + 1) % n;
+      const remaining = totalSteps - step;
+      let delay;
+      if (remaining > 15) delay = 70;
+      else if (remaining > 9) delay = 110;
+      else if (remaining > 5) delay = 180;
+      else if (remaining > 2) delay = 320;
+      else delay = 520;
+      spinTimer = setTimeout(tick, delay);
+    }
+    tick();
+  }
+
+  function openOverlay() {
+    games = collectGames();
+    if (games.length === 0) return;
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    startRoulette();
+  }
+
+  function closeOverlay() {
+    stopRoulette();
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', openOverlay);
+  retryBtn.addEventListener('click', startRoulette);
+  closeBtn.addEventListener('click', closeOverlay);
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeOverlay();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+  });
+})();

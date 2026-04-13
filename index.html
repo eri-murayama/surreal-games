@@ -116,6 +116,14 @@
       <h2 class="section-title fade-in">ゲーム一覧</h2>
       <p class="section-subtitle fade-in">とってもおもしろいゲームだよ</p>
 
+      <div class="recommend-wrapper fade-in">
+        <button type="button" id="recommend-btn" class="recommend-btn" aria-label="おすすめゲームをランダムに選ぶ">
+          <span class="recommend-btn__icon" aria-hidden="true">🎲</span>
+          <span class="recommend-btn__label">おすすめゲームを選ぶ</span>
+        </button>
+        <p class="recommend-hint">迷ったらコレ！ランダムで1つ決めてくれるよ</p>
+      </div>
+
       <div class="game-grid">
 
         <!-- ゲームカード: 漆黒のリバーシ（NEW） -->
@@ -423,6 +431,24 @@
       &copy; 2026 シュールゲームス.
     </p>
   </footer>
+
+  <!-- おすすめゲームルーレット オーバーレイ -->
+  <div id="recommend-overlay" class="roulette-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="roulette-title">
+    <div class="roulette-box">
+      <button type="button" class="roulette-close" id="roulette-close" aria-label="閉じる">×</button>
+      <h3 id="roulette-title" class="roulette-title">運命のゲームは…？</h3>
+      <div class="roulette-stage">
+        <div class="roulette-card" id="roulette-card">
+          <div class="roulette-card__image" id="roulette-image"></div>
+          <div class="roulette-card__name" id="roulette-name">???</div>
+        </div>
+      </div>
+      <div class="roulette-actions" id="roulette-actions" hidden>
+        <a href="#" class="roulette-btn roulette-btn--play" id="roulette-play">▶ プレイする</a>
+        <button type="button" class="roulette-btn roulette-btn--retry" id="roulette-retry">🎲 もう一回</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/main.js"></script>
   <script>

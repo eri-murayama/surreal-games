@@ -1458,3 +1458,240 @@ footer {
     transition: none;
   }
 }
+
+/* ======================================== */
+/* おすすめゲームボタン & ルーレット演出       */
+/* ======================================== */
+.recommend-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 auto 2.5rem;
+}
+
+.recommend-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 2.2rem;
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ff8ac4, #ff1493, #c71585);
+  border: 3px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 8px 22px rgba(255, 20, 147, 0.45);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.recommend-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 14px 28px rgba(255, 20, 147, 0.55);
+}
+.recommend-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+.recommend-btn__icon {
+  display: inline-block;
+  font-size: 1.5rem;
+  animation: recommendShake 1.6s ease-in-out infinite;
+}
+@keyframes recommendShake {
+  0%, 100% { transform: rotate(-12deg); }
+  50% { transform: rotate(12deg); }
+}
+.recommend-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* オーバーレイ */
+.roulette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.roulette-overlay.is-open {
+  display: flex;
+  animation: rouletteFadeIn 0.25s ease;
+}
+@keyframes rouletteFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.roulette-box {
+  position: relative;
+  width: min(92vw, 420px);
+  background: linear-gradient(135deg, #ffffff, #ffe0f0);
+  border: 4px solid #ff69b4;
+  border-radius: 24px;
+  padding: 1.75rem 1.25rem 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  text-align: center;
+  animation: rouletteBoxIn 0.35s ease;
+}
+@keyframes rouletteBoxIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.roulette-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.7rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+.roulette-close:hover { color: #ff1493; }
+
+.roulette-title {
+  margin: 0 0 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #c71585;
+}
+
+.roulette-stage {
+  position: relative;
+  margin: 0 auto 1rem;
+  padding: 0.6rem;
+  background: repeating-linear-gradient(45deg, #fff5fa, #fff5fa 10px, #ffe0f0 10px, #ffe0f0 20px);
+  border-radius: 18px;
+}
+
+.roulette-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0.75rem;
+  background: #fff;
+  border-radius: 14px;
+  min-height: 230px;
+}
+.roulette-card.is-spinning {
+  animation: rouletteShake 0.08s linear infinite;
+}
+@keyframes rouletteShake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, -2px); }
+}
+.roulette-card.is-winner {
+  animation: rouletteWinner 0.7s ease;
+}
+@keyframes rouletteWinner {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  65% { transform: scale(0.93); }
+  100% { transform: scale(1); }
+}
+
+.roulette-card__image {
+  width: 150px;
+  height: 150px;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.roulette-card__image img {
+  max-width: 78%;
+  max-height: 78%;
+  object-fit: contain;
+}
+.roulette-card__name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.35;
+  min-height: 2.7em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.roulette-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+  animation: rouletteFadeIn 0.4s ease;
+}
+.roulette-actions[hidden] { display: none; }
+.roulette-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.85rem 1.2rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.roulette-btn--play {
+  color: #fff;
+  background: linear-gradient(135deg, #ff8ac4, #c71585);
+  box-shadow: 0 6px 14px rgba(255, 20, 147, 0.35);
+}
+.roulette-btn--play:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 20px rgba(255, 20, 147, 0.5);
+}
+.roulette-btn--retry {
+  color: #c71585;
+  background: #fff;
+  border: 2px solid #ff69b4;
+}
+.roulette-btn--retry:hover { background: #fff0f6; }
+
+@media (min-width: 600px) {
+  .roulette-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .roulette-btn {
+    flex: 1;
+    max-width: 180px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recommend-btn__icon,
+  .roulette-card.is-spinning,
+  .roulette-card.is-winner,
+  .roulette-overlay.is-open,
+  .roulette-box {
+    animation: none;
+  }
+}
