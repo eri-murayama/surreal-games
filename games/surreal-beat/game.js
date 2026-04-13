@@ -9,7 +9,7 @@
   var translations = {
     ja: {
       gameTitle: 'シュールビート',
-      gameSubtitle: 'リズムに合わせてシュールをタップ！',
+      gameSubtitle: '8つのゲームのBGMでリズムをタップ！',
       startBtn: 'スタート',
       keyHint: 'PC: D F J K キー / スマホ: タップ',
       stageSelectTitle: 'ステージ選択',
@@ -24,23 +24,36 @@
       allClear: '全ステージクリア！',
       locked: '🔒',
       cleared: '⭐',
-      stage1: 'シュール入門',
-      stage2: 'カニカニフィーバー',
-      stage3: 'ダークビート',
-      stage4: 'カオスラッシュ',
-      stage5: 'シュールマスター',
-      stage1detail: 'BPM 120 / 基本8ビート',
-      stage2detail: 'BPM 140 / 裏拍増加・🦀ノーツ',
-      stage3detail: 'BPM 160 / 16ビート・同時押し',
-      stage4detail: 'BPM 175 / 高速連打・変調',
-      stage5detail: 'BPM 190 / 全パターン混合',
-      shareText: function (score, stage) {
-        return 'シュールビート「' + stage + '」で ' + score + '点！💩🎵\n#シュールゲームス #シュールビート';
+      stage1: 'かわいい部屋の鍵',
+      stage2: 'かにかにパニック',
+      stage3: '数字の戯れ',
+      stage4: '黄金の疾走',
+      stage5: 'うんコーン行進曲',
+      stage6: 'きょうふの怪談',
+      stage7: 'ひよこ進化論',
+      stage8: '漆黒の対局',
+      stage1detail: '脱出ゲーム / BPM 120 / 入門',
+      stage2detail: 'かにかに / BPM 130 / ポップ',
+      stage3detail: '経営分析 / BPM 138 / きらめき',
+      stage4detail: '黄金ドライバー / BPM 148 / レース',
+      stage5detail: 'うんコーン / BPM 158 / マーチ',
+      stage6detail: 'マインスイーパー / BPM 168 / ホラー',
+      stage7detail: 'シュール進化論 / BPM 180 / レトロ',
+      stage8detail: '漆黒のリバーシ / BPM 192 / ミステリー',
+      modeNormal: '表',
+      modeHard: '裏',
+      hardLocked: '表クリアで解放',
+      hardBadge: '裏',
+      hardIntro: '★ 裏モード ★',
+      hardClear: '裏モード制覇！',
+      shareText: function (score, stage, isHard) {
+        var tag = isHard ? '【裏】' : '';
+        return 'シュールビート' + tag + '「' + stage + '」で ' + score + '点！🎵\n#シュールゲームス #シュールビート';
       },
     },
     en: {
       gameTitle: 'Surreal Beat',
-      gameSubtitle: 'Tap surreal emojis to the rhythm!',
+      gameSubtitle: '8 stages of game BGM rhythm!',
       startBtn: 'START',
       keyHint: 'PC: D F J K keys / Mobile: Tap',
       stageSelectTitle: 'Stage Select',
@@ -55,18 +68,31 @@
       allClear: 'All Stages Clear!',
       locked: '🔒',
       cleared: '⭐',
-      stage1: 'Surreal Intro',
-      stage2: 'Crab Fever',
-      stage3: 'Dark Beat',
-      stage4: 'Chaos Rush',
-      stage5: 'Surreal Master',
-      stage1detail: 'BPM 120 / Basic 8-beat',
-      stage2detail: 'BPM 140 / Offbeat + 🦀 Notes',
-      stage3detail: 'BPM 160 / 16-beat + Double',
-      stage4detail: 'BPM 175 / Speed Rush',
-      stage5detail: 'BPM 190 / All Patterns',
-      shareText: function (score, stage) {
-        return 'I scored ' + score + ' on "' + stage + '" in Surreal Beat! 💩🎵\n#SurrealGames #SurrealBeat';
+      stage1: 'Cute Room Key',
+      stage2: 'Crab Crab Panic',
+      stage3: 'Number Games',
+      stage4: 'Golden Drive',
+      stage5: 'Unko Cone March',
+      stage6: 'Stairway Horror',
+      stage7: 'Chick Evolution',
+      stage8: 'Pitch Black Match',
+      stage1detail: 'Escape Room / BPM 120 / Intro',
+      stage2detail: 'Whack Crab / BPM 130 / Pop',
+      stage3detail: 'Business Analysis / BPM 138 / Sparkle',
+      stage4detail: 'Gold Driver / BPM 148 / Race',
+      stage5detail: 'Unko Cone / BPM 158 / March',
+      stage6detail: 'Minesweeper / BPM 168 / Horror',
+      stage7detail: 'Surreal Evolution / BPM 180 / Retro',
+      stage8detail: 'Black Reversi / BPM 192 / Mystery',
+      modeNormal: 'NORMAL',
+      modeHard: 'HARD',
+      hardLocked: 'Clear normal to unlock',
+      hardBadge: 'HARD',
+      hardIntro: '★ HARD MODE ★',
+      hardClear: 'HARD MODE CLEAR!',
+      shareText: function (score, stage, isHard) {
+        var tag = isHard ? '[HARD] ' : '';
+        return 'I scored ' + score + ' on ' + tag + '"' + stage + '" in Surreal Beat! 🎵\n#SurrealGames #SurrealBeat';
       },
     },
   };
@@ -82,47 +108,111 @@
   var SoundSystem = window.SurrealGames.SoundSystem;
 
   // ===== ステージ定義 =====
+  // サイトのゲーム公開順（古い→新しい）で並ぶ
   var STAGES = [
     {
-      name: 'stage1', bpm: 120, duration: 30000,
-      bgm: 'cute', emojis: ['💩', '🐣', '🔮', '🫠', '🧠'],
-      colors: ['#ff6ec7', '#00fff7'],
+      // Stage 1 - かわいい部屋からの脱出（2026.03.10）
+      name: 'stage1', themeKey: 'escape', bpm: 120, duration: 30000,
+      bgm: 'cute', emojis: ['🚪', '🔑', '🎀', '💖', '🌸'],
+      colors: ['#f8bbd0', '#e91e63', '#ad1457'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(248,187,208,0.25), transparent 60%), linear-gradient(180deg, #2a0a1a 0%, #1a0010 100%)',
       offbeatChance: 0.15, skipChance: 0.2, doubleChance: 0,
-      sabiDensity: 0.1, sixteenthChance: 0
+      sabiDensity: 0.12, sixteenthChance: 0
     },
     {
-      name: 'stage2', bpm: 140, duration: 35000,
-      bgm: 'pop', emojis: ['🦀', '🦀', '🦀', '💩', '🐣', '🍄'],
-      colors: ['#ff8c00', '#ffd700'],
-      offbeatChance: 0.35, skipChance: 0.12, doubleChance: 0,
-      sabiDensity: 0.2, sixteenthChance: 0
+      // Stage 2 - かにかにパニック！（2026.03.10）
+      name: 'stage2', themeKey: 'kanikani', bpm: 130, duration: 32000,
+      bgm: 'pop', emojis: ['🦀', '💢', '👊', '✊', '🩸'],
+      colors: ['#ffb6c1', '#ff69b4', '#c2185b'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(255,105,180,0.3), transparent 60%), linear-gradient(180deg, #2a0014 0%, #14000a 100%)',
+      offbeatChance: 0.22, skipChance: 0.15, doubleChance: 0.05,
+      sabiDensity: 0.18, sixteenthChance: 0.08
     },
     {
-      name: 'stage3', bpm: 160, duration: 35000,
-      bgm: 'mystery', emojis: ['👁', '🧬', '🔮', '🍄', '🤡'],
-      colors: ['#8b00ff', '#39ff14'],
-      offbeatChance: 0.3, skipChance: 0.1, doubleChance: 0.15,
+      // Stage 3 - 経営分析ゲーム（2026.03.18）
+      name: 'stage3', themeKey: 'analysis', bpm: 138, duration: 33000,
+      bgm: 'sparkle', emojis: ['📊', '📈', '💼', '💴', '💹'],
+      colors: ['#ffe082', '#ffb300', '#ff8f00'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(255,179,0,0.25), transparent 60%), linear-gradient(180deg, #2a1a00 0%, #1a1000 100%)',
+      offbeatChance: 0.28, skipChance: 0.12, doubleChance: 0.1,
+      sabiDensity: 0.22, sixteenthChance: 0.12
+    },
+    {
+      // Stage 4 - 黄金の金色ドライバー（2026.03.23）
+      name: 'stage4', themeKey: 'drive', bpm: 148, duration: 34000,
+      bgm: 'race', emojis: ['🚗', '🏆', '💰', '⚙', '🔧'],
+      colors: ['#ffe0b2', '#ff9800', '#e65100'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(255,152,0,0.3), transparent 60%), linear-gradient(180deg, #2a1500 0%, #140800 100%)',
+      offbeatChance: 0.32, skipChance: 0.1, doubleChance: 0.15,
       sabiDensity: 0.25, sixteenthChance: 0.15
     },
     {
-      name: 'stage4', bpm: 175, duration: 35000,
-      bgm: 'action', emojis: ['💩', '🦀', '🐣', '🧬', '🔮', '👁', '🍄', '🫠', '🤡', '🧠'],
-      colors: ['#ff0000', '#ffffff'],
-      offbeatChance: 0.4, skipChance: 0.08, doubleChance: 0.2,
+      // Stage 5 - うんコーンキャッチャー（2026.03.28）
+      name: 'stage5', themeKey: 'unko', bpm: 158, duration: 34000,
+      bgm: 'march', emojis: ['💩', '🍦', '🟫', '🤎', '💩'],
+      colors: ['#d7ccc8', '#8d6e63', '#4e342e'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(141,110,99,0.3), transparent 60%), linear-gradient(180deg, #1a0e08 0%, #0a0500 100%)',
+      offbeatChance: 0.35, skipChance: 0.1, doubleChance: 0.18,
+      sabiDensity: 0.28, sixteenthChance: 0.18
+    },
+    {
+      // Stage 6 - かいだんマインスイーパー（2026.04.06）
+      name: 'stage6', themeKey: 'kaidan', bpm: 168, duration: 35000,
+      bgm: 'ominous', emojis: ['👻', '💀', '🪦', '💣', '🕯'],
+      colors: ['#b0bec5', '#607d8b', '#37474f'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(96,125,139,0.3), transparent 60%), linear-gradient(180deg, #0a0e12 0%, #000308 100%)',
+      offbeatChance: 0.38, skipChance: 0.08, doubleChance: 0.2,
       sabiDensity: 0.3, sixteenthChance: 0.2
     },
     {
-      name: 'stage5', bpm: 190, duration: 40000,
-      bgm: 'gameshow', emojis: ['💩', '🦀', '🐣', '🧬', '🔮', '👁', '🍄', '🫠', '🤡', '🧠'],
-      colors: ['#ff0000', '#ff8c00', '#ffd700', '#39ff14', '#00fff7', '#8b00ff'],
-      offbeatChance: 0.45, skipChance: 0.05, doubleChance: 0.25,
-      sabiDensity: 0.35, sixteenthChance: 0.25
+      // Stage 7 - シュール進化論（2026.04.11）
+      name: 'stage7', themeKey: 'evo', bpm: 180, duration: 36000,
+      bgm: 'retro', emojis: ['🐣', '🥚', '🌟', '⭐', '🟡'],
+      colors: ['#fff9c4', '#fff176', '#f9a825'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(255,241,118,0.3), transparent 60%), linear-gradient(180deg, #2a2200 0%, #1a1500 100%)',
+      offbeatChance: 0.42, skipChance: 0.06, doubleChance: 0.25,
+      sabiDensity: 0.32, sixteenthChance: 0.22
+    },
+    {
+      // Stage 8 - 漆黒のリバーシ（2026.04.13, 最新）
+      name: 'stage8', themeKey: 'reversi', bpm: 192, duration: 38000,
+      bgm: 'mystery', emojis: ['⚫', '⚪', '🔮', '💜', '✨'],
+      colors: ['#ce93d8', '#9c27b0', '#6a1b9a'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(156,39,176,0.35), transparent 60%), linear-gradient(180deg, #1a0020 0%, #0a0010 100%)',
+      offbeatChance: 0.48, skipChance: 0.04, doubleChance: 0.3,
+      sabiDensity: 0.36, sixteenthChance: 0.28
     },
   ];
 
+  // ===== 裏モード（ハード）の倍率 =====
+  var HARD_MULTIPLIER = {
+    bpmBoost: 1.18,         // BPM +18%
+    fallSpeedBoost: 0.72,   // 落下時間 × 0.72（速く落ちる）
+    offbeatMul: 1.5,
+    doubleMul: 1.8,
+    sixteenthMul: 2.0,
+    sabiMul: 1.4,
+    scoreMul: 2.0,          // 裏はスコア2倍
+  };
+
+  // 裏モードのステージ設定を生成
+  function makeHardStage(base) {
+    var hard = {};
+    for (var k in base) {
+      if (Object.prototype.hasOwnProperty.call(base, k)) hard[k] = base[k];
+    }
+    hard.bpm = Math.round(base.bpm * HARD_MULTIPLIER.bpmBoost);
+    hard.offbeatChance = Math.min(0.7, base.offbeatChance * HARD_MULTIPLIER.offbeatMul);
+    hard.doubleChance = Math.min(0.5, base.doubleChance * HARD_MULTIPLIER.doubleMul || 0.15);
+    hard.sixteenthChance = Math.min(0.5, (base.sixteenthChance || 0.1) * HARD_MULTIPLIER.sixteenthMul);
+    hard.sabiDensity = Math.min(0.6, base.sabiDensity * HARD_MULTIPLIER.sabiMul);
+    hard.skipChance = Math.max(0.02, base.skipChance * 0.5);
+    return hard;
+  }
+
   // ===== 定数 =====
   var LANE_COUNT = 4;
-  var FALL_DURATION = 1800;
+  var DEFAULT_FALL_DURATION = 1800;
   var PERFECT_THRESHOLD = 60;
   var GREAT_THRESHOLD = 120;
   var PERFECT_SCORE = 100;
@@ -132,6 +222,9 @@
   // ===== ステート =====
   var gameState = 'title';
   var currentStageIndex = 0;
+  var currentMode = 'normal';          // 'normal' | 'hard'
+  var currentFallDuration = DEFAULT_FALL_DURATION;
+  var currentStageConfig = null;       // 実際にプレイ中の設定（hard倍率適用後）
   var score = 0;
   var combo = 0;
   var maxCombo = 0;
@@ -149,9 +242,13 @@
   function loadProgress() {
     try {
       var data = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (data && typeof data.unlocked === 'number') return data;
+      if (data && typeof data.unlocked === 'number') {
+        if (!Array.isArray(data.cleared)) data.cleared = [];
+        if (!Array.isArray(data.hardCleared)) data.hardCleared = [];
+        return data;
+      }
     } catch (e) { /* ignore */ }
-    return { unlocked: 1, cleared: [] };
+    return { unlocked: 1, cleared: [], hardCleared: [] };
   }
 
   function saveProgress(progress) {
@@ -196,18 +293,21 @@
     if (!listEl) return;
     listEl.innerHTML = '';
     var progress = loadProgress();
+    var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
 
     for (var i = 0; i < STAGES.length; i++) {
       var stage = STAGES[i];
       var isUnlocked = i < progress.unlocked;
-      var isCleared = progress.cleared && progress.cleared.indexOf(i) !== -1;
-      var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
+      var isCleared = progress.cleared.indexOf(i) !== -1;
+      var isHardUnlocked = isCleared;
+      var isHardCleared = progress.hardCleared.indexOf(i) !== -1;
 
       var card = document.createElement('div');
       card.className = 'stage-card';
       card.setAttribute('data-stage', i);
       if (!isUnlocked) card.classList.add('stage-locked');
       if (isCleared) card.classList.add('stage-cleared');
+      if (isHardCleared) card.classList.add('stage-hard-cleared');
 
       var numEl = document.createElement('div');
       numEl.className = 'stage-number';
@@ -227,28 +327,55 @@
       infoEl.appendChild(nameEl);
       infoEl.appendChild(detailEl);
 
-      var statusEl = document.createElement('div');
-      statusEl.className = 'stage-status';
-      if (isCleared) {
-        statusEl.textContent = '⭐';
-      } else if (!isUnlocked) {
-        statusEl.textContent = '🔒';
-      } else {
-        statusEl.textContent = '▶';
+      // モードボタン（表 / 裏）
+      var modeEl = document.createElement('div');
+      modeEl.className = 'stage-modes';
+
+      var normalBtn = document.createElement('button');
+      normalBtn.className = 'mode-btn mode-btn--normal';
+      normalBtn.type = 'button';
+      normalBtn.innerHTML = (isCleared ? '⭐ ' : '▶ ') + t('modeNormal');
+      if (!isUnlocked) {
+        normalBtn.disabled = true;
+        normalBtn.innerHTML = '🔒';
       }
+
+      var hardBtn = document.createElement('button');
+      hardBtn.className = 'mode-btn mode-btn--hard';
+      hardBtn.type = 'button';
+      if (!isHardUnlocked) {
+        hardBtn.disabled = true;
+        hardBtn.innerHTML = '🔒';
+        hardBtn.title = t('hardLocked');
+      } else {
+        hardBtn.innerHTML = (isHardCleared ? '⭐ ' : '🔥 ') + t('modeHard');
+      }
+
+      modeEl.appendChild(normalBtn);
+      modeEl.appendChild(hardBtn);
 
       card.appendChild(numEl);
       card.appendChild(infoEl);
-      card.appendChild(statusEl);
+      card.appendChild(modeEl);
 
-      if (isUnlocked) {
-        (function (idx) {
-          card.addEventListener('click', function () {
+      (function (idx) {
+        if (isUnlocked) {
+          normalBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
             currentStageIndex = idx;
+            currentMode = 'normal';
             startGame();
           });
-        })(i);
-      }
+        }
+        if (isHardUnlocked) {
+          hardBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            currentStageIndex = idx;
+            currentMode = 'hard';
+            startGame();
+          });
+        }
+      })(i);
 
       listEl.appendChild(card);
     }
@@ -352,7 +479,13 @@
 
   // ===== ゲーム開始 =====
   function startGame() {
-    var stageConfig = STAGES[currentStageIndex];
+    var baseConfig = STAGES[currentStageIndex];
+    var stageConfig = (currentMode === 'hard') ? makeHardStage(baseConfig) : baseConfig;
+    currentStageConfig = stageConfig;
+    currentFallDuration = (currentMode === 'hard')
+      ? Math.round(DEFAULT_FALL_DURATION * HARD_MULTIPLIER.fallSpeedBoost)
+      : DEFAULT_FALL_DURATION;
+
     gameState = 'playing';
     score = 0;
     combo = 0;
@@ -368,21 +501,32 @@
     comboDisplay.textContent = '0';
     progressFill.style.width = '0%';
 
-    // ステージ名表示
+    // ステージ名表示（裏モードならバッジ付き）
     var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
-    stageNameDisplay.textContent = 'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name);
+    var modeBadge = (currentMode === 'hard') ? ' 【' + t('hardBadge') + '】' : '';
+    stageNameDisplay.textContent = 'Stage ' + (currentStageIndex + 1) + ' - ' + t(baseConfig.name) + modeBadge;
 
     // プレイエリアのノーツをクリア
     var existingNotes = playArea.querySelectorAll('.note, .lane-flash');
     existingNotes.forEach(function (n) { n.remove(); });
 
+    // 裏モードクラスをゲーム画面に付与
+    if (currentMode === 'hard') {
+      gameScreen.classList.add('hard-mode');
+    } else {
+      gameScreen.classList.remove('hard-mode');
+    }
+
     // テーマ色を適用
-    applyStageTheme(stageConfig);
+    applyStageTheme(baseConfig);
 
     showScreen('game-screen');
 
-    // BGMをステージに合わせて再生
-    SoundSystem.playBgm(stageConfig.bgm);
+    // BGMをステージに合わせて再生（裏モードは速度UP）
+    SoundSystem.playBgm(baseConfig.bgm);
+    if (SoundSystem.setBgmSpeed) {
+      SoundSystem.setBgmSpeed(currentMode === 'hard' ? HARD_MULTIPLIER.bpmBoost : 1.0);
+    }
 
     // パーティクルキャンバスサイズ
     resizeParticleCanvas();
@@ -404,8 +548,70 @@
     var judgeLine = document.getElementById('judge-line');
     if (judgeLine) {
       judgeLine.style.background = gradStr;
+      judgeLine.style.boxShadow = '0 0 12px ' + c[c.length - 1] + 'aa, 0 0 24px ' + c[Math.max(0, c.length - 2)] + '88';
     }
     progressFill.style.background = gradStr;
+
+    // プレイエリア背景
+    if (playArea && stageConfig.bgGradient) {
+      playArea.style.background = stageConfig.bgGradient;
+      // ステージ色をCSS変数として渡す（lane-flash等で参照）
+      playArea.style.setProperty('--stage-flash', c[c.length - 1]);
+      playArea.style.setProperty('--stage-glow', c[Math.max(0, c.length - 2)]);
+    }
+
+    // テーマクラスを付与（CSSで装飾を変える）
+    if (playArea) {
+      playArea.className = '';
+      playArea.classList.add('theme-' + stageConfig.themeKey);
+    }
+
+    // 背景装飾（絵文字をふんわり配置）
+    var decor = document.getElementById('stage-bg-decor');
+    if (decor) {
+      decor.innerHTML = '';
+      decor.className = 'stage-bg-decor theme-' + stageConfig.themeKey;
+      var decorEmojis = stageConfig.emojis;
+      for (var d = 0; d < 6; d++) {
+        var span = document.createElement('span');
+        span.className = 'bg-emoji';
+        span.textContent = decorEmojis[d % decorEmojis.length];
+        span.style.left = (5 + Math.random() * 90) + '%';
+        span.style.top = (5 + Math.random() * 80) + '%';
+        span.style.fontSize = (1.6 + Math.random() * 1.8) + 'rem';
+        span.style.animationDelay = (Math.random() * 4) + 's';
+        span.style.animationDuration = (5 + Math.random() * 4) + 's';
+        decor.appendChild(span);
+      }
+    }
+
+    // タップゾーンの色味
+    if (tapBtns && tapBtns.length) {
+      var tz = document.getElementById('tap-zones');
+      if (tz) {
+        tz.style.background = 'linear-gradient(180deg, transparent, ' + c[c.length - 1] + '40)';
+      }
+    }
+
+    // ステージ開始バナー
+    showStageBanner(stageConfig);
+  }
+
+  // ===== ステージ開始バナー =====
+  function showStageBanner(stageConfig) {
+    var banner = document.getElementById('stage-banner');
+    if (!banner) return;
+    var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
+    var c = stageConfig.colors;
+    var grad = 'linear-gradient(135deg, ' + c.join(', ') + ')';
+    banner.innerHTML =
+      '<div class="banner-num">STAGE ' + (currentStageIndex + 1) + '</div>' +
+      '<div class="banner-name" style="background:' + grad + ';-webkit-background-clip:text;background-clip:text;color:transparent;">' +
+      t(stageConfig.name) + '</div>' +
+      '<div class="banner-detail">' + t(stageConfig.name + 'detail') + '</div>';
+    banner.classList.remove('show');
+    void banner.offsetWidth;
+    banner.classList.add('show');
   }
 
   // ===== 背景パルス =====
@@ -509,7 +715,7 @@
     // ノーツ生成
     for (var i = 0; i < noteChart.length; i++) {
       var note = noteChart[i];
-      var spawnTime = note.time - FALL_DURATION;
+      var spawnTime = note.time - currentFallDuration;
 
       if (elapsed >= spawnTime && !note.spawned) {
         note.spawned = true;
@@ -522,8 +728,8 @@
       var an = activeNotes[j];
       if (an.hit) continue;
 
-      var noteElapsed = elapsed - (an.time - FALL_DURATION);
-      var ratio = noteElapsed / FALL_DURATION;
+      var noteElapsed = elapsed - (an.time - currentFallDuration);
+      var ratio = noteElapsed / currentFallDuration;
 
       if (ratio >= 0 && ratio <= 1.3) {
         an.el.style.top = (ratio * 100) + '%';
@@ -551,7 +757,7 @@
     updateAndDrawParticles();
 
     // 曲終了チェック
-    if (elapsed >= songDuration + FALL_DURATION + 500) {
+    if (elapsed >= songDuration + currentFallDuration + 500) {
       endGame();
       return;
     }
@@ -713,6 +919,11 @@
     });
     activeNotes = [];
 
+    // 裏モードはスコアを2倍（達成感 & ハイスコア差別化）
+    if (currentMode === 'hard') {
+      score = Math.floor(score * HARD_MULTIPLIER.scoreMul);
+    }
+
     var totalNotes = perfectCount + greatCount + missCount;
     var missRatio = totalNotes > 0 ? missCount / totalNotes : 1;
     var cleared = missRatio <= 0.2;
@@ -726,6 +937,7 @@
     else if (accuracy >= 0.5) rank = 'C';
 
     var isFullCombo = missCount === 0 && totalNotes > 0;
+    var isHard = (currentMode === 'hard');
 
     var result = GameManager.onGameEnd(score);
     var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
@@ -734,17 +946,24 @@
     if (cleared) {
       // クリア! 進行度を更新
       var progress = loadProgress();
-      if (progress.cleared.indexOf(currentStageIndex) === -1) {
-        progress.cleared.push(currentStageIndex);
-      }
-      if (currentStageIndex + 1 >= progress.unlocked && currentStageIndex + 1 < STAGES.length) {
-        progress.unlocked = currentStageIndex + 2;
+      if (isHard) {
+        if (progress.hardCleared.indexOf(currentStageIndex) === -1) {
+          progress.hardCleared.push(currentStageIndex);
+        }
+      } else {
+        if (progress.cleared.indexOf(currentStageIndex) === -1) {
+          progress.cleared.push(currentStageIndex);
+        }
+        if (currentStageIndex + 1 >= progress.unlocked && currentStageIndex + 1 < STAGES.length) {
+          progress.unlocked = currentStageIndex + 2;
+        }
       }
       saveProgress(progress);
 
       // クリア画面表示
+      var modeBadge = isHard ? ' 【' + t('hardBadge') + '】' : '';
       document.getElementById('clear-stage-name').textContent =
-        'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name);
+        'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name) + modeBadge;
       document.getElementById('clear-score').textContent = score;
       document.getElementById('clear-rank').textContent = rank;
       document.getElementById('clear-rank').className = 'rank-display rank-' + rank.toLowerCase();
@@ -780,8 +999,9 @@
 
     } else {
       // 失敗画面
+      var failModeBadge = isHard ? ' 【' + t('hardBadge') + '】' : '';
       document.getElementById('result-stage-name').textContent =
-        'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name);
+        'Stage ' + (currentStageIndex + 1) + ' - ' + t(stageConfig.name) + failModeBadge;
       document.getElementById('final-score').textContent = score;
       document.getElementById('perfect-count').textContent = perfectCount;
       document.getElementById('great-count').textContent = greatCount;
@@ -811,7 +1031,7 @@
     }
 
     // シェアテキスト更新
-    updateShareText(score, t(stageConfig.name));
+    updateShareText(score, t(stageConfig.name), isHard);
   }
 
   // ===== DOM花火（クリア演出） =====
@@ -858,8 +1078,8 @@
   }
 
   // ===== シェアテキスト更新 =====
-  function updateShareText(s, stageName) {
-    var text = SurrealI18n ? SurrealI18n.t('shareText', s, stageName) : '';
+  function updateShareText(s, stageName, isHard) {
+    var text = SurrealI18n ? SurrealI18n.t('shareText', s, stageName, isHard) : '';
     var shareBtn = document.querySelector('.sg-share-btn');
     if (shareBtn) {
       var url = 'https://eri-murayama.github.io/surreal-games/games/surreal-beat/index.html';
@@ -899,10 +1119,19 @@
       // 全クリア → ステージ選択に戻る
       renderStageList();
       showScreen('stage-select-screen');
-    } else {
-      currentStageIndex++;
-      startGame();
+      return;
     }
+    // 裏モードで次ステージ: 次ステージの裏が解放されていない場合はステージ選択へ戻す
+    if (currentMode === 'hard') {
+      var progress = loadProgress();
+      if (progress.cleared.indexOf(currentStageIndex + 1) === -1) {
+        renderStageList();
+        showScreen('stage-select-screen');
+        return;
+      }
+    }
+    currentStageIndex++;
+    startGame();
   });
 
   backToSelectBtn.addEventListener('click', function () {
