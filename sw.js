@@ -1,4 +1,4 @@
-const CACHE_NAME = 'surreal-games-v4';
+const CACHE_NAME = 'surreal-games-v6';
 
 const PRE_CACHE = [
   '/surreal-games/',

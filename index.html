@@ -12,16 +12,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>シュールゲームス ～意味なんかいらない、明日があれば～</title>
-  <meta name="description" content="シュールでかわいいキャラのゲームスタジオ。おいでよ小童ども">
+  <meta name="description" content="無料で遊べるシュール系ブラウザゲーム集。かわいいけど変なキャラたちの短編ゲームを公開中。">
   <meta property="og:title" content="シュールゲームス ～意味なんかいらない、明日があれば～">
-  <meta property="og:description" content="シュールでかわいいキャラのゲームスタジオ。おいでよ小童ども">
+  <meta property="og:description" content="無料で遊べるシュール系ブラウザゲーム集。かわいいけど変なキャラたちの短編ゲームを公開中。">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="シュールゲームス ～意味なんかいらない、明日があれば～">
-  <meta name="twitter:description" content="シュールでかわいいキャラのゲームスタジオ。おいでよ小童ども">
+  <meta name="twitter:description" content="無料で遊べるシュール系ブラウザゲーム集。かわいいけど変なキャラたちの短編ゲームを公開中。">
   <meta name="twitter:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="manifest" href="manifest.json">
@@ -31,14 +31,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=7">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "シュールゲームス ～意味なんかいらない、明日があれば～",
     "url": "https://eri-murayama.github.io/surreal-games/",
-    "description": "シュールでかわいいキャラのゲームスタジオ。おいでよ小童ども",
+    "description": "無料で遊べるシュール系ブラウザゲーム集。かわいいけど変なキャラたちの短編ゲームを公開中。",
     "image": "https://eri-murayama.github.io/surreal-games/assets/images/ogp.png",
     "publisher": {
       "@type": "Organization",
@@ -65,14 +65,21 @@
   </div>
 
   <!-- 固定ナビゲーション -->
-  <nav id="fixed-nav" class="fixed-nav">
-    <a href="#hero" class="fixed-nav__link">トップ</a>
-    <a href="#games" class="fixed-nav__link">ゲーム</a>
-    <a href="#gallery" class="fixed-nav__link">ギャラリー</a>
-    <a href="collection.html" class="fixed-nav__link">図鑑</a>
-    <a href="#news" class="fixed-nav__link">お知らせ</a>
-    <a href="#about" class="fixed-nav__link">スタジオ</a>
-    <a href="#contact" class="fixed-nav__link">つながる</a>
+  <nav id="fixed-nav" class="fixed-nav" aria-label="固定ナビゲーション">
+    <a href="#hero" class="fixed-nav__brand">シュールゲームス</a>
+    <button type="button" id="mobile-nav-toggle" class="mobile-nav-toggle" aria-expanded="false" aria-controls="fixed-nav-links">
+      <span class="mobile-nav-toggle__text">メニュー</span>
+      <span class="mobile-nav-toggle__icon" aria-hidden="true"></span>
+    </button>
+    <div id="fixed-nav-links" class="fixed-nav__links">
+      <a href="#hero" class="fixed-nav__link">トップ</a>
+      <a href="#games" class="fixed-nav__link">ゲーム</a>
+      <a href="#gallery" class="fixed-nav__link">ギャラリー</a>
+      <a href="collection.html" class="fixed-nav__link">図鑑</a>
+      <a href="#news" class="fixed-nav__link">お知らせ</a>
+      <a href="#about" class="fixed-nav__link">スタジオ</a>
+      <a href="#contact" class="fixed-nav__link">つながる</a>
+    </div>
   </nav>
 
   <!-- トップに戻るボタン -->
@@ -95,14 +102,24 @@
     <img src="assets/images/illust10.png" alt="" class="hero-chara hero-chara--right" aria-hidden="true">
 
     <div class="hero-content">
+      <p class="hero-kicker">無料で遊べるシュール系ブラウザゲーム集</p>
       <h1 class="glitch" id="logo" data-text="シュールゲームス">シュールゲームス</h1>
-      <p class="tagline">かわいいキャラクターと過ごす、素敵な時間</p>
+      <p class="tagline">かわいいけど変。短時間で遊べるゲームを公開中。</p>
+      <div class="hero-feature fade-in">
+        <div class="hero-feature__art">
+          <img src="games/reversi/character.png" alt="漆黒のリバーシのキャラクター" loading="eager">
+        </div>
+        <div class="hero-feature__body">
+          <span class="hero-feature__badge">最新作</span>
+          <strong>漆黒のリバーシ</strong>
+          <p>生死をかけたリバーシバトル。すぐ遊べる短編勝負。</p>
+        </div>
+        <a href="games/reversi/index.html" class="hero-feature__link">今すぐプレイ</a>
+      </div>
       <nav class="hero-nav">
         <a href="#games" class="nav-link">ゲーム一覧</a>
-        <a href="#gallery" class="nav-link">ギャラリー</a>
         <a href="collection.html" class="nav-link">図鑑</a>
         <a href="#news" class="nav-link">お知らせ</a>
-        <a href="#about" class="nav-link">このスタジオとは</a>
         <a href="#contact" class="nav-link">つながる</a>
       </nav>
     </div>
@@ -112,7 +129,7 @@
     <!-- ゲーム一覧 -->
     <section id="games">
       <h2 class="section-title fade-in">ゲーム一覧</h2>
-      <p class="section-subtitle fade-in">とってもおもしろいゲームだよ</p>
+      <p class="section-subtitle fade-in">1〜3分で遊べる、変だけど遊びやすいゲームたち。</p>
 
       <div class="recommend-wrapper fade-in">
         <button type="button" id="recommend-btn" class="recommend-btn" aria-label="おすすめゲームをランダムに選ぶ">
@@ -353,9 +370,21 @@
     <!-- お知らせ -->
     <section id="news">
       <h2 class="section-title fade-in">お知らせ</h2>
-      <p class="section-subtitle fade-in">最新のシュール情報</p>
+      <p class="section-subtitle fade-in">最新作と更新情報をまとめてチェック</p>
+      <div class="news-controls fade-in">
+        <div class="news-search">
+          <input type="search" id="news-search-input" class="news-search__input" placeholder="キーワードで検索（例: リバーシ）" aria-label="お知らせをキーワードで検索">
+        </div>
+        <div class="news-filters" id="news-filters" role="group" aria-label="お知らせをジャンルで絞り込み">
+          <!-- タグボタンを動的生成 -->
+        </div>
+      </div>
       <div class="news-list fade-in" id="news-list">
         <!-- data/news.json から動的に読み込み -->
+      </div>
+      <p class="news-empty" id="news-empty" hidden>該当するお知らせはありません。</p>
+      <div class="news-more-wrap">
+        <button type="button" class="news-more-btn" id="news-more-btn" hidden>もっと見る</button>
       </div>
     </section>
 
@@ -456,7 +485,7 @@
     </div>
   </div>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=7"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');

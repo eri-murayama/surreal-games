@@ -8,7 +8,7 @@
   if (!loadingScreen) return;
 
   // アニメーション完了後にフェードアウト
-  const minDisplayTime = 800; // バーアニメ(0.6s) + 余韻
+  const minDisplayTime = 350; // バーアニメの印象は残しつつ待ち時間を短縮
   const start = Date.now();
 
   function dismissLoading() {
@@ -109,16 +109,63 @@ document.querySelectorAll('.about-bg-chara').forEach((el) => observer.observe(el
 // 固定ナビ＆トップに戻るボタンの表示切替
 const fixedNav = document.getElementById('fixed-nav');
 const backToTop = document.getElementById('back-to-top');
+const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+
+function closeMobileNav() {
+  if (!fixedNav) return;
+  fixedNav.classList.remove('is-open');
+  if (mobileNavToggle) {
+    mobileNavToggle.setAttribute('aria-expanded', 'false');
+  }
+  if (window.scrollY <= window.innerHeight * 0.6) {
+    fixedNav.classList.remove('visible');
+  }
+}
+
+if (mobileNavToggle && fixedNav) {
+  mobileNavToggle.addEventListener('click', function(event) {
+    event.stopPropagation();
+    var isOpen = fixedNav.classList.toggle('is-open');
+    mobileNavToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  document.querySelectorAll('#fixed-nav .fixed-nav__link').forEach(function(link) {
+    link.addEventListener('click', closeMobileNav);
+  });
+
+  document.addEventListener('click', function(event) {
+    if (!fixedNav.classList.contains('is-open')) return;
+    if (!fixedNav.contains(event.target)) {
+      closeMobileNav();
+    }
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      closeMobileNav();
+    }
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      closeMobileNav();
+    }
+  });
+}
 
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
   const showThreshold = window.innerHeight * 0.6;
+  const shouldShow = scrollY > showThreshold;
 
   if (fixedNav) {
-    fixedNav.classList.toggle('visible', scrollY > showThreshold);
+    fixedNav.classList.toggle('visible', shouldShow || fixedNav.classList.contains('is-open'));
+    if (!shouldShow && !fixedNav.classList.contains('is-open')) {
+      closeMobileNav();
+    }
   }
   if (backToTop) {
-    backToTop.classList.toggle('visible', scrollY > showThreshold);
+    backToTop.classList.toggle('visible', shouldShow);
   }
 });
 
@@ -144,11 +191,19 @@ if (logo) {
   var tagline = document.querySelector('.tagline');
   if (!tagline) return;
 
-  var fullText = tagline.textContent;
+  var fullText = tagline.textContent.trim();
+  var shouldAnimate = !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.innerWidth > 768;
+
+  if (!shouldAnimate) {
+    tagline.textContent = fullText;
+    tagline.style.borderRight = 'none';
+    tagline.classList.remove('typing');
+    return;
+  }
+
   tagline.textContent = '';
   tagline.classList.add('typing');
 
-  // ローディング完了後に開始
   setTimeout(function() {
     var i = 0;
     var interval = setInterval(function() {
@@ -156,14 +211,11 @@ if (logo) {
       tagline.textContent = fullText.slice(0, i);
       if (i >= fullText.length) {
         clearInterval(interval);
-        // 完了後しばらくしてカーソルを消す
-        setTimeout(function() {
-          tagline.style.borderRight = 'none';
-          tagline.classList.remove('typing');
-        }, 2000);
+        tagline.style.borderRight = 'none';
+        tagline.classList.remove('typing');
       }
-    }, 120);
-  }, 1800);
+    }, 55);
+  }, 250);
 })();
 
 // ========================================
@@ -307,28 +359,108 @@ if (logo) {
 // お知らせセクション: data/news.json から動的読み込み
 // ========================================
 (function loadNews() {
-  const container = document.getElementById('news-list');
+  var container = document.getElementById('news-list');
   if (!container) return;
+
+  var filtersEl = document.getElementById('news-filters');
+  var searchInput = document.getElementById('news-search-input');
+  var moreBtn = document.getElementById('news-more-btn');
+  var emptyEl = document.getElementById('news-empty');
+
+  var PAGE_SIZE = 5;
+  var allNews = [];
+  var activeTag = 'all';
+  var keyword = '';
+  var expanded = false;
 
   // フォールバック用データ（fetchが失敗した場合に使用）
   var fallbackNews = [
-    { date: '2026.03.23', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「黄金の金色ドライバー」を公開しました！ヨシノリと一緒にドライバー界の頂点を目指そう' },
-    { date: '2026.03.22', tag: 'update', tagLabel: '更新', text: 'サイトリニューアル！サウンド・実績システムを追加しました' },
-    { date: '2026.03.22', tag: 'new', tagLabel: '新機能', text: 'キャラクター図鑑ページを公開しました' },
-    { date: '2026.03.22', tag: 'new', tagLabel: '新機能', text: 'PWA対応！ホーム画面に追加してアプリのように遊べます' },
-    { date: '2026.03.10', tag: 'update', tagLabel: '更新', text: 'シェアボタンの多言語対応（かにかにパニック・脱出ゲーム）' }
+    { date: '2026.04.13', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「漆黒のリバーシ」を公開しました！吾輩の番だが？', url: 'games/reversi/index.html' },
+    { date: '2026.04.11', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「シュール進化論」を公開しました！無限にやっちゃう〜。', url: 'games/puzzle-2048/index.html' },
+    { date: '2026.04.06', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「かいだんマインスイーパー」を公開しました！ちびるなよ小童ども！', url: 'games/minesweeper/index.html' },
+    { date: '2026.03.28', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「うんコーンキャッチャー」を公開しました！空から降ってくるアレをキャッチ！', url: 'games/unko-cone/index.html' },
+    { date: '2026.03.10', tag: 'update', tagLabel: '公開', text: 'シュールゲームス公式サイトを公開しました！', url: 'index.html' }
   ];
 
-  function renderNews(items) {
-    container.innerHTML = items.map(function(item) {
-      return '<article class="news-item">' +
-        '<time class="news-date">' + item.date + '</time>' +
-        '<span class="news-tag news-tag--' + item.tag + '">' + item.tagLabel + '</span>' +
-        '<p class="news-text">' + item.text + '</p>' +
+  function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, function(char) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char];
+    });
+  }
+
+  function buildFilters(items) {
+    if (!filtersEl) return;
+    var seen = {};
+    var tags = [{ tag: 'all', label: 'すべて' }];
+    items.forEach(function(item) {
+      var t = item.tag || 'new';
+      if (!seen[t]) {
+        seen[t] = true;
+        tags.push({ tag: t, label: item.tagLabel || 'お知らせ' });
+      }
+    });
+    filtersEl.innerHTML = tags.map(function(t) {
+      var active = t.tag === activeTag ? ' is-active' : '';
+      return '<button type="button" class="news-filter-btn' + active +
+        '" data-tag="' + escapeHtml(t.tag) + '">' + escapeHtml(t.label) + '</button>';
+    }).join('');
+    filtersEl.querySelectorAll('.news-filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        activeTag = btn.getAttribute('data-tag') || 'all';
+        expanded = false;
+        filtersEl.querySelectorAll('.news-filter-btn').forEach(function(b) {
+          b.classList.toggle('is-active', b === btn);
+        });
+        renderList();
+      });
+    });
+  }
+
+  function getFiltered() {
+    var kw = keyword.trim().toLowerCase();
+    return allNews.filter(function(item) {
+      if (activeTag !== 'all' && (item.tag || 'new') !== activeTag) return false;
+      if (!kw) return true;
+      var haystack = ((item.text || '') + ' ' + (item.tagLabel || '') + ' ' + (item.date || '')).toLowerCase();
+      return haystack.indexOf(kw) !== -1;
+    });
+  }
+
+  function renderList() {
+    var filtered = getFiltered();
+    var limit = expanded ? filtered.length : PAGE_SIZE;
+    var shown = filtered.slice(0, limit);
+
+    container.innerHTML = shown.map(function(item) {
+      var article = '<article class="news-item">' +
+        '<time class="news-date">' + escapeHtml(item.date) + '</time>' +
+        '<span class="news-tag news-tag--' + escapeHtml(item.tag || 'new') + '">' + escapeHtml(item.tagLabel || 'お知らせ') + '</span>' +
+        '<p class="news-text">' + escapeHtml(item.text) + '</p>' +
         '</article>';
+      if (item.url) {
+        return '<a class="news-link" href="' + escapeHtml(item.url) + '">' + article + '</a>';
+      }
+      return article;
     }).join('');
 
-    // ニュース構造化データ（JSON-LD）を挿入
+    if (emptyEl) emptyEl.hidden = filtered.length !== 0;
+    if (moreBtn) {
+      if (filtered.length <= PAGE_SIZE) {
+        moreBtn.hidden = true;
+      } else {
+        moreBtn.hidden = false;
+        moreBtn.textContent = expanded ? '折りたたむ' : 'もっと見る（全' + filtered.length + '件）';
+      }
+    }
+  }
+
+  function injectJsonLd(items) {
     var newsJsonLd = {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
@@ -337,12 +469,18 @@ if (logo) {
         return {
           '@type': 'ListItem',
           'position': i + 1,
-          'item': {
-            '@type': 'NewsArticle',
-            'headline': item.text,
-            'datePublished': item.date.replace(/\./g, '-'),
-            'author': { '@type': 'Organization', 'name': 'シュールゲームス' }
-          }
+          'item': (function() {
+            var article = {
+              '@type': 'NewsArticle',
+              'headline': item.text,
+              'datePublished': item.date.replace(/\./g, '-'),
+              'author': { '@type': 'Organization', 'name': 'シュールゲームス' }
+            };
+            if (item.url) {
+              article.url = new URL(item.url, window.location.href).href;
+            }
+            return article;
+          })()
         };
       })
     };
@@ -352,10 +490,35 @@ if (logo) {
     document.head.appendChild(script);
   }
 
+  function init(items) {
+    allNews = items.slice();
+    buildFilters(allNews);
+    renderList();
+    injectJsonLd(allNews);
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      keyword = searchInput.value || '';
+      expanded = false;
+      renderList();
+    });
+  }
+
+  if (moreBtn) {
+    moreBtn.addEventListener('click', function() {
+      expanded = !expanded;
+      renderList();
+    });
+  }
+
   fetch('data/news.json')
-    .then(function(res) { return res.json(); })
-    .then(renderNews)
-    .catch(function() { renderNews(fallbackNews); });
+    .then(function(res) {
+      if (!res.ok) throw new Error('news fetch failed');
+      return res.json();
+    })
+    .then(init)
+    .catch(function() { init(fallbackNews); });
 })();
 
 // ========================================
