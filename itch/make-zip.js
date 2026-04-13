@@ -35,9 +35,11 @@ for (const f of fs.readdirSync(srcDir)) {
     addFile(f, f);
   }
 }
-// Add images
-if (fs.existsSync(path.join(srcDir, 'images'))) {
-  addDir('images', 'images/');
+// Add subdirectories (images/, audio/, etc.)
+for (const sub of ['images', 'audio']) {
+  if (fs.existsSync(path.join(srcDir, sub))) {
+    addDir(sub, sub + '/');
+  }
 }
 
 console.log('Files:', entries.map(e => e.name).join(', '));
