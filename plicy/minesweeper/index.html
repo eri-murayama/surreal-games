@@ -510,10 +510,7 @@ h1 {
 </div>
 
 <!-- 怪談音声 -->
-<audio id="kaidanVoice" loop>
-  <source src="audio/kaidan.mp3" type="audio/mpeg">
-  <source src="audio/kaidan.ogg" type="audio/ogg">
-</audio>
+
 
 <div class="audio-controls">
   <button class="audio-btn" id="bgmBtn" onclick="toggleBGM()" title="BGM ON/OFF">
@@ -527,6 +524,7 @@ h1 {
 <!-- Xシェアボタン -->
 <button class="sg-share-btn" id="shareBtn" onclick="shareToX()" title="Xでシェア">𝕏</button>
 
+<script src="kaidan-audio.js"></script>
 <script>
 // ===== 怖いBGM（Web Audio API）+ 怪談音声 =====
 let audioCtx = null;
@@ -686,27 +684,80 @@ function updateBGMBtn() {
   }
 }
 
-// ===== 怪談音声 =====
+// ===== 怪談音声（Web Audio APIで再生） =====
 let voicePlaying = false;
+let voiceBuffer = null;
+let voiceSource = null;
+let voiceGain = null;
+let voiceLoading = false;
+
+function base64ToArrayBuffer(base64) {
+  const binary = atob(base64);
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+
+async function loadKaidanVoice() {
+  if (voiceBuffer || voiceLoading) return voiceBuffer;
+  voiceLoading = true;
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  try {
+    if (!window.__KAIDAN_AUDIO_B64) throw new Error('audio data not loaded');
+    const buf = base64ToArrayBuffer(window.__KAIDAN_AUDIO_B64);
+    voiceBuffer = await audioCtx.decodeAudioData(buf);
+    voiceLoading = false;
+    return voiceBuffer;
+  } catch (e) {
+    voiceLoading = false;
+    const btn = document.getElementById('voiceBtn');
+    btn.innerHTML = '<span class="icon">👻</span>読込失敗';
+    setTimeout(() => { btn.innerHTML = '<span class="icon">👻</span>怪談'; }, 2500);
+    throw e;
+  }
+}
+
+async function startKaidanVoice() {
+  try {
+    await loadKaidanVoice();
+    if (!voiceBuffer) return;
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
+    voiceSource = audioCtx.createBufferSource();
+    voiceSource.buffer = voiceBuffer;
+    voiceSource.loop = true;
+    voiceGain = audioCtx.createGain();
+    voiceGain.gain.value = 0.9;
+    voiceSource.connect(voiceGain);
+    voiceGain.connect(audioCtx.destination);
+    voiceSource.start(0);
+    voicePlaying = true;
+    const btn = document.getElementById('voiceBtn');
+    btn.classList.add('playing');
+    btn.innerHTML = '<span class="icon">👻</span>怪談ON';
+  } catch (e) {}
+}
+
+function stopKaidanVoice() {
+  if (voiceSource) {
+    try { voiceSource.stop(0); } catch(e) {}
+    voiceSource.disconnect();
+    voiceSource = null;
+  }
+  if (voiceGain) { voiceGain.disconnect(); voiceGain = null; }
+  voicePlaying = false;
+  const btn = document.getElementById('voiceBtn');
+  btn.classList.remove('playing');
+  btn.innerHTML = '<span class="icon">👻</span>怪談';
+}
 
 function toggleVoice() {
-  const voice = document.getElementById('kaidanVoice');
-  const btn = document.getElementById('voiceBtn');
   if (!voicePlaying) {
-    voice.volume = 0.8;
-    voice.play().then(() => {
-      voicePlaying = true;
-      btn.classList.add('playing');
-      btn.innerHTML = '<span class="icon">👻</span>怪談ON';
-    }).catch(() => {
-      btn.innerHTML = '<span class="icon">👻</span>ファイルなし';
-      setTimeout(() => { btn.innerHTML = '<span class="icon">👻</span>怪談'; }, 2000);
-    });
+    startKaidanVoice();
   } else {
-    voice.pause();
-    voicePlaying = false;
-    btn.classList.remove('playing');
-    btn.innerHTML = '<span class="icon">👻</span>怪談';
+    stopKaidanVoice();
   }
 }
 
@@ -716,14 +767,7 @@ document.addEventListener('click', function autoStartAudio() {
   if (!audioAutoStarted) {
     audioAutoStarted = true;
     startBGM();
-    const voice = document.getElementById('kaidanVoice');
-    voice.volume = 0.9;
-    voice.play().then(() => {
-      voicePlaying = true;
-      const btn = document.getElementById('voiceBtn');
-      btn.classList.add('playing');
-      btn.innerHTML = '<span class="icon">👻</span>怪談ON';
-    }).catch(() => {});
+    startKaidanVoice();
   }
 }, { once: true });
 
