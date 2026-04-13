@@ -64,7 +64,7 @@
   };
 
   // ===== レベル・アンロック =====
-  const XP_TABLE = [0, 40, 100, 180, 290, 430, 600, 800, 1040, 1320, 1640, 2000, 2400, 2900, 3500, 4200, 5000, 6000, 7200, 8600];
+  const XP_TABLE = [0, 120, 300, 540, 870, 1290, 1800, 2400, 3120, 3960, 4920, 6000, 7200, 8700, 10500, 12600, 15000, 18000, 21600, 25800];
   function getUnlockedChains() {
     const list = ['furniture', 'food'];
     if (state.level >= 3) list.push('appliance');
@@ -81,75 +81,75 @@
   // 汚部屋度: 0=普通, 1=散らかり始め, 2=汚い, 3=ゴミ屋敷
   const FURNITURE_SHOP = [
     // === Lv1〜2: きれいなお部屋フェーズ ===
-    { id: 'rug',      emoji: '🟫', name: 'ラグ',       cost: 5,  lv: 1,  pos: { bottom: '10%', left: '32%', fontSize: '3.2em' } },
-    { id: 'lamp',     emoji: '💡', name: 'ランプ',     cost: 6,  lv: 1,  pos: { top: '48%', right: '16%' } },
-    { id: 'bed',      emoji: '🛏️', name: 'ベッド',     cost: 10, lv: 1,  pos: { top: '42%', left: '8%' } },
-    { id: 'sofa',     emoji: '🛋️', name: 'ソファ',     cost: 12, lv: 2,  pos: { bottom: '22%', left: '38%' } },
-    { id: 'table',    emoji: '🪵', name: 'テーブル',   cost: 10, lv: 2,  pos: { bottom: '26%', right: '28%' } },
-    { id: 'plant',    emoji: '🪴', name: '観葉植物',   cost: 14, lv: 2,  pos: { bottom: '16%', right: '6%' } },
+    { id: 'rug',      emoji: '🟫', name: 'ラグ',       cost: 15,  lv: 1,  pos: { bottom: '10%', left: '32%', fontSize: '3.2em' } },
+    { id: 'lamp',     emoji: '💡', name: 'ランプ',     cost: 18,  lv: 1,  pos: { top: '48%', right: '16%' } },
+    { id: 'bed',      emoji: '🛏️', name: 'ベッド',     cost: 30,  lv: 1,  pos: { top: '42%', left: '8%' } },
+    { id: 'sofa',     emoji: '🛋️', name: 'ソファ',     cost: 36,  lv: 2,  pos: { bottom: '22%', left: '38%' } },
+    { id: 'table',    emoji: '🪵', name: 'テーブル',   cost: 30,  lv: 2,  pos: { bottom: '26%', right: '28%' } },
+    { id: 'plant',    emoji: '🪴', name: '観葉植物',   cost: 42,  lv: 2,  pos: { bottom: '16%', right: '6%' } },
     // === Lv3〜4: まだきれい ===
-    { id: 'tv',       emoji: '📺', name: 'テレビ',     cost: 18, lv: 3,  pos: { top: '38%', right: '42%' } },
-    { id: 'shelf',    emoji: '📚', name: '本だな',     cost: 20, lv: 3,  pos: { top: '30%', left: '35%' } },
-    { id: 'painting', emoji: '🖼️', name: '絵画',       cost: 22, lv: 3,  pos: { top: '14%', left: '42%' } },
-    { id: 'desk',     emoji: '🪑', name: 'デスク',     cost: 16, lv: 4,  pos: { bottom: '28%', left: '10%' } },
-    { id: 'game',     emoji: '🎮', name: 'ゲーム機',   cost: 18, lv: 4,  pos: { bottom: '32%', left: '22%' } },
-    { id: 'fridge',   emoji: '🧊', name: '冷蔵庫',     cost: 26, lv: 4,  pos: { top: '44%', right: '6%' } },
+    { id: 'tv',       emoji: '📺', name: 'テレビ',     cost: 54,  lv: 3,  pos: { top: '38%', right: '42%' } },
+    { id: 'shelf',    emoji: '📚', name: '本だな',     cost: 60,  lv: 3,  pos: { top: '30%', left: '35%' } },
+    { id: 'painting', emoji: '🖼️', name: '絵画',       cost: 66,  lv: 3,  pos: { top: '14%', left: '42%' } },
+    { id: 'desk',     emoji: '🪑', name: 'デスク',     cost: 48,  lv: 4,  pos: { bottom: '28%', left: '10%' } },
+    { id: 'game',     emoji: '🎮', name: 'ゲーム機',   cost: 54,  lv: 4,  pos: { bottom: '32%', left: '22%' } },
+    { id: 'fridge',   emoji: '🧊', name: '冷蔵庫',     cost: 78,  lv: 4,  pos: { top: '44%', right: '6%' } },
     // === Lv5〜6: まだ普通 ===
-    { id: 'washer',   emoji: '🫧', name: '洗濯機',     cost: 24, lv: 5,  pos: { top: '48%', right: '28%' } },
-    { id: 'cat',      emoji: '🐈', name: 'ねこ',       cost: 35, lv: 5,  pos: { bottom: '14%', left: '58%' } },
-    { id: 'tree',     emoji: '🌳', name: '大きな木',   cost: 40, lv: 6,  pos: { bottom: '20%', right: '42%' } },
-    { id: 'piano',    emoji: '🎹', name: 'ピアノ',     cost: 45, lv: 6,  pos: { top: '40%', left: '48%' } },
-    { id: 'fish',     emoji: '🐠', name: '水槽',       cost: 30, lv: 6,  pos: { top: '50%', left: '22%' } },
-    { id: 'star',     emoji: '✨', name: '星あかり',   cost: 50, lv: 7,  pos: { top: '6%', right: '44%' } },
+    { id: 'washer',   emoji: '🫧', name: '洗濯機',     cost: 72,  lv: 5,  pos: { top: '48%', right: '28%' } },
+    { id: 'cat',      emoji: '🐈', name: 'ねこ',       cost: 105, lv: 5,  pos: { bottom: '14%', left: '58%' } },
+    { id: 'tree',     emoji: '🌳', name: '大きな木',   cost: 120, lv: 6,  pos: { bottom: '20%', right: '42%' } },
+    { id: 'piano',    emoji: '🎹', name: 'ピアノ',     cost: 135, lv: 6,  pos: { top: '40%', left: '48%' } },
+    { id: 'fish',     emoji: '🐠', name: '水槽',       cost: 90,  lv: 6,  pos: { top: '50%', left: '22%' } },
+    { id: 'star',     emoji: '✨', name: '星あかり',   cost: 150, lv: 7,  pos: { top: '6%', right: '44%' } },
     // === Lv7〜8: ちょっと散らかってきた ===
-    { id: 'shoes',    emoji: '👟', name: '脱ぎっぱ靴', cost: 8,  lv: 7,  pos: { bottom: '4%', left: '50%' } },
-    { id: 'cup',      emoji: '🍵', name: '飲みかけ',   cost: 6,  lv: 7,  pos: { bottom: '30%', right: '18%' } },
-    { id: 'pizza',    emoji: '🍕', name: '食べかけ',   cost: 7,  lv: 7,  pos: { bottom: '18%', left: '44%' } },
-    { id: 'cloth1',   emoji: '👕', name: '脱ぎっぱT',  cost: 5,  lv: 7,  pos: { bottom: '34%', left: '62%' } },
-    { id: 'can',      emoji: '🥫', name: '空き缶',     cost: 4,  lv: 8,  pos: { bottom: '8%', right: '30%' } },
-    { id: 'bag',      emoji: '🛍️', name: 'レジ袋',     cost: 3,  lv: 8,  pos: { bottom: '12%', left: '18%' } },
-    { id: 'noodle',   emoji: '🍜', name: 'カップ麺',   cost: 5,  lv: 8,  pos: { bottom: '22%', right: '48%' } },
-    { id: 'remote',   emoji: '📱', name: '充電器の山', cost: 8,  lv: 8,  pos: { bottom: '26%', left: '30%' } },
-    { id: 'socks',    emoji: '🧦', name: '片方の靴下', cost: 3,  lv: 8,  pos: { bottom: '6%', right: '12%' } },
+    { id: 'shoes',    emoji: '👟', name: '脱ぎっぱ靴', cost: 24,  lv: 7,  pos: { bottom: '4%', left: '50%' } },
+    { id: 'cup',      emoji: '🍵', name: '飲みかけ',   cost: 18,  lv: 7,  pos: { bottom: '30%', right: '18%' } },
+    { id: 'pizza',    emoji: '🍕', name: '食べかけ',   cost: 21,  lv: 7,  pos: { bottom: '18%', left: '44%' } },
+    { id: 'cloth1',   emoji: '👕', name: '脱ぎっぱT',  cost: 15,  lv: 7,  pos: { bottom: '34%', left: '62%' } },
+    { id: 'can',      emoji: '🥫', name: '空き缶',     cost: 12,  lv: 8,  pos: { bottom: '8%', right: '30%' } },
+    { id: 'bag',      emoji: '🛍️', name: 'レジ袋',     cost: 9,   lv: 8,  pos: { bottom: '12%', left: '18%' } },
+    { id: 'noodle',   emoji: '🍜', name: 'カップ麺',   cost: 15,  lv: 8,  pos: { bottom: '22%', right: '48%' } },
+    { id: 'remote',   emoji: '📱', name: '充電器の山', cost: 24,  lv: 8,  pos: { bottom: '26%', left: '30%' } },
+    { id: 'socks',    emoji: '🧦', name: '片方の靴下', cost: 9,   lv: 8,  pos: { bottom: '6%', right: '12%' } },
     // === Lv9〜10: だいぶ汚い ===
-    { id: 'bottles',  emoji: '🍶', name: '空きびん',   cost: 4,  lv: 9,  pos: { bottom: '14%', right: '54%' } },
-    { id: 'news',     emoji: '📰', name: '古新聞',     cost: 3,  lv: 9,  pos: { bottom: '20%', left: '6%' } },
-    { id: 'dust',     emoji: '🫥', name: 'ホコリ',     cost: 2,  lv: 9,  pos: { top: '25%', right: '20%' } },
-    { id: 'ramen',    emoji: '🥡', name: 'UberEats箱', cost: 6,  lv: 9,  pos: { bottom: '28%', right: '6%' } },
-    { id: 'tissue',   emoji: '🧻', name: 'ティッシュ山', cost: 4, lv: 9, pos: { bottom: '16%', left: '52%' } },
-    { id: 'mold',     emoji: '🟢', name: 'カビ',       cost: 2,  lv: 9,  pos: { top: '18%', left: '12%' } },
-    { id: 'cobweb',   emoji: '🕸️', name: 'クモの巣',   cost: 2,  lv: 9,  pos: { top: '6%', left: '6%' } },
-    { id: 'fly',      emoji: '🪰', name: 'コバエ',     cost: 1,  lv: 10, pos: { top: '30%', left: '50%' } },
-    { id: 'roach',    emoji: '🪳', name: 'Gのすがた',  cost: 1,  lv: 10, pos: { bottom: '4%', left: '70%' } },
-    { id: 'stink',    emoji: '💀', name: '謎のにおい', cost: 2,  lv: 10, pos: { top: '40%', left: '28%' } },
-    { id: 'laundry',  emoji: '👔', name: '洗濯物の山', cost: 5,  lv: 10, pos: { bottom: '36%', right: '38%' } },
-    { id: 'ashtray',  emoji: '🚬', name: '灰皿タワー', cost: 6,  lv: 10, pos: { bottom: '24%', left: '14%' } },
+    { id: 'bottles',  emoji: '🍶', name: '空きびん',   cost: 12,  lv: 9,  pos: { bottom: '14%', right: '54%' } },
+    { id: 'news',     emoji: '📰', name: '古新聞',     cost: 9,   lv: 9,  pos: { bottom: '20%', left: '6%' } },
+    { id: 'dust',     emoji: '🫥', name: 'ホコリ',     cost: 6,   lv: 9,  pos: { top: '25%', right: '20%' } },
+    { id: 'ramen',    emoji: '🥡', name: 'UberEats箱', cost: 18,  lv: 9,  pos: { bottom: '28%', right: '6%' } },
+    { id: 'tissue',   emoji: '🧻', name: 'ティッシュ山', cost: 12, lv: 9, pos: { bottom: '16%', left: '52%' } },
+    { id: 'mold',     emoji: '🟢', name: 'カビ',       cost: 6,   lv: 9,  pos: { top: '18%', left: '12%' } },
+    { id: 'cobweb',   emoji: '🕸️', name: 'クモの巣',   cost: 6,   lv: 9,  pos: { top: '6%', left: '6%' } },
+    { id: 'fly',      emoji: '🪰', name: 'コバエ',     cost: 3,   lv: 10, pos: { top: '30%', left: '50%' } },
+    { id: 'roach',    emoji: '🪳', name: 'Gのすがた',  cost: 3,   lv: 10, pos: { bottom: '4%', left: '70%' } },
+    { id: 'stink',    emoji: '💀', name: '謎のにおい', cost: 6,   lv: 10, pos: { top: '40%', left: '28%' } },
+    { id: 'laundry',  emoji: '👔', name: '洗濯物の山', cost: 15,  lv: 10, pos: { bottom: '36%', right: '38%' } },
+    { id: 'ashtray',  emoji: '🚬', name: '灰皿タワー', cost: 18,  lv: 10, pos: { bottom: '24%', left: '14%' } },
     // === Lv11〜12: ゴミ屋敷化 ===
-    { id: 'rat',      emoji: '🐀', name: 'ネズミ',     cost: 1,  lv: 11, pos: { bottom: '2%', right: '22%' } },
-    { id: 'trash1',   emoji: '🗑️', name: 'ゴミ袋①',   cost: 3,  lv: 11, pos: { bottom: '18%', right: '62%' } },
-    { id: 'trash2',   emoji: '🗑️', name: 'ゴミ袋②',   cost: 3,  lv: 11, pos: { bottom: '10%', left: '40%' } },
-    { id: 'trash3',   emoji: '🗑️', name: 'ゴミ袋③',   cost: 3,  lv: 11, pos: { bottom: '26%', left: '56%' } },
-    { id: 'mush',     emoji: '🍄', name: 'キノコ',     cost: 2,  lv: 11, pos: { bottom: '38%', right: '14%' } },
-    { id: 'spider',   emoji: '🕷️', name: 'クモ',       cost: 1,  lv: 11, pos: { top: '10%', right: '30%' } },
-    { id: 'bone',     emoji: '🦴', name: '謎の骨',     cost: 4,  lv: 11, pos: { bottom: '6%', left: '26%' } },
-    { id: 'leak',     emoji: '💧', name: '水漏れ',     cost: 2,  lv: 11, pos: { top: '4%', left: '30%' } },
-    { id: 'mold2',    emoji: '🟤', name: '黒カビ',     cost: 2,  lv: 12, pos: { top: '14%', right: '8%' } },
-    { id: 'maggot',   emoji: '🪱', name: 'うじ',       cost: 1,  lv: 12, pos: { bottom: '12%', right: '40%' } },
-    { id: 'broken',   emoji: '🔨', name: '壊れた壁',   cost: 5,  lv: 12, pos: { top: '22%', left: '60%' } },
-    { id: 'smell',    emoji: '☠️', name: '瘴気',       cost: 3,  lv: 12, pos: { top: '34%', right: '50%' } },
+    { id: 'rat',      emoji: '🐀', name: 'ネズミ',     cost: 3,   lv: 11, pos: { bottom: '2%', right: '22%' } },
+    { id: 'trash1',   emoji: '🗑️', name: 'ゴミ袋①',   cost: 9,   lv: 11, pos: { bottom: '18%', right: '62%' } },
+    { id: 'trash2',   emoji: '🗑️', name: 'ゴミ袋②',   cost: 9,   lv: 11, pos: { bottom: '10%', left: '40%' } },
+    { id: 'trash3',   emoji: '🗑️', name: 'ゴミ袋③',   cost: 9,   lv: 11, pos: { bottom: '26%', left: '56%' } },
+    { id: 'mush',     emoji: '🍄', name: 'キノコ',     cost: 6,   lv: 11, pos: { bottom: '38%', right: '14%' } },
+    { id: 'spider',   emoji: '🕷️', name: 'クモ',       cost: 3,   lv: 11, pos: { top: '10%', right: '30%' } },
+    { id: 'bone',     emoji: '🦴', name: '謎の骨',     cost: 12,  lv: 11, pos: { bottom: '6%', left: '26%' } },
+    { id: 'leak',     emoji: '💧', name: '水漏れ',     cost: 6,   lv: 11, pos: { top: '4%', left: '30%' } },
+    { id: 'mold2',    emoji: '🟤', name: '黒カビ',     cost: 6,   lv: 12, pos: { top: '14%', right: '8%' } },
+    { id: 'maggot',   emoji: '🪱', name: 'うじ',       cost: 3,   lv: 12, pos: { bottom: '12%', right: '40%' } },
+    { id: 'broken',   emoji: '🔨', name: '壊れた壁',   cost: 15,  lv: 12, pos: { top: '22%', left: '60%' } },
+    { id: 'smell',    emoji: '☠️', name: '瘴気',       cost: 9,   lv: 12, pos: { top: '34%', right: '50%' } },
     // === Lv13〜14: 完全なるゴミ屋敷 ===
-    { id: 'trash4',   emoji: '🗑️', name: 'ゴミ袋④',   cost: 3,  lv: 13, pos: { bottom: '32%', left: '4%' } },
-    { id: 'trash5',   emoji: '🗑️', name: 'ゴミ袋⑤',   cost: 3,  lv: 13, pos: { top: '44%', right: '60%' } },
-    { id: 'fungi',    emoji: '🧫', name: '培養皿',     cost: 4,  lv: 13, pos: { bottom: '20%', right: '26%' } },
-    { id: 'bat',      emoji: '🦇', name: 'コウモリ',   cost: 2,  lv: 13, pos: { top: '8%', left: '52%' } },
-    { id: 'ghost',    emoji: '👻', name: '何かの気配', cost: 5,  lv: 13, pos: { top: '20%', right: '40%' } },
-    { id: 'vines',    emoji: '🌿', name: '侵食する草', cost: 3,  lv: 13, pos: { top: '36%', left: '4%' } },
-    { id: 'rust',     emoji: '🟠', name: 'サビ',       cost: 2,  lv: 14, pos: { top: '28%', right: '4%' } },
-    { id: 'crack',    emoji: '⚡', name: 'ひび割れ',   cost: 3,  lv: 14, pos: { top: '12%', left: '48%' } },
-    { id: 'slime',    emoji: '🟩', name: '謎の液体',   cost: 2,  lv: 14, pos: { bottom: '8%', left: '60%' } },
-    { id: 'eyeball',  emoji: '👁️', name: '壁の目',     cost: 6,  lv: 14, pos: { top: '16%', left: '24%' } },
-    { id: 'darkness', emoji: '🌑', name: '闇',         cost: 8,  lv: 14, pos: { top: '2%', right: '16%' } },
-    { id: 'void',     emoji: '🕳️', name: '虚無',       cost: 10, lv: 14, pos: { bottom: '14%', left: '34%' } },
+    { id: 'trash4',   emoji: '🗑️', name: 'ゴミ袋④',   cost: 9,   lv: 13, pos: { bottom: '32%', left: '4%' } },
+    { id: 'trash5',   emoji: '🗑️', name: 'ゴミ袋⑤',   cost: 9,   lv: 13, pos: { top: '44%', right: '60%' } },
+    { id: 'fungi',    emoji: '🧫', name: '培養皿',     cost: 12,  lv: 13, pos: { bottom: '20%', right: '26%' } },
+    { id: 'bat',      emoji: '🦇', name: 'コウモリ',   cost: 6,   lv: 13, pos: { top: '8%', left: '52%' } },
+    { id: 'ghost',    emoji: '👻', name: '何かの気配', cost: 15,  lv: 13, pos: { top: '20%', right: '40%' } },
+    { id: 'vines',    emoji: '🌿', name: '侵食する草', cost: 9,   lv: 13, pos: { top: '36%', left: '4%' } },
+    { id: 'rust',     emoji: '🟠', name: 'サビ',       cost: 6,   lv: 14, pos: { top: '28%', right: '4%' } },
+    { id: 'crack',    emoji: '⚡', name: 'ひび割れ',   cost: 9,   lv: 14, pos: { top: '12%', left: '48%' } },
+    { id: 'slime',    emoji: '🟩', name: '謎の液体',   cost: 6,   lv: 14, pos: { bottom: '8%', left: '60%' } },
+    { id: 'eyeball',  emoji: '👁️', name: '壁の目',     cost: 18,  lv: 14, pos: { top: '16%', left: '24%' } },
+    { id: 'darkness', emoji: '🌑', name: '闇',         cost: 24,  lv: 14, pos: { top: '2%', right: '16%' } },
+    { id: 'void',     emoji: '🕳️', name: '虚無',       cost: 30,  lv: 14, pos: { bottom: '14%', left: '34%' } },
   ];
 
   // ===== チュートリアル =====
@@ -316,7 +316,7 @@
     // エネルギータイマー
     if (state.energy < state.energyMax) {
       var elapsed = Date.now() - state.lastEnergyTime;
-      var remain = Math.max(0, 30000 - elapsed);
+      var remain = Math.max(0, ENERGY_REGEN_MS - elapsed);
       var sec = Math.ceil(remain / 1000);
       energyTimerEl.textContent = '⚡回復 ' + sec + 's';
     } else {
@@ -525,10 +525,11 @@
   }
 
   // ===== エネルギー回復 =====
+  const ENERGY_REGEN_MS = 20000;
   function energyTick() {
     const now = Date.now();
     const elapsed = now - state.lastEnergyTime;
-    const regenMs = 30000;
+    const regenMs = ENERGY_REGEN_MS;
     const add = Math.floor(elapsed / regenMs);
     if (add > 0 && state.energy < state.energyMax) {
       state.energy = Math.min(state.energyMax, state.energy + add);
@@ -955,15 +956,16 @@
   var bgmMood = 0; // 現在のBGMムード（0=ほのぼの, 1〜4=不穏）
 
   // コード進行セット（ムード別）
+  // クリーンBGM: I-V-vi-IV のポップ進行で、フレッシュ新人感の明るいサウンド
   var CHORDS_CLEAN = [
-    [174.6, 220.0, 261.6, 329.6],  // Fmaj7
-    [196.0, 246.9, 293.7, 370.0],  // Gmaj7
-    [164.8, 196.0, 246.9, 329.6],  // Em7
-    [174.6, 220.0, 261.6, 349.2],  // F6
-    [130.8, 164.8, 196.0, 246.9],  // Cmaj7
-    [146.8, 185.0, 220.0, 277.2],  // Dm7
-    [164.8, 207.7, 246.9, 311.1],  // Em7(alt)
-    [196.0, 246.9, 293.7, 370.0],  // Gmaj7
+    [261.6, 329.6, 392.0, 587.3],  // Cadd9
+    [196.0, 293.7, 392.0, 493.9],  // G
+    [220.0, 329.6, 440.0, 659.3],  // Am
+    [174.6, 261.6, 349.2, 523.3],  // F
+    [261.6, 329.6, 493.9, 587.3],  // Cmaj7(add9)
+    [196.0, 293.7, 440.0, 587.3],  // Gsus4
+    [220.0, 329.6, 392.0, 493.9],  // Am7
+    [174.6, 261.6, 349.2, 440.0],  // Fmaj7(no5)
   ];
   var CHORDS_MESSY = [
     [146.8, 185.0, 220.0, 261.6],  // Dm7
@@ -1015,6 +1017,7 @@
 
   function startBGM() {
     if (bgmPlaying) return;
+    if (isMuted()) return;
     try {
       var ctx = getCtx(); if (!ctx) return;
       if (ctx.state === 'suspended') ctx.resume();
@@ -1033,9 +1036,9 @@
       padFreqs.forEach(function(f) {
         var o = ctx.createOscillator();
         var g = ctx.createGain();
-        o.type = mood >= 3 ? 'sawtooth' : 'sine';
+        o.type = mood >= 3 ? 'sawtooth' : (mood >= 2 ? 'sine' : 'triangle');
         o.frequency.value = f;
-        g.gain.value = mood >= 3 ? 0.05 : 0.10;
+        g.gain.value = mood >= 3 ? 0.05 : (mood >= 2 ? 0.10 : 0.07);
         o.connect(g); g.connect(master);
         o.start(); oscs.push(o); padOscs.push(o); padGains.push(g);
         // 揺らぎ（不穏ほど大きく）
@@ -1066,9 +1069,9 @@
         var chord = chords[chordIdx];
         var t = ctx.currentTime;
         padOscs.forEach(function(o, i) {
-          o.frequency.linearRampToValueAtTime(chord[i], t + (mood >= 2 ? 5.0 : 3.0));
+          o.frequency.linearRampToValueAtTime(chord[i], t + (mood >= 2 ? 5.0 : 2.0));
         });
-      }, mood >= 3 ? 8000 : 6000);
+      }, mood >= 3 ? 8000 : (mood >= 2 ? 6000 : 4000));
       timers.push(chordTimer);
 
       // ── きらめき / 不気味な音 ──
@@ -1094,7 +1097,7 @@
       }
       function scheduleChime() {
         if (!bgmPlaying) return;
-        var interval = mood >= 3 ? (3000 + Math.random() * 5000) : (2000 + Math.random() * 3000);
+        var interval = mood >= 3 ? (3000 + Math.random() * 5000) : (mood >= 2 ? (2000 + Math.random() * 3000) : (1200 + Math.random() * 1800));
         timers.push(setTimeout(function() {
           playChime();
           scheduleChime();
@@ -1108,7 +1111,8 @@
         ? [220, 0, 208, 196, 0, 185, 175, 0, 165, 0, 156, 0, 147, 0, 0, 0, 139, 0, 131, 0, 0, 0, 0, 0]
         : mood >= 2
           ? [349, 0, 330, 311, 0, 294, 330, 0, 349, 0, 311, 0, 294, 0, 277, 262, 0, 0, 294, 0, 311, 0, 0, 0]
-          : [523, 0, 587, 659, 0, 784, 659, 0, 587, 523, 0, 0, 698, 0, 784, 880, 0, 784, 659, 0, 587, 0, 523, 0];
+          // クリーン: 弾むようなC major のポップメロディ（フレッシュ新人感）
+          : [523, 659, 784, 880, 784, 988, 880, 784, 0, 880, 784, 659, 784, 659, 523, 0, 659, 784, 659, 587, 523, 587, 0, 0];
       var melodyIdx = 0;
       function playMelodyNote() {
         if (!bgmPlaying) return;
@@ -1120,15 +1124,23 @@
           var g = ctx.createGain();
           o.type = mood >= 3 ? 'sawtooth' : 'triangle';
           o.frequency.value = freq;
-          var vol = mood >= 3 ? 0.04 : 0.08;
+          var vol = mood >= 3 ? 0.04 : (mood >= 2 ? 0.08 : 0.09);
           g.gain.setValueAtTime(0, t);
-          g.gain.linearRampToValueAtTime(vol, t + 0.06);
-          g.gain.linearRampToValueAtTime(vol * 0.6, t + 0.6);
-          g.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
-          o.connect(g); g.connect(master);
-          o.start(t); o.stop(t + 1.8);
+          if (mood < 2) {
+            // 弾むピチカート風のエンベロープ（短くて軽やか）
+            g.gain.linearRampToValueAtTime(vol, t + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+            o.connect(g); g.connect(master);
+            o.start(t); o.stop(t + 0.6);
+          } else {
+            g.gain.linearRampToValueAtTime(vol, t + 0.06);
+            g.gain.linearRampToValueAtTime(vol * 0.6, t + 0.6);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+            o.connect(g); g.connect(master);
+            o.start(t); o.stop(t + 1.8);
+          }
         }
-        var speed = mood >= 3 ? (1200 + Math.random() * 600) : (900 + Math.random() * 300);
+        var speed = mood >= 3 ? (1200 + Math.random() * 600) : (mood >= 2 ? (900 + Math.random() * 300) : (420 + Math.random() * 160));
         timers.push(setTimeout(playMelodyNote, speed));
       }
       timers.push(setTimeout(playMelodyNote, 1500));
@@ -1138,7 +1150,8 @@
         ? [55.0, 58.3, 51.9, 55.0, 49.0, 46.2, 51.9, 49.0]  // とても低い不穏なベース
         : mood >= 2
           ? [73.4, 77.8, 69.3, 73.4, 65.4, 61.7, 69.3, 65.4] // やや低い
-          : [87.3, 98.0, 82.4, 87.3, 65.4, 73.4, 82.4, 98.0]; // 普通
+          // クリーン: C-G-Am-F を歩くポップベース（弾んで前向き）
+          : [130.8, 98.0, 110.0, 87.3, 130.8, 98.0, 110.0, 87.3];
       var bassIdx = 0;
       var bassTimer = setInterval(function() {
         if (!bgmPlaying || isMuted()) return;
@@ -1151,12 +1164,20 @@
         o.frequency.value = freq;
         var vol = mood >= 3 ? 0.06 : 0.08;
         g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(vol, t + 0.1);
-        g.gain.linearRampToValueAtTime(vol * 0.6, t + 2.5);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 5.5);
-        o.connect(g); g.connect(master);
-        o.start(t); o.stop(t + 5.5);
-      }, mood >= 3 ? 8000 : 6000);
+        if (mood < 2) {
+          // 弾むベース: 短く軽やかに
+          g.gain.linearRampToValueAtTime(vol, t + 0.04);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
+          o.connect(g); g.connect(master);
+          o.start(t); o.stop(t + 1.7);
+        } else {
+          g.gain.linearRampToValueAtTime(vol, t + 0.1);
+          g.gain.linearRampToValueAtTime(vol * 0.6, t + 2.5);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 5.5);
+          o.connect(g); g.connect(master);
+          o.start(t); o.stop(t + 5.5);
+        }
+      }, mood >= 3 ? 8000 : (mood >= 2 ? 6000 : 2000));
       timers.push(bassTimer);
 
       // ── 不穏ノイズ層（汚部屋度2以上） ──
@@ -1277,8 +1298,8 @@
     document.getElementById('start-btn').addEventListener('click', function() {
       document.getElementById('title-screen').classList.remove('active');
       document.getElementById('game-screen').classList.add('active');
-      // BGM開始
-      startBGM();
+      // BGM開始（ミュート時は鳴らさない）
+      if (!isMuted()) startBGM();
       if (!state.tutoDone) {
         tutoStep = 0;
         showTutorial();
@@ -1309,7 +1330,20 @@
     window.addEventListener('beforeunload', function() { save(); stopBGM(); });
     document.addEventListener('visibilitychange', function() {
       if (document.hidden) { save(); stopBGM(); }
-      else { energyTick(); startBGM(); }
+      else { energyTick(); if (!isMuted()) startBGM(); }
+    });
+
+    // サウンドトグル連動（共通モジュールのミュートボタンでゲーム独自BGMも停止/再開）
+    document.addEventListener('click', function(e) {
+      if (e.target.closest && e.target.closest('.sg-sound-toggle')) {
+        setTimeout(function() {
+          if (isMuted()) {
+            stopBGM();
+          } else if (document.getElementById('game-screen').classList.contains('active')) {
+            startBGM();
+          }
+        }, 50);
+      }
     });
   }
 
