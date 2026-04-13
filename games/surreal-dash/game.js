@@ -9,7 +9,7 @@
   var translations = {
     ja: {
       gameTitle: 'シュールダッシュ',
-      gameSub: '5つのゾーンを駆け抜けろ！パワーアップ＆ボスバトル！',
+      gameSub: '8つのゲーム世界を駆け抜けろ！',
       startBtn: '💩 タップでスタート 💩',
       controlsTitle: '操作方法',
       controlsPC: 'PC：スペースキーでジャンプ（2段ジャンプ可能）',
@@ -30,22 +30,28 @@
       rankB: '🥈 ランク B - いい感じ！',
       rankC: '🥉 ランク C - まだまだ！',
       rankD: '💩 ランク D - がんばれ！',
-      zone1: '宇宙',
-      zone2: '深海',
-      zone3: '砂漠',
-      zone4: 'サイバー',
-      zone5: 'カオス',
-      zoneBanner1: 'ZONE 1 - 宇宙',
-      zoneBanner2: 'ZONE 2 - 深海',
-      zoneBanner3: 'ZONE 3 - 砂漠',
-      zoneBanner4: 'ZONE 4 - サイバー',
-      zoneBanner5: 'ZONE 5 - カオス',
+      zone1: 'かわいい部屋',
+      zone2: 'かにかに',
+      zone3: '経営分析',
+      zone4: '黄金ドライバー',
+      zone5: 'うんコーン',
+      zone6: 'マインスイーパー',
+      zone7: 'シュール進化論',
+      zone8: '漆黒のリバーシ',
+      zoneBanner1: 'ZONE 1 - かわいい部屋',
+      zoneBanner2: 'ZONE 2 - かにかに',
+      zoneBanner3: 'ZONE 3 - 経営分析',
+      zoneBanner4: 'ZONE 4 - 黄金ドライバー',
+      zoneBanner5: 'ZONE 5 - うんコーン',
+      zoneBanner6: 'ZONE 6 - マインスイーパー',
+      zoneBanner7: 'ZONE 7 - シュール進化論',
+      zoneBanner8: 'ZONE 8 - 漆黒のリバーシ',
       bossWarning: '⚠ BOSS ⚠',
       shareText: function (score, dist) { return 'シュールダッシュで' + score + '点、' + dist + 'm走ったよ！💩💨 #シュールゲームス'; },
     },
     en: {
       gameTitle: 'Surreal Dash',
-      gameSub: 'Run through 5 zones! Power-ups & Boss battles!',
+      gameSub: 'Run through 8 game worlds!',
       startBtn: '💩 Tap to Start 💩',
       controlsTitle: 'Controls',
       controlsPC: 'PC: Space to jump (double jump OK)',
@@ -66,16 +72,22 @@
       rankB: '🥈 Rank B - Nice!',
       rankC: '🥉 Rank C - Keep going!',
       rankD: '💩 Rank D - Try harder!',
-      zone1: 'Space',
-      zone2: 'Deep Sea',
-      zone3: 'Desert',
-      zone4: 'Cyber',
-      zone5: 'Chaos',
-      zoneBanner1: 'ZONE 1 - SPACE',
-      zoneBanner2: 'ZONE 2 - DEEP SEA',
-      zoneBanner3: 'ZONE 3 - DESERT',
-      zoneBanner4: 'ZONE 4 - CYBER',
-      zoneBanner5: 'ZONE 5 - CHAOS',
+      zone1: 'Cute Room',
+      zone2: 'Crab Panic',
+      zone3: 'Business',
+      zone4: 'Gold Driver',
+      zone5: 'Unko Cone',
+      zone6: 'Minesweeper',
+      zone7: 'Evolution',
+      zone8: 'Black Reversi',
+      zoneBanner1: 'ZONE 1 - CUTE ROOM',
+      zoneBanner2: 'ZONE 2 - CRAB PANIC',
+      zoneBanner3: 'ZONE 3 - BUSINESS',
+      zoneBanner4: 'ZONE 4 - GOLD DRIVER',
+      zoneBanner5: 'ZONE 5 - UNKO CONE',
+      zoneBanner6: 'ZONE 6 - MINESWEEPER',
+      zoneBanner7: 'ZONE 7 - EVOLUTION',
+      zoneBanner8: 'ZONE 8 - BLACK REVERSI',
       bossWarning: '⚠ BOSS ⚠',
       shareText: function (score, dist) { return 'I scored ' + score + ' pts and ran ' + dist + 'm in Surreal Dash! 💩💨 #SurrealGames'; },
     }
@@ -131,90 +143,151 @@
   var DESIGN_W = 500;
   var DESIGN_H = 700;
   var GROUND_H = 80;
-  var GRAVITY = 2200;
-  var JUMP_VEL = -700;
+  var GRAVITY = 2000;
+  var JUMP_VEL = -720;
   var MAX_JUMPS = 2;
-  var BASE_SPEED = 250;
-  var SPEED_INCREASE = 4;
-  var MAX_SPEED = 750;
+  var BASE_SPEED = 210;
+  var SPEED_INCREASE = 1.5;
+  var MAX_SPEED = 430;
   var PLAYER_SIZE = 40;
-  var OBSTACLE_INTERVAL_MIN = 0.8;
-  var OBSTACLE_INTERVAL_MAX = 2.0;
+  var OBSTACLE_INTERVAL_MIN = 1.6;
+  var OBSTACLE_INTERVAL_MAX = 3.0;
   var STAR_INTERVAL_MIN = 1.5;
-  var STAR_INTERVAL_MAX = 3.5;
-  var POWERUP_INTERVAL_MIN = 8;
-  var POWERUP_INTERVAL_MAX = 18;
+  var STAR_INTERVAL_MAX = 3.0;
+  var POWERUP_INTERVAL_MIN = 7;
+  var POWERUP_INTERVAL_MAX = 14;
 
   // ===== ゾーン定義 =====
+  // 各ゾーンは他のゲーム世界がテーマ（BGMもそのゲームのテーマ曲を使用）
   var ZONES = [
     {
+      // ZONE 1 - かわいい部屋からの脱出
       id: 1, nameKey: 'zone1', bannerKey: 'zoneBanner1',
-      distStart: 0, distEnd: 1000,
-      bgTop: '#0d0221', bgBot: '#1a0a3e',
-      groundColor: '#1a0a2e', groundLine: '#ff6ec7',
-      enemies: ['crab', 'cactus'],
-      bgm: 'action',
-      parallaxColors: ['rgba(255,255,255,0.3)', 'rgba(160,100,255,0.2)']
+      distStart: 0, distEnd: 2200,
+      bgTop: '#2a0a1a', bgBot: '#4a1a2e',
+      groundColor: '#2a0a1a', groundLine: '#ff9ec7',
+      enemies: ['door', 'ribbon', 'heart'],
+      bgm: 'cute',
+      parallaxColors: ['rgba(255,200,220,0.25)', 'rgba(255,105,180,0.15)']
     },
     {
+      // ZONE 2 - かにかにパニック！
       id: 2, nameKey: 'zone2', bannerKey: 'zoneBanner2',
-      distStart: 1000, distEnd: 3000,
-      bgTop: '#001a33', bgBot: '#003366',
-      groundColor: '#001122', groundLine: '#00aaff',
-      enemies: ['crab', 'pufferfish', 'shark'],
-      bgm: 'cosmic',
-      parallaxColors: ['rgba(0,150,255,0.2)', 'rgba(0,255,200,0.15)']
+      distStart: 2200, distEnd: 4600,
+      bgTop: '#2a0014', bgBot: '#4a1028',
+      groundColor: '#2a0a14', groundLine: '#ff4488',
+      enemies: ['crab', 'punch', 'anger'],
+      bgm: 'pop',
+      parallaxColors: ['rgba(255,105,180,0.25)', 'rgba(255,50,100,0.15)']
     },
     {
+      // ZONE 3 - 経営分析ゲーム
       id: 3, nameKey: 'zone3', bannerKey: 'zoneBanner3',
-      distStart: 3000, distEnd: 6000,
-      bgTop: '#3d1c00', bgBot: '#cc6600',
-      groundColor: '#5c3000', groundLine: '#ffaa00',
-      enemies: ['cactus', 'scorpion', 'camel'],
-      bgm: 'march',
-      parallaxColors: ['rgba(255,180,50,0.2)', 'rgba(255,100,0,0.15)']
+      distStart: 4600, distEnd: 7200,
+      bgTop: '#2a1a00', bgBot: '#4a3010',
+      groundColor: '#2a1a00', groundLine: '#ffc040',
+      enemies: ['chart', 'money', 'briefcase'],
+      bgm: 'sparkle',
+      parallaxColors: ['rgba(255,200,80,0.22)', 'rgba(255,160,0,0.15)']
     },
     {
+      // ZONE 4 - 黄金の金色ドライバー
       id: 4, nameKey: 'zone4', bannerKey: 'zoneBanner4',
-      distStart: 6000, distEnd: 10000,
-      bgTop: '#0a0a2e', bgBot: '#1a0a4e',
-      groundColor: '#0a0a1e', groundLine: '#ff00ff',
-      enemies: ['robot', 'lightning', 'redorb'],
-      bgm: 'cyber',
-      parallaxColors: ['rgba(255,0,255,0.2)', 'rgba(0,255,255,0.15)']
+      distStart: 7200, distEnd: 10000,
+      bgTop: '#2a1500', bgBot: '#4a2800',
+      groundColor: '#2a1500', groundLine: '#ffaa00',
+      enemies: ['car', 'gear', 'trophy'],
+      bgm: 'race',
+      parallaxColors: ['rgba(255,180,50,0.25)', 'rgba(255,100,0,0.15)']
     },
     {
+      // ZONE 5 - うんコーンキャッチャー
       id: 5, nameKey: 'zone5', bannerKey: 'zoneBanner5',
-      distStart: 10000, distEnd: Infinity,
-      bgTop: '#220022', bgBot: '#002222',
-      groundColor: '#111111', groundLine: '#ffffff',
-      enemies: ['crab', 'pufferfish', 'shark', 'cactus', 'scorpion', 'camel', 'robot', 'lightning', 'redorb'],
-      bgm: 'gameshow',
-      parallaxColors: ['rgba(255,0,0,0.2)', 'rgba(0,255,0,0.15)', 'rgba(0,0,255,0.2)']
+      distStart: 10000, distEnd: 13000,
+      bgTop: '#1a0e08', bgBot: '#3a1c10',
+      groundColor: '#1a0e08', groundLine: '#a88060',
+      enemies: ['cone', 'brownblock', 'sandwich'],
+      bgm: 'march',
+      parallaxColors: ['rgba(160,110,80,0.25)', 'rgba(120,80,50,0.15)']
+    },
+    {
+      // ZONE 6 - かいだんマインスイーパー
+      id: 6, nameKey: 'zone6', bannerKey: 'zoneBanner6',
+      distStart: 13000, distEnd: 16200,
+      bgTop: '#0a0e12', bgBot: '#1a1e28',
+      groundColor: '#0a0e12', groundLine: '#8090a0',
+      enemies: ['bomb', 'ghost', 'skull'],
+      bgm: 'ominous',
+      parallaxColors: ['rgba(150,170,190,0.18)', 'rgba(100,120,140,0.15)']
+    },
+    {
+      // ZONE 7 - シュール進化論
+      id: 7, nameKey: 'zone7', bannerKey: 'zoneBanner7',
+      distStart: 16200, distEnd: 19600,
+      bgTop: '#2a2200', bgBot: '#4a3a10',
+      groundColor: '#2a2200', groundLine: '#ffe060',
+      enemies: ['egg', 'chick', 'bigbird'],
+      bgm: 'retro',
+      parallaxColors: ['rgba(255,240,120,0.22)', 'rgba(255,200,50,0.15)']
+    },
+    {
+      // ZONE 8 - 漆黒のリバーシ
+      id: 8, nameKey: 'zone8', bannerKey: 'zoneBanner8',
+      distStart: 19600, distEnd: Infinity,
+      bgTop: '#1a0020', bgBot: '#2a0038',
+      groundColor: '#0a0010', groundLine: '#b060ff',
+      enemies: ['blackdisc', 'whitedisc', 'crystal'],
+      bgm: 'mystery',
+      parallaxColors: ['rgba(180,100,255,0.25)', 'rgba(200,200,200,0.15)']
     }
   ];
 
-  // 敵の絵文字マッピング
+  // 敵の絵文字マッピング（各ゲームのキャラクター）
   var ENEMY_DEFS = {
-    crab:       { emoji: '🦀', w: 36, h: 36, ground: true },
-    cactus:     { emoji: '🌵', w: 36, h: 48, ground: true },
-    bird:       { emoji: '🦅', w: 36, h: 36, ground: false },
-    pufferfish: { emoji: '🐡', w: 36, h: 36, ground: true },
-    shark:      { emoji: '🦈', w: 44, h: 40, ground: false },
-    scorpion:   { emoji: '🦂', w: 36, h: 36, ground: true },
-    camel:      { emoji: '🐫', w: 44, h: 44, ground: true },
-    robot:      { emoji: '🤖', w: 40, h: 40, ground: true },
-    lightning:  { emoji: '⚡', w: 32, h: 40, ground: false },
-    redorb:     { emoji: '🔴', w: 36, h: 36, ground: false }
+    // Zone 1 - かわいい部屋からの脱出
+    door:       { emoji: '🚪', w: 40, h: 50, ground: true },
+    ribbon:     { emoji: '🎀', w: 34, h: 34, ground: false },
+    heart:      { emoji: '💖', w: 34, h: 34, ground: false },
+    // Zone 2 - かにかに
+    crab:       { emoji: '🦀', w: 38, h: 36, ground: true },
+    punch:      { emoji: '👊', w: 38, h: 38, ground: false },
+    anger:      { emoji: '💢', w: 32, h: 32, ground: false },
+    // Zone 3 - 経営分析
+    chart:      { emoji: '📊', w: 38, h: 40, ground: true },
+    money:      { emoji: '💴', w: 38, h: 34, ground: false },
+    briefcase:  { emoji: '💼', w: 40, h: 36, ground: true },
+    // Zone 4 - 黄金ドライバー
+    car:        { emoji: '🚗', w: 44, h: 36, ground: true },
+    gear:       { emoji: '⚙', w: 34, h: 34, ground: false },
+    trophy:     { emoji: '🏆', w: 36, h: 40, ground: true },
+    // Zone 5 - うんコーン
+    cone:       { emoji: '🍦', w: 34, h: 44, ground: true },
+    brownblock: { emoji: '🟫', w: 36, h: 36, ground: true },
+    sandwich:   { emoji: '🥪', w: 38, h: 34, ground: false },
+    // Zone 6 - マインスイーパー
+    bomb:       { emoji: '💣', w: 36, h: 36, ground: true },
+    ghost:      { emoji: '👻', w: 36, h: 38, ground: false },
+    skull:      { emoji: '💀', w: 36, h: 36, ground: false },
+    // Zone 7 - シュール進化論
+    egg:        { emoji: '🥚', w: 32, h: 38, ground: true },
+    chick:      { emoji: '🐣', w: 34, h: 34, ground: true },
+    bigbird:    { emoji: '🐥', w: 34, h: 34, ground: false },
+    // Zone 8 - 漆黒のリバーシ
+    blackdisc:  { emoji: '⚫', w: 36, h: 36, ground: true },
+    whitedisc:  { emoji: '⚪', w: 36, h: 36, ground: false },
+    crystal:    { emoji: '🔮', w: 36, h: 36, ground: false }
   };
 
   // ボス定義（各ゾーン末尾付近で出現）
   var BOSS_DEFS = [
-    { emoji: '🦀', w: 120, h: 100, type: 'duckuner', zone: 1 },  // 巨大蟹：下をくぐる
-    { emoji: '🦈', w: 140, h: 100, type: 'jumper', zone: 2 },    // 巨大鮫：ジャンプで避ける
-    { emoji: '🐫', w: 130, h: 110, type: 'duckuner', zone: 3 },  // 巨大ラクダ：下をくぐる
-    { emoji: '🤖', w: 120, h: 120, type: 'jumper', zone: 4 },    // 巨大ロボ：ジャンプ
-    { emoji: '👾', w: 150, h: 130, type: 'jumper', zone: 5 }     // カオスボス
+    { emoji: '🔑', w: 120, h: 100, type: 'jumper' },     // Zone 1 - 巨大な鍵
+    { emoji: '🦀', w: 130, h: 100, type: 'jumper' },     // Zone 2 - 巨大蟹
+    { emoji: '📈', w: 130, h: 110, type: 'jumper' },     // Zone 3 - 巨大チャート
+    { emoji: '🚗', w: 140, h: 100, type: 'jumper' },     // Zone 4 - 巨大車
+    { emoji: '🍦', w: 110, h: 130, type: 'jumper' },     // Zone 5 - 巨大コーン
+    { emoji: '💣', w: 130, h: 120, type: 'duckuner' },   // Zone 6 - 浮遊爆弾
+    { emoji: '🐓', w: 130, h: 120, type: 'jumper' },     // Zone 7 - 巨大鶏
+    { emoji: '🔮', w: 140, h: 130, type: 'duckuner' }    // Zone 8 - 浮遊水晶玉
   ];
 
   // パワーアップ定義
@@ -386,7 +459,7 @@
 
   // ===== ボス =====
   function spawnBoss(zoneIndex) {
-    var def = BOSS_DEFS[zoneIndex] || BOSS_DEFS[4];
+    var def = BOSS_DEFS[zoneIndex] || BOSS_DEFS[BOSS_DEFS.length - 1];
     var boss = {
       emoji: def.emoji,
       w: def.w,
@@ -604,32 +677,19 @@
     var zone = getCurrentZone();
 
     // 背景グラデーション
-    if (zone.id === 5) {
-      // ゾーン5：虹色グラデーション
-      state.rainbowHue = (state.rainbowHue + dt * 30) % 360;
-      var h1 = state.rainbowHue;
-      var h2 = (state.rainbowHue + 60) % 360;
-      var h3 = (state.rainbowHue + 120) % 360;
-      var grad = ctx.createLinearGradient(0, 0, DESIGN_W, DESIGN_H);
-      grad.addColorStop(0, 'hsl(' + h1 + ',70%,15%)');
-      grad.addColorStop(0.5, 'hsl(' + h2 + ',70%,20%)');
-      grad.addColorStop(1, 'hsl(' + h3 + ',70%,15%)');
-      ctx.fillStyle = grad;
-    } else {
-      var bgTop = zone.bgTop;
-      var bgBot = zone.bgBot;
+    var bgTop = zone.bgTop;
+    var bgBot = zone.bgBot;
 
-      // ゾーン遷移中のフェード
-      if (state.bgFade > 0 && state.prevZoneBg) {
-        bgTop = lerpColor(state.prevZoneBg.bgTop, zone.bgTop, 1 - state.bgFade);
-        bgBot = lerpColor(state.prevZoneBg.bgBot, zone.bgBot, 1 - state.bgFade);
-      }
-
-      var grad = ctx.createLinearGradient(0, 0, 0, DESIGN_H);
-      grad.addColorStop(0, bgTop);
-      grad.addColorStop(1, bgBot);
-      ctx.fillStyle = grad;
+    // ゾーン遷移中のフェード
+    if (state.bgFade > 0 && state.prevZoneBg) {
+      bgTop = lerpColor(state.prevZoneBg.bgTop, zone.bgTop, 1 - state.bgFade);
+      bgBot = lerpColor(state.prevZoneBg.bgBot, zone.bgBot, 1 - state.bgFade);
     }
+
+    var grad = ctx.createLinearGradient(0, 0, 0, DESIGN_H);
+    grad.addColorStop(0, bgTop);
+    grad.addColorStop(1, bgBot);
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, DESIGN_W, DESIGN_H);
 
     // 背景の星/泡/パーティクル（ゾーン毎）
@@ -809,50 +869,16 @@
   }
 
   function drawBgElements(zone) {
-    if (zone.id === 2) {
-      // 海底：泡
-      for (var i = 0; i < state.bgStars.length; i++) {
-        var s = state.bgStars[i];
-        var a = s.alpha * 0.5;
-        ctx.strokeStyle = 'rgba(100, 200, 255, ' + a + ')';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y + Math.sin(state.elapsedTime * 0.5 + i) * 20, s.size * 2, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-    } else if (zone.id === 4) {
-      // サイバー：グリッドライン
-      ctx.strokeStyle = 'rgba(255,0,255,0.08)';
-      ctx.lineWidth = 1;
-      var gridSpacing = 50;
-      var gridOff = (state.bgOffset * 0.5) % gridSpacing;
-      for (var x = -gridOff; x < DESIGN_W + gridSpacing; x += gridSpacing) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, state.groundY);
-        ctx.stroke();
-      }
-      for (var y = 0; y < state.groundY; y += gridSpacing) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(DESIGN_W, y);
-        ctx.stroke();
-      }
-      // ネオンフラッシュ
-      if (Math.sin(state.elapsedTime * 8) > 0.9) {
-        ctx.fillStyle = 'rgba(255,0,255,0.03)';
-        ctx.fillRect(0, 0, DESIGN_W, DESIGN_H);
-      }
-    } else {
-      // 通常：きらきら星
-      for (var i = 0; i < state.bgStars.length; i++) {
-        var s = state.bgStars[i];
-        var a = s.alpha * (0.5 + 0.5 * Math.sin(state.elapsedTime * s.twinkleSpeed));
-        ctx.fillStyle = 'rgba(255, 255, 255, ' + a + ')';
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    // きらきら星（ゾーンのgroundLine色でテーマ感を演出）
+    var lineCol = zone.groundLine || '#ffffff';
+    var rgb = hexToRgb(lineCol);
+    for (var i = 0; i < state.bgStars.length; i++) {
+      var s = state.bgStars[i];
+      var a = s.alpha * (0.5 + 0.5 * Math.sin(state.elapsedTime * s.twinkleSpeed));
+      ctx.fillStyle = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + a + ')';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
 
@@ -1332,10 +1358,10 @@
 
     if (GameManager) GameManager.onGameStart();
 
-    // 初期BGM
+    // 初期BGM（Zone 1）
     try {
       if (window.SurrealGames && window.SurrealGames.SoundSystem) {
-        window.SurrealGames.SoundSystem.playBgm('action');
+        window.SurrealGames.SoundSystem.playBgm(ZONES[0].bgm);
       }
     } catch (e) { /* ignore */ }
 
