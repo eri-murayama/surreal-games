@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>たましいつなぎ - シュールゲームス</title>
+  <!-- OGP -->
+  <meta property="og:title" content="たましいつなぎ | シュールゲームス">
+  <meta property="og:description" content="同じ顔のたましい同士を線でつなぐ、やさしいパズルゲーム。交差はNG。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/soul-connect/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+  <div id="game-wrapper" data-sg-scale="400x680">
+
+    <!-- ===== タイトル画面 ===== -->
+    <div id="title-screen" class="screen active">
+      <div class="title-icon">👻</div>
+      <h1 class="title-main" data-i18n="title">たましいつなぎ</h1>
+      <p class="title-sub" data-i18n="subtitle">〜さまよえる顔を、おうちへ〜</p>
+      <div class="title-rules">
+        <p data-i18n="rule1">同じ顔のたましいを線でつなごう</p>
+        <p data-i18n="rule2">線は交差できない</p>
+        <p data-i18n="rule3">ぜんぶのマスを通せたら完璧！</p>
+      </div>
+      <button id="start-btn" class="btn-primary" data-i18n="start">はじめる</button>
+    </div>
+
+    <!-- ===== プレイ画面 ===== -->
+    <div id="play-screen" class="screen">
+      <div class="hud">
+        <div class="hud-item">
+          <span class="hud-label" data-i18n="level">レベル</span>
+          <span id="level-display" class="hud-value">1</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label" data-i18n="connected">つながり</span>
+          <span id="progress-display" class="hud-value">0/0</span>
+        </div>
+      </div>
+
+      <div id="grid-wrap">
+        <div id="grid"></div>
+      </div>
+
+      <div class="controls">
+        <button id="reset-btn" class="btn-ctrl" data-i18n="reset">リセット</button>
+        <button id="hint-btn" class="btn-ctrl" data-i18n="hint">ヒント</button>
+      </div>
+    </div>
+
+    <!-- ===== クリア画面 ===== -->
+    <div id="clear-screen" class="screen">
+      <div class="clear-icon">✨</div>
+      <h2 class="clear-title" data-i18n="clearTitle">クリア！</h2>
+      <div id="clear-badge" class="clear-badge"></div>
+      <p id="clear-message" class="clear-message"></p>
+      <div class="clear-buttons">
+        <button id="next-btn" class="btn-primary" data-i18n="next">つぎへ</button>
+        <button id="replay-btn" class="btn-ctrl" data-i18n="replay">やり直し</button>
+      </div>
+    </div>
+
+    <!-- ===== 全クリア画面 ===== -->
+    <div id="ending-screen" class="screen">
+      <div class="clear-icon">🏆</div>
+      <h2 class="clear-title" data-i18n="endingTitle">全ステージクリア！</h2>
+      <p id="ending-message" class="clear-message" data-i18n="endingMessage">すべてのたましいを家に帰しました。</p>
+      <div class="clear-buttons">
+        <button id="ending-replay-btn" class="btn-primary" data-i18n="replayAll">もう一度</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+  <script>
+    SurrealGames.init('soul-connect');
+  </script>
+</body>
+</html>
