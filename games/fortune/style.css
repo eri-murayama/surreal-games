@@ -355,6 +355,73 @@ html, body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@media (min-width: 700px) {
+  #title-screen.active,
+  #question-screen.active,
+  #result-screen.active {
+    justify-content: flex-start;
+    padding-top: clamp(92px, 11vh, 132px);
+  }
+
+  .title-container {
+    width: min(100%, 680px);
+    padding: 2.5rem;
+  }
+
+  .title-icon,
+  .result-icon {
+    font-size: 92px;
+  }
+
+  .title-text {
+    font-size: clamp(2.4rem, 5.6vw, 3.4rem);
+  }
+
+  .title-sub {
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .title-desc {
+    max-width: 30ch;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1rem;
+  }
+
+  .btn-main {
+    padding: 18px 56px;
+    font-size: 1.18rem;
+  }
+
+  .question-container,
+  .result-container {
+    width: min(100%, 640px);
+    max-width: 640px;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .question-text {
+    font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+    min-height: 2.6em;
+  }
+
+  .choices {
+    gap: 12px;
+  }
+
+  .choice-btn {
+    padding: 16px 24px;
+    font-size: 1rem;
+  }
+
+  .result-desc {
+    max-width: 52ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 480px) {
   .title-icon { font-size: 60px; }

@@ -24,6 +24,10 @@
   --sg-radius-md: 12px;
   --sg-radius-lg: 16px;
   --sg-radius-pill: 999px;
+  --sg-safe-top: env(safe-area-inset-top, 0px);
+  --sg-safe-right: env(safe-area-inset-right, 0px);
+  --sg-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sg-safe-left: env(safe-area-inset-left, 0px);
 
   /* ブレークポイント（参照用: CSS変数はmedia queryに使えないためコメント）
      スマホ:   480px 以下
@@ -63,8 +67,8 @@ html, body {
 /* --- サウンドトグル --- */
 .sg-sound-toggle {
   position: fixed;
-  bottom: 16px;
-  left: 16px;
+  bottom: calc(16px + var(--sg-safe-bottom));
+  left: calc(16px + var(--sg-safe-left));
   z-index: 5000;
   width: 40px;
   height: 40px;
@@ -149,8 +153,8 @@ html, body {
 /* --- 実績通知 --- */
 .sg-achievement-notification {
   position: fixed;
-  top: 60px;
-  right: -320px;
+  top: calc(60px + var(--sg-safe-top));
+  right: calc(-320px - var(--sg-safe-right));
   z-index: 6000;
   display: flex;
   align-items: center;
@@ -166,10 +170,10 @@ html, body {
   font-family: 'Zen Maru Gothic', 'M PLUS Rounded 1c', sans-serif;
 }
 .sg-achievement-notification.sg-achievement-show {
-  right: 16px;
+  right: calc(16px + var(--sg-safe-right));
 }
 .sg-achievement-notification.sg-achievement-hide {
-  right: -320px;
+  right: calc(-320px - var(--sg-safe-right));
   transition: right 0.4s ease-in;
 }
 .sg-achievement-icon {
@@ -267,6 +271,13 @@ html, body {
   box-sizing: border-box;
 }
 
+.back-to-top-link.sg-safe-back-link {
+  margin-top: var(--sg-back-safe-top, 0px);
+  margin-right: var(--sg-back-safe-right, 0px);
+  margin-bottom: var(--sg-back-safe-bottom, 0px);
+  margin-left: var(--sg-back-safe-left, 0px);
+}
+
 /* --- レスポンシブ（スマホ） --- */
 @media (max-width: 480px) {
   .sg-recommend {
@@ -289,8 +300,8 @@ html, body {
 /* --- Xシェアボタン（固定・右下） --- */
 .sg-share-btn {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
+  bottom: calc(16px + var(--sg-safe-bottom));
+  right: calc(16px + var(--sg-safe-right));
   z-index: 5000;
   width: 40px;
   height: 40px;
@@ -316,8 +327,8 @@ html, body {
 /* --- 言語切り替え（固定・右上） --- */
 .sg-lang-toggle {
   position: fixed;
-  top: 10px;
-  right: 10px;
+  top: calc(10px + var(--sg-safe-top));
+  right: calc(10px + var(--sg-safe-right));
   z-index: 5000;
   display: flex;
   gap: 4px;

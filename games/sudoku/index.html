@@ -37,6 +37,7 @@ html, body {
   align-items: center;
   justify-content: center;
   position: relative;
+  padding-bottom: 60px;
 }
 
 /* --- Header --- */
@@ -278,6 +279,42 @@ html, body {
 }
 
 /* --- Responsive --- */
+@media (min-width: 700px) {
+  #app {
+    justify-content: flex-start;
+    padding-top: clamp(72px, 10vh, 112px);
+    padding-bottom: 28px;
+  }
+
+  .header,
+  .info-bar,
+  .controls {
+    max-width: 500px;
+  }
+
+  .difficulty-bar {
+    padding: 10px 0 6px;
+  }
+
+  .diff-btn {
+    padding: 7px 18px;
+    font-size: 14px;
+  }
+
+  .numpad {
+    gap: 6px;
+  }
+
+  .numpad button {
+    border-radius: 12px;
+  }
+
+  .action-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
 @media (max-height: 700px) {
   .header .title { font-size: 17px; }
   .cell { font-size: 17px; }
@@ -375,10 +412,11 @@ html, body {
   function resizeBoard() {
     const vh = window.innerHeight;
     const vw = window.innerWidth;
-    const maxW = Math.min(vw - 16, 400);
-    // Reserve space for header(~32) + info(~28) + diff(~36) + controls(~120) + margins
-    const availH = vh - 240;
-    const size = Math.min(maxW, Math.max(availH, 200));
+    const wideLayout = vw >= 700;
+    const maxW = Math.min(vw - (wideLayout ? 48 : 16), wideLayout ? 500 : 400);
+    // Reserve space for header/info/difficulty/controls and give large screens more board room
+    const availH = vh - (wideLayout ? 220 : 240);
+    const size = Math.min(maxW, Math.max(availH, wideLayout ? 260 : 200));
     boardEl.style.width = size + 'px';
     boardEl.style.height = size + 'px';
     // cell font sizing

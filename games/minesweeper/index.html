@@ -537,6 +537,40 @@ h1 {
 }
 
 /* オーバーレイをスクロール可能に */
+@media (min-width: 700px) {
+  body {
+    justify-content: flex-start;
+    padding-top: clamp(40px, 7vh, 76px);
+  }
+
+  h1 {
+    font-size: clamp(18px, 2.2vw, 28px);
+    margin-bottom: 8px;
+  }
+
+  .difficulty-bar {
+    margin-bottom: 8px;
+  }
+
+  .status-bar {
+    width: min(92vw, 560px);
+    padding: 6px 12px;
+  }
+
+  .board-container {
+    flex: 0 0 auto;
+  }
+
+  .result-recommend {
+    max-width: 400px;
+  }
+
+  .audio-controls {
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    left: calc(14px + env(safe-area-inset-left, 0px));
+  }
+}
+
 .victory-overlay, .gameover-overlay {
   overflow-y: auto;
   padding: 20px 10px;
@@ -580,6 +614,13 @@ h1 {
 }
 .audio-btn .icon {
   font-size: 16px;
+}
+
+@media (min-width: 700px) {
+  .audio-controls {
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    left: calc(14px + env(safe-area-inset-left, 0px));
+  }
 }
 </style>
 <link rel="stylesheet" href="../common/game-common.css">
@@ -925,16 +966,20 @@ function renderBoard() {
   const diffH = document.querySelector('.difficulty-bar').offsetHeight;
   const hiH = document.querySelector('.highscore-bar').offsetHeight;
   const statusBarH = document.getElementById('statusBar').offsetHeight;
+  const bodyPadTop = parseFloat(getComputedStyle(document.body).paddingTop) || 0;
+  const audioControlsH = document.querySelector('.audio-controls')?.offsetHeight || 0;
   // h1のmargin-top(4px) + 各要素のmargin-bottom(3+3+4) + 下の余白(12px)
-  const statusH = h1H + diffH + hiH + statusBarH + 4 + 3 + 3 + 4 + 12;
-  const availH = vh - statusH;
-  const availW = vw * 0.96;
+  const headerH = h1H + diffH + hiH + statusBarH + 4 + 3 + 3 + 4 + 12 + bodyPadTop;
+  const footerReserve = audioControlsH + (vw >= 700 ? 28 : 18);
+  const availH = vh - headerH - footerReserve;
+  const wideLayout = vw >= 700;
+  const availW = wideLayout ? Math.min(vw * 0.9, 560) : vw * 0.96;
 
-  const cellFromH = Math.floor((availH - 10) / rows);
+  const cellFromH = Math.floor((availH - 12) / rows);
   const cellFromW = Math.floor((availW - 10) / cols);
   let cellSize = Math.min(cellFromH, cellFromW);
   cellSize = Math.max(cellSize, 12);
-  cellSize = Math.min(cellSize, 40);
+  cellSize = Math.min(cellSize, wideLayout ? 46 : 40);
 
   boardEl.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
   boardEl.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
@@ -962,7 +1007,7 @@ function renderBoard() {
   }
 
   const totalW = cols * (cellSize + 1) + 6;
-  document.getElementById('statusBar').style.width = Math.min(totalW, vw * 0.96) + 'px';
+  document.getElementById('statusBar').style.width = Math.min(totalW, availW) + 'px';
 }
 
 function onMouseDown(e) {

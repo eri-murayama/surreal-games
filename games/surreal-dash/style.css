@@ -251,6 +251,67 @@ body {
 }
 
 /* --- レスポンシブ --- */
+@media (min-width: 700px) {
+  .screen {
+    padding-inline: 20px;
+  }
+
+  #title-screen.active,
+  #result-screen.active {
+    justify-content: flex-start;
+    padding-top: clamp(88px, 11vh, 132px);
+  }
+
+  #game-screen.active {
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+
+  .title-container,
+  .result-container {
+    width: min(100%, 520px);
+  }
+
+  .title-icon {
+    font-size: 4.4rem;
+    margin-bottom: 14px;
+  }
+
+  .game-title {
+    font-size: 2.6rem;
+  }
+
+  .title-sub {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .controls-help {
+    padding: 16px 18px;
+    font-size: 0.86rem;
+  }
+
+  #game-canvas {
+    max-width: 560px;
+  }
+
+  .game-hud {
+    gap: 16px;
+  }
+
+  .hud-item {
+    padding: 6px 14px;
+  }
+
+  .hud-value {
+    font-size: 1.1rem;
+  }
+
+  .result-stats {
+    padding: 20px 22px;
+  }
+}
+
 @media (max-width: 480px) {
   .game-title {
     font-size: 1.8rem;

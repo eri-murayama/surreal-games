@@ -39,6 +39,7 @@ body {
   min-height: 100dvh;
   color: #fff;
   position: relative;
+  padding-bottom: 60px;
 }
 
 .back-link {
@@ -213,6 +214,25 @@ h1 {
   transition: transform 0.2s;
 }
 .clear-modal button:hover { transform: scale(1.05); }
+
+@media (min-width: 700px) {
+  body {
+    justify-content: flex-start;
+    padding-top: clamp(72px, 11vh, 104px);
+    padding-bottom: 24px;
+  }
+
+  .controls {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .info-bar {
+    gap: 28px;
+    margin-bottom: 12px;
+    font-size: clamp(14px, 2vw, 18px);
+  }
+}
 </style>
 <link rel="stylesheet" href="../common/game-common.css">
 </head>
@@ -295,9 +315,13 @@ h1 {
   function calcSizes() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    // Reserve space for header/controls/info
-    const available = Math.min(vw - 24, vh - 180);
-    const boardPx = Math.min(available, 420);
+    const wideLayout = vw >= 700;
+    // Reserve space for header/controls/info while allowing tablets and desktops to breathe.
+    const horizontalPadding = wideLayout ? 72 : 24;
+    const verticalReserve = wideLayout ? 230 : 180;
+    const available = Math.min(vw - horizontalPadding, vh - verticalReserve);
+    const maxBoard = wideLayout ? Math.min(540, Math.floor(vw * 0.42)) : 420;
+    const boardPx = Math.min(available, maxBoard);
     const gap = Math.max(3, Math.round(boardPx * 0.015));
     const tilePx = Math.floor((boardPx - gap * (gridSize + 1)) / gridSize);
     const actualBoard = tilePx * gridSize + gap * (gridSize + 1);

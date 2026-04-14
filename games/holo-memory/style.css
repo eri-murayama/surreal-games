@@ -1499,7 +1499,7 @@ body {
 /* 共通の音量・シェアボタンをディスクレイマーの上に逃がす */
 .sg-sound-toggle,
 .sg-share-btn {
-  bottom: calc(8px + 2.4em + 16px);
+  bottom: calc(8px + 2.4em + 16px + env(safe-area-inset-bottom, 0px));
 }
 
 /* ==============================

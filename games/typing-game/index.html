@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>シュールタイピング | シュールゲームス</title>
-<meta property="og:title" content="シュールタイピング | シュールゲームス">
-<meta property="og:description" content="シュールなお題をタイピング！何文字打てるかチャレンジ！">
+<title>繧ｷ繝･繝ｼ繝ｫ繧ｿ繧､繝斐Φ繧ｰ | 繧ｷ繝･繝ｼ繝ｫ繧ｲ繝ｼ繝繧ｹ</title>
+<meta property="og:title" content="繧ｷ繝･繝ｼ繝ｫ繧ｿ繧､繝斐Φ繧ｰ | 繧ｷ繝･繝ｼ繝ｫ繧ｲ繝ｼ繝繧ｹ">
+<meta property="og:description" content="縺九↓縺九↓縺ｨ荳邱偵↓繧ｿ繧､繝斐Φ繧ｰ・√°繧上＞縺上※繧ｷ繝･繝ｼ繝ｫ縺ｪ縺企｡後↓謖第姶・・>
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/games/typing-game/ogp.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -16,18 +16,13 @@
   gtag('js', new Date());
   gtag('config', 'G-K8QFB33PX7');
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../common/game-common.css">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
 body {
-  background:
-    radial-gradient(circle at 15% 20%, #fff4fa 0%, transparent 45%),
-    radial-gradient(circle at 85% 80%, #fef6e4 0%, transparent 45%),
-    linear-gradient(160deg, #ffd6e7 0%, #ffe6f3 40%, #e6f4ff 100%);
-  color: #5a3a4a;
-  font-family: 'M PLUS Rounded 1c', 'Zen Maru Gothic', sans-serif;
+  background: linear-gradient(135deg, #ffd6e8 0%, #ffe5f1 40%, #fff0f7 100%);
+  color: #6b3a56;
+  font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,606 +36,667 @@ body {
   position: relative;
 }
 
-/* ぷかぷか浮かぶ背景装飾 */
-.bg-deco {
+/* 縺ｵ繧上・繧剰レ譎ｯ繝上・繝・*/
+.bg-hearts {
   position: fixed;
+  inset: 0;
   pointer-events: none;
-  font-size: 1.8rem;
-  opacity: 0.55;
-  animation: float-deco 6s ease-in-out infinite;
-  filter: drop-shadow(0 2px 4px rgba(255, 150, 200, 0.3));
+  overflow: hidden;
+  z-index: 0;
 }
-.bg-deco.d1 { top: 8%; left: 8%; animation-delay: 0s; }
-.bg-deco.d2 { top: 14%; right: 10%; animation-delay: 1.2s; font-size: 1.4rem; }
-.bg-deco.d3 { bottom: 18%; left: 6%; animation-delay: 2.4s; font-size: 1.6rem; }
-.bg-deco.d4 { bottom: 10%; right: 8%; animation-delay: 3.6s; }
-.bg-deco.d5 { top: 45%; left: 4%; animation-delay: 4.8s; font-size: 1.3rem; }
-.bg-deco.d6 { top: 50%; right: 5%; animation-delay: 0.6s; font-size: 1.3rem; }
-@keyframes float-deco {
-  0%, 100% { transform: translateY(0) rotate(-5deg); }
-  50% { transform: translateY(-14px) rotate(5deg); }
+.bg-heart {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0.35;
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+  0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.35; }
+  90%  { opacity: 0.35; }
+  100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
 }
 
-.screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; position: relative; z-index: 2; }
+.screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; position: relative; z-index: 1; width: 100%; }
 .screen.active { display: flex; }
 
-/* タイトル画面 */
+/* ===== 繧ｿ繧､繝医Ν ===== */
 #title-screen h1 {
-  font-size: clamp(1.9rem, 7.5vw, 3rem);
-  font-weight: 900;
-  color: #ff5c9c;
-  text-shadow:
-    2px 2px 0 #fff,
-    4px 4px 0 #ffc0d8,
-    6px 6px 18px rgba(255, 100, 160, 0.35);
+  font-size: clamp(1.9rem, 7.5vw, 2.9rem);
+  color: #e24a8a;
+  text-shadow: 0 3px 0 #fff, 0 5px 12px rgba(226,74,138,0.25);
   margin-bottom: 0.2em;
   letter-spacing: 0.02em;
-  animation: title-bounce 2.4s ease-in-out infinite;
+  animation: bounceIn 0.8s ease-out;
 }
-@keyframes title-bounce {
-  0%, 100% { transform: translateY(0) rotate(-1deg); }
-  50% { transform: translateY(-6px) rotate(1deg); }
+@keyframes bounceIn {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
 }
 #title-screen .subtitle {
-  font-size: clamp(0.9rem, 3.2vw, 1.15rem);
-  color: #a06080;
-  margin-bottom: 1.2em;
-  font-weight: 700;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  color: #a04777;
+  margin-bottom: 1em;
 }
 
-/* かにかにキャラクター（タイトル画面で大きく表示） */
-.kanikani-character {
-  width: clamp(140px, 36vw, 200px);
-  height: clamp(140px, 36vw, 200px);
-  margin: 0 auto 0.6em;
-  background-image: url('kanikani-typing.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+.kani-stage {
+  margin: 10px auto 20px;
+  width: clamp(140px, 40vw, 200px);
+  height: clamp(140px, 40vw, 200px);
   position: relative;
-  animation: kani-bounce 1.6s ease-in-out infinite;
+  animation: kaniIdle 2s ease-in-out infinite;
 }
-/* 画像がまだ無い場合のフォールバック絵文字 */
-.kanikani-character::after {
-  content: '🦀⌨️';
-  position: absolute;
-  inset: 0;
+@keyframes kaniIdle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.kani-stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.kani-fallback {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(3rem, 10vw, 4.8rem);
-  line-height: 1;
-  filter: drop-shadow(0 4px 8px rgba(255, 120, 170, 0.35));
-}
-/* 画像が読み込まれたらフォールバックを隠す */
-.kanikani-character.loaded::after { display: none; }
-
-@keyframes kani-bounce {
-  0%, 100% { transform: translateY(0) rotate(-3deg) scale(1); }
-  50% { transform: translateY(-8px) rotate(3deg) scale(1.03); }
+  font-size: clamp(5rem, 20vw, 8rem);
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(226,74,138,0.25), inset 0 -6px 0 #ffd6e8;
+  border: 4px solid #fff;
 }
 
 .start-btn {
   font-family: inherit;
   font-size: 1.25rem;
-  font-weight: 900;
-  padding: 0.85em 2.6em;
+  font-weight: 700;
+  padding: 0.85em 2.8em;
   border: none;
-  background: linear-gradient(180deg, #ff7cb0 0%, #ff4e90 100%);
+  background: linear-gradient(180deg, #ff8ab8 0%, #e24a8a 100%);
   color: #fff;
-  border-radius: 999px;
+  border-radius: 50px;
   cursor: pointer;
-  box-shadow:
-    0 6px 0 #c92d6a,
-    0 10px 20px rgba(255, 100, 160, 0.4);
-  transition: transform 0.15s, box-shadow 0.15s;
-  letter-spacing: 0.06em;
-  text-shadow: 0 2px 4px rgba(170, 40, 90, 0.35);
+  box-shadow: 0 6px 0 #c13470, 0 10px 20px rgba(226,74,138,0.3);
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
 }
-.start-btn:hover { transform: translateY(-2px); }
-.start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c92d6a, 0 4px 10px rgba(255, 100, 160, 0.3); }
+.start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #c13470, 0 14px 24px rgba(226,74,138,0.35); }
+.start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c13470, 0 6px 12px rgba(226,74,138,0.25); }
 
-/* ゲーム画面 */
-#game-screen { width: 100%; max-width: 620px; }
-
-/* 小さなかにかに（ゲーム画面用） */
-.kanikani-mini {
-  width: clamp(70px, 18vw, 96px);
-  height: clamp(70px, 18vw, 96px);
-  background-image: url('kanikani-typing.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  position: relative;
-  margin: 0 auto 4px;
-  animation: kani-type 0.5s ease-in-out infinite;
+/* ===== 繧ｲ繝ｼ繝逕ｻ髱｢ ===== */
+#game-screen { width: 100%; max-width: 620px; padding: 15px; }
+.game-kani {
+  width: clamp(70px, 18vw, 100px);
+  height: clamp(70px, 18vw, 100px);
+  margin: 0 auto 8px;
+  transition: transform 0.12s;
 }
-.kanikani-mini::after {
-  content: '🦀⌨️';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(1.8rem, 5vw, 2.4rem);
-  line-height: 1;
+.game-kani img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.game-kani.bounce { animation: kaniBounce 0.2s; }
+.game-kani.happy { animation: kaniHappy 0.5s; }
+@keyframes kaniBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-8px) scale(1.08); }
 }
-.kanikani-mini.loaded::after { display: none; }
-.kanikani-mini.cheer { animation: kani-cheer 0.5s ease-out; }
-@keyframes kani-type {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-3px) rotate(2deg); }
-}
-@keyframes kani-cheer {
-  0% { transform: scale(1) rotate(0); }
-  30% { transform: scale(1.2) rotate(-8deg); }
-  60% { transform: scale(1.15) rotate(8deg); }
-  100% { transform: scale(1) rotate(0); }
+@keyframes kaniHappy {
+  0%, 100% { transform: rotate(0) scale(1); }
+  25%      { transform: rotate(-10deg) scale(1.15); }
+  75%      { transform: rotate(10deg) scale(1.15); }
 }
 
 .timer-bar {
   width: 100%;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 999px;
+  height: 14px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 10px;
   margin-bottom: 12px;
   overflow: hidden;
-  border: 2px solid #ffb6d1;
-  box-shadow: inset 0 2px 4px rgba(255, 150, 190, 0.25);
+  box-shadow: inset 0 2px 4px rgba(226,74,138,0.15);
+  border: 2px solid #fff;
 }
 .timer-bar-inner {
   height: 100%;
-  background: linear-gradient(90deg, #ffd86b, #ff7cb0, #b47cff);
-  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd166 0%, #ff8ab8 50%, #e24a8a 100%);
+  border-radius: 8px;
   transition: width 0.1s linear;
-  box-shadow: 0 0 10px rgba(255, 180, 210, 0.7);
+  box-shadow: 0 0 10px rgba(255,138,184,0.5);
 }
-
 .stats-row {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 10px;
-  font-size: 1rem;
-  font-weight: 900;
-  color: #7a2a52;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #a04777;
 }
-.stats-row span {
-  background: rgba(255, 255, 255, 0.85);
-  padding: 4px 14px;
-  border-radius: 999px;
-  border: 2px solid #ffb6d1;
-  box-shadow: 0 2px 0 #ffb6d1;
-}
+.stats-row span { background: rgba(255,255,255,0.6); padding: 4px 14px; border-radius: 20px; }
 
 .word-card {
-  background: rgba(255, 255, 255, 0.92);
-  border: 3px solid #ffb6d1;
-  border-radius: 24px;
-  padding: 18px 16px 14px;
-  box-shadow:
-    0 8px 0 #ffb6d1,
-    0 14px 32px rgba(255, 140, 180, 0.35);
-  width: 100%;
-  margin-bottom: 14px;
+  background: #fff;
+  border-radius: 22px;
+  padding: 20px 16px 18px;
+  box-shadow: 0 8px 0 #ffc0d8, 0 12px 28px rgba(226,74,138,0.18);
+  border: 3px solid #fff;
   position: relative;
 }
 .word-card::before {
-  content: '♡';
+  content: '笙｡';
   position: absolute;
-  top: -14px;
-  left: 16px;
-  background: #ff7cb0;
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  box-shadow: 0 2px 6px rgba(255, 100, 160, 0.4);
+  top: -12px;
+  left: 20px;
+  font-size: 1.6rem;
+  color: #ff8ab8;
+  text-shadow: 0 2px 0 #fff;
 }
 .word-card::after {
-  content: '♡';
+  content: '笙｡';
   position: absolute;
-  top: -14px;
-  right: 16px;
-  background: #b47cff;
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  box-shadow: 0 2px 6px rgba(180, 120, 255, 0.4);
+  top: -10px;
+  right: 20px;
+  font-size: 1.3rem;
+  color: #ffb3d1;
+  text-shadow: 0 2px 0 #fff;
 }
-
 .word-japanese {
-  font-size: clamp(1.2rem, 4.8vw, 1.8rem);
-  font-weight: 900;
+  font-size: clamp(1.15rem, 4.8vw, 1.8rem);
+  font-weight: 700;
   min-height: 1.4em;
   margin-bottom: 10px;
   word-break: break-word;
   line-height: 1.4;
-  color: #7a2a52;
-  text-shadow: 1px 1px 0 #fff;
+  color: #6b3a56;
+  max-width: 100%;
+  transition: transform 0.15s;
+}
+.word-japanese.pulse { animation: wordPulse 0.3s; }
+@keyframes wordPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.03); }
 }
 .word-romaji {
-  font-family: 'Courier New', 'M PLUS Rounded 1c', monospace;
-  font-size: clamp(1.05rem, 4.2vw, 1.6rem);
-  font-weight: 900;
-  letter-spacing: 0.04em;
+  font-family: 'Courier New', 'Zen Maru Gothic', monospace;
+  font-size: clamp(1.05rem, 4vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
   min-height: 1.5em;
   word-break: break-all;
   line-height: 1.5;
+  max-width: 100%;
 }
-.word-romaji .correct { color: #ff4e90; }
-.word-romaji .current { color: #ff7a00; text-decoration: underline wavy #ffb84d; }
-.word-romaji .remaining { color: #b898ac; }
+.word-romaji .correct { color: #e24a8a; }
+.word-romaji .current {
+  color: #ff6ba0;
+  background: #ffe5f1;
+  padding: 0 2px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #ffb3d1;
+}
+.word-romaji .remaining { color: #c89fb5; }
 
 .input-area {
   font-family: 'Courier New', monospace;
   font-size: clamp(1rem, 3.5vw, 1.3rem);
   padding: 10px 18px;
-  width: 90%;
-  max-width: 400px;
-  border: 3px solid #ffb6d1;
-  background: rgba(255, 255, 255, 0.92);
-  color: #7a2a52;
-  border-radius: 16px;
-  text-align: right;
+  width: 96%;
+  max-width: 420px;
+  border: 3px solid #ffd6e8;
+  background: #fff7fb;
+  color: #e24a8a;
+  border-radius: 14px;
+  text-align: center;
   outline: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 700;
-  box-shadow: 0 4px 0 #ffb6d1;
+  margin-top: 4px;
 }
-.input-area:focus { border-color: #ff7cb0; box-shadow: 0 4px 0 #ff7cb0, 0 0 0 4px rgba(255, 124, 176, 0.2); }
+.input-area:focus { border-color: #ff8ab8; background: #fff; }
 
 .combo-display {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 900;
-  color: #ff4e90;
-  margin-top: 10px;
-  min-height: 1.6em;
-  text-shadow: 1px 1px 0 #fff, 2px 2px 0 #ffc0d8;
+  color: #e24a8a;
+  margin-top: 12px;
+  min-height: 1.5em;
+  text-shadow: 0 2px 0 #fff;
   transition: transform 0.15s;
 }
 
-/* リザルト画面 */
+/* ===== 邨先棡逕ｻ髱｢ ===== */
 #result-screen h2 {
-  font-size: clamp(1.5rem, 5vw, 2.2rem);
-  color: #ff4e90;
-  font-weight: 900;
+  font-size: clamp(1.5rem, 5.5vw, 2.1rem);
   margin-bottom: 0.3em;
-  text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffc0d8;
+  color: #e24a8a;
+  text-shadow: 0 2px 0 #fff;
 }
 .result-score {
-  font-size: clamp(3rem, 11vw, 5rem);
+  font-size: clamp(3rem, 10vw, 4.5rem);
   font-weight: 900;
-  color: #ff4e90;
-  text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffc0d8, 6px 6px 18px rgba(255, 100, 160, 0.4);
+  color: #e24a8a;
+  text-shadow: 0 4px 0 #fff, 0 6px 14px rgba(226,74,138,0.3);
   line-height: 1;
+  margin: 0.1em 0;
 }
-.result-label { color: #a06080; margin-bottom: 0.5em; font-weight: 700; }
+.result-label { color: #a04777; margin-bottom: 0.5em; font-weight: 700; }
 .result-stats {
   display: flex;
-  gap: 16px;
-  margin: 1em 0 1.2em;
+  gap: 24px;
+  margin: 1em 0 1.5em;
   font-size: 0.9rem;
-  color: #7a2a52;
-  font-weight: 700;
+  color: #a04777;
 }
 .result-stats div {
   text-align: center;
-  background: rgba(255, 255, 255, 0.85);
-  border: 2px solid #ffb6d1;
-  border-radius: 16px;
-  padding: 8px 14px;
-  box-shadow: 0 3px 0 #ffb6d1;
+  background: #fff;
+  padding: 10px 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 0 #ffc0d8;
+  min-width: 90px;
 }
 .result-stats .num {
   display: block;
   font-size: 1.6rem;
   font-weight: 900;
-  color: #ff4e90;
+  color: #e24a8a;
 }
 #result-screen button {
   font-family: inherit;
   font-size: 1rem;
-  font-weight: 900;
-  padding: 0.7em 2em;
+  font-weight: 700;
+  padding: 0.75em 2.2em;
   border: none;
-  background: linear-gradient(180deg, #ff7cb0 0%, #ff4e90 100%);
+  background: linear-gradient(180deg, #ff8ab8 0%, #e24a8a 100%);
   color: #fff;
-  border-radius: 999px;
+  border-radius: 50px;
   cursor: pointer;
   margin: 0.3em;
-  box-shadow: 0 4px 0 #c92d6a, 0 6px 14px rgba(255, 100, 160, 0.35);
-  transition: transform 0.15s, box-shadow 0.15s;
-  letter-spacing: 0.04em;
+  box-shadow: 0 5px 0 #c13470, 0 8px 16px rgba(226,74,138,0.25);
+  transition: all 0.15s;
 }
-#result-screen button:hover { transform: translateY(-2px); }
-#result-screen button:active { transform: translateY(3px); box-shadow: 0 1px 0 #c92d6a, 0 3px 8px rgba(255, 100, 160, 0.3); }
+#result-screen button:active { transform: translateY(3px); box-shadow: 0 2px 0 #c13470, 0 4px 8px rgba(226,74,138,0.2); }
 
 .back-to-top-link {
   position: fixed;
-  bottom: 10px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  color: #a06080;
-  font-size: 0.8rem;
+  color: rgba(107,58,86,0.55);
+  font-size: 0.75rem;
   text-decoration: none;
   z-index: 100;
   font-weight: 700;
 }
 
-/* 浮かぶハート・星エフェクト */
-.float-pop {
-  position: fixed;
-  pointer-events: none;
-  font-size: 1.4rem;
-  z-index: 999;
-  animation: float-pop 1s ease-out forwards;
-  filter: drop-shadow(0 2px 4px rgba(255, 150, 200, 0.5));
-}
-@keyframes float-pop {
-  0% { transform: translate(-50%, 0) scale(0.5) rotate(0deg); opacity: 0; }
-  20% { opacity: 1; transform: translate(-50%, -10px) scale(1.2) rotate(-10deg); }
-  100% { transform: translate(-50%, -80px) scale(0.9) rotate(20deg); opacity: 0; }
-}
-
-/* キラキラバースト */
-.sparkle-burst {
+/* ===== 繧ｨ繝輔ぉ繧ｯ繝・===== */
+.fx-particle {
   position: fixed;
   pointer-events: none;
   font-size: 1.6rem;
+  z-index: 1000;
+  animation: fxFly 0.9s ease-out forwards;
+}
+@keyframes fxFly {
+  0%   { transform: translate(-50%, -50%) scale(0.4) rotate(0deg); opacity: 1; }
+  40%  { transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) scale(1.3) rotate(180deg); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--fx-dx) * 1.6), calc(-50% + var(--fx-dy) * 1.6 - 40px)) scale(0.6) rotate(360deg); opacity: 0; }
+}
+.fx-typed {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.1rem;
+  color: #ff8ab8;
   z-index: 999;
-  animation: sparkle-burst 0.9s ease-out forwards;
+  font-weight: 900;
+  animation: fxTyped 0.5s ease-out forwards;
 }
-@keyframes sparkle-burst {
-  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-  30% { opacity: 1; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.3); }
-  100% { transform: translate(calc(-50% + var(--dx) * 1.6), calc(-50% + var(--dy) * 1.6)) scale(0.6); opacity: 0; }
+@keyframes fxTyped {
+  0%   { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
+  100% { transform: translate(-50%, -140%) scale(1.1); opacity: 0; }
 }
-
-/* ワードカードをワンテンポ跳ねさせる */
-.word-card.clear-burst { animation: card-burst 0.45s ease-out; }
-@keyframes card-burst {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.06) rotate(-1deg); box-shadow: 0 10px 0 #ff7cb0, 0 20px 40px rgba(255, 100, 160, 0.5); }
-  100% { transform: scale(1); }
+.screen-shake {
+  animation: shake 0.2s ease-in-out;
 }
-
-.word-card.wrong-shake { animation: card-shake 0.3s ease-in-out; }
-@keyframes card-shake {
+@keyframes shake {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+@media (min-width: 700px) {
+  .screen {
+    padding-inline: 24px;
+  }
+
+  #title-screen,
+  #result-screen {
+    justify-content: flex-start;
+    padding-top: clamp(88px, 11vh, 132px);
+  }
+
+  #game-screen {
+    max-width: 680px;
+    justify-content: flex-start;
+    padding-top: clamp(72px, 10vh, 116px);
+  }
+
+  .kani-stage {
+    width: 220px;
+    height: 220px;
+    margin-bottom: 26px;
+  }
+
+  .start-btn {
+    font-size: 1.35rem;
+    padding: 0.9em 3.2em;
+  }
+
+  .game-kani {
+    width: 110px;
+    height: 110px;
+    margin-bottom: 12px;
+  }
+
+  .timer-bar,
+  .stats-row {
+    max-width: 520px;
+  }
+
+  .word-card {
+    width: min(100%, 520px);
+    margin-inline: auto;
+    padding: 26px 24px 22px;
+  }
+
+  .input-area {
+    max-width: 480px;
+    margin-top: 8px;
+  }
+
+  .result-stats {
+    gap: 32px;
+  }
 }
 </style>
 </head>
 <body>
 
-<div class="bg-deco d1">♡</div>
-<div class="bg-deco d2">✿</div>
-<div class="bg-deco d3">★</div>
-<div class="bg-deco d4">♡</div>
-<div class="bg-deco d5">✦</div>
-<div class="bg-deco d6">✿</div>
+<div class="bg-hearts" id="bg-hearts"></div>
 
 <div id="title-screen" class="screen active">
-  <div class="kanikani-character" id="kanikani-title"></div>
-  <h1>⌨️ シュールタイピング</h1>
-  <p class="subtitle" data-i18n="subtitle">かにかにと一緒にタイピング！</p>
-  <button class="start-btn" id="start-btn" data-i18n="startBtn">スタート</button>
+  <div class="kani-stage">
+    <img src="kanikani-typing.png" alt="縺九↓縺九↓" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+    <div class="kani-fallback" style="display:none;">ｦ竚ｨ・・/div>
+  </div>
+  <h1>竚ｨ・・繧ｷ繝･繝ｼ繝ｫ繧ｿ繧､繝斐Φ繧ｰ</h1>
+  <p class="subtitle" data-i18n="subtitle">縺九↓縺九↓縺ｨ荳邱偵↓繧ｿ繧､繝斐Φ繧ｰ・・/p>
+  <button class="start-btn" id="start-btn" data-i18n="startBtn">繧ｹ繧ｿ繝ｼ繝・/button>
 </div>
 
 <div id="game-screen" class="screen">
-  <div class="kanikani-mini" id="kanikani-game"></div>
+  <div class="game-kani" id="game-kani">
+    <img src="kanikani-typing.png" alt="縺九↓縺九↓" onerror="this.parentElement.innerHTML='<div style=&quot;font-size:clamp(3rem,12vw,5rem);text-align:center;&quot;>ｦ竚ｨ・・/div>';">
+  </div>
   <div class="timer-bar"><div class="timer-bar-inner" id="timer-bar"></div></div>
   <div class="stats-row">
-    <span id="hud-score" data-i18n="score">スコア: 0</span>
-    <span id="hud-time" data-i18n="time">残り: 60s</span>
+    <span id="hud-score" data-i18n="score">繧ｹ繧ｳ繧｢: 0</span>
+    <span id="hud-time" data-i18n="time">谿九ｊ: 60s</span>
   </div>
-  <div class="word-card" id="word-card">
+  <div class="word-card">
     <div class="word-japanese" id="word-japanese"></div>
     <div class="word-romaji" id="word-romaji"></div>
+    <input type="text" class="input-area" id="input-area" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="縺薙％縺ｫ繧ｿ繧､繝・>
   </div>
-  <input type="text" class="input-area" id="input-area" autocomplete="off" autocapitalize="off" spellcheck="false">
   <div class="combo-display" id="combo-display"></div>
 </div>
 
 <div id="result-screen" class="screen">
-  <h2 data-i18n="resultTitle">タイムアップ！</h2>
+  <h2 data-i18n="resultTitle">繧ｿ繧､繝繧｢繝・・・・/h2>
   <div class="result-score" id="final-score">0</div>
-  <p class="result-label" data-i18n="resultLabel">ポイント</p>
+  <p class="result-label" data-i18n="resultLabel">繝昴う繝ｳ繝・/p>
   <div class="result-stats">
-    <div><span class="num" id="stat-words">0</span><span data-i18n="wordsCleared">クリア語数</span></div>
-    <div><span class="num" id="stat-combo">0</span><span data-i18n="maxCombo">最大コンボ</span></div>
+    <div><span class="num" id="stat-words">0</span><span data-i18n="wordsCleared">繧ｯ繝ｪ繧｢隱樊焚</span></div>
+    <div><span class="num" id="stat-combo">0</span><span data-i18n="maxCombo">譛螟ｧ繧ｳ繝ｳ繝・/span></div>
   </div>
-  <button id="retry-btn" data-i18n="retryBtn">もう一度</button>
-  <button id="share-btn">𝕏 でシェア</button>
+  <button id="retry-btn" data-i18n="retryBtn">繧ゅ≧荳蠎ｦ</button>
+  <button id="share-btn">撫 縺ｧ繧ｷ繧ｧ繧｢</button>
 </div>
 
-<a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+<a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">竊・繝医ャ繝励↓謌ｻ繧・/a>
 
 <script>
 (function(){
   'use strict';
 
-  // かにかに画像が読み込めたらフォールバック絵文字を隠す
-  const kaniImg = new Image();
-  kaniImg.onload = () => {
-    document.querySelectorAll('.kanikani-character, .kanikani-mini').forEach(el => el.classList.add('loaded'));
-  };
-  kaniImg.src = 'kanikani-typing.png';
+  // ===== 閭梧勹繝上・繝育函謌・=====
+  (function initHearts() {
+    const container = document.getElementById('bg-hearts');
+    const emojis = ['笙｡','笙･','笨ｿ','減','箝・];
+    for (let i = 0; i < 14; i++) {
+      const h = document.createElement('div');
+      h.className = 'bg-heart';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.left = (Math.random() * 100) + '%';
+      h.style.animationDuration = (8 + Math.random() * 8) + 's';
+      h.style.animationDelay = (-Math.random() * 12) + 's';
+      h.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
+      container.appendChild(h);
+    }
+  })();
 
-  // ===== お題プール =====
+  // ===== 蜊倩ｪ槭・繝ｼ繝ｫ・・ana=縺ｲ繧峨′縺ｪ/繧ｫ繧ｿ繧ｫ繝願ｪｭ縺ｿ・・=====
   const WORD_POOLS = [
-    // Tier 0
     [
-      { ja: 'うんこ', romaji: 'unko' },
-      { ja: 'うんち', romaji: 'unchi' },
-      { ja: 'かに', romaji: 'kani' },
-      { ja: 'おばけ', romaji: 'obake' },
-      { ja: '地雷', romaji: 'jirai' },
-      { ja: '進化', romaji: 'shinka' },
-      { ja: '数字', romaji: 'suuji' },
-      { ja: '漆黒', romaji: 'shikkoku' },
-      { ja: '天才', romaji: 'tensai' },
-      { ja: '黄金', romaji: 'ougon' },
-      { ja: '腹筋', romaji: 'fukkin' },
+      { ja: '縺・ｓ縺・, kana: '縺・ｓ縺・ },
+      { ja: '縺・ｓ縺｡', kana: '縺・ｓ縺｡' },
+      { ja: '縺九↓', kana: '縺九↓' },
+      { ja: '縺翫・縺・, kana: '縺翫・縺・ },
+      { ja: '蝨ｰ髮ｷ', kana: '縺倥ｉ縺・ },
+      { ja: '騾ｲ蛹・, kana: '縺励ｓ縺・ },
+      { ja: '謨ｰ蟄・, kana: '縺吶≧縺・ },
+      { ja: '貍・ｻ・, kana: '縺励▲縺薙￥' },
+      { ja: '螟ｩ謇・, kana: '縺ｦ繧薙＆縺・ },
+      { ja: '鮟・≡', kana: '縺翫≧縺斐ｓ' },
+      { ja: '閻ｹ遲・, kana: '縺ｵ縺｣縺阪ｓ' },
     ],
-    // Tier 1
     [
-      { ja: 'シュール', romaji: 'shu-ru' },
-      { ja: 'ヤクザ', romaji: 'yakuza' },
-      { ja: 'リバーシ', romaji: 'riba-shi' },
-      { ja: 'ヨシノリ', romaji: 'yoshinori' },
-      { ja: 'かにみそ', romaji: 'kanimiso' },
-      { ja: '田舎者', romaji: 'inakamono' },
-      { ja: '不法侵入', romaji: 'fuhoushinnyuu' },
-      { ja: '経営分析', romaji: 'keieibunseki' },
-      { ja: '永久に', romaji: 'eikyuuni' },
-      { ja: '成仏', romaji: 'joubutsu' },
-      { ja: '戯れ', romaji: 'tawamure' },
-      { ja: '夢の中', romaji: 'yumenonaka' },
+      { ja: '繧ｷ繝･繝ｼ繝ｫ', kana: '縺励ｅ繝ｼ繧・ },
+      { ja: '繝､繧ｯ繧ｶ', kana: '繧・￥縺・ },
+      { ja: '繝ｪ繝舌・繧ｷ', kana: '繧翫・繝ｼ縺・ },
+      { ja: '繝ｨ繧ｷ繝弱Μ', kana: '繧医＠縺ｮ繧・ },
+      { ja: '縺九↓縺ｿ縺・, kana: '縺九↓縺ｿ縺・ },
+      { ja: '逕ｰ闊手・, kana: '縺・↑縺九ｂ縺ｮ' },
+      { ja: '荳肴ｳ穂ｾｵ蜈･', kana: '縺ｵ縺ｻ縺・＠繧薙↓繧・≧' },
+      { ja: '邨悟霧蛻・梵', kana: '縺代＞縺医＞縺ｶ繧薙○縺・ },
+      { ja: '豌ｸ荵・↓', kana: '縺医＞縺阪ｅ縺・↓' },
+      { ja: '謌蝉ｻ・, kana: '縺倥ｇ縺・・縺､' },
+      { ja: '謌ｯ繧・, kana: '縺溘ｏ繧繧・ },
+      { ja: '螟｢縺ｮ荳ｭ', kana: '繧・ａ縺ｮ縺ｪ縺・ },
     ],
-    // Tier 2
     [
-      { ja: 'シュール進化論', romaji: 'shu-rushinkaron' },
-      { ja: 'かにかにパニック', romaji: 'kanikanipanikku' },
-      { ja: '漆黒のリバーシ', romaji: 'shikkokunoriba-shi' },
-      { ja: '30秒の激闘', romaji: 'sanjuubyounogekitou' },
-      { ja: '吾輩の番だが', romaji: 'wagahainobandaga' },
-      { ja: '勝つべくして勝つ', romaji: 'katsubekushitekatsu' },
-      { ja: '黄金の金色ドライバー', romaji: 'ougonnokinnirodoraiba-' },
-      { ja: 'かいだんマインスイーパー', romaji: 'kaidanmainsui-pa-' },
-      { ja: 'シュールゲームス', romaji: 'shu-ruge-musu' },
-      { ja: '数字に愛されるオレ', romaji: 'suujiniaisareruore' },
-      { ja: '永久に吾輩の番だ', romaji: 'eikyuuniwagahainobanda' },
+      { ja: '繧ｷ繝･繝ｼ繝ｫ騾ｲ蛹冶ｫ・, kana: '縺励ｅ繝ｼ繧九＠繧薙°繧阪ｓ' },
+      { ja: '縺九↓縺九↓繝代ル繝・け', kana: '縺九↓縺九↓縺ｱ縺ｫ縺｣縺・ },
+      { ja: '貍・ｻ偵・繝ｪ繝舌・繧ｷ', kana: '縺励▲縺薙￥縺ｮ繧翫・繝ｼ縺・ },
+      { ja: '30遘偵・豼髣・, kana: '縺輔ｓ縺倥ｅ縺・・繧・≧縺ｮ縺偵″縺ｨ縺・ },
+      { ja: '蜷ｾ霈ｩ縺ｮ逡ｪ縺縺・, kana: '繧上′縺ｯ縺・・縺ｰ繧薙□縺・ },
+      { ja: '蜍昴▽縺ｹ縺上＠縺ｦ蜍昴▽', kana: '縺九▽縺ｹ縺上＠縺ｦ縺九▽' },
+      { ja: '鮟・≡縺ｮ驥題牡繝峨Λ繧､繝舌・', kana: '縺翫≧縺斐ｓ縺ｮ縺阪ｓ縺・ｍ縺ｩ繧峨＞縺ｰ繝ｼ' },
+      { ja: '縺九＞縺繧薙・繧､繝ｳ繧ｹ繧､繝ｼ繝代・', kana: '縺九＞縺繧薙∪縺・ｓ縺吶＞繝ｼ縺ｱ繝ｼ' },
+      { ja: '繧ｷ繝･繝ｼ繝ｫ繧ｲ繝ｼ繝繧ｹ', kana: '縺励ｅ繝ｼ繧九￡繝ｼ繧縺・ },
+      { ja: '謨ｰ蟄励↓諢帙＆繧後ｋ繧ｪ繝ｬ', kana: '縺吶≧縺倥↓縺ゅ＞縺輔ｌ繧九♀繧・ },
+      { ja: '豌ｸ荵・↓蜷ｾ霈ｩ縺ｮ逡ｪ縺', kana: '縺医＞縺阪ｅ縺・↓繧上′縺ｯ縺・・縺ｰ繧薙□' },
     ],
-    // Tier 3
     [
-      { ja: '本当の恐怖はここにある', romaji: 'hontounokyoufuhakokoniaru' },
-      { ja: '地雷を探して霊を成仏させろ', romaji: 'jiraiwosagashitereiwojoubutsusasero' },
-      { ja: '腹筋は毎日換気するよ', romaji: 'fukkinhamainichikankisuruyo' },
-      { ja: 'はさみがないと何もできない', romaji: 'hasamiganaitonanimodekinai' },
-      { ja: 'ものごとは二つに分けられる', romaji: 'monogotohafutatsuniwakerareru' },
-      { ja: '分析できるかできないかだ', romaji: 'bunsekidekirukadekinaikada' },
-      { ja: '一般的には不法侵入だ', romaji: 'ippantekinihafuhoushinnyuuda' },
-      { ja: 'シュールでキュートなキャラクター', romaji: 'shu-rudekyu-tonakyarakuta-' },
-      { ja: '気が付いたらかわいい部屋にいた', romaji: 'kigatsuitarakawaiiheyaniita' },
-      { ja: '空から落ちてくるソフトクリーム', romaji: 'sorakaraochitekurusofutokuri-mu' },
+      { ja: '譛ｬ蠖薙・諱先悶・縺薙％縺ｫ縺ゅｋ', kana: '縺ｻ繧薙→縺・・縺阪ｇ縺・・縺ｯ縺薙％縺ｫ縺ゅｋ' },
+      { ja: '蝨ｰ髮ｷ繧呈爾縺励※髴翫ｒ謌蝉ｻ上＆縺帙ｍ', kana: '縺倥ｉ縺・ｒ縺輔′縺励※繧後＞繧偵§繧・≧縺ｶ縺､縺輔○繧・ },
+      { ja: '閻ｹ遲九・豈取律謠帶ｰ励☆繧九ｈ', kana: '縺ｵ縺｣縺阪ｓ縺ｯ縺ｾ縺・↓縺｡縺九ｓ縺阪☆繧九ｈ' },
+      { ja: '縺ｯ縺輔∩縺後↑縺・→菴輔ｂ縺ｧ縺阪↑縺・, kana: '縺ｯ縺輔∩縺後↑縺・→縺ｪ縺ｫ繧ゅ〒縺阪↑縺・ },
+      { ja: '繧ゅ・縺斐→縺ｯ莠後▽縺ｫ蛻・￠繧峨ｌ繧・, kana: '繧ゅ・縺斐→縺ｯ縺ｵ縺溘▽縺ｫ繧上￠繧峨ｌ繧・ },
+      { ja: '蛻・梵縺ｧ縺阪ｋ縺九〒縺阪↑縺・°縺', kana: '縺ｶ繧薙○縺阪〒縺阪ｋ縺九〒縺阪↑縺・°縺' },
+      { ja: '荳闊ｬ逧・↓縺ｯ荳肴ｳ穂ｾｵ蜈･縺', kana: '縺・▲縺ｱ繧薙※縺阪↓縺ｯ縺ｵ縺ｻ縺・＠繧薙↓繧・≧縺' },
+      { ja: '繧ｷ繝･繝ｼ繝ｫ縺ｧ繧ｭ繝･繝ｼ繝医↑繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ', kana: '縺励ｅ繝ｼ繧九〒縺阪ｅ繝ｼ縺ｨ縺ｪ縺阪ｃ繧峨￥縺溘・' },
+      { ja: '豌励′莉倥＞縺溘ｉ縺九ｏ縺・＞驛ｨ螻九↓縺・◆', kana: '縺阪′縺､縺・◆繧峨°繧上＞縺・∈繧・↓縺・◆' },
+      { ja: '遨ｺ縺九ｉ關ｽ縺｡縺ｦ縺上ｋ繧ｽ繝輔ヨ繧ｯ繝ｪ繝ｼ繝', kana: '縺昴ｉ縺九ｉ縺翫■縺ｦ縺上ｋ縺昴・縺ｨ縺上ｊ繝ｼ繧' },
     ],
-    // Tier 4
     [
-      { ja: 'はさみがないと何もできない愚かな動物', romaji: 'hasamiganaitonanimodekinaiorokanadoubutsu' },
-      { ja: 'シュールでキュートなキャラクターたちを合体して進化させろ', romaji: 'shu-rudekyu-tonakyarakuta-tachiwogattaishiteshinkasasero' },
-      { ja: '誰もが憧れるドライバー界の頂点にして最下層', romaji: 'daremogaakogarerudoraiba-kainochoutennishitesaikasou' },
-      { ja: 'ものごとは二つに分けられる分析できるかできないかだ', romaji: 'monogotohafutatsuniwakerarerubunsekidekirukadekinaikada' },
-      { ja: '気が付いたらかわいい部屋にいた一般的には不法侵入だ', romaji: 'kigatsuitarakawaiiheyaniitaippantekinihafuhoushinnyuuda' },
-      { ja: '本当の恐怖はここにある地雷を探して霊を成仏させろ', romaji: 'hontounokyoufuhakokoniarujiraiwosagashitereiwojoubutsusasero' },
-      { ja: '永久に吾輩の番だ吾輩の番だ吾輩の番だ', romaji: 'eikyuuniwagahainobandawagahainobandawagahainobanda' },
-      { ja: '田舎者のヨシノリが黄金の金色ドライバーに挑む', romaji: 'inakamononoyoshinorigaougonnokinnirodoraiba-niidomu' },
-      { ja: '夢の中のヤクザかにかにを叩いて腹筋を換気しろ', romaji: 'yumenonakanoyakuzakanikaniwotataitefukkinwokankishiro' },
+      { ja: '縺ｯ縺輔∩縺後↑縺・→菴輔ｂ縺ｧ縺阪↑縺・・縺九↑蜍慕黄', kana: '縺ｯ縺輔∩縺後↑縺・→縺ｪ縺ｫ繧ゅ〒縺阪↑縺・♀繧阪°縺ｪ縺ｩ縺・・縺､' },
+      { ja: '繧ｷ繝･繝ｼ繝ｫ縺ｧ繧ｭ繝･繝ｼ繝医↑繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺溘■繧貞粋菴薙＠縺ｦ騾ｲ蛹悶＆縺帙ｍ', kana: '縺励ｅ繝ｼ繧九〒縺阪ｅ繝ｼ縺ｨ縺ｪ縺阪ｃ繧峨￥縺溘・縺溘■繧偵′縺｣縺溘＞縺励※縺励ｓ縺九＆縺帙ｍ' },
+      { ja: '隱ｰ繧ゅ′諞ｧ繧後ｋ繝峨Λ繧､繝舌・逡後・鬆らせ縺ｫ縺励※譛荳句ｱ､', kana: '縺繧後ｂ縺後≠縺薙′繧後ｋ縺ｩ繧峨＞縺ｰ繝ｼ縺九＞縺ｮ縺｡繧・≧縺ｦ繧薙↓縺励※縺輔＞縺九◎縺・ },
+      { ja: '繧ゅ・縺斐→縺ｯ莠後▽縺ｫ蛻・￠繧峨ｌ繧句・譫舌〒縺阪ｋ縺九〒縺阪↑縺・°縺', kana: '繧ゅ・縺斐→縺ｯ縺ｵ縺溘▽縺ｫ繧上￠繧峨ｌ繧九・繧薙○縺阪〒縺阪ｋ縺九〒縺阪↑縺・°縺' },
+      { ja: '豌励′莉倥＞縺溘ｉ縺九ｏ縺・＞驛ｨ螻九↓縺・◆荳闊ｬ逧・↓縺ｯ荳肴ｳ穂ｾｵ蜈･縺', kana: '縺阪′縺､縺・◆繧峨°繧上＞縺・∈繧・↓縺・◆縺・▲縺ｱ繧薙※縺阪↓縺ｯ縺ｵ縺ｻ縺・＠繧薙↓繧・≧縺' },
+      { ja: '譛ｬ蠖薙・諱先悶・縺薙％縺ｫ縺ゅｋ蝨ｰ髮ｷ繧呈爾縺励※髴翫ｒ謌蝉ｻ上＆縺帙ｍ', kana: '縺ｻ繧薙→縺・・縺阪ｇ縺・・縺ｯ縺薙％縺ｫ縺ゅｋ縺倥ｉ縺・ｒ縺輔′縺励※繧後＞繧偵§繧・≧縺ｶ縺､縺輔○繧・ },
+      { ja: '豌ｸ荵・↓蜷ｾ霈ｩ縺ｮ逡ｪ縺蜷ｾ霈ｩ縺ｮ逡ｪ縺蜷ｾ霈ｩ縺ｮ逡ｪ縺', kana: '縺医＞縺阪ｅ縺・↓繧上′縺ｯ縺・・縺ｰ繧薙□繧上′縺ｯ縺・・縺ｰ繧薙□繧上′縺ｯ縺・・縺ｰ繧薙□' },
+      { ja: '逕ｰ闊手・・繝ｨ繧ｷ繝弱Μ縺碁ｻ・≡縺ｮ驥題牡繝峨Λ繧､繝舌・縺ｫ謖代・', kana: '縺・↑縺九ｂ縺ｮ縺ｮ繧医＠縺ｮ繧翫′縺翫≧縺斐ｓ縺ｮ縺阪ｓ縺・ｍ縺ｩ繧峨＞縺ｰ繝ｼ縺ｫ縺・←繧' },
+      { ja: '螟｢縺ｮ荳ｭ縺ｮ繝､繧ｯ繧ｶ縺九↓縺九↓繧貞娼縺・※閻ｹ遲九ｒ謠帶ｰ励＠繧・, kana: '繧・ａ縺ｮ縺ｪ縺九・繧・￥縺悶°縺ｫ縺九↓繧偵◆縺溘＞縺ｦ縺ｵ縺｣縺阪ｓ繧偵°繧薙″縺励ｍ' },
     ],
   ];
 
-  // ===== ローマ字トークナイザ =====
-  // 既存のヘボン式ローマ字文字列を「ユニット列」に変換する。
-  // 各ユニットは入力可能な綴りの配列（例: shi → ['shi','si']）。
-  // これで shi/si, chi/ti, tsu/tu, fu/hu, ja/zya, など複数の打ち方に対応できる。
-  const DIGRAPH3 = {
-    shi: ['shi','si'], chi: ['chi','ti'], tsu: ['tsu','tu'],
-    sha: ['sha','sya'], shu: ['shu','syu'], sho: ['sho','syo'],
-    cha: ['cha','tya','cya'], chu: ['chu','tyu','cyu'], cho: ['cho','tyo','cyo'],
-    kya: ['kya'], kyu: ['kyu'], kyo: ['kyo'],
-    gya: ['gya'], gyu: ['gyu'], gyo: ['gyo'],
-    nya: ['nya'], nyu: ['nyu'], nyo: ['nyo'],
-    hya: ['hya'], hyu: ['hyu'], hyo: ['hyo'],
-    bya: ['bya'], byu: ['byu'], byo: ['byo'],
-    pya: ['pya'], pyu: ['pyu'], pyo: ['pyo'],
-    mya: ['mya'], myu: ['myu'], myo: ['myo'],
-    rya: ['rya'], ryu: ['ryu'], ryo: ['ryo'],
+  // ===== 縺九↑竊偵Ο繝ｼ繝槫ｭ怜､画鋤繝・・繝悶Ν・郁､・焚蜈･蜉帶婿蠑丞ｯｾ蠢懶ｼ・=====
+  const BASE_ROMAJI = {
+    '縺・:['a'],'縺・:['i'],'縺・:['u'],'縺・:['e'],'縺・:['o'],
+    '縺・:['ka','ca'],'縺・:['ki'],'縺・:['ku','cu','qu'],'縺・:['ke'],'縺・:['ko','co'],
+    '縺・:['ga'],'縺・:['gi'],'縺・:['gu'],'縺・:['ge'],'縺・:['go'],
+    '縺・:['sa'],'縺・:['shi','si','ci'],'縺・:['su'],'縺・:['se','ce'],'縺・:['so'],
+    '縺・:['za'],'縺・:['ji','zi'],'縺・:['zu'],'縺・:['ze'],'縺・:['zo'],
+    '縺・:['ta'],'縺｡':['chi','ti'],'縺､':['tsu','tu'],'縺ｦ':['te'],'縺ｨ':['to'],
+    '縺':['da'],'縺｢':['di'],'縺･':['du'],'縺ｧ':['de'],'縺ｩ':['do'],
+    '縺ｪ':['na'],'縺ｫ':['ni'],'縺ｬ':['nu'],'縺ｭ':['ne'],'縺ｮ':['no'],
+    '縺ｯ':['ha'],'縺ｲ':['hi'],'縺ｵ':['fu','hu'],'縺ｸ':['he'],'縺ｻ':['ho'],
+    '縺ｰ':['ba'],'縺ｳ':['bi'],'縺ｶ':['bu'],'縺ｹ':['be'],'縺ｼ':['bo'],
+    '縺ｱ':['pa'],'縺ｴ':['pi'],'縺ｷ':['pu'],'縺ｺ':['pe'],'縺ｽ':['po'],
+    '縺ｾ':['ma'],'縺ｿ':['mi'],'繧':['mu'],'繧・:['me'],'繧・:['mo'],
+    '繧・:['ya'],'繧・:['yu'],'繧・:['yo'],
+    '繧・:['ra'],'繧・:['ri'],'繧・:['ru'],'繧・:['re'],'繧・:['ro'],
+    '繧・:['wa'],'繧・:['wo','o'],
+    '縺・:['la','xa'],'縺・:['li','xi'],'縺・:['lu','xu'],'縺・:['le','xe'],'縺・:['lo','xo'],
   };
-  const DIGRAPH2 = {
-    ja: ['ja','zya','jya'], ji: ['ji','zi'], ju: ['ju','zyu','jyu'], jo: ['jo','zyo','jyo'],
-    fu: ['fu','hu'],
+  const DIGRAPH_ROMAJI = {
+    '縺阪ｃ':['kya'],'縺阪ｅ':['kyu'],'縺阪ｇ':['kyo'],
+    '縺弱ｃ':['gya'],'縺弱ｅ':['gyu'],'縺弱ｇ':['gyo'],
+    '縺励ｃ':['sha','sya'],'縺励ｅ':['shu','syu'],'縺励ｇ':['sho','syo'],
+    '縺倥ｃ':['ja','jya','zya'],'縺倥ｅ':['ju','jyu','zyu'],'縺倥ｇ':['jo','jyo','zyo'],
+    '縺｡繧・:['cha','tya','cya'],'縺｡繧・:['chu','tyu','cyu'],'縺｡繧・:['cho','tyo','cyo'],
+    '縺ｫ繧・:['nya'],'縺ｫ繧・:['nyu'],'縺ｫ繧・:['nyo'],
+    '縺ｲ繧・:['hya'],'縺ｲ繧・:['hyu'],'縺ｲ繧・:['hyo'],
+    '縺ｳ繧・:['bya'],'縺ｳ繧・:['byu'],'縺ｳ繧・:['byo'],
+    '縺ｴ繧・:['pya'],'縺ｴ繧・:['pyu'],'縺ｴ繧・:['pyo'],
+    '縺ｿ繧・:['mya'],'縺ｿ繧・:['myu'],'縺ｿ繧・:['myo'],
+    '繧翫ｃ':['rya'],'繧翫ｅ':['ryu'],'繧翫ｇ':['ryo'],
+    '縺ｵ縺・:['fa'],'縺ｵ縺・:['fi'],'縺ｵ縺・:['fe'],'縺ｵ縺・:['fo'],
+    '縺・＜':['wi'],'縺・∞':['we'],
+    '縺ｦ縺・:['thi'],'縺ｧ縺・:['dhi'],
   };
-  const VOWELS = 'aiueo';
-  const CONSONANTS = 'kstnhmyrwgzdbpcfjv';
 
-  function tokenize(romaji) {
-    const s = romaji.toLowerCase();
+  // 繧ｫ繧ｿ繧ｫ繝岩・縺ｲ繧峨′縺ｪ・医き繧ｿ繧ｫ繝翫〒繧ょ女縺台ｻ倥￠繧九ｈ縺・↓・・  function kataToHira(s) {
+    return s.replace(/[\u30a1-\u30f6]/g, ch =>
+      String.fromCharCode(ch.charCodeAt(0) - 0x60)
+    );
+  }
+
+  // 1繝ｦ繝九ャ繝亥・隱ｭ縺ｿ・域ｶ郁ｲｻ縺励↑縺・ｼ・  function getUnitAt(kana, pos) {
+    if (pos >= kana.length) return null;
+    const c = kana[pos];
+    const next = kana[pos + 1];
+    const digraph = c + (next || '');
+    if (DIGRAPH_ROMAJI[digraph]) {
+      return { alternates: DIGRAPH_ROMAJI[digraph].slice(), length: 2 };
+    }
+    if (BASE_ROMAJI[c]) {
+      return { alternates: BASE_ROMAJI[c].slice(), length: 1 };
+    }
+    return null;
+  }
+
+  function getLastVowel(s) {
+    const m = s.match(/[aiueo](?!.*[aiueo])/);
+    return m ? m[0] : null;
+  }
+
+  // 縺九↑譁・ｭ怜・繧偵Θ繝九ャ繝磯・蛻励↓繝代・繧ｹ
+  function parseKana(input) {
+    const kana = kataToHira(input);
     const units = [];
     let i = 0;
-    while (i < s.length) {
-      const c1 = s[i];
-      const c2 = s[i+1] || '';
-      const c3 = s[i+2] || '';
-      const three = c1 + c2 + c3;
-      const two = c1 + c2;
+    while (i < kana.length) {
+      const c = kana[i];
 
-      // 3文字デジラフ
-      if (DIGRAPH3[three]) { units.push(DIGRAPH3[three].slice()); i += 3; continue; }
-      // nn（ん） → n または nn で入力可
-      if (c1 === 'n' && c2 === 'n') { units.push(['n','nn']); i += 2; continue; }
-      // 2文字デジラフ
-      if (DIGRAPH2[two]) { units.push(DIGRAPH2[two].slice()); i += 2; continue; }
-      // 小さい「っ」: 子音が2つ連続 → 最初の子音だけを独立ユニットとして分離
-      if (c1 === c2 && CONSONANTS.includes(c1) && c1 !== 'n') {
-        units.push([c1]);
-        i += 1;
+      // 菫・浹 縺｣
+      if (c === '縺｣') {
+        const nxt = getUnitAt(kana, i + 1);
+        if (nxt) {
+          const doubled = nxt.alternates
+            .filter(a => a.length > 0 && !/^[aiueo]/.test(a))
+            .map(a => a[0] + a);
+          if (doubled.length > 0) {
+            units.push({ alternates: doubled, primary: doubled[0] });
+            i += 1 + nxt.length;
+            continue;
+          }
+        }
+        units.push({ alternates: ['ltu','xtu','ltsu','xtsu'], primary: 'ltu' });
+        i++;
         continue;
       }
-      // ん: 子音の前 or 語末
-      if (c1 === 'n' && (c2 === '' || (CONSONANTS.includes(c2) && c2 !== 'y'))) {
-        units.push(['n','nn']);
-        i += 1;
+
+      // 謦･髻ｳ 繧・      if (c === '繧・) {
+        const nxt = kana[i + 1];
+        const forceNN = !nxt || /[縺ゅ＞縺・∴縺翫ｄ繧・ｈ縺ｪ縺ｫ縺ｬ縺ｭ縺ｮ繧転/.test(nxt);
+        const alts = forceNN ? ['nn',"n'",'xn'] : ['n','nn','xn'];
+        units.push({ alternates: alts, primary: alts[0] });
+        i++;
         continue;
       }
-      // 子音＋母音（標準2文字）
-      if (CONSONANTS.includes(c1) && VOWELS.includes(c2)) {
-        units.push([two]);
+
+      // 髟ｷ髻ｳ 繝ｼ
+      if (c === '繝ｼ') {
+        const prev = units[units.length - 1];
+        const v = prev ? getLastVowel(prev.primary) : null;
+        const alts = v ? ['-', v] : ['-'];
+        units.push({ alternates: alts, primary: '-' });
+        i++;
+        continue;
+      }
+
+      // 諡鈴浹・・譁・ｭ怜粋謌撰ｼ・      const next = kana[i + 1];
+      const digraph = c + (next || '');
+      if (DIGRAPH_ROMAJI[digraph]) {
+        units.push({ alternates: DIGRAPH_ROMAJI[digraph].slice(), primary: DIGRAPH_ROMAJI[digraph][0] });
         i += 2;
         continue;
       }
-      // 単独母音・長音記号・その他1文字
-      units.push([c1]);
-      i += 1;
+
+      // 蜊倡峡縺九↑
+      if (BASE_ROMAJI[c]) {
+        units.push({ alternates: BASE_ROMAJI[c].slice(), primary: BASE_ROMAJI[c][0] });
+        i++;
+        continue;
+      }
+
+      units.push({ alternates: [c], primary: c });
+      i++;
     }
     return units;
   }
 
-  // 任意のユニット配列に対する「代表形（主な綴り）」を連結した文字列を返す
-  function primaryFull(units) {
-    return units.map(u => u[0]).join('');
-  }
-
+  // ===== 繧ｲ繝ｼ繝迥ｶ諷・=====
   const GAME_TIME = 60;
-  let score, combo, maxCombo, wordsCleared, timeLeft, timerInterval, currentWord;
-  let currentUnits, currentUnitIdx, currentUnitTyped, committedText;
+  let score, combo, maxCombo, wordsCleared, timeLeft, timerInterval;
+  let currentWord, units, unitIdx, typedInUnit;
   let gameRunning = false;
   let recentJa = [];
+  let sg = null;
 
   const titleScreen = document.getElementById('title-screen');
   const gameScreen = document.getElementById('game-screen');
   const resultScreen = document.getElementById('result-screen');
-  const wordCard = document.getElementById('word-card');
   const wordJapanese = document.getElementById('word-japanese');
   const wordRomaji = document.getElementById('word-romaji');
   const inputArea = document.getElementById('input-area');
   const comboDisplay = document.getElementById('combo-display');
   const timerBar = document.getElementById('timer-bar');
-  const kaniGame = document.getElementById('kanikani-game');
+  const gameKani = document.getElementById('game-kani');
 
   function pickTier() {
     if (wordsCleared < 3) return 0;
@@ -664,57 +720,50 @@ body {
 
   function nextWord() {
     currentWord = pickWord();
-    currentUnits = tokenize(currentWord.romaji);
-    currentUnitIdx = 0;
-    currentUnitTyped = '';
-    committedText = '';
+    units = parseKana(currentWord.kana);
+    unitIdx = 0;
+    typedInUnit = '';
     wordJapanese.textContent = currentWord.ja;
+    wordJapanese.classList.remove('pulse');
+    void wordJapanese.offsetWidth;
+    wordJapanese.classList.add('pulse');
     renderWord();
     inputArea.value = '';
   }
 
+  function escapeHtml(s) {
+    return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  }
+
   function renderWord() {
-    // 表示文字列:
-    //   - committedText: 既に確定した綴り
-    //   - currentUnitTyped: 現在ユニットの入力途中
-    //   - 残りユニット: 代表形の連結
-    const remaining = currentUnits.slice(currentUnitIdx + (currentUnitTyped === '' ? 0 : 1));
-    // currentUnitTyped を含む場合、currentUnitIdx のユニットは「今打ってる途中」なので rest から除外
     let html = '';
-    if (committedText) html += '<span class="correct">' + escapeHtml(committedText) + '</span>';
-    if (currentUnitIdx < currentUnits.length) {
-      const currentUnit = currentUnits[currentUnitIdx];
-      // 現在ユニットのうち、既に打った部分を緑、残りを代表形から取って remaining 色で
-      const candidate = currentUnit.find(alt => alt.startsWith(currentUnitTyped)) || currentUnit[0];
-      if (currentUnitTyped) {
-        html += '<span class="correct">' + escapeHtml(currentUnitTyped) + '</span>';
+    units.forEach((u, i) => {
+      const p = u.primary;
+      if (i < unitIdx) {
+        html += '<span class="correct">' + escapeHtml(p) + '</span>';
+      } else if (i === unitIdx) {
+        const done = p.substring(0, typedInUnit.length);
+        const rest = p.substring(typedInUnit.length);
+        if (done) html += '<span class="correct">' + escapeHtml(done) + '</span>';
+        if (rest.length > 0) {
+          html += '<span class="current">' + escapeHtml(rest.charAt(0)) + '</span>';
+          if (rest.length > 1) html += '<span class="remaining">' + escapeHtml(rest.substring(1)) + '</span>';
+        }
+      } else {
+        html += '<span class="remaining">' + escapeHtml(p) + '</span>';
       }
-      const rest = candidate.slice(currentUnitTyped.length);
-      if (rest) {
-        html += '<span class="current">' + escapeHtml(rest[0]) + '</span>';
-        if (rest.length > 1) html += '<span class="remaining">' + escapeHtml(rest.slice(1)) + '</span>';
-      }
-      // さらに先のユニット
-      const laterUnits = currentUnits.slice(currentUnitIdx + 1);
-      if (laterUnits.length) {
-        html += '<span class="remaining">' + escapeHtml(primaryFull(laterUnits)) + '</span>';
-      }
-    }
+    });
     wordRomaji.innerHTML = html;
   }
 
-  function escapeHtml(s) {
-    return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  }
-
   function updateHUD() {
-    const prefix = typeof SurrealI18n !== 'undefined' ? (SurrealI18n.t('scorePrefix') || 'スコア') : 'スコア';
-    const timePrefix = typeof SurrealI18n !== 'undefined' ? (SurrealI18n.t('timePrefix') || '残り') : '残り';
+    const prefix = typeof SurrealI18n !== 'undefined' ? (SurrealI18n.t('scorePrefix') || '繧ｹ繧ｳ繧｢') : '繧ｹ繧ｳ繧｢';
+    const timePrefix = typeof SurrealI18n !== 'undefined' ? (SurrealI18n.t('timePrefix') || '谿九ｊ') : '谿九ｊ';
     document.getElementById('hud-score').textContent = prefix + ': ' + score;
     document.getElementById('hud-time').textContent = timePrefix + ': ' + timeLeft + 's';
     timerBar.style.width = (timeLeft / GAME_TIME * 100) + '%';
     if (combo >= 2) {
-      comboDisplay.textContent = '🔥 ' + combo + ' コンボ!';
+      comboDisplay.textContent = '櫨 ' + combo + ' COMBO!';
       comboDisplay.style.transform = 'scale(1.15)';
       setTimeout(() => comboDisplay.style.transform = 'scale(1)', 100);
     } else {
@@ -722,46 +771,111 @@ body {
     }
   }
 
-  // ===== エフェクト =====
-  function spawnFloatPop(emoji) {
-    const el = document.createElement('div');
-    el.className = 'float-pop';
-    el.textContent = emoji;
-    const rect = wordCard.getBoundingClientRect();
-    const x = rect.left + rect.width / 2 + (Math.random() - 0.5) * rect.width * 0.6;
-    const y = rect.top + rect.height / 2;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1000);
-  }
-
-  function spawnSparkleBurst() {
-    const rect = wordCard.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const emojis = ['✨', '♡', '★', '✿', '💖', '⭐'];
-    for (let i = 0; i < 10; i++) {
+  // ===== 繧ｨ繝輔ぉ繧ｯ繝・=====
+  function spawnParticles(x, y, emojis, count) {
+    for (let i = 0; i < count; i++) {
       const el = document.createElement('div');
-      el.className = 'sparkle-burst';
+      el.className = 'fx-particle';
       el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      el.style.left = cx + 'px';
-      el.style.top = cy + 'px';
-      const angle = (Math.PI * 2 * i) / 10 + Math.random() * 0.3;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
       const dist = 60 + Math.random() * 40;
-      el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-      el.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      el.style.setProperty('--fx-dx', Math.cos(angle) * dist + 'px');
+      el.style.setProperty('--fx-dy', Math.sin(angle) * dist + 'px');
       document.body.appendChild(el);
       setTimeout(() => el.remove(), 900);
     }
   }
 
-  // ===== SE =====
-  function playSE(type) {
-    if (typeof SurrealGames === 'undefined' || !SurrealGames.SoundSystem) return;
-    SurrealGames.SoundSystem.play(type);
+  function spawnTypedFx(ch) {
+    const rect = wordRomaji.getBoundingClientRect();
+    const el = document.createElement('div');
+    el.className = 'fx-typed';
+    el.textContent = ch;
+    el.style.left = (rect.left + rect.width / 2) + 'px';
+    el.style.top = (rect.top + rect.height / 2) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 500);
   }
 
+  function wordClearEffect() {
+    const rect = wordRomaji.getBoundingClientRect();
+    spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, ['笨ｨ','猪','箝・,'検','笙｡'], 8);
+    gameKani.classList.remove('happy');
+    void gameKani.offsetWidth;
+    gameKani.classList.add('happy');
+  }
+
+  function keyHitEffect() {
+    gameKani.classList.remove('bounce');
+    void gameKani.offsetWidth;
+    gameKani.classList.add('bounce');
+  }
+
+  function missEffect() {
+    document.body.classList.remove('screen-shake');
+    void document.body.offsetWidth;
+    document.body.classList.add('screen-shake');
+  }
+
+  // ===== 繧ｭ繝ｼ蜈･蜉帛・逅・=====
+  function processKey(ch) {
+    if (!gameRunning || !units || unitIdx >= units.length) return;
+    const u = units[unitIdx];
+    const candidate = typedInUnit + ch;
+    const matching = u.alternates.filter(a => a.startsWith(candidate));
+
+    if (matching.length === 0) {
+      combo = 0;
+      if (sg) sg.sound.play('wrong');
+      missEffect();
+      updateHUD();
+      return;
+    }
+
+    typedInUnit = candidate;
+    u.primary = matching[0];
+
+    const exact = matching.find(a => a === candidate);
+    if (exact) {
+      u.primary = exact;
+      unitIdx++;
+      typedInUnit = '';
+    }
+
+    if (sg) sg.sound.play('tap');
+    spawnTypedFx(ch);
+    keyHitEffect();
+    renderWord();
+
+    if (unitIdx >= units.length) {
+      combo++;
+      if (combo > maxCombo) maxCombo = combo;
+      const lenTotal = units.reduce((s,u)=>s+u.primary.length,0);
+      const lengthBonus = Math.floor(lenTotal / 2);
+      const comboBonus = Math.floor(combo / 3) * 5;
+      score += 10 + lengthBonus + comboBonus;
+      wordsCleared++;
+      if (sg) sg.sound.play(combo >= 3 ? 'combo' : 'correct');
+      wordClearEffect();
+      updateHUD();
+      nextWord();
+    } else {
+      updateHUD();
+    }
+  }
+
+  inputArea.addEventListener('input', () => {
+    if (!gameRunning) { inputArea.value = ''; return; }
+    const val = inputArea.value.toLowerCase();
+    inputArea.value = '';
+    for (const ch of val) {
+      processKey(ch);
+    }
+  });
+
+  // ===== 繧ｲ繝ｼ繝髢句ｧ・邨ゆｺ・=====
   function startGame() {
     score = 0; combo = 0; maxCombo = 0; wordsCleared = 0;
     timeLeft = GAME_TIME;
@@ -773,18 +887,14 @@ body {
     nextWord();
     updateHUD();
     inputArea.value = '';
-    inputArea.focus();
-    // BGM開始（かにかにパニックと同じ pop プリセット）
-    if (typeof SurrealGames !== 'undefined' && SurrealGames.SoundSystem) {
-      SurrealGames.SoundSystem.play('start');
-      SurrealGames.SoundSystem.playBgm('pop');
-    }
+    setTimeout(() => inputArea.focus(), 50);
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       timeLeft--;
       updateHUD();
       if (timeLeft <= 0) endGame();
     }, 1000);
+    if (sg) sg.onGameStart();
   }
 
   function endGame() {
@@ -795,115 +905,29 @@ body {
     document.getElementById('final-score').textContent = score;
     document.getElementById('stat-words').textContent = wordsCleared;
     document.getElementById('stat-combo').textContent = maxCombo;
-    // BGM停止 & リザルトSE
-    if (typeof SurrealGames !== 'undefined' && SurrealGames.SoundSystem) {
-      SurrealGames.SoundSystem.stopBgm();
-      SurrealGames.SoundSystem.play('result');
-    }
-    // ハイスコア記録
-    if (typeof SurrealGames !== 'undefined' && SurrealGames.HighScore) {
-      SurrealGames.HighScore.set('typing-game', score, { maxCombo: maxCombo });
-    }
+    if (sg) sg.onGameEnd(score, { maxCombo });
   }
-
-  // ===== 入力処理 =====
-  // 現在のユニットを「committedText に追加して次へ」と処理
-  function advanceUnit(committed) {
-    committedText += committed;
-    currentUnitIdx++;
-    currentUnitTyped = '';
-  }
-
-  inputArea.addEventListener('input', () => {
-    if (!gameRunning) return;
-    const raw = inputArea.value.toLowerCase();
-    // 新しく追加された文字数を計算
-    const expectedSoFar = committedText + currentUnitTyped;
-    if (!raw.startsWith(expectedSoFar)) {
-      // バックスペース等：state を巻き戻して入力欄を正規化
-      inputArea.value = expectedSoFar;
-      return;
-    }
-    const addedChars = raw.slice(expectedSoFar.length);
-    let anyCorrect = false;
-    let anyWrong = false;
-
-    for (const ch of addedChars) {
-      if (currentUnitIdx >= currentUnits.length) break;
-      const tryTyped = currentUnitTyped + ch;
-      const unit = currentUnits[currentUnitIdx];
-      // 完全一致するか？
-      const exact = unit.find(alt => alt === tryTyped);
-      // プレフィックスとして有効か？
-      const hasPrefix = unit.some(alt => alt.startsWith(tryTyped));
-      if (exact) {
-        advanceUnit(tryTyped);
-        anyCorrect = true;
-      } else if (hasPrefix) {
-        currentUnitTyped = tryTyped;
-        anyCorrect = true;
-      } else {
-        anyWrong = true;
-        break;
-      }
-    }
-
-    if (anyWrong) {
-      combo = 0;
-      inputArea.value = committedText + currentUnitTyped;
-      playSE('wrong');
-      wordCard.classList.remove('wrong-shake');
-      void wordCard.offsetWidth;
-      wordCard.classList.add('wrong-shake');
-      updateHUD();
-      return;
-    }
-
-    if (anyCorrect) {
-      playSE('tap');
-      inputArea.value = committedText + currentUnitTyped;
-      renderWord();
-      // ランダムにハート/星を浮かせる（派手すぎない程度に）
-      if (Math.random() < 0.5) spawnFloatPop(['♡', '✿', '✨', '★'][Math.floor(Math.random() * 4)]);
-    }
-
-    // 単語クリア？
-    if (currentUnitIdx >= currentUnits.length) {
-      combo++;
-      if (combo > maxCombo) maxCombo = combo;
-      const romajiLen = primaryFull(currentUnits).length;
-      const comboBonus = Math.floor(combo / 3) * 5;
-      const lengthBonus = Math.floor(romajiLen / 2);
-      score += 5 + lengthBonus + comboBonus;
-      wordsCleared++;
-      playSE(combo >= 3 ? 'combo' : 'correct');
-      spawnSparkleBurst();
-      wordCard.classList.remove('clear-burst');
-      void wordCard.offsetWidth;
-      wordCard.classList.add('clear-burst');
-      kaniGame.classList.remove('cheer');
-      void kaniGame.offsetWidth;
-      kaniGame.classList.add('cheer');
-      updateHUD();
-      nextWord();
-    }
-  });
-
-  // 物理キーボードからのフォールバック（input イベントが拾えない場合に備えて focus 維持）
-  gameScreen.addEventListener('click', () => { if (gameRunning) inputArea.focus(); });
 
   document.getElementById('start-btn').addEventListener('click', startGame);
   document.getElementById('retry-btn').addEventListener('click', startGame);
+
+  document.getElementById('share-btn').addEventListener('click', () => {
+    const url = window.location.href;
+    const text = '竚ｨ・・繧ｷ繝･繝ｼ繝ｫ繧ｿ繧､繝斐Φ繧ｰ\n繧ｹ繧ｳ繧｢: ' + score + '繝昴う繝ｳ繝茨ｼ医け繝ｪ繧｢隱樊焚: ' + wordsCleared + '・噂n\n#繧ｷ繝･繝ｼ繝ｫ繧ｲ繝ｼ繝繧ｹ\n' + url;
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+  });
+
+  window.__setSg = (instance) => { sg = instance; };
 })();
 </script>
 <script src="../common/i18n.js"></script>
 <script src="../common/game-common.js"></script>
 <script>
 SurrealI18n.init({
-  ja: { subtitle:'かにかにと一緒にタイピング！', startBtn:'スタート', resultTitle:'タイムアップ！', resultLabel:'ポイント', wordsCleared:'クリア語数', maxCombo:'最大コンボ', retryBtn:'もう一度', scorePrefix:'スコア', timePrefix:'残り', backToTop:'← トップに戻る' },
-  en: { subtitle:'Type along with Kani-Kani!', startBtn:'START', resultTitle:'Time\'s Up!', resultLabel:'Points', wordsCleared:'Words', maxCombo:'Max Combo', retryBtn:'Retry', scorePrefix:'Score', timePrefix:'Time', backToTop:'← Back to Top' }
+  ja: { subtitle:'縺九↓縺九↓縺ｨ荳邱偵↓繧ｿ繧､繝斐Φ繧ｰ・・, startBtn:'繧ｹ繧ｿ繝ｼ繝・, resultTitle:'繧ｿ繧､繝繧｢繝・・・・, resultLabel:'繝昴う繝ｳ繝・, wordsCleared:'繧ｯ繝ｪ繧｢隱樊焚', maxCombo:'譛螟ｧ繧ｳ繝ｳ繝・, retryBtn:'繧ゅ≧荳蠎ｦ', scorePrefix:'繧ｹ繧ｳ繧｢', timePrefix:'谿九ｊ', backToTop:'竊・繝医ャ繝励↓謌ｻ繧・ },
+  en: { subtitle:'Type along with Kani-Kani!', startBtn:'START', resultTitle:'Time\'s Up!', resultLabel:'Points', wordsCleared:'Words', maxCombo:'Max Combo', retryBtn:'Retry', scorePrefix:'Score', timePrefix:'Time', backToTop:'竊・Back to Top' }
 });
-SurrealGames.init('typing-game');
+window.__setSg(SurrealGames.init('typing-game'));
 </script>
 </body>
 </html>

@@ -1613,18 +1613,30 @@ document.getElementById('victory-btn').addEventListener('click', () => {
 gameLoop();
 
 // ===== モバイル操作パッド =====
-const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+const hasTouchInput = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 const mobileControls = document.getElementById('mobile-controls');
 
-if (isMobile && mobileControls) {
-  mobileControls.classList.remove('hidden');
+if (mobileControls) {
+  const narrowTouchViewport = window.matchMedia('(max-width: 540px)');
+  const holdIntervals = {};
 
-  let holdIntervals = {};
+  function syncMobileControlsVisibility() {
+    mobileControls.classList.toggle('hidden', !(hasTouchInput && narrowTouchViewport.matches));
+  }
+
+  syncMobileControlsVisibility();
+  if (typeof narrowTouchViewport.addEventListener === 'function') {
+    narrowTouchViewport.addEventListener('change', syncMobileControlsVisibility);
+  } else if (typeof narrowTouchViewport.addListener === 'function') {
+    narrowTouchViewport.addListener(syncMobileControlsVisibility);
+  }
+  window.addEventListener('resize', syncMobileControlsVisibility);
 
   document.querySelectorAll('.dpad-btn, #action-btn').forEach(btn => {
     const keyName = btn.dataset.key;
 
     btn.addEventListener('touchstart', (e) => {
+      if (mobileControls.classList.contains('hidden')) return;
       e.preventDefault();
       keys[keyName] = true;
       keyJustPressed[keyName] = true;
@@ -1644,7 +1656,7 @@ if (isMobile && mobileControls) {
       clearInterval(holdIntervals[keyName]);
     }, { passive: false });
 
-    btn.addEventListener('touchcancel', (e) => {
+    btn.addEventListener('touchcancel', () => {
       keys[keyName] = false;
       clearInterval(holdIntervals[keyName]);
     });

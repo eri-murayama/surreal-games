@@ -1190,6 +1190,64 @@ body {
 
 /* ===== レスポンシブ ===== */
 
+@media (min-width: 481px) {
+  #title-screen,
+  #opening-screen,
+  #register-scene {
+    justify-content: flex-start;
+    padding-top: 48px;
+  }
+
+  #title-screen {
+    padding-bottom: 32px;
+  }
+
+  #title-character {
+    margin-bottom: 18px;
+  }
+
+  #atsushi-title {
+    width: 250px;
+    height: 250px;
+  }
+
+  #game-title {
+    margin-bottom: 30px;
+  }
+
+  #opening-screen {
+    gap: 10px;
+    padding-bottom: 24px;
+  }
+
+  #atsushi-opening {
+    width: 350px;
+    height: 350px;
+    margin-bottom: 8px;
+  }
+
+  #opening-text-box,
+  #register-text-box {
+    max-width: 420px;
+    height: 140px;
+  }
+
+  #register-scene {
+    gap: 8px;
+    padding-bottom: 24px;
+  }
+
+  #atsushi-register {
+    width: 340px;
+    height: 340px;
+  }
+
+  #atsushi-ending {
+    width: 380px;
+    height: 380px;
+  }
+}
+
 @media (max-width: 480px) {
   #game-title {
     font-size: 21px;

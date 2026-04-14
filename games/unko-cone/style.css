@@ -469,6 +469,51 @@ body {
 }
 
 /* ===== 主人公コメント欄 ===== */
+@media (min-width: 700px) {
+  .title-container {
+    max-width: 620px;
+    padding: 42px 24px 24px;
+  }
+
+  .game-title {
+    font-size: 2.8rem;
+  }
+
+  .game-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .character-preview-frame {
+    width: 320px;
+    height: 320px;
+  }
+
+  .controls-help {
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.9rem;
+  }
+
+  .story-container {
+    max-width: 520px;
+    gap: 20px;
+  }
+
+  .story-bubble {
+    padding: 22px 28px;
+    font-size: 1.08rem;
+  }
+
+  .result-container {
+    max-width: 520px;
+  }
+
+  .character-comment-box {
+    padding: 18px;
+  }
+}
+
 .character-comment-box {
   display: flex;
   align-items: flex-start;

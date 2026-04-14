@@ -350,8 +350,9 @@
   var scale = 1;
 
   function resizeCanvas() {
-    var maxW = Math.min(window.innerWidth, 500);
-    var maxH = window.innerHeight;
+    var wideScreen = window.innerWidth >= 700;
+    var maxW = Math.min(wideScreen ? window.innerWidth - 80 : window.innerWidth, wideScreen ? 560 : 500);
+    var maxH = Math.max(window.innerHeight - (wideScreen ? 56 : 0), 320);
     var ratio = DESIGN_W / DESIGN_H;
     var w, h;
     if (maxW / maxH > ratio) {

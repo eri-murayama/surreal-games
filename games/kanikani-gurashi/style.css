@@ -724,7 +724,7 @@ html, body {
 
 /* ===== 共通UI位置調整（タブバーとの衝突回避） ===== */
 .sg-sound-toggle {
-  bottom: 62px !important;
+  bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
   left: 8px !important;
   background: rgba(255,255,255,0.7) !important;
   color: var(--kk-text) !important;
@@ -732,7 +732,7 @@ html, body {
   border: 1px solid var(--kk-cell-border) !important;
 }
 .sg-share-btn {
-  bottom: 62px !important;
+  bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
   right: 8px !important;
   background: rgba(255,255,255,0.7) !important;
   color: var(--kk-text) !important;
@@ -741,8 +741,8 @@ html, body {
 }
 .sg-lang-toggle {
   top: auto !important;
-  bottom: 110px !important;
-  right: 6px !important;
+  bottom: calc(110px + env(safe-area-inset-bottom, 0px)) !important;
+  right: calc(6px + env(safe-area-inset-right, 0px)) !important;
 }
 .sg-lang-toggle .sg-lang-btn {
   background: rgba(255,255,255,0.7) !important;

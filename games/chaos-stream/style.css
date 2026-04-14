@@ -179,9 +179,9 @@ body {
    キャラ選択画面
    ============================== */
 #select-screen {
-  justify-content: center;
-  gap: 32px;
-  padding: 60px 40px;
+  justify-content: flex-start;
+  gap: clamp(24px, 4vw, 40px);
+  padding: clamp(88px, 12vh, 132px) clamp(24px, 6vw, 56px) 56px;
   text-align: center;
   background:
     radial-gradient(ellipse at 50% 30%, rgba(0,255,65,0.06) 0%, transparent 50%),
@@ -196,24 +196,27 @@ body {
 }
 
 .char-select-grid {
-  display: flex;
-  gap: 24px;
-  justify-content: center;
-  max-width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: clamp(16px, 3vw, 28px);
+  width: min(100%, 980px);
+  margin: 0 auto;
+  align-items: stretch;
 }
 
 .char-card {
   background: var(--bg-mid);
   border: 2px solid var(--border-color);
   border-radius: 14px;
-  padding: 24px 20px;
-  width: 260px;
+  padding: clamp(20px, 2.5vw, 26px) clamp(16px, 2vw, 22px);
+  width: auto;
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  min-height: 100%;
   font-family: 'M PLUS Rounded 1c', sans-serif;
   color: #eee;
 }
@@ -227,8 +230,8 @@ body {
 }
 
 .char-img-wrap {
-  width: 160px;
-  height: 160px;
+  width: min(180px, 100%);
+  aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
   background: rgba(255,255,255,0.05);
@@ -781,7 +784,7 @@ body {
 }
 
 /* ===== レスポンシブ（スマホ） ===== */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   #title-screen {
     padding: 40px 20px;
   }
@@ -805,20 +808,18 @@ body {
   }
 
   .char-select-grid {
-    flex-direction: column;
-    align-items: center;
+    width: min(100%, 320px);
+    grid-template-columns: 1fr;
     gap: 16px;
   }
 
   .char-card {
     width: 100%;
-    max-width: 280px;
     padding: 16px;
   }
 
   .char-img-wrap {
     width: 100px;
-    height: 100px;
   }
 
   .char-name {

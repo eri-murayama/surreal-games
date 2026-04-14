@@ -16,21 +16,22 @@ body {
   width: 100%;
   max-width: 600px;
   text-align: center;
+  padding: 28px 20px 32px;
 }
 
 /* ===== タイトル ===== */
 .game-title {
   font-family: 'Hachi Maru Pop', cursive;
-  font-size: 28px;
+  font-size: 32px;
   color: #fff;
   text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .game-subtitle {
-  font-size: 13px;
+  font-size: 14px;
   color: rgba(255,255,255,0.8);
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 /* ===== 共通ボックス ===== */
@@ -38,28 +39,31 @@ body {
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(12px);
   border: 2px solid rgba(255,255,255,0.3);
-  border-radius: 24px;
-  padding: 32px;
+  border-radius: 28px;
+  padding: 36px 32px;
+  box-shadow: 0 20px 48px rgba(33, 20, 79, 0.18);
 }
 
 .setup-box h2 {
   font-family: 'Hachi Maru Pop', cursive;
-  font-size: 22px;
+  font-size: 24px;
   color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 /* ===== モード選択 ===== */
 .mode-select, .online-choice {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .mode-btn {
-  width: 200px;
-  padding: 24px 16px;
+  flex: 1 1 180px;
+  max-width: 210px;
+  min-height: 138px;
+  padding: 26px 18px;
   border-radius: 20px;
   border: 2px solid rgba(255,255,255,0.4);
   background: rgba(255,255,255,0.1);
@@ -79,7 +83,9 @@ body {
 }
 
 .mode-btn--small {
-  width: 170px;
+  flex-basis: 170px;
+  max-width: 190px;
+  min-height: 112px;
   padding: 18px 14px;
 }
 
@@ -97,9 +103,9 @@ body {
 /* ===== ローカル人数選択 ===== */
 .player-select {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .player-btn {
@@ -129,7 +135,7 @@ body {
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .key-info p {
@@ -255,7 +261,7 @@ kbd {
   font-size: 12px !important;
   padding: 6px 16px !important;
   opacity: 0.6;
-  margin-top: 16px !important;
+  margin-top: 20px !important;
   display: inline-block;
 }
 
@@ -543,6 +549,7 @@ button:active { transform: translateY(1px); }
   }
 
   #game-wrapper {
+    padding: 32px 12px 24px;
     padding-top: 32px;
   }
 
@@ -613,6 +620,12 @@ button:active { transform: translateY(1px); }
 }
 
 #mobile-tap-btn.hidden { display: none !important; }
+
+/* 連打エリア表示中は音量・シェアボタンを上にオフセット */
+body:has(#mobile-tap-btn:not(.hidden)) .sg-sound-toggle,
+body:has(#mobile-tap-btn:not(.hidden)) .sg-share-btn {
+  bottom: calc(40vh + 16px + env(safe-area-inset-bottom, 0px));
+}
 
 /* ===== トップに戻るリンク ===== */
 .back-to-top-link {

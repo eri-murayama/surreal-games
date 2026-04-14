@@ -6,6 +6,7 @@ body {
   color: #fff;
   min-height: 100vh;
   min-height: 100dvh;
+  overflow: hidden;
 }
 
 /* ===== 画面切替 ===== */
@@ -331,6 +332,77 @@ body.mode-gyobuzawa {
 }
 
 /* ===== レスポンシブ（iPad / タブレット） ===== */
+@media (min-width: 1025px) {
+  .screen {
+    padding: 24px;
+  }
+
+  #title-screen.active,
+  #game-screen.active {
+    justify-content: flex-start;
+    padding-top: clamp(84px, 10vh, 124px);
+  }
+
+  #gameover-screen.active {
+    padding-top: clamp(72px, 8vh, 110px);
+  }
+
+  .title-container {
+    max-width: 560px;
+  }
+
+  .title-rules {
+    max-width: 520px;
+    padding: 18px 24px;
+    font-size: 1rem;
+  }
+
+  .btn-start {
+    padding: 16px 56px;
+    font-size: 1.28rem;
+  }
+
+  .game-hud {
+    gap: 40px;
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    max-width: 32ch;
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
+
+  .choices {
+    max-width: 620px;
+    gap: 16px;
+  }
+
+  .choice-card {
+    padding: 28px 16px;
+  }
+
+  .choice-emoji {
+    font-size: 56px;
+  }
+
+  .choice-name {
+    font-size: 1.7rem;
+  }
+
+  .gameover-container {
+    max-width: 520px;
+  }
+
+  .history-section {
+    max-width: 420px;
+  }
+
+  .reveal-container {
+    max-width: 500px;
+  }
+}
+
 @media (max-width: 1024px) and (min-width: 481px) {
   .screen { padding: 12px; }
   .title-container { max-width: 460px; }

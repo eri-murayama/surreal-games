@@ -20,12 +20,12 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --card-w: 60px;
-  --card-h: 84px;
+  --card-w: clamp(44px, calc((100dvw - 40px) / 7), 60px);
+  --card-h: calc(var(--card-w) * 1.4);
   --card-radius: 6px;
-  --gap: 6px;
-  --fan-offset: 18px;
-  --fan-offset-hidden: 6px;
+  --gap: clamp(4px, 1vw, 6px);
+  --fan-offset: clamp(14px, calc(var(--card-h) * 0.22), 18px);
+  --fan-offset-hidden: clamp(4px, calc(var(--card-h) * 0.08), 6px);
   --felt: #1a6b3c;
   --felt-dark: #0d4a25;
   --red: #d32f2f;
@@ -92,12 +92,31 @@ body {
 #newGameBtn:hover, #autoCompleteBtn:hover { filter: brightness(1.1); }
 #autoCompleteBtn { display: none; background: linear-gradient(135deg, #4caf50, #2e7d32); color: #fff; }
 
+@media (max-width: 480px) {
+  #header {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+
+  #header a {
+    font-size: 12px;
+  }
+
+  .header-left, .header-right {
+    gap: 6px;
+  }
+
+  .header-center {
+    gap: 8px;
+  }
+}
+
 /* Game area */
 #game {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 4px;
+  padding: 4px 8px 60px;
   overflow: hidden;
   position: relative;
 }
@@ -197,6 +216,17 @@ body {
 .card-top { font-size: 13px; line-height: 1; }
 .card-center { font-size: 26px; text-align: center; line-height: 1; }
 .card-bottom { font-size: 13px; line-height: 1; text-align: right; transform: rotate(180deg); }
+
+@media (max-width: 480px) {
+  .card-top,
+  .card-bottom {
+    font-size: 11px;
+  }
+
+  .card-center {
+    font-size: 22px;
+  }
+}
 
 @media (min-width: 700px) {
   .card-top { font-size: 16px; }

@@ -334,6 +334,79 @@ body {
 }
 
 /* --- レスポンシブ --- */
+@media (min-width: 700px) {
+  #stage-select-screen.active,
+  #clear-screen.active,
+  #gameover-screen.active,
+  #result-screen.active {
+    justify-content: flex-start;
+    padding-top: clamp(84px, 11vh, 128px);
+  }
+
+  .title-content {
+    width: min(100%, 560px);
+    gap: 16px;
+  }
+
+  .game-title {
+    font-size: 2.8rem;
+  }
+
+  .game-subtitle {
+    font-size: 1rem;
+    max-width: 30ch;
+  }
+
+  #preview-canvas {
+    width: 240px;
+    height: 240px;
+  }
+
+  .stage-select-content {
+    width: min(100%, 560px);
+    gap: 20px;
+    padding-inline: 24px;
+  }
+
+  .screen-heading {
+    font-size: 2.1rem;
+  }
+
+  .stage-list {
+    max-width: 440px;
+  }
+
+  .stage-btn {
+    padding: 14px 18px;
+  }
+
+  .game-hud {
+    min-width: 320px;
+    padding: 10px 18px;
+  }
+
+  #game-canvas {
+    max-width: 440px;
+    margin-top: 92px;
+  }
+
+  .clear-content,
+  .result-content {
+    width: min(100%, 460px);
+    gap: 18px;
+  }
+
+  .clear-title,
+  .result-title {
+    font-size: 2.2rem;
+  }
+
+  .clear-stats,
+  .result-stats {
+    min-width: 280px;
+  }
+}
+
 @media (max-width: 480px) {
   .game-title {
     font-size: 1.6rem;

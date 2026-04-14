@@ -558,6 +558,46 @@ body {
 }
 
 @media (min-width: 701px) {
+  :root {
+    --cell-size: 30px;
+  }
+
+  .screen {
+    padding-inline: 20px;
+  }
+
+  #title-screen.active,
+  #result-screen.active {
+    justify-content: flex-start;
+    padding-top: clamp(84px, 11vh, 128px);
+  }
+
+  #game-screen {
+    justify-content: flex-start;
+    padding-top: clamp(64px, 10vh, 108px);
+  }
+
+  .title-container {
+    max-width: 560px;
+  }
+
+  .game-layout {
+    gap: 24px;
+    margin-top: 18px;
+  }
+
+  .side-panel {
+    min-width: 112px;
+  }
+
+  .info-box {
+    padding: 14px 18px;
+  }
+
+  .result-container {
+    max-width: 480px;
+  }
+
   .right-panel {
     display: flex;
   }

@@ -281,6 +281,82 @@ body {
 .back-to-top-link:hover {
   color: #fff;
 }
+
+@media (min-width: 700px) {
+  .screen {
+    max-width: 620px;
+    padding: 24px 28px;
+  }
+
+  #title-screen h1 {
+    font-size: 2.1rem;
+  }
+
+  #title-screen .title-character {
+    width: 230px;
+  }
+
+  #title-screen .subtitle {
+    max-width: 30ch;
+  }
+
+  .game-btn {
+    font-size: 1.1rem;
+    padding: 0.8em 2.6em;
+  }
+
+  #select-screen {
+    justify-content: flex-start;
+    padding-top: clamp(72px, 10vh, 108px);
+    padding-bottom: 44px;
+    gap: 14px;
+  }
+
+  .select-header {
+    font-size: 0.85rem;
+  }
+
+  .select-category {
+    font-size: 1.6rem;
+  }
+
+  .select-character-wrap {
+    width: 220px;
+  }
+
+  .choice-grid {
+    max-width: 420px;
+    gap: 12px;
+  }
+
+  .choice-btn {
+    padding: 0.7em 0.6em;
+  }
+
+  .choice-emoji {
+    font-size: 2.1rem;
+  }
+
+  .choice-label {
+    font-size: 0.95rem;
+  }
+
+  #result-screen {
+    padding-top: clamp(72px, 10vh, 108px);
+  }
+
+  .result-character-wrap {
+    width: 250px;
+  }
+
+  .result-choices {
+    max-width: 420px;
+  }
+
+  .result-comment {
+    max-width: 28ch;
+  }
+}
 </style>
 </head>
 <body>

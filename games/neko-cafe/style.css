@@ -888,7 +888,7 @@ body:has(#game-screen:not(.hidden)) .sg-share-btn {
 /* トップに戻る（ゲーム中は非表示、タイトル画面でのみ表示） */
 .back-to-top-link {
   position: fixed;
-  bottom: 52px;
+  bottom: calc(52px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
   background: rgba(255,255,255,0.95);
@@ -909,10 +909,10 @@ body:has(#game-screen:not(.hidden)) .sg-share-btn {
 
 /* 共通ボタン（シェア・音量・言語）がアクションバーに被らないよう調整 */
 .sg-share-btn {
-  bottom: 56px !important;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
 }
 .sg-sound-toggle {
-  bottom: 56px !important;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 /* リザルト画面の導線ボタン（毎日表示は邪魔なので非表示） */
@@ -921,6 +921,58 @@ body:has(#game-screen:not(.hidden)) .sg-share-btn {
 }
 
 /* ===== レスポンシブ ===== */
+@media (min-width: 700px) {
+  #game-wrapper {
+    max-width: 620px;
+  }
+
+  #title-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: clamp(72px, 11vh, 108px);
+  }
+
+  .title-deco {
+    font-size: 3.4rem;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .game-title {
+    font-size: 3.3rem;
+  }
+
+  .game-sub {
+    font-size: 1.08rem;
+    max-width: 28ch;
+    margin-bottom: 34px;
+  }
+
+  .big-btn {
+    width: 72%;
+    max-width: 320px;
+  }
+
+  #hud,
+  #cafe-area,
+  #kitchen {
+    width: 100%;
+  }
+
+  #action-bar {
+    left: 50%;
+    right: auto;
+    width: min(calc(100% - 16px), 620px);
+    transform: translateX(-50%);
+    border-left: 2px solid var(--cafe-brown);
+    border-right: 2px solid var(--cafe-brown);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -4px 12px rgba(139, 90, 60, 0.14);
+  }
+}
+
 @media (min-width: 600px) {
   #tables-wrap {
     grid-template-columns: repeat(3, 1fr);

@@ -723,7 +723,7 @@ body {
 /* 共通ボタン（音量・シェア）がタップボタンと重ならないよう上にオフセット */
 body:has(#game-screen.active) .sg-sound-toggle,
 body:has(#game-screen.active) .sg-share-btn {
-  bottom: 80px;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
 }
 
 /* ===== レスポンシブ ===== */
@@ -742,6 +742,68 @@ body:has(#game-screen.active) .sg-share-btn {
   .title-emojis { font-size: 1.5rem; letter-spacing: 4px; margin-bottom: 12px; }
   .game-subtitle { font-size: 0.8rem; margin-bottom: 10px; }
   .tap-btn { height: 44px; }
+}
+
+@media (min-width: 700px) {
+  .screen {
+    max-width: 620px;
+  }
+
+  #title-screen.active {
+    justify-content: flex-start;
+    padding-top: clamp(92px, 11vh, 128px);
+  }
+
+  #stage-select-screen.active,
+  #clear-screen.active,
+  #result-screen.active {
+    justify-content: flex-start;
+    padding-top: 42px;
+  }
+
+  .title-content,
+  .stage-select-content,
+  .clear-content,
+  .result-content {
+    width: min(100%, 620px);
+  }
+
+  .game-title {
+    font-size: 3rem;
+  }
+
+  .game-subtitle {
+    font-size: 1.08rem;
+  }
+
+  .title-emojis {
+    font-size: 2.7rem;
+    margin-bottom: 34px;
+  }
+
+  .stage-select-title {
+    font-size: 1.9rem;
+  }
+
+  .stage-list {
+    max-width: 520px;
+  }
+
+  .stage-card {
+    padding: 14px 18px;
+  }
+
+  .game-hud {
+    padding: 10px 20px;
+  }
+
+  .hud-value {
+    font-size: 1.55rem;
+  }
+
+  .tap-btn {
+    font-size: 1.12rem;
+  }
 }
 
 @media (min-width: 501px) {

@@ -289,6 +289,12 @@ html, body {
   justify-content: flex-end;
 }
 
+/* ダイアログ画面では音量・シェアボタンを台詞ボックスの上に逃がす */
+body:has(#dialogue-screen.active) .sg-sound-toggle,
+body:has(#dialogue-screen.active) .sg-share-btn {
+  bottom: calc(200px + env(safe-area-inset-bottom, 0px));
+}
+
 .dialogue-scene {
   position: absolute;
   inset: 0;

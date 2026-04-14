@@ -14,6 +14,48 @@
 
   const SITE_BASE = '../../';
 
+  function ensureSharedFavicon() {
+    if (!document.head) return;
+
+    if (!document.querySelector('link[rel="icon"]')) {
+      const iconLink = document.createElement('link');
+      iconLink.rel = 'icon';
+      iconLink.type = 'image/png';
+      iconLink.href = SITE_BASE + 'favicon.png';
+      document.head.appendChild(iconLink);
+    }
+
+    if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+      const appleTouchLink = document.createElement('link');
+      appleTouchLink.rel = 'apple-touch-icon';
+      appleTouchLink.href = SITE_BASE + 'favicon.png';
+      document.head.appendChild(appleTouchLink);
+    }
+  }
+
+  ensureSharedFavicon();
+
+  function ensureSafeBackLinks() {
+    var links = document.querySelectorAll('.back-to-top-link');
+    links.forEach(function (link) {
+      var computed = window.getComputedStyle(link);
+      if (computed.position !== 'fixed') {
+        link.classList.remove('sg-safe-back-link');
+        link.style.removeProperty('--sg-back-safe-top');
+        link.style.removeProperty('--sg-back-safe-right');
+        link.style.removeProperty('--sg-back-safe-bottom');
+        link.style.removeProperty('--sg-back-safe-left');
+        return;
+      }
+
+      link.classList.add('sg-safe-back-link');
+      link.style.setProperty('--sg-back-safe-top', computed.top !== 'auto' ? 'var(--sg-safe-top)' : '0px');
+      link.style.setProperty('--sg-back-safe-right', computed.right !== 'auto' ? 'var(--sg-safe-right)' : '0px');
+      link.style.setProperty('--sg-back-safe-bottom', computed.bottom !== 'auto' ? 'var(--sg-safe-bottom)' : '0px');
+      link.style.setProperty('--sg-back-safe-left', computed.left !== 'auto' ? 'var(--sg-safe-left)' : '0px');
+    });
+  }
+
   // ===== 正式リリース済みゲームID =====
   const RELEASED_IDS = ['reversi', 'puzzle-2048', 'minesweeper', 'unko-cone', 'drive', 'business-analysis', 'escape-room', 'whack-kanikani', 'emoji-catcher', 'kanikani-gurashi', 'neko-cafe', 'dekaunko-escape'];
 
@@ -2392,6 +2434,9 @@
     const dw = parts[0];
     const dh = parts[1];
     if (!dw || !dh) return;
+    const maxScaleAttr = parseFloat(wrapper.getAttribute('data-sg-scale-max'));
+    const maxScale = Number.isFinite(maxScaleAttr) && maxScaleAttr > 0 ? maxScaleAttr : 1;
+    const maxOffsetYAttr = parseFloat(wrapper.getAttribute('data-sg-scale-max-offset-y'));
 
     // body をスケーリング用にリセット
     document.body.style.overflow = 'hidden';
@@ -2419,11 +2464,14 @@
     function applyScale() {
       var vw = window.innerWidth;
       var vh = window.innerHeight;
-      var scale = Math.min(vw / dw, vh / dh, 1); // 1以上にはしない（PC時の拡大防止）
+      var scale = Math.min(vw / dw, vh / dh, maxScale);
       var scaledW = dw * scale;
       var scaledH = dh * scale;
       var offsetX = (vw - scaledW) / 2;
       var offsetY = (vh - scaledH) / 2;
+      if (Number.isFinite(maxOffsetYAttr) && maxOffsetYAttr >= 0) {
+        offsetY = Math.min(offsetY, maxOffsetYAttr);
+      }
       wrapper.style.transform = 'translate(' + offsetX + 'px,' + offsetY + 'px) scale(' + scale + ')';
     }
 
@@ -2547,6 +2595,7 @@
     createLangToggle();
     initScaling();
     insertGameSchema(gameId);
+    ensureSafeBackLinks();
 
     // ゲーム間導線をリザルト画面に挿入
     function insertRecommendSections() {
@@ -2592,6 +2641,10 @@
     window.addEventListener('surreal-lang-change', function () {
       insertRecommendSections();
     });
+    window.addEventListener('resize', ensureSafeBackLinks);
+    if (window.visualViewport && typeof window.visualViewport.addEventListener === 'function') {
+      window.visualViewport.addEventListener('resize', ensureSafeBackLinks);
+    }
 
     return {
       sound: SoundSystem,

@@ -276,6 +276,63 @@ body {
 }
 .back-to-top-link:hover { color: #fff; }
 
+@media (min-width: 700px) {
+  #game-wrapper {
+    max-width: 620px;
+  }
+
+  .screen {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  #title-screen,
+  #result-screen {
+    justify-content: flex-start;
+    padding-top: clamp(88px, 11vh, 128px);
+  }
+
+  .title-inner,
+  .result-inner {
+    max-width: 460px;
+  }
+
+  .title-poop {
+    font-size: clamp(5rem, 10vw, 6.75rem);
+  }
+
+  .game-title {
+    font-size: clamp(2rem, 4.8vw, 2.8rem);
+    margin-top: 8px;
+    margin-bottom: 6px;
+  }
+
+  .game-subtitle {
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
+
+  .controls-help {
+    margin-top: 18px;
+    padding: 14px 18px;
+    font-size: 0.82rem;
+  }
+
+  #game-screen {
+    padding: 16px 16px 0;
+  }
+
+  .game-hud,
+  .weight-bar-wrap,
+  #game-canvas {
+    max-width: 580px;
+  }
+
+  .result-inner {
+    padding: 24px 28px;
+  }
+}
+
 @media (max-width: 480px) {
   .controls-help { font-size: 0.72rem; padding: 8px 12px; }
   .hud-value { font-size: 1rem; }
