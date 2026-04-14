@@ -1,10 +1,45 @@
 [
   {
+    "date": "2026.04.14",
+    "tag": "feature",
+    "tagLabel": "新機能",
+    "text": "お知らせ機能を刷新！キーワード検索とジャンル絞り込みで過去のお知らせも見つけやすくなりました。",
+    "url": "index.html#news"
+  },
+  {
+    "date": "2026.04.13",
+    "tag": "feature",
+    "tagLabel": "新機能",
+    "text": "トップページに「おすすめゲームルーレット」を追加しました！迷ったらルーレットにおまかせ。",
+    "url": "index.html"
+  },
+  {
+    "date": "2026.04.13",
+    "tag": "feature",
+    "tagLabel": "新機能",
+    "text": "キャラクター図鑑にデイリーチャレンジ・スタンプカード・称号・死に方図鑑を追加しました！",
+    "url": "collection.html"
+  },
+  {
+    "date": "2026.04.13",
+    "tag": "update",
+    "tagLabel": "更新",
+    "text": "「漆黒のリバーシ」演出とバトルBGMを強化しました。正式公開！",
+    "url": "games/reversi/index.html"
+  },
+  {
     "date": "2026.04.13",
     "tag": "new",
     "tagLabel": "新ゲーム",
     "text": "新ゲーム「漆黒のリバーシ」を公開しました！吾輩の番だが？",
     "url": "games/reversi/index.html"
+  },
+  {
+    "date": "2026.04.11",
+    "tag": "update",
+    "tagLabel": "更新",
+    "text": "「シュール進化論」おじさんカットイン拡大＆音量ボタン対応に更新しました。",
+    "url": "games/puzzle-2048/index.html"
   },
   {
     "date": "2026.04.11",
@@ -57,8 +92,8 @@
   },
   {
     "date": "2026.03.10",
-    "tag": "update",
-    "tagLabel": "公開",
+    "tag": "feature",
+    "tagLabel": "新機能",
     "text": "シュールゲームス公式サイトを公開しました！",
     "url": "index.html"
   }
