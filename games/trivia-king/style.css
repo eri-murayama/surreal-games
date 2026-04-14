@@ -618,6 +618,57 @@ html, body {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 480px) {
+  #title-screen.active,
+  #result-screen.active {
+    justify-content: flex-start;
+    padding: 74px 16px 24px;
+  }
+
+  .title-container,
+  .result-container {
+    width: min(100%, 348px);
+    padding: 24px 18px 20px;
+    border-radius: 24px;
+    background: rgba(20, 20, 82, 0.42);
+    border: 1px solid rgba(255, 215, 0, 0.16);
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(12px);
+  }
+
+  .title-main {
+    font-size: clamp(1.85rem, 8.6vw, 2.55rem);
+    margin: 8px 0 10px;
+  }
+
+  .title-subtitle {
+    margin-bottom: 20px;
+  }
+
+  .title-rules {
+    padding: 14px 16px;
+    margin-bottom: 22px;
+  }
+
+  .title-rules p {
+    font-size: 0.88rem;
+  }
+
+  .btn-start {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.05rem;
+  }
+
+  .disclaimer {
+    position: static;
+    left: auto;
+    right: auto;
+    max-width: 330px;
+    margin: 18px auto 0;
+    padding: 0 6px;
+    font-size: 0.68rem;
+  }
+
   .answers-area {
     grid-template-columns: 1fr;
   }

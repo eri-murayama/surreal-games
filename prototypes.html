@@ -26,11 +26,18 @@
   </svg>
 
   <!-- 固定ナビゲーション -->
-  <nav class="fixed-nav visible">
-    <a href="index.html" class="fixed-nav__link">トップ</a>
-    <a href="index.html#games" class="fixed-nav__link">ゲーム</a>
-    <a href="collection.html" class="fixed-nav__link">図鑑</a>
-    <a href="index.html#contact" class="fixed-nav__link">つながる</a>
+  <nav id="fixed-nav" class="fixed-nav visible" data-nav-mode="always" aria-label="固定ナビゲーション">
+    <button type="button" id="mobile-nav-toggle" class="mobile-nav-toggle" aria-expanded="false" aria-controls="fixed-nav-links">
+      <span class="mobile-nav-toggle__text">メニュー</span>
+      <span class="mobile-nav-toggle__icon" aria-hidden="true"></span>
+    </button>
+    <div id="fixed-nav-links" class="fixed-nav__links">
+      <a href="index.html" class="fixed-nav__link">トップ</a>
+      <a href="index.html#games" class="fixed-nav__link">ゲーム</a>
+      <a href="prototypes.html#prototypes" class="fixed-nav__link active">試作品</a>
+      <a href="collection.html" class="fixed-nav__link">図鑑</a>
+      <a href="index.html#contact" class="fixed-nav__link">つながる</a>
+    </div>
   </nav>
 
   <main class="proto-main">

@@ -110,6 +110,7 @@ document.querySelectorAll('.about-bg-chara').forEach((el) => observer.observe(el
 const fixedNav = document.getElementById('fixed-nav');
 const backToTop = document.getElementById('back-to-top');
 const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+const keepNavVisible = !!(fixedNav && fixedNav.dataset.navMode === 'always');
 
 function closeMobileNav() {
   if (!fixedNav) return;
@@ -117,7 +118,7 @@ function closeMobileNav() {
   if (mobileNavToggle) {
     mobileNavToggle.setAttribute('aria-expanded', 'false');
   }
-  if (window.scrollY <= window.innerHeight * 0.6) {
+  if (!keepNavVisible && window.scrollY <= window.innerHeight * 0.6) {
     fixedNav.classList.remove('visible');
   }
 }
@@ -159,8 +160,8 @@ window.addEventListener('scroll', () => {
   const shouldShow = scrollY > showThreshold;
 
   if (fixedNav) {
-    fixedNav.classList.toggle('visible', shouldShow || fixedNav.classList.contains('is-open'));
-    if (!shouldShow && !fixedNav.classList.contains('is-open')) {
+    fixedNav.classList.toggle('visible', keepNavVisible || shouldShow || fixedNav.classList.contains('is-open'));
+    if (!keepNavVisible && !shouldShow && !fixedNav.classList.contains('is-open')) {
       closeMobileNav();
     }
   }

@@ -103,10 +103,14 @@ body {
   margin-bottom: 4px;
 }
 .lang-switch {
-  margin-top: 16px;
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  right: calc(12px + env(safe-area-inset-right, 0px));
+  margin-top: 0;
   display: flex;
   gap: 8px;
-  justify-content: center;
+  justify-content: flex-end;
+  z-index: 100;
 }
 .lang-btn {
   background: rgba(255,255,255,0.1);
