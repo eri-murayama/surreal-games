@@ -294,3 +294,71 @@ body{
   .game-title{font-size:1.4rem}
   #board{gap:4px;padding:6px}
 }
+@media (min-width: 700px) {
+  #game-wrapper {
+    padding-top: 74px;
+  }
+
+  .game-title {
+    font-size: 2.2rem;
+    margin-bottom: 6px;
+  }
+
+  .game-subtitle {
+    font-size: 0.98rem;
+    margin-bottom: 24px;
+  }
+
+  #title-screen {
+    padding-top: 48px;
+  }
+
+  #title-emoji {
+    width: 150px;
+    height: 150px;
+  }
+
+  #title-catchphrase {
+    font-size: 1.05rem;
+    margin: 20px 0 22px;
+  }
+
+  #highscore-display {
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+
+  #start-btn,
+  #continue-btn,
+  #retry-btn {
+    max-width: 320px;
+    font-size: 1.18rem;
+    padding: 16px 0;
+  }
+
+  #title-hint {
+    max-width: 360px;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    margin: 18px auto 0;
+  }
+
+  #gameover-screen {
+    padding-top: 72px;
+  }
+
+  #gameover-stats {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  #title-screen {
+    padding-top: 60px;
+  }
+
+  #title-emoji {
+    width: 164px;
+    height: 164px;
+  }
+}

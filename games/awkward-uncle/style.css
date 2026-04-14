@@ -18,6 +18,13 @@ body {
 }
 .screen.active { display: flex; }
 
+#title-screen,
+#intro-screen,
+#reveal-screen,
+#clear-screen {
+  flex-direction: column;
+}
+
 .back-to-top-link {
   position: fixed;
   top: calc(12px + env(safe-area-inset-top, 0px));
@@ -367,4 +374,90 @@ body {
   font-size: 14px;
   color: #ffd89a;
   margin-bottom: 20px;
+}
+@media (min-width: 700px) {
+  #title-screen,
+  #clear-screen {
+    justify-content: flex-start;
+    padding-top: clamp(104px, 12vw, 150px);
+  }
+
+  .title-container,
+  .clear-container,
+  .intro-container {
+    max-width: 440px;
+  }
+
+  .game-title {
+    font-size: 56px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .btn-primary {
+    font-size: 22px;
+    padding: 16px 34px;
+  }
+
+  .controls-help {
+    font-size: 13px;
+    padding: 14px 16px;
+  }
+
+  #game-screen {
+    padding-top: 72px;
+  }
+
+  .game-hud {
+    max-width: 420px;
+    gap: 26px;
+    padding: 10px 18px;
+    margin-bottom: 14px;
+  }
+
+  #game-canvas {
+    width: min(430px, calc(100vw - 80px));
+  }
+
+  .tool-switcher {
+    margin-top: 14px;
+  }
+
+  .tool-btn {
+    font-size: 13px;
+    padding: 10px 18px;
+  }
+
+  .game-controls {
+    gap: 26px;
+    margin-top: 12px;
+  }
+
+  .dpad {
+    grid-template-columns: 42px 42px 42px;
+    grid-template-rows: 42px 42px;
+    gap: 4px;
+  }
+
+  .ctrl-btn {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .title-container,
+  .clear-container {
+    max-width: 480px;
+  }
+
+  .game-title {
+    font-size: 60px;
+  }
+
+  #game-canvas {
+    width: 460px;
+  }
 }

@@ -105,13 +105,45 @@ canvas {
 .bottom-bar button:hover { border-color: #e85d75; color: #e85d75; }
 .back-to-top-link {
   position: fixed;
-  bottom: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #999;
-  font-size: 0.7rem;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  color: #666;
+  font-size: 0.74rem;
   text-decoration: none;
   z-index: 100;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.86);
+  border: 1px solid rgba(232,93,117,0.14);
+}
+@media (max-width: 480px) {
+  .toolbar {
+    padding: 48px 10px 8px 10px;
+    justify-content: flex-start;
+  }
+
+  .toolbar .title {
+    display: none;
+  }
+
+  .tool-btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .size-slider {
+    width: 52px;
+  }
+
+  .bottom-bar {
+    gap: 6px;
+    padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .bottom-bar button {
+    padding: 5px 11px;
+    font-size: 0.72rem;
+  }
 }
 </style>
 </head>
