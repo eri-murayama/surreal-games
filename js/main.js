@@ -228,8 +228,13 @@ if (logo) {
   var ctx = canvas.getContext('2d');
 
   function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    var viewport = window.visualViewport;
+    var width = viewport ? Math.round(viewport.width) : document.documentElement.clientWidth;
+    var height = viewport ? Math.round(viewport.height) : window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
   }
   resize();
   window.addEventListener('resize', resize);
@@ -542,11 +547,11 @@ if (logo) {
   const countdownEl = document.getElementById('roulette-countdown');
 
   const FALLBACK_BG = {
-    'placeholder-art--kaidan':   'linear-gradient(135deg, #3a3a5c, #1a1a2e, #0f0f1a)',
-    'placeholder-art--drive':    'linear-gradient(135deg, #ffe082, #ffb300, #ff6f00)',
-    'placeholder-art--analysis': 'linear-gradient(135deg, #b3e5fc, #0288d1, #01579b)',
-    'placeholder-art--escape':   'linear-gradient(135deg, #f8bbd0, #ec407a, #ad1457)',
-    'placeholder-art--kanikani': 'linear-gradient(135deg, #ffcdd2, #ef5350, #b71c1c)'
+    'placeholder-art--kaidan':   'linear-gradient(135deg, #3949ab, #1a237e, #0d1333)',
+    'placeholder-art--drive':    'linear-gradient(135deg, #fff59d, #fdd835, #f57f17)',
+    'placeholder-art--analysis': 'linear-gradient(135deg, #64b5f6, #1e88e5, #0d47a1)',
+    'placeholder-art--escape':   'linear-gradient(135deg, #fce4ec, #ec407a, #ad1457)',
+    'placeholder-art--kanikani': 'linear-gradient(135deg, #ff8a65, #f4511e, #bf360c)'
   };
 
   const CONFETTI_COLORS = ['#ff1493', '#ffd700', '#00e5ff', '#7cff7a', '#ff8ac4', '#c71585', '#ffffff'];
