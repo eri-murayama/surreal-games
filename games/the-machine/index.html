@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>THE MACHINE | ザ・マシーン</title>
+  <meta name="description" content="あなたはマシンに乗り込み、敵と戦う…はずだった。Gamedev.js Jam 2026 「Machines」参加作品プロトタイプ。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="THE MACHINE | ザ・マシーン">
+  <meta property="og:description" content="あなたはマシンに乗り込み、敵と戦う…はずだった。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
+  <button id="mute-btn" class="mute-btn" aria-label="mute">🔊</button>
+
+  <!-- ===== タイトル画面 ===== -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <h1 class="game-title">THE<br>MACHINE</h1>
+      <p class="subtitle">あなたはパイロットだ。</p>
+      <button id="start-btn" class="btn-primary">▶ START</button>
+      <p class="proto-note">プロトタイプ版 / Prototype</p>
+    </div>
+  </div>
+
+  <!-- ===== オープニング演出 ===== -->
+  <div id="boot-screen" class="screen">
+    <div class="boot-bg"></div>
+    <div class="boot-container">
+      <p class="boot-line" id="boot-line">SYSTEM BOOT...</p>
+      <div class="boot-bar"><div class="boot-bar-fill" id="boot-bar-fill"></div></div>
+      <p class="boot-warning" id="boot-warning"></p>
+    </div>
+  </div>
+
+  <!-- ===== ミニゲーム画面 ===== -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-act" id="hud-act">ACT 1</div>
+      <div class="hud-task" id="hud-task">AIM AND SHOOT</div>
+      <div class="hud-timer"><div class="hud-timer-fill" id="hud-timer-fill"></div></div>
+    </div>
+    <canvas id="game-canvas" width="500" height="500"></canvas>
+    <div class="game-feedback" id="game-feedback"></div>
+  </div>
+
+  <!-- ===== 第1→2幕の遷移 ===== -->
+  <div id="glitch-screen" class="screen">
+    <div class="glitch-overlay"></div>
+    <p class="glitch-text">― ? ―</p>
+  </div>
+
+  <!-- ===== 第3幕: 鏡 ===== -->
+  <div id="mirror-screen" class="screen">
+    <div class="mirror-container">
+      <h2 class="mirror-title">記録</h2>
+      <div class="mirror-stats" id="mirror-stats"></div>
+      <p class="mirror-message" id="mirror-message"></p>
+      <button id="mirror-next" class="btn-primary">▶</button>
+    </div>
+  </div>
+
+  <!-- ===== 結末 ===== -->
+  <div id="end-screen" class="screen">
+    <div class="end-container">
+      <p class="end-line" id="end-line"></p>
+      <button id="retry-btn" class="btn-primary">もう一度</button>
+      <button id="share-btn" class="btn-secondary">𝕏 シェア</button>
+      <button id="other-btn" class="btn-secondary">他のゲーム</button>
+      <button id="title-btn" class="btn-secondary">タイトルへ</button>
+    </div>
+  </div>
+
+  <!-- ===== BGM試聴パネル(プロトタイプ専用) ===== -->
+  <div id="bgm-panel">
+    <p class="bgm-panel-title">🎵 BGM試聴 (プロト用)</p>
+    <button class="bgm-btn" data-bgm="act1">第1幕: メカバトル</button>
+    <button class="bgm-btn" data-bgm="act2a">第2幕前半: ほのぼの</button>
+    <button class="bgm-btn" data-bgm="act2b">第2幕後半: 機械化</button>
+    <button class="bgm-btn" data-bgm="act3">第3幕: 鏡</button>
+    <button class="bgm-btn bgm-stop" data-bgm="stop">⏹ 停止</button>
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
