@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>不器用なおじさん | Awkward Uncle</title>
+  <meta name="description" content="右手に大砲、左手にフック。最強の戦士が挑むのは…家事！? Gamedev.js Jam 2026 「Machines」 参加作品。">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="不器用なおじさん | Awkward Uncle">
+  <meta property="og:description" content="右手に大砲、左手にフック。最強の戦士が挑むのは…家事！?">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/awkward-uncle/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/games/awkward-uncle/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+  <!-- Title Screen -->
+  <div id="title-screen" class="screen active">
+    <div class="title-container">
+      <div class="flame" aria-hidden="true">🔥</div>
+      <h1 class="game-title" data-i18n="title">不器用な<br>おじさん</h1>
+      <p class="subtitle" data-i18n="subtitle">右手に大砲、左手にフック</p>
+      <button id="start-btn" class="btn-primary" data-i18n="startBtn">⚔ バトル開始 ⚔</button>
+      <div class="controls-help">
+        <p class="help-title" data-i18n="howTitle">あそびかた</p>
+        <p data-i18n="how1">押したいボタンをクリック／タップ</p>
+        <p data-i18n="how2">ただし道具を間違えると押せない！</p>
+      </div>
+      <div class="lang-switch">
+        <button id="lang-ja" class="lang-btn">JP</button>
+        <button id="lang-en" class="lang-btn">EN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro Cutscene -->
+  <div id="intro-screen" class="screen">
+    <div class="intro-bg"></div>
+    <div class="intro-container">
+      <div class="uncle-portrait" aria-hidden="true">
+        <div class="uncle-face">😤</div>
+      </div>
+      <div class="intro-bubble" id="intro-bubble">
+        <p id="intro-text"></p>
+      </div>
+      <p class="tap-hint" id="intro-hint" data-i18n="tapNext">タップして次へ</p>
+    </div>
+  </div>
+
+  <!-- Reveal Screen -->
+  <div id="reveal-screen" class="screen">
+    <div class="reveal-flash"></div>
+    <div class="reveal-container">
+      <p class="vs-text">VS</p>
+      <div class="opponent" id="opponent-machine">🧺</div>
+      <p class="opponent-name" id="opponent-name" data-i18n="opponent1">洗濯機</p>
+      <p class="reveal-subtitle" data-i18n="realityCheck">…え？</p>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen">
+    <div class="game-hud">
+      <div class="hud-item">
+        <span class="hud-label" data-i18n="stageLabel">ステージ</span>
+        <span id="stage-num" class="hud-value">1/5</span>
+      </div>
+      <div class="hud-item hud-item-wide">
+        <span class="hud-label" data-i18n="taskLabel">課題</span>
+        <span id="task" class="hud-value">-</span>
+      </div>
+    </div>
+    <canvas id="game-canvas"></canvas>
+    <div class="tool-switcher">
+      <button id="tool-hook" class="tool-btn active">
+        <span class="tool-icon">🪝</span>
+        <span class="tool-name" data-i18n="toolHook">フック</span>
+      </button>
+      <button id="tool-cannon" class="tool-btn">
+        <span class="tool-icon">💣</span>
+        <span class="tool-name" data-i18n="toolCannon">大砲</span>
+      </button>
+    </div>
+    <div class="game-controls">
+      <div class="dpad">
+        <button class="ctrl-btn walk-btn walk-up"    data-dir="up">↑</button>
+        <button class="ctrl-btn walk-btn walk-left"  data-dir="left">←</button>
+        <button class="ctrl-btn walk-btn walk-down"  data-dir="down">↓</button>
+        <button class="ctrl-btn walk-btn walk-right" data-dir="right">→</button>
+      </div>
+      <div class="cam-pad">
+        <button class="ctrl-btn cam-btn" data-dir="ccw">⟲</button>
+        <button class="ctrl-btn cam-btn" data-dir="cw">⟳</button>
+      </div>
+    </div>
+    <div id="hit-text" class="hit-text" aria-hidden="true"></div>
+  </div>
+
+  <!-- Final Clear Screen -->
+  <div id="clear-screen" class="screen">
+    <div class="clear-container">
+      <div class="clear-sparkle">🏆</div>
+      <h2 class="clear-title" data-i18n="allClearTitle">全ステージ<br>クリア！</h2>
+      <p class="clear-msg" data-i18n="allClearMsg">家事を制した<br>最強の戦士…</p>
+      <div class="next-opponent">😤</div>
+      <button id="retry-btn" class="btn-primary" data-i18n="retry">もう一度</button>
+      <button id="title-btn" class="btn-secondary" data-i18n="backToTitle">タイトルへ</button>
+    </div>
+  </div>
+
+  <script src="../common/i18n.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+/* 不器用なおじさん / Awkward Uncle */
+
+body {
+  background: linear-gradient(180deg, #1a0a1f 0%, #3b0f1a 100%);
+  color: var(--sg-text-light);
+  font-family: var(--sg-font-body);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.screen.active { display: flex; }
+
+.back-to-top-link {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  color: var(--sg-text-light);
+  text-decoration: none;
+  background: rgba(0,0,0,0.5);
+  padding: 6px 12px;
+  border-radius: var(--sg-radius-pill);
+  font-size: 12px;
+  z-index: 100;
+}
+
+/* ===== Title ===== */
+.title-container {
+  text-align: center;
+  max-width: 360px;
+}
+.flame {
+  font-size: 48px;
+  animation: flicker 0.8s infinite alternate;
+}
+@keyframes flicker {
+  from { transform: scale(1) rotate(-3deg); filter: brightness(1); }
+  to   { transform: scale(1.1) rotate(3deg); filter: brightness(1.3); }
+}
+.game-title {
+  font-family: 'Dela Gothic One', var(--sg-font-heading);
+  font-size: 42px;
+  line-height: 1.1;
+  margin: 12px 0;
+  color: #ffb347;
+  text-shadow: 0 0 20px #ff4500, 3px 3px 0 #000;
+}
+.subtitle {
+  font-size: 14px;
+  color: #ffd89a;
+  margin-bottom: 24px;
+  letter-spacing: 0.05em;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #ff4500, #ff8c00);
+  color: #fff;
+  border: 3px solid #ffd700;
+  font-family: var(--sg-font-heading), sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  padding: 14px 28px;
+  border-radius: var(--sg-radius-pill);
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 0 30px rgba(255,140,0,0.5);
+  transition: transform 0.1s;
+}
+.btn-primary:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.4); }
+.btn-secondary {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  padding: 10px 20px;
+  border-radius: var(--sg-radius-pill);
+  margin-top: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.controls-help {
+  margin-top: 20px;
+  padding: 12px;
+  background: rgba(0,0,0,0.4);
+  border-radius: var(--sg-radius-md);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.help-title {
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 4px;
+}
+.lang-switch {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 4px 12px;
+  border-radius: var(--sg-radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+}
+.lang-btn.active { background: #ff4500; border-color: #ffd700; }
+
+/* ===== Intro ===== */
+.intro-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, #5a1a0f 0%, #1a0a1f 70%);
+}
+.intro-container {
+  position: relative;
+  text-align: center;
+  z-index: 2;
+  max-width: 360px;
+}
+.uncle-portrait {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 20px;
+  background: radial-gradient(circle, #ffb347 0%, #8b4513 100%);
+  border-radius: 50%;
+  border: 4px solid #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px rgba(255,69,0,0.8);
+}
+.uncle-face {
+  font-size: 72px;
+}
+.intro-bubble {
+  background: #fff;
+  color: #222;
+  padding: 16px 20px;
+  border-radius: var(--sg-radius-lg);
+  font-size: 18px;
+  font-weight: bold;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 #000;
+}
+.tap-hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #ffd89a;
+  animation: blink 1s infinite alternate;
+}
+@keyframes blink { from {opacity:0.4;} to {opacity:1;} }
+
+/* ===== Reveal ===== */
+.reveal-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  animation: flashOut 0.6s forwards;
+}
+@keyframes flashOut {
+  0%, 40% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.reveal-container {
+  text-align: center;
+  z-index: 2;
+}
+.vs-text {
+  font-family: 'Dela Gothic One', serif;
+  font-size: 60px;
+  color: #ff4500;
+  text-shadow: 4px 4px 0 #000;
+  animation: vsSlam 0.5s 0.3s both;
+}
+@keyframes vsSlam {
+  from { transform: scale(3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.opponent {
+  font-size: 140px;
+  margin: 10px 0;
+  animation: appearBob 0.5s 0.6s both;
+}
+@keyframes appearBob {
+  from { transform: translateY(30px) scale(0.5); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+.opponent-name {
+  font-family: 'Dela Gothic One', serif;
+  font-size: 28px;
+  color: #fff;
+  animation: appearBob 0.5s 0.8s both;
+}
+.reveal-subtitle {
+  font-size: 20px;
+  color: #ffd89a;
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeIn 0.5s 1.5s forwards;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ===== Game ===== */
+#game-screen { flex-direction: column; padding-top: 50px; }
+.game-hud {
+  display: flex;
+  gap: 20px;
+  background: rgba(0,0,0,0.5);
+  padding: 8px 16px;
+  border-radius: var(--sg-radius-md);
+  margin-bottom: 10px;
+  max-width: 340px;
+}
+.hud-item { text-align: center; }
+.hud-item-wide { flex: 1; text-align: left; }
+.hud-label {
+  display: block;
+  font-size: 10px;
+  color: #ffd89a;
+}
+.hud-value {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
+#game-canvas {
+  width: 340px;
+  max-width: 100%;
+  aspect-ratio: 340 / 480;
+  height: auto;
+  background: #1a0a2e;
+  border: 3px solid #ffd700;
+  border-radius: var(--sg-radius-md);
+  touch-action: none;
+  cursor: pointer;
+  display: block;
+}
+.tool-switcher {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.tool-btn {
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.2);
+  padding: 8px 14px;
+  border-radius: var(--sg-radius-md);
+  cursor: pointer;
+  font-family: var(--sg-font-body);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.tool-btn .tool-icon { font-size: 18px; }
+.tool-btn.active {
+  background: linear-gradient(135deg, #ff4500, #ff8c00);
+  border-color: #ffd700;
+  box-shadow: 0 0 16px rgba(255,140,0,0.6);
+}
+.game-controls {
+  display: flex;
+  gap: 22px;
+  margin-top: 8px;
+  align-items: center;
+}
+.dpad {
+  display: grid;
+  grid-template-columns: 36px 36px 36px;
+  grid-template-rows: 36px 36px;
+  gap: 3px;
+}
+.walk-up    { grid-column: 2; grid-row: 1; }
+.walk-left  { grid-column: 1; grid-row: 2; }
+.walk-down  { grid-column: 2; grid-row: 2; }
+.walk-right { grid-column: 3; grid-row: 2; }
+.cam-pad { display: flex; gap: 6px; }
+.ctrl-btn {
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  padding: 0;
+  font-family: sans-serif;
+}
+.ctrl-btn:active,
+.ctrl-btn.held {
+  background: rgba(255,140,0,0.5);
+  border-color: #ffd700;
+}
+.hit-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Dela Gothic One', serif;
+  font-size: 48px;
+  color: #ff4500;
+  text-shadow: 3px 3px 0 #000;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 10;
+}
+.hit-text.show { animation: hitPop 0.8s forwards; }
+@keyframes hitPop {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  25%  { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  75%  { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1);   opacity: 0; }
+}
+
+/* ===== Clear ===== */
+.clear-container {
+  text-align: center;
+  max-width: 360px;
+}
+.clear-sparkle {
+  font-size: 60px;
+  animation: sparkle 1s infinite alternate;
+}
+@keyframes sparkle {
+  from { transform: rotate(-10deg) scale(1); }
+  to   { transform: rotate(10deg) scale(1.2); }
+}
+.clear-title {
+  font-family: 'Dela Gothic One', serif;
+  font-size: 48px;
+  color: #ffd700;
+  text-shadow: 3px 3px 0 #000;
+  margin: 12px 0;
+}
+.clear-msg {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #fff;
+  margin: 12px 0;
+}
+.next-opponent {
+  font-size: 80px;
+  margin: 10px 0;
+}
+.next-name {
+  font-size: 14px;
+  color: #ffd89a;
+  margin-bottom: 20px;
+}
