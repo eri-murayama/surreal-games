@@ -30,6 +30,7 @@
 })();
 
 // スクロールフェードインアニメーション
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
@@ -56,6 +57,8 @@ document.querySelectorAll('.about-bg-chara').forEach((el) => observer.observe(el
 
 // 突然巨大化するやつ
 (function setupJumpscare() {
+  if (prefersReducedMotion.matches) return;
+
   const chara = document.querySelector('.about-bg-chara');
   if (!chara) return;
 
@@ -193,7 +196,7 @@ if (logo) {
   if (!tagline) return;
 
   var fullText = tagline.textContent.trim();
-  var shouldAnimate = !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.innerWidth > 768;
+  var shouldAnimate = !prefersReducedMotion.matches && window.innerWidth > 768;
 
   if (!shouldAnimate) {
     tagline.textContent = fullText;
@@ -223,6 +226,8 @@ if (logo) {
 // 背景パーティクル（星）エフェクト
 // ========================================
 (function initParticles() {
+  if (prefersReducedMotion.matches) return;
+
   var canvas = document.createElement('canvas');
   canvas.id = 'particle-canvas';
   document.body.prepend(canvas);

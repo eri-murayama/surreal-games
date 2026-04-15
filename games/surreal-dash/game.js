@@ -1433,7 +1433,7 @@
       var url = 'https://eri-murayama.github.io/surreal-games/games/surreal-dash/index.html';
       var shareBtn = document.querySelector('.sg-share-btn');
       if (shareBtn) {
-        shareBtn.href = 'https://twitter.com/intent/tweet?text=' +
+        shareBtn.href = 'https://x.com/intent/tweet?text=' +
           encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
       }
     } catch (e) { /* ignore */ }

@@ -527,7 +527,7 @@
         + 'ランク: ' + rank.label + '\n\n'
         + '#シュールゲームス\n'
         + gameURL;
-      var tweetURL = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+      var tweetURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText);
       window.open(tweetURL, '_blank');
     });
 

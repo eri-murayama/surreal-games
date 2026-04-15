@@ -1759,7 +1759,7 @@
       shareBtn.onclick = () => {
         const txt = tl('shareText', game.floor, game.player.level, game.player.kills, isNew);
         const url = window.location.href;
-        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(txt + '\n' + url), '_blank');
+        window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(txt + '\n' + url), '_blank');
       };
     }
 

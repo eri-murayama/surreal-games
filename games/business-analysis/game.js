@@ -528,7 +528,7 @@
     $('share-btn').addEventListener('click', () => {
       const gameURL = window.location.href;
       const shareText = t().shareText + '\n' + gameURL;
-      const tweetURL = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+      const tweetURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText);
       window.open(tweetURL, '_blank');
     });
 

@@ -657,7 +657,7 @@
     shareBtn.addEventListener('click', () => {
       const gameURL = window.location.href;
       const text = t('shareText', score, maxStack, rank) + '\n' + gameURL;
-      const tweetURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      const tweetURL = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}`;
       window.open(tweetURL, '_blank');
     });
 

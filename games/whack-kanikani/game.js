@@ -398,7 +398,7 @@ function endGame() {
     const shareText = currentLang === 'ja'
       ? `🦀 かにかにパニック！ ‐カニみそが飛び出ちゃう‐\nスコア: ${score}点（最大コンボ: ${maxCombo}）\nランク: ${matched.rank}\n\n#シュールゲームス\n${gameURL}`
       : `🦀 Kani-Kani Panic!\nScore: ${score} pts (Max Combo: ${maxCombo})\nRank: ${matched.rank}\n\n#SurrealGames\n${gameURL}`;
-    const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    const twitterURL = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(twitterURL, '_blank');
   });
   retryBtn.parentNode.insertBefore(shareBtn, retryBtn);

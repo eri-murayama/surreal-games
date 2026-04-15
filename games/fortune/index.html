@@ -274,7 +274,7 @@
     // Share button
     const shareText = `【シュール前世占い】\n私の前世は「${result.title}」でした${result.icon}\n\nあなたの前世も占ってみよう！`;
     const shareUrl = window.location.href;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    const twitterUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     document.getElementById('share-btn').href = twitterUrl;
 
     showScreen('result-screen');

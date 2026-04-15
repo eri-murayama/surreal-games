@@ -245,7 +245,7 @@
     sb.style.cssText = 'margin-top:12px;display:block;margin-left:auto;margin-right:auto;background:rgba(29,161,242,0.1);border-color:#1da1f2;color:#1da1f2;';
     sb.onmouseenter = function() { sb.style.background = '#1da1f2'; sb.style.color = '#0a0a12'; };
     sb.onmouseleave = function() { sb.style.background = 'rgba(29,161,242,0.1)'; sb.style.color = '#1da1f2'; };
-    sb.onclick = function() { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(tl('shareText')(cd.name, emoji, rank) + location.href), '_blank'); };
+    sb.onclick = function() { window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(tl('shareText')(cd.name, emoji, rank) + location.href), '_blank'); };
     retryBtn.parentNode.insertBefore(sb, retryBtn);
   }
 

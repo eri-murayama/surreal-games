@@ -5,7 +5,7 @@
   "start_url": "/surreal-games/",
   "scope": "/surreal-games/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "theme_color": "#ff69b4",
   "background_color": "#1a0533",
   "icons": [

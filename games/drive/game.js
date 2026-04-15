@@ -1376,7 +1376,7 @@
     const gameURL = window.location.href;
     const pos = t('posLabels')[lastResultPosIdx] || lastResultPos;
     const shareText = t('shareText', pos, lastResultSec) + '\n' + gameURL;
-    const tweetURL = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+    const tweetURL = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText);
     window.open(tweetURL, '_blank');
   });
 

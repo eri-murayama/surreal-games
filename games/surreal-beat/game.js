@@ -1083,7 +1083,7 @@
     var shareBtn = document.querySelector('.sg-share-btn');
     if (shareBtn) {
       var url = 'https://eri-murayama.github.io/surreal-games/games/surreal-beat/index.html';
-      shareBtn.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text + '\n' + url);
+      shareBtn.href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text + '\n' + url);
     }
   }
 

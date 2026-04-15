@@ -479,7 +479,7 @@
     }
     shareBtn.onclick = function () {
       var text = '🃏 ホロメンおぼえてますか？\nターン数: ' + turns + '\nタイム: ' + formatTime(elapsed) + '\n評価: ' + rating + '\n\n#シュールゲームス\n' + window.location.href;
-      var url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+      var url = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text);
       window.open(url, '_blank');
     };
 

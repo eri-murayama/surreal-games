@@ -928,7 +928,7 @@
     // シェアボタン
     var shareText = '【ヤンデレ学園】\n' + ending.title + ' ' + ending.icon + '\n好感度: ' + hearts + '\n\n逃げられない学園ラブを体験しよう！\n#シュールゲームス #ヤンデレ学園';
     var shareUrl = window.location.href;
-    document.getElementById('share-btn').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
+    document.getElementById('share-btn').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
 
     sg.onGameEnd(state.affection, { endingId: ending.id, endingTitle: ending.title });
 

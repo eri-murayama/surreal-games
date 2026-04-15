@@ -380,7 +380,7 @@
         '#\u30B7\u30E5\u30FC\u30EB\u30B2\u30FC\u30E0\u30B9\n' +
         gameURL;
       const twitterURL =
-        'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+        'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText);
       window.open(twitterURL, '_blank');
     });
 

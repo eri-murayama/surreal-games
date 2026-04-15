@@ -521,7 +521,7 @@ function gameClear() {
     <div class="clear-buttons clear-seq" style="--seq:5">
       <button class="clear-back-link clear-play-again" onclick="location.reload()">${t('clearPlayAgain')}</button>
       <a href="../../index.html" class="clear-back-link clear-go-home">${t('clearGoHome')}</a>
-      <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(t('clearShareText', timeStr, `${rankData.icon} ${rankData.name}`) + '\n' + window.location.href)}" target="_blank" rel="noopener noreferrer" class="clear-back-link clear-share-x">${t('clearShareX')}</a>
+      <a href="https://x.com/intent/tweet?text=${encodeURIComponent(t('clearShareText', timeStr, `${rankData.icon} ${rankData.name}`) + '\n' + window.location.href)}" target="_blank" rel="noopener noreferrer" class="clear-back-link clear-share-x">${t('clearShareX')}</a>
     </div>
   `;
   document.body.appendChild(overlay);

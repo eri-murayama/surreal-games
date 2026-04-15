@@ -608,15 +608,69 @@ function sendToHost(data) {
   if (hostConn && hostConn.open) hostConn.send(data);
 }
 
+function flashCopyMessage(message, timeout) {
+  const copyBtn = document.getElementById('copy-code-btn');
+  copyBtn.textContent = message;
+  setTimeout(() => {
+    copyBtn.textContent = 'コピー';
+  }, timeout || 1500);
+}
+
+function selectRoomCode() {
+  const roomCodeEl = document.getElementById('room-code');
+  const selection = window.getSelection();
+  if (!roomCodeEl || !selection) return;
+
+  const range = document.createRange();
+  range.selectNodeContents(roomCodeEl);
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+function fallbackCopyText(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  textarea.style.pointerEvents = 'none';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand('copy');
+  } catch (error) {
+    copied = false;
+  }
+
+  textarea.remove();
+  return copied;
+}
+
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+
+  if (fallbackCopyText(text)) {
+    return Promise.resolve();
+  }
+
+  return Promise.reject(new Error('copy_failed'));
+}
+
 // コピーボタン
 document.getElementById('copy-code-btn').addEventListener('click', () => {
   const code = document.getElementById('room-code').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    document.getElementById('copy-code-btn').textContent = 'コピーした！';
-    setTimeout(() => {
-      document.getElementById('copy-code-btn').textContent = 'コピー';
-    }, 1500);
-  });
+  copyText(code)
+    .then(() => {
+      flashCopyMessage('コピーした！');
+    })
+    .catch(() => {
+      selectRoomCode();
+      flashCopyMessage('手動でコピーしてね', 2400);
+    });
 });
 
 // ===== モバイル対応 =====

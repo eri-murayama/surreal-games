@@ -839,7 +839,7 @@ function showGameOver(){
   shareBtn.addEventListener('click',function(){
     const gameURL = window.location.href;
     const text = t('shareText')(score, highestEvo, moveCount) + gameURL;
-    const url = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(text);
+    const url = 'https://x.com/intent/tweet?text='+encodeURIComponent(text);
     window.open(url,'_blank','noopener');
   });
 

@@ -75,6 +75,17 @@ body {
   width: 60px;
   accent-color: #e85d75;
 }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 canvas {
   flex: 1;
   display: block;
@@ -150,16 +161,17 @@ canvas {
 <body>
 <div class="toolbar">
   <span class="title" data-i18n="title">🎨 お絵かきボード</span>
-  <button class="color-btn active" data-color="#333" style="background:#333"></button>
-  <button class="color-btn" data-color="#e85d75" style="background:#e85d75"></button>
-  <button class="color-btn" data-color="#f0a030" style="background:#f0a030"></button>
-  <button class="color-btn" data-color="#4caf50" style="background:#4caf50"></button>
-  <button class="color-btn" data-color="#2196f3" style="background:#2196f3"></button>
-  <button class="color-btn" data-color="#9c27b0" style="background:#9c27b0"></button>
-  <button class="color-btn" data-color="#fff" style="background:#fff; border-color:#ccc"></button>
-  <input type="range" class="size-slider" id="size-slider" min="1" max="30" value="4">
-  <button class="tool-btn active" id="pen-btn" data-i18n="pen">ペン</button>
-  <button class="tool-btn" id="eraser-btn" data-i18n="eraser">消しゴム</button>
+  <button class="color-btn active" data-color="#333" style="background:#333" aria-label="黒" aria-pressed="true" title="黒"></button>
+  <button class="color-btn" data-color="#e85d75" style="background:#e85d75" aria-label="ピンク" aria-pressed="false" title="ピンク"></button>
+  <button class="color-btn" data-color="#f0a030" style="background:#f0a030" aria-label="オレンジ" aria-pressed="false" title="オレンジ"></button>
+  <button class="color-btn" data-color="#4caf50" style="background:#4caf50" aria-label="みどり" aria-pressed="false" title="みどり"></button>
+  <button class="color-btn" data-color="#2196f3" style="background:#2196f3" aria-label="あお" aria-pressed="false" title="あお"></button>
+  <button class="color-btn" data-color="#9c27b0" style="background:#9c27b0" aria-label="むらさき" aria-pressed="false" title="むらさき"></button>
+  <button class="color-btn" data-color="#fff" style="background:#fff; border-color:#ccc" aria-label="しろ" aria-pressed="false" title="しろ"></button>
+  <label class="visually-hidden" for="size-slider">線の太さ</label>
+  <input type="range" class="size-slider" id="size-slider" min="1" max="30" value="4" aria-label="線の太さ">
+  <button class="tool-btn active" id="pen-btn" data-i18n="pen" aria-pressed="true">ペン</button>
+  <button class="tool-btn" id="eraser-btn" data-i18n="eraser" aria-pressed="false">消しゴム</button>
 </div>
 <canvas id="draw-canvas"></canvas>
 <div class="bottom-bar">
@@ -276,6 +288,24 @@ canvas {
     }
   }
 
+  function setActiveColorButton(activeButton) {
+    document.querySelectorAll('.color-btn').forEach((button) => {
+      const isActive = button === activeButton;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  function setToolMode(useEraser) {
+    isEraser = useEraser;
+    const penBtn = document.getElementById('pen-btn');
+    const eraserBtn = document.getElementById('eraser-btn');
+    penBtn.classList.toggle('active', !useEraser);
+    eraserBtn.classList.toggle('active', useEraser);
+    penBtn.setAttribute('aria-pressed', String(!useEraser));
+    eraserBtn.setAttribute('aria-pressed', String(useEraser));
+  }
+
   canvas.addEventListener('pointerdown', startDraw);
   canvas.addEventListener('pointermove', draw);
   canvas.addEventListener('pointerup', endDraw);
@@ -284,12 +314,9 @@ canvas {
   // Color buttons
   document.querySelectorAll('.color-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      setActiveColorButton(btn);
       currentColor = btn.dataset.color;
-      isEraser = false;
-      document.getElementById('pen-btn').classList.add('active');
-      document.getElementById('eraser-btn').classList.remove('active');
+      setToolMode(false);
     });
   });
 
@@ -300,14 +327,10 @@ canvas {
 
   // Pen / Eraser
   document.getElementById('pen-btn').addEventListener('click', () => {
-    isEraser = false;
-    document.getElementById('pen-btn').classList.add('active');
-    document.getElementById('eraser-btn').classList.remove('active');
+    setToolMode(false);
   });
   document.getElementById('eraser-btn').addEventListener('click', () => {
-    isEraser = true;
-    document.getElementById('eraser-btn').classList.add('active');
-    document.getElementById('pen-btn').classList.remove('active');
+    setToolMode(true);
   });
 
   // Bottom buttons
@@ -316,6 +339,8 @@ canvas {
   document.getElementById('save-btn').addEventListener('click', saveImage);
 
   window.addEventListener('resize', () => { resize(); });
+  setActiveColorButton(document.querySelector('.color-btn.active'));
+  setToolMode(false);
   initCanvas();
 })();
 </script>

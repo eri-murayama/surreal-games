@@ -539,7 +539,7 @@
     shareBtn.id = 'share-btn';
     const gameURL = window.location.href;
     const shareText = tl('shareText', score.toLocaleString(), linesCleared, level, rank, gameURL);
-    shareBtn.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+    shareBtn.href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(shareText);
     shareBtn.target = '_blank';
     shareBtn.rel = 'noopener noreferrer';
     shareBtn.textContent = tl('shareBtn');
