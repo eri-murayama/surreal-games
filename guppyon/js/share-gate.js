@@ -8,6 +8,8 @@
 
   // ゲーム一覧（導線用）
   const GAME_LIST = [
+    { id: 'counting-frogs', title: 'かぞえてぴょん！', emoji: '🐸', age: 'toddler' },
+    { id: 'rhythm-lights', title: 'ぴかぴかリズム', emoji: '🎼', age: 'kid' },
     { id: 'pop-bubbles', title: 'ぽんぽんタッチ', emoji: '🫧', age: 'baby' },
     { id: 'animal-sounds', title: 'どうぶつのこえ', emoji: '🐕', age: 'baby' },
     { id: 'color-touch', title: 'いろいろタッチ', emoji: '🎨', age: 'baby' },
