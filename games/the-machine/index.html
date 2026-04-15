@@ -29,21 +29,87 @@
 
   <!-- ===== タイトル画面 ===== -->
   <div id="title-screen" class="screen active">
+    <canvas id="title-bg-canvas" width="500" height="700"></canvas>
+    <div class="title-scanlines"></div>
     <div class="title-container">
       <h1 class="game-title">THE<br>MACHINE</h1>
-      <p class="subtitle">あなたはパイロットだ。</p>
-      <button id="start-btn" class="btn-primary">▶ START</button>
-      <p class="proto-note">プロトタイプ版 / Prototype</p>
+      <p class="subtitle" data-i18n="subtitle">あなたはパイロットだ。</p>
+      <button id="start-btn" class="btn-primary" data-i18n="start">▶ START</button>
+      <div class="lang-switch">
+        <button class="lang-btn active" data-lang="ja">日本語</button>
+        <button class="lang-btn" data-lang="en">English</button>
+      </div>
+      <p class="proto-note" data-i18n="protoNote">Gamedev.js Jam 2026 / Theme: Machines</p>
     </div>
   </div>
 
-  <!-- ===== オープニング演出 ===== -->
+  <!-- ===== オープニング: ロボットバトル ===== -->
+  <div id="opening-screen" class="screen">
+    <canvas id="opening-canvas" width="500" height="500"></canvas>
+    <div class="cinematic-overlay">
+      <p class="cinematic-text" id="opening-text"></p>
+      <p class="tap-hint" id="opening-hint">TAP</p>
+    </div>
+  </div>
+
+  <!-- ===== 少年がテレビを観る ===== -->
+  <div id="boy-screen" class="screen">
+    <canvas id="boy-canvas" width="500" height="500"></canvas>
+    <div class="cinematic-overlay">
+      <p class="cinematic-text" id="boy-text"></p>
+      <p class="tap-hint" id="boy-hint">TAP</p>
+    </div>
+  </div>
+
+  <!-- ===== 応募ポスター ===== -->
+  <div id="poster-screen" class="screen">
+    <canvas id="poster-canvas" width="500" height="500"></canvas>
+    <div class="cinematic-overlay poster-overlay">
+      <button id="apply-btn" class="btn-primary" data-i18n="applyBtn">応募する！</button>
+    </div>
+  </div>
+
+  <!-- ===== コクピット起動 ===== -->
   <div id="boot-screen" class="screen">
     <div class="boot-bg"></div>
     <div class="boot-container">
       <p class="boot-line" id="boot-line">SYSTEM BOOT...</p>
       <div class="boot-bar"><div class="boot-bar-fill" id="boot-bar-fill"></div></div>
       <p class="boot-warning" id="boot-warning"></p>
+    </div>
+  </div>
+
+  <!-- ===== Phase 2 遷移 (VR起動) ===== -->
+  <div id="vr-transition-screen" class="screen">
+    <canvas id="vr-canvas" width="500" height="500"></canvas>
+    <div class="cinematic-overlay">
+      <p class="cinematic-text" id="vr-text"></p>
+    </div>
+  </div>
+
+  <!-- ===== TEST COMPLETE 待機画面 ===== -->
+  <div id="test-complete-screen" class="screen">
+    <canvas id="tc-canvas" width="500" height="500"></canvas>
+    <div class="cinematic-overlay tc-overlay">
+      <p class="cinematic-text" id="tc-text"></p>
+    </div>
+  </div>
+
+  <!-- ===== 合格発表 ===== -->
+  <div id="result-screen" class="screen">
+    <canvas id="result-canvas" width="500" height="500"></canvas>
+    <div class="cinematic-overlay">
+      <p class="cinematic-text" id="result-text"></p>
+      <p class="tap-hint" id="result-hint">TAP</p>
+    </div>
+  </div>
+
+  <!-- ===== 正体開示 ===== -->
+  <div id="reveal-screen" class="screen">
+    <canvas id="reveal-canvas" width="500" height="500"></canvas>
+    <div class="cinematic-overlay">
+      <p class="cinematic-text" id="reveal-text"></p>
+      <p class="tap-hint" id="reveal-hint">TAP</p>
     </div>
   </div>
 
@@ -58,16 +124,20 @@
     <div class="game-feedback" id="game-feedback"></div>
   </div>
 
-  <!-- ===== 第1→2幕の遷移 ===== -->
-  <div id="glitch-screen" class="screen">
-    <div class="glitch-overlay"></div>
-    <p class="glitch-text">― ? ―</p>
-  </div>
-
   <!-- ===== 第3幕: 鏡 ===== -->
   <div id="mirror-screen" class="screen">
     <div class="mirror-container">
-      <h2 class="mirror-title">記録</h2>
+      <h2 class="mirror-title" data-i18n="mirrorTitle">記録</h2>
+      <div class="mirror-canvases">
+        <div class="mini-canvas-wrap">
+          <p class="mini-canvas-label">HEATMAP</p>
+          <canvas id="mirror-heatmap" width="140" height="140"></canvas>
+        </div>
+        <div class="mini-canvas-wrap">
+          <p class="mini-canvas-label">GHOST</p>
+          <canvas id="mirror-ghost" width="140" height="140"></canvas>
+        </div>
+      </div>
       <div class="mirror-stats" id="mirror-stats"></div>
       <p class="mirror-message" id="mirror-message"></p>
       <button id="mirror-next" class="btn-primary">▶</button>
@@ -77,11 +147,12 @@
   <!-- ===== 結末 ===== -->
   <div id="end-screen" class="screen">
     <div class="end-container">
+      <h2 class="end-title" id="end-title"></h2>
       <p class="end-line" id="end-line"></p>
-      <button id="retry-btn" class="btn-primary">もう一度</button>
-      <button id="share-btn" class="btn-secondary">𝕏 シェア</button>
-      <button id="other-btn" class="btn-secondary">他のゲーム</button>
-      <button id="title-btn" class="btn-secondary">タイトルへ</button>
+      <button id="retry-btn" class="btn-primary" data-i18n="retry">もう一度</button>
+      <button id="share-btn" class="btn-secondary" data-i18n="share">𝕏 シェア</button>
+      <button id="other-btn" class="btn-secondary" data-i18n="otherGames">他のゲーム</button>
+      <button id="title-btn" class="btn-secondary" data-i18n="backToTitle">タイトルへ</button>
     </div>
   </div>
 
