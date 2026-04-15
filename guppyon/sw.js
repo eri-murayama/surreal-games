@@ -3,14 +3,18 @@
    オフライン対応 & PWA
    ============================================ */
 
-const CACHE_NAME = 'gero-gero-v2';
+const CACHE_NAME = 'gero-gero-v3';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
+  './css/age-gate.css',
   './js/main.js',
   './js/audio.js',
+  './js/age-gate.js',
+  './js/pwa-register.js',
   './js/share-gate.js',
+  './js/baby-launcher.js',
   './manifest.json',
   './safety-guide.html',
   './privacy.html',

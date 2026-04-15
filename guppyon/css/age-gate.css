@@ -1,0 +1,365 @@
+/* ============================================
+   ゲロゲーロ学園 - Age Gate Styles
+   ============================================ */
+
+.entrance-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #a8e6cf 0%, #88d8b0 30%, #ffd54f 70%, #ffb74d 100%);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  overflow: hidden;
+}
+
+.entrance-overlay.hide {
+  opacity: 0;
+  transform: scale(1.1);
+  pointer-events: none;
+}
+
+.entrance-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 2px, transparent 2px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.entrance-bubble {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: entranceBubbleFloat 6s ease-in-out infinite;
+  opacity: 0.2;
+}
+
+@keyframes entranceBubbleFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-40px) scale(1.1); }
+}
+
+.entrance-mascot {
+  font-size: 8rem;
+  animation: mascotBounce 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 15px 30px rgba(0,0,0,0.15));
+  position: relative;
+  z-index: 1;
+}
+
+.entrance-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 3rem;
+  color: #2e7d32;
+  text-shadow: 3px 3px 0 rgba(255,255,255,0.5);
+  margin: 10px 0 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.entrance-sub {
+  font-size: 1.1rem;
+  color: #4a4a4a;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.entrance-sub strong {
+  color: #e65100;
+}
+
+.age-select-title {
+  font-family: 'Hachi Maru Pop', cursive;
+  font-size: 1.3rem;
+  color: #4a4a4a;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.age-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.age-btn {
+  padding: 20px 30px;
+  border: 4px solid white;
+  border-radius: 25px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: white;
+  text-align: center;
+  min-width: 140px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.age-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.age-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.age-btn-baby { background: linear-gradient(135deg, #ff8a80, #ff5252); }
+.age-btn-toddler { background: linear-gradient(135deg, #ffb74d, #ff9800); }
+.age-btn-kid { background: linear-gradient(135deg, #64b5f6, #42a5f5); }
+.age-btn-adult { background: linear-gradient(135deg, #7c4dff, #536dfe); }
+.age-btn-all { background: linear-gradient(135deg, #ce93d8, #ab47bc); }
+
+.age-btn .age-emoji {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.age-btn .age-range {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-top: 3px;
+  display: block;
+}
+
+.sound-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 10001;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  border: 3px solid var(--green-main);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-soft);
+}
+
+.sound-toggle:hover {
+  transform: scale(1.1);
+}
+
+.age-change-btn {
+  position: fixed;
+  top: 15px;
+  right: 75px;
+  z-index: 10001;
+  height: 50px;
+  border-radius: 25px;
+  background: rgba(255,255,255,0.9);
+  border: 3px solid var(--green-main);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 16px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-soft);
+}
+
+.age-change-btn:hover {
+  transform: scale(1.05);
+}
+
+.age-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  margin-left: 8px;
+}
+
+.age-badge-baby { background: #ff5252; }
+.age-badge-toddler { background: #ff9800; }
+.age-badge-kid { background: #42a5f5; }
+
+.hero-speech {
+  background: white;
+  border-radius: 25px;
+  padding: 15px 25px;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-soft);
+  max-width: 500px;
+  animation: speechPop 0.5s ease 0.3s both;
+}
+
+.hero-speech::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid white;
+}
+
+.hero-speech p {
+  font-size: 1.05rem;
+  color: var(--text-main);
+  line-height: 1.8;
+}
+
+@keyframes speechPop {
+  0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.hero-mascot-container {
+  position: relative;
+  display: inline-block;
+}
+
+.mascot-left-hand,
+.mascot-right-hand {
+  position: absolute;
+  font-size: 2rem;
+  top: 50%;
+}
+
+.mascot-left-hand {
+  left: -30px;
+  animation: waveLeft 2s ease-in-out infinite;
+}
+
+.mascot-right-hand {
+  right: -30px;
+  animation: waveRight 2s ease-in-out infinite 0.5s;
+}
+
+@keyframes waveLeft {
+  0%, 100% { transform: translateY(-50%) rotate(0deg); }
+  50% { transform: translateY(-50%) rotate(-20deg); }
+}
+
+@keyframes waveRight {
+  0%, 100% { transform: translateY(-50%) rotate(0deg); }
+  50% { transform: translateY(-50%) rotate(20deg); }
+}
+
+.game-card[data-age="baby"] .card-thumbnail {
+  height: 200px;
+}
+
+.game-card[data-age="baby"] .card-thumbnail .thumb-emoji {
+  font-size: 5.5rem;
+}
+
+.game-card[data-age="baby"] .card-play-btn {
+  font-size: 1rem;
+  padding: 10px 24px;
+}
+
+.card-age-tag {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+}
+
+.card-age-tag.baby { background: #ff5252; }
+.card-age-tag.toddler { background: #ff9800; }
+.card-age-tag.kid { background: #42a5f5; }
+.card-age-tag.adult { background: #7c4dff; }
+
+.card-new-badge {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  background: #ff1744;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 0 0 12px 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  z-index: 2;
+  animation: newPulse 2s ease-in-out infinite;
+}
+
+@keyframes newPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.stats-bar {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  background: white;
+  padding: 12px 24px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.stat-number {
+  color: var(--yellow-accent);
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+@media (max-width: 768px) {
+  .entrance-mascot { font-size: 5rem; }
+  .entrance-title { font-size: 2rem; }
+  .entrance-sub { font-size: 0.9rem; }
+  .age-buttons { gap: 10px; }
+  .age-btn { padding: 15px 20px; min-width: 120px; font-size: 1rem; }
+  .age-btn .age-emoji { font-size: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .entrance-title { font-size: 1.6rem; }
+  .age-buttons { flex-direction: column; align-items: center; }
+  .age-btn { width: 80%; }
+  .stats-bar { gap: 10px; }
+  .stat-item { padding: 8px 16px; font-size: 0.8rem; }
+}

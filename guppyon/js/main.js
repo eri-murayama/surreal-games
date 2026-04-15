@@ -15,16 +15,42 @@ function initMobileMenu() {
   const navUl = document.querySelector('nav ul');
   if (!toggle || !navUl) return;
 
+  if (!navUl.id) {
+    navUl.id = 'site-menu';
+  }
+
+  toggle.setAttribute('aria-controls', navUl.id);
+  toggle.setAttribute('aria-expanded', 'false');
+
+  const closeMenu = () => {
+    navUl.classList.remove('open');
+    toggle.textContent = '☰';
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
   toggle.addEventListener('click', () => {
-    navUl.classList.toggle('open');
-    toggle.textContent = navUl.classList.contains('open') ? '✕' : '☰';
+    const isOpen = navUl.classList.toggle('open');
+    toggle.textContent = isOpen ? '✕' : '☰';
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
 
   navUl.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
-      navUl.classList.remove('open');
-      toggle.textContent = '☰';
+      closeMenu();
     });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!navUl.classList.contains('open')) return;
+    if (navUl.contains(event.target) || toggle.contains(event.target)) return;
+    closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && navUl.classList.contains('open')) {
+      closeMenu();
+      toggle.focus();
+    }
   });
 }
 
@@ -39,7 +65,10 @@ function initSubjectFilter() {
       btn.setAttribute('aria-pressed', 'true');
 
       // Re-run filterByAge which now also respects subject
-      const savedAge = localStorage.getItem('gero-age') || 'all';
+      let savedAge = 'all';
+      try {
+        savedAge = localStorage.getItem('gero-age') || 'all';
+      } catch (e) {}
       if (typeof filterByAge === 'function') {
         filterByAge(savedAge);
       }

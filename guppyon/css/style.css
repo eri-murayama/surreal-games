@@ -55,6 +55,16 @@ body {
   min-height: 100vh;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--yellow-accent);
+  outline-offset: 3px;
+}
+
 /* --- Background Pattern --- */
 body::before {
   content: '';
@@ -536,6 +546,25 @@ nav a .nav-emoji {
 .card-play-btn:hover {
   transform: scale(1.08);
   filter: brightness(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .game-card:hover,
+  .filter-btn:hover,
+  .card-play-btn:hover,
+  nav a:hover {
+    transform: none;
+  }
 }
 
 /* --- About Section --- */

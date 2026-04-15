@@ -14,6 +14,13 @@ class GeroAudio {
     this.bgmVolume = 0.3;
     this.seVolume = 0.5;
     this.initialized = false;
+    this.isMuted = false;
+
+    try {
+      this.isMuted = localStorage.getItem('gero-sound-muted') === '1';
+    } catch (e) {
+      this.isMuted = false;
+    }
   }
 
   init() {
@@ -21,6 +28,7 @@ class GeroAudio {
     try {
       this.ctx = new (window.AudioContext || window.webkitAudioContext)();
       this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.value = this.isMuted ? 0 : 1;
       this.masterGain.connect(this.ctx.destination);
       this.bgmGain = this.ctx.createGain();
       this.bgmGain.gain.value = this.bgmVolume;
@@ -238,11 +246,29 @@ class GeroAudio {
     if (!this.masterGain) return;
     if (this.masterGain.gain.value > 0) {
       this.masterGain.gain.value = 0;
+      this.isMuted = true;
+      try {
+        localStorage.setItem('gero-sound-muted', '1');
+      } catch (e) {}
       return false;
     } else {
       this.masterGain.gain.value = 1;
+      this.isMuted = false;
+      try {
+        localStorage.setItem('gero-sound-muted', '0');
+      } catch (e) {}
       return true;
     }
+  }
+
+  setMuted(muted) {
+    this.isMuted = !!muted;
+    if (this.masterGain) {
+      this.masterGain.gain.value = this.isMuted ? 0 : 1;
+    }
+    try {
+      localStorage.setItem('gero-sound-muted', this.isMuted ? '1' : '0');
+    } catch (e) {}
   }
 }
 
