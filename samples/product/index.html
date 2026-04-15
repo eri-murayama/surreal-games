@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
   <meta property="og:title" content="AURA Pro | ワイヤレスイヤホン">
   <meta property="og:description" content="静寂の中に、音楽だけを。ノイズキャンセリング搭載ワイヤレスイヤホン。">
   <meta property="og:type" content="website">
@@ -73,6 +74,58 @@
       padding: 6px 16px;
       border-radius: 20px;
       letter-spacing: 0.1em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 210;
+      width: min(330px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 22px;
+      background: rgba(20, 20, 20, 0.92);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.4);
+      backdrop-filter: blur(14px);
+    }
+    .portfolio-cta__copy {
+      margin: 0 0 10px;
+      color: var(--text-mid);
+      font-size: 0.74rem;
+      line-height: 1.6;
+    }
+    .portfolio-cta__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.86rem 1rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 700;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 10px 24px var(--accent-glow);
+    }
+    .portfolio-cta__link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px var(--accent-glow);
+    }
+
+    @media (max-width: 720px) {
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
     }
 
     /* ===== Navigation ===== */
@@ -526,8 +579,12 @@
 </head>
 <body>
 
-  <a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
-  <div class="sample-badge">SAMPLE</div>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">LPの方向性が近ければ、このページ名を添えて相談してもらえると話が早いです。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
 
   <!-- Navigation -->
   <nav class="nav" id="nav">
@@ -670,6 +727,46 @@
       <h2 class="cta-title">あなたの音楽体験を<br>次のレベルへ。</h2>
       <p class="cta-desc">送料無料 / 30日間返品保証 / 1年間メーカー保証</p>
       <a href="#" class="cta-button" onclick="handlePurchase(event)">今すぐ購入する &mdash; &yen;24,800</a>
+    </div>
+  </section>
+
+  <section class="project-brief" id="brief" style="--portfolio-accent:#62d5ff; --portfolio-heading:#eef4ff; --portfolio-muted:rgba(238,244,255,0.78); --portfolio-card-bg:rgba(14,22,48,0.86); --portfolio-card-border:rgba(98,213,255,0.18); --portfolio-shadow:rgba(2,8,22,0.34); --portfolio-metric-bg:rgba(8,15,36,0.7); --portfolio-quote-bg:rgba(8,15,36,0.56); --portfolio-code-bg:rgba(5,10,24,0.82);">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">新商品LPとして依頼するときの目安</h2>
+        <p class="project-brief__lead">商品LPは、第一印象のビジュアル、特徴の見せ順、比較しやすいスペック、購入CTAの4点が重要です。写真とスペックが揃っていれば、1ページでもかなり説得力を出せます。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>ファーストビュー、特徴紹介、スペック、レビュー、購入導線までをまとめた商品LP。ECカートへ送る前の訴求ページとして使う想定です。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>目安金額</span><strong>12万〜18万円</strong></div>
+              <div class="project-brief__metric"><span>制作期間</span><strong>2〜3週間</strong></div>
+              <div class="project-brief__metric"><span>必要素材</span><strong>商品写真 / スペック表 / 価格 / 比較ポイント</strong></div>
+              <div class="project-brief__metric"><span>写真の目安</span><strong>物撮り6〜8枚 + 使用シーン2〜3枚</strong></div>
+            </div>
+          </article>
+          <article class="project-brief__card">
+            <h3>先に整理しておくと強い項目</h3>
+            <ul class="project-brief__list">
+              <li>他社商品と比べて何が違うかを3つに絞る</li>
+              <li>ユーザーの声は短くても実感が伝わる文章にする</li>
+              <li>送料、保証、返品条件はCTA近くに置くと安心感が出ます</li>
+            </ul>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>掲載文のイメージ</h3>
+          <div class="project-brief__code">
+            <span>見出し例: 通勤も、移動も、集中したい時間に変える。</span>
+            <span>特徴例: 最大36時間再生 / -45dBノイズキャンセリング / 10分充電で3時間再生</span>
+            <span>CTA例: 今すぐ購入する / 30日間返品保証つき</span>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 

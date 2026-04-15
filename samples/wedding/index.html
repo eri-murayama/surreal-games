@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
   <meta property="og:title" content="Yuto & Sakura Wedding Invitation">
   <meta property="og:description" content="結婚式のWeb招待状">
   <meta property="og:type" content="website">
@@ -83,6 +84,58 @@
       padding: 6px 16px;
       border-radius: 20px;
       letter-spacing: 0.1em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 210;
+      width: min(330px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 22px;
+      background: rgba(253, 251, 247, 0.94);
+      border: 1px solid rgba(196, 160, 122, 0.18);
+      box-shadow: 0 18px 36px rgba(138, 126, 126, 0.18);
+      backdrop-filter: blur(12px);
+    }
+    .portfolio-cta__copy {
+      margin: 0 0 10px;
+      color: var(--text-light);
+      font-size: 0.74rem;
+      line-height: 1.6;
+    }
+    .portfolio-cta__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.86rem 1rem;
+      border-radius: 999px;
+      background: var(--rose);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 700;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 10px 22px rgba(196, 160, 122, 0.22);
+    }
+    .portfolio-cta__link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(196, 160, 122, 0.28);
+    }
+
+    @media (max-width: 720px) {
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
     }
 
     /* ===== Hero with slideshow ===== */
@@ -699,8 +752,12 @@
 </head>
 <body>
 
-  <a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
-  <div class="sample-badge">SAMPLE</div>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">イベントページの雰囲気や見せ方が近ければ、そのままこのサンプルを添えて相談できます。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
 
   <!-- Decorative corners -->
   <div class="leaf leaf-1" style="opacity:0.04;">
@@ -918,13 +975,54 @@
     </div>
   </section>
 
+  <section class="project-brief" id="brief" style="--portfolio-accent:#b78b95; --portfolio-heading:#5b4350; --portfolio-muted:#7d6973; --portfolio-card-bg:rgba(255,255,255,0.82); --portfolio-card-border:rgba(183,139,149,0.22); --portfolio-shadow:rgba(91,67,80,0.1); --portfolio-metric-bg:rgba(255,247,249,0.88); --portfolio-quote-bg:rgba(255,247,249,0.72);">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">Web招待状として依頼するときの目安</h2>
+        <p class="project-brief__lead">結婚式のWeb招待状は、雰囲気づくりだけでなく、出欠回答や会場情報のわかりやすさが重要です。写真が多いほど華やかになりますが、最低限の情報が揃っていれば短期間でも制作できます。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>挨拶、当日のスケジュール、会場案内、FAQ、RSVPフォームまでを含む1ページ構成。スマホで見やすいことと、親族にも伝わる読みやすさを優先します。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>目安金額</span><strong>6万〜10万円</strong></div>
+              <div class="project-brief__metric"><span>制作期間</span><strong>1〜2週間</strong></div>
+              <div class="project-brief__metric"><span>必要情報</span><strong>日時 / 会場 / RSVP締切 / ドレスコード</strong></div>
+              <div class="project-brief__metric"><span>写真の目安</span><strong>前撮りや思い出写真12〜20枚</strong></div>
+            </div>
+          </article>
+          <article class="project-brief__card">
+            <h3>先にあると助かるもの</h3>
+            <ul class="project-brief__list">
+              <li>おふたりの名前表記、開催日、受付開始時間、会場住所</li>
+              <li>回答フォームで聞きたい内容: 出欠、アレルギー、メッセージなど</li>
+              <li>写真が少ない場合は、前撮り3枚と日常写真数枚でも十分組めます</li>
+            </ul>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>掲載文のイメージ</h3>
+          <div class="project-brief__code">
+            <span>見出し例: 大切な一日を、皆さまと一緒に迎えられたら嬉しいです。</span>
+            <span>案内文例: 2026年11月21日(土) 受付 13:00 / 挙式 14:00 / 披露宴 15:00</span>
+            <span>補足例: 平服でお越しください。お子さま連れも歓迎です。</span>
+          </div>
+          <div class="project-brief__quote">Web招待状は紙の案内状よりも情報量を載せやすいので、アクセスやFAQを丁寧に入れると当日の問い合わせが減りやすいです。</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     &copy; 2026 Yuto & Sakura Wedding
   </footer>
 
   <script>
-    /* Countdown timer - target: 2025-11-22 14:00 JST */
+    /* Countdown timer - target: 2026-11-21 14:00 JST */
     const weddingDate = new Date('2026-11-21T14:00:00+09:00');
 
     function updateCountdown() {

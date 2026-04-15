@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
   <meta property="og:title" content="NexTech Solutions | DX支援・クラウド・AIコンサルティング">
   <meta property="og:description" content="テクノロジーで、ビジネスの未来を共創する。DX支援・クラウド・AIコンサルティング。">
   <meta property="og:type" content="website">
@@ -76,6 +77,58 @@
       padding: 6px 16px;
       border-radius: 20px;
       letter-spacing: 0.1em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 210;
+      width: min(330px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(26, 115, 232, 0.14);
+      box-shadow: 0 18px 36px rgba(26, 115, 232, 0.14);
+      backdrop-filter: blur(12px);
+    }
+    .portfolio-cta__copy {
+      margin: 0 0 10px;
+      color: var(--text-light);
+      font-size: 0.74rem;
+      line-height: 1.6;
+    }
+    .portfolio-cta__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.86rem 1rem;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 700;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 10px 24px var(--primary-glow);
+    }
+    .portfolio-cta__link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px var(--primary-glow);
+    }
+
+    @media (max-width: 720px) {
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
     }
 
     /* ===== Navigation ===== */
@@ -721,8 +774,12 @@
 </head>
 <body>
 
-  <a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
-  <div class="sample-badge">SAMPLE</div>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">コーポレートや採用ページの相談では、このサンプルを基準に話を始められます。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
 
   <!-- Navigation -->
   <nav class="nav" id="nav">
@@ -971,6 +1028,46 @@
         <td>大手製造業、金融機関、通信事業者、官公庁 他</td>
       </tr>
     </table>
+  </section>
+
+  <section class="project-brief" id="brief" style="--portfolio-accent:#1a73e8; --portfolio-heading:#1a1a2e; --portfolio-muted:#5d6676; --portfolio-card-bg:rgba(255,255,255,0.9); --portfolio-card-border:rgba(26,115,232,0.14); --portfolio-shadow:rgba(26,115,232,0.08); --portfolio-metric-bg:rgba(247,249,252,0.95); --portfolio-quote-bg:rgba(247,249,252,0.82);">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">コーポレートサイトとして依頼するときの目安</h2>
+        <p class="project-brief__lead">企業サイトでは、信頼感、事業内容、実績、採用、問い合わせ導線の整理が重要です。会社案内資料をそのまま貼るのではなく、読む順番を整えるだけでかなり伝わりやすくなります。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>トップ、事業紹介、実績、お知らせ、採用、会社概要、お問い合わせまでを載せる5〜7セクション構成。採用強化や営業用資料の受け皿としても使える形です。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>目安金額</span><strong>18万〜28万円</strong></div>
+              <div class="project-brief__metric"><span>制作期間</span><strong>3〜5週間</strong></div>
+              <div class="project-brief__metric"><span>必要素材</span><strong>ロゴ / 事業説明 / 実績数値 / 代表者情報</strong></div>
+              <div class="project-brief__metric"><span>写真の目安</span><strong>オフィス・人物・サービスイメージ8〜12枚</strong></div>
+            </div>
+          </article>
+          <article class="project-brief__card">
+            <h3>先にあると助かるもの</h3>
+            <ul class="project-brief__list">
+              <li>営業向けか採用向けか、主目的を決めておく</li>
+              <li>事業説明は1事業あたり100〜200字あると組みやすいです</li>
+              <li>代表コメントや導入実績の数字は、信頼感の核になります</li>
+            </ul>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>掲載文のイメージ</h3>
+          <div class="project-brief__code">
+            <span>見出し例: テクノロジーで、現場の意思決定を軽くする。</span>
+            <span>事業説明例: 課題整理から導入後の運用まで伴走し、現場に根づくDXを支援します。</span>
+            <span>採用文例: 企画から実装まで一緒に走れるメンバーを募集しています。</span>
+          </div>
+        </article>
+      </div>
+    </div>
   </section>
 
   <!-- Footer -->

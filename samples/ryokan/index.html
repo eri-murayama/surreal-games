@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700&family=Zen+Old+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
   <meta property="og:title" content="湯宿 翠風庵 | 奥湯河原の隠れ宿">
   <meta property="og:description" content="源泉掛け流しの露天風呂と旬の会席料理。全8室の隠れ宿。">
   <meta property="og:type" content="website">
@@ -75,6 +76,60 @@
       padding: 6px 16px;
       border-radius: 2px;
       letter-spacing: 0.15em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 210;
+      width: min(340px, calc(100% - 32px));
+      padding: 15px;
+      border-radius: 18px;
+      background: rgba(247, 243, 236, 0.94);
+      border: 1px solid rgba(45, 74, 62, 0.16);
+      box-shadow: 0 18px 38px rgba(45, 74, 62, 0.18);
+      backdrop-filter: blur(12px);
+    }
+    .portfolio-cta__copy {
+      margin: 0 0 10px;
+      color: var(--text-light);
+      font-size: 0.72rem;
+      line-height: 1.8;
+      letter-spacing: 0.04em;
+    }
+    .portfolio-cta__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 999px;
+      background: var(--deep-green);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 10px 22px rgba(45, 74, 62, 0.22);
+    }
+    .portfolio-cta__link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(45, 74, 62, 0.28);
+    }
+
+    @media (max-width: 720px) {
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
     }
 
     /* ===== Navigation ===== */
@@ -694,8 +749,12 @@
 </head>
 <body>
 
-<a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
-<div class="sample-badge">SAMPLE</div>
+<a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+<div class="sample-badge">SAMPLE SITE</div>
+<div class="portfolio-cta">
+  <p class="portfolio-cta__copy">宿泊・和風サイトの方向性が近ければ、このページをそのまま相談材料に使えます。</p>
+  <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+</div>
 
 <!-- Navigation -->
 <nav class="nav" id="nav">
@@ -1047,6 +1106,46 @@
       </div>
       <button type="submit" class="form-submit">予約を確認する</button>
     </form>
+  </div>
+</section>
+
+<section class="project-brief" id="brief" style="--portfolio-accent:#9d875f; --portfolio-heading:#2d241a; --portfolio-muted:#615343; --portfolio-card-bg:rgba(255,250,241,0.88); --portfolio-card-border:rgba(157,135,95,0.2); --portfolio-shadow:rgba(45,36,26,0.12); --portfolio-metric-bg:rgba(248,241,229,0.92); --portfolio-quote-bg:rgba(248,241,229,0.78);">
+  <div class="project-brief__inner">
+    <div class="project-brief__header">
+      <span class="project-brief__eyebrow">Project Note</span>
+      <h2 class="project-brief__title">旅館サイトとして依頼するときの目安</h2>
+      <p class="project-brief__lead">旅館サイトでは、客室、温泉、料理、アクセス、予約導線を丁寧に見せる必要があります。写真の質がそのまま印象に直結するので、撮影素材が多いほど強いページになります。</p>
+    </div>
+    <div class="project-brief__layout">
+      <div class="project-brief__stack">
+        <article class="project-brief__card">
+          <h3>想定する依頼内容</h3>
+          <p>ブランド紹介、客室、温泉、料理、館内案内、周辺観光、予約導線までをまとめた宿泊施設サイト。英語対応や予約システム連携が必要な場合は別途設計します。</p>
+          <div class="project-brief__meta">
+            <div class="project-brief__metric"><span>目安金額</span><strong>18万〜30万円</strong></div>
+            <div class="project-brief__metric"><span>制作期間</span><strong>4〜5週間</strong></div>
+            <div class="project-brief__metric"><span>必要素材</span><strong>客室 / 温泉 / 料理 / 外観 / アクセス</strong></div>
+            <div class="project-brief__metric"><span>写真の目安</span><strong>全体で15〜25枚</strong></div>
+          </div>
+        </article>
+        <article class="project-brief__card">
+          <h3>先にあると進めやすい素材</h3>
+          <ul class="project-brief__list">
+            <li>部屋タイプごとの写真と定員、料金目安</li>
+            <li>温泉の入浴時間、貸切風呂の有無、食事の提供時間</li>
+            <li>最寄り駅や送迎の案内は必ずテキストで用意すると安心です</li>
+          </ul>
+        </article>
+      </div>
+      <article class="project-brief__card">
+        <h3>掲載文のイメージ</h3>
+        <div class="project-brief__code">
+          <span>見出し例: 何もしない時間を、山あいの湯宿で。</span>
+          <span>案内文例: チェックイン 15:00 / チェックアウト 11:00 / 湯河原駅から車で15分</span>
+          <span>補足例: 夕食は18:00または19:00開始でご案内いたします。</span>
+        </div>
+      </article>
+    </div>
   </div>
 </section>
 

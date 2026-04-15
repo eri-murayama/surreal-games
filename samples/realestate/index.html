@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HARBOR RESIDENCE | 架空不動産サンプルサイト</title>
+  <meta name="description" content="新築レジデンス物件サイトを想定したサンプルです。物件概要、間取り、共用部、ロケーション、来場予約導線まで確認できます。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="HARBOR RESIDENCE | 不動産サイトサンプル">
+  <meta property="og:description" content="高級感のある物件紹介サイトのサンプル。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --bg: #f4f0e7;
+      --surface: rgba(255, 252, 247, 0.92);
+      --surface-strong: rgba(255, 252, 247, 0.98);
+      --ink: #283235;
+      --muted: #687477;
+      --accent: #3f6269;
+      --gold: #b79a60;
+      --line: rgba(40, 50, 53, 0.1);
+      --shadow: 0 24px 54px rgba(40, 50, 53, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Shippori Mincho', serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(63, 98, 105, 0.12), transparent 24%),
+        linear-gradient(180deg, #faf8f3 0%, var(--bg) 100%);
+      line-height: 1.95;
+      letter-spacing: 0.02em;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .back-to-portfolio,
+    .sample-badge {
+      position: fixed;
+      top: 16px;
+      z-index: 50;
+      padding: 0.46rem 0.92rem;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      font-size: 0.78rem;
+    }
+
+    .back-to-portfolio {
+      left: 16px;
+      background: rgba(63, 98, 105, 0.48);
+      color: #fff;
+    }
+
+    .sample-badge {
+      right: 16px;
+      background: var(--gold);
+      color: #fff;
+      letter-spacing: 0.14em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 60;
+      width: min(338px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 24px;
+      background: rgba(255, 252, 247, 0.94);
+      border: 1px solid rgba(63, 98, 105, 0.16);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .portfolio-cta p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.7;
+    }
+
+    .portfolio-cta a {
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      padding: 0.92rem 1rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(250, 248, 243, 0.86);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(40, 50, 53, 0.06);
+    }
+
+    .nav__inner,
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .nav__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 18px 0;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 22px;
+      padding: 44px 0 30px;
+      align-items: end;
+    }
+
+    .hero-visual,
+    .summary-card,
+    .section-panel,
+    .plan-card,
+    .amenity-card,
+    .location-card,
+    .visit-card {
+      background: var(--surface);
+      border: 1px solid rgba(40, 50, 53, 0.08);
+      box-shadow: var(--shadow);
+      border-radius: 30px;
+    }
+
+    .hero-visual {
+      position: relative;
+      overflow: hidden;
+      min-height: 720px;
+      padding: 34px;
+      background:
+        linear-gradient(180deg, rgba(40,50,53,0.12), rgba(40,50,53,0.72)),
+        linear-gradient(135deg, #d5ddd9 0%, #97aeb3 34%, #4b696f 100%);
+    }
+
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 28px;
+      pointer-events: none;
+    }
+
+    .hero-visual::after {
+      content: '';
+      position: absolute;
+      inset: auto 52px 72px auto;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.36), transparent 64%);
+      filter: blur(6px);
+    }
+
+    .hero-copy {
+      position: absolute;
+      left: 36px;
+      right: 36px;
+      bottom: 36px;
+      z-index: 1;
+      color: #fff;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .hero-kicker::before {
+      content: '';
+      width: 54px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.08;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4rem, 8vw, 6.8rem);
+      letter-spacing: -0.06em;
+      text-transform: uppercase;
+    }
+
+    .hero-copy p {
+      max-width: 620px;
+      margin: 18px 0 0;
+      color: rgba(255,255,255,0.84);
+      font-size: 0.96rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.94rem 1.3rem;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: var(--accent);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .summary-column {
+      display: grid;
+      gap: 16px;
+    }
+
+    .summary-card {
+      padding: 24px;
+    }
+
+    .summary-label {
+      color: var(--gold);
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      letter-spacing: -0.05em;
+    }
+
+    .summary-card p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .section {
+      padding: 20px 0;
+    }
+
+    .section-panel {
+      padding: 30px;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin-top: 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4vw, 3.6rem);
+      letter-spacing: -0.05em;
+    }
+
+    .section-copy {
+      max-width: 760px;
+      margin: 16px 0 0;
+      color: var(--muted);
+    }
+
+    .concept-grid,
+    .plan-grid,
+    .amenity-grid,
+    .location-grid,
+    .visit-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .concept-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+
+    .plan-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .amenity-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .location-grid,
+    .visit-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chapter-card {
+      padding: 28px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(63,98,105,0.1), rgba(255,255,255,0.9));
+      border: 1px solid rgba(40, 50, 53, 0.08);
+    }
+
+    .chapter-card span {
+      display: inline-flex;
+      width: 48px;
+      height: 48px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: rgba(63, 98, 105, 0.08);
+      color: var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+    }
+
+    .chapter-card h3 {
+      margin-top: 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .chapter-card p,
+    .plan-card p,
+    .amenity-card p,
+    .location-card p,
+    .visit-card p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .panorama-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      min-height: 360px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0)),
+        linear-gradient(135deg, #dce4e0 0%, #b4c5c9 28%, #6b878d 72%, #314d54 100%);
+    }
+
+    .panorama-card::before {
+      content: '';
+      position: absolute;
+      inset: auto 34px 34px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.28), transparent 64%);
+    }
+
+    .panorama-caption {
+      position: absolute;
+      left: 30px;
+      bottom: 30px;
+      color: #fff;
+      max-width: 360px;
+    }
+
+    .panorama-caption h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      letter-spacing: -0.04em;
+    }
+
+    .panorama-caption p {
+      margin: 12px 0 0;
+      color: rgba(255,255,255,0.82);
+      font-size: 0.9rem;
+    }
+
+    .plan-card,
+    .amenity-card,
+    .location-card,
+    .visit-card {
+      padding: 22px;
+    }
+
+    .plan-visual,
+    .amenity-visual {
+      position: relative;
+      height: 200px;
+      border-radius: 24px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(183,154,96,0.18), rgba(63,98,105,0.16)), #f1f4f2;
+    }
+
+    .plan-visual::before,
+    .amenity-visual::before {
+      content: '';
+      position: absolute;
+      inset: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(63, 98, 105, 0.18);
+    }
+
+    .plan-visual::after {
+      content: '';
+      position: absolute;
+      inset: 40px;
+      background:
+        linear-gradient(90deg, transparent 20%, rgba(63,98,105,0.16) 20%, rgba(63,98,105,0.16) 23%, transparent 23%, transparent 54%, rgba(63,98,105,0.16) 54%, rgba(63,98,105,0.16) 57%, transparent 57%),
+        linear-gradient(180deg, transparent 28%, rgba(63,98,105,0.16) 28%, rgba(63,98,105,0.16) 31%, transparent 31%, transparent 62%, rgba(63,98,105,0.16) 62%, rgba(63,98,105,0.16) 65%, transparent 65%);
+    }
+
+    .amenity-card:nth-child(2) .amenity-visual {
+      background: linear-gradient(135deg, #ecf0ef, #bfd0d4);
+    }
+
+    .amenity-card:nth-child(3) .amenity-visual {
+      background: linear-gradient(135deg, #ede6d8, #cfba95);
+    }
+
+    .plan-card h3,
+    .amenity-card h3,
+    .location-card h3,
+    .visit-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .visit-card strong {
+      display: block;
+      margin-top: 14px;
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .footer {
+      padding: 24px 0 120px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .concept-grid,
+      .plan-grid,
+      .amenity-grid,
+      .location-grid,
+      .visit-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 620px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        display: none;
+      }
+
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p>不動産、物件紹介、来場予約つきの高級感ある情報設計が必要な相談では、このサンプルを参考にできます。</p>
+    <a href="https://x.com/tadanosyuhuda" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="#top" class="nav-logo">Harbor Residence</a>
+      <div class="nav-links">
+        <a href="#concept">Concept</a>
+        <a href="#plan">Plan</a>
+        <a href="#amenity">Amenity</a>
+        <a href="#location">Location</a>
+        <a href="#visit">Reserve</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="hero" id="top">
+      <div class="hero-visual">
+        <div class="hero-copy">
+          <div class="hero-kicker">Property Sample</div>
+          <h1>Harbor Residence</h1>
+          <p>湾岸エリアの新築レジデンスを想定した物件サイトサンプルです。資料請求とモデルルーム来場の両方を取りたい前提で、眺望や共用部の魅力を先に見せつつ、間取りと立地の判断材料も自然につなぐ構成にしています。</p>
+          <div class="hero-actions">
+            <a href="#plan" class="btn btn-primary">間取りを見る</a>
+            <a href="#visit" class="btn btn-secondary">来場予約へ</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-column">
+        <article class="summary-card">
+          <div class="summary-label">Position</div>
+          <strong>Station 4 min.</strong>
+          <p>駅距離の短さは、物件検討の初期判断で重要なポイントになるため、上部で明確に見せています。</p>
+        </article>
+        <article class="summary-card">
+          <div class="summary-label">Planning</div>
+          <strong>2LDK - 3LDK</strong>
+          <p>単身ではなく、共働き・ファミリー層までを想定した幅のあるプラン設計を示しています。</p>
+        </article>
+        <article class="summary-card">
+          <div class="summary-label">Inquiry</div>
+          <strong>Model Room</strong>
+          <p>資料請求と来場予約を分けて提示すると、検討温度に応じた入口を作りやすくなります。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="concept">
+      <div class="section-panel">
+        <div class="section-label">Concept</div>
+        <h2 class="section-title">暮らしの情景から、物件の価値を想像させる。</h2>
+        <p class="section-copy">物件サイトでは、数字だけでなく「ここに住んだらどう感じるか」を先に描けると印象に残ります。このサンプルでは、コンセプトの言葉と空気感のあるビジュアルで、生活のイメージを先に立ち上げています。</p>
+        <div class="concept-grid">
+          <article class="chapter-card">
+            <span>1</span>
+            <h3>Quiet Luxury</h3>
+            <p>派手さよりも、日常の静かな上質感を感じられる見せ方に寄せています。</p>
+          </article>
+          <div class="panorama-card">
+            <div class="panorama-caption">
+              <h3>Waterfront Evening</h3>
+              <p>共用部や眺望の魅力を「写真で見たい」ユーザー向けに、象徴的なビジュアルの置き方を示しています。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-brief" id="brief" style="--portfolio-accent:#b9915f; --portfolio-heading:#221914; --portfolio-muted:#5d4e45; --portfolio-card-bg:rgba(248,242,235,0.94); --portfolio-card-border:rgba(185,145,95,0.18); --portfolio-shadow:rgba(34,25,20,0.1); --portfolio-metric-bg:rgba(255,249,242,0.92); --portfolio-quote-bg:rgba(255,249,242,0.8);">
+      <div class="project-brief__inner">
+        <div class="project-brief__header">
+          <span class="project-brief__eyebrow">Project Note</span>
+          <h2 class="project-brief__title">実際に載せたい写真と、依頼時の目安</h2>
+          <p class="project-brief__lead">不動産系のページは、コピーよりも写真の順番と情報の整理が重要です。外観、ラウンジ、住戸イメージ、間取り、アクセスが一通り揃っていると、資料請求前の比較がしやすくなります。</p>
+        </div>
+        <div class="project-brief__photos">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?w=900&q=80" alt="高級レジデンスの外観イメージ">
+            <figcaption><strong>外観</strong>昼景と夜景のどちらか1枚が強いと、物件全体の印象が決まりやすいです。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=80" alt="ラウンジ空間のイメージ">
+            <figcaption><strong>共用部</strong>ラウンジやワークスペースは、他物件との差別化材料として使いやすいです。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=900&q=80" alt="住戸内観のイメージ">
+            <figcaption><strong>住戸イメージ</strong>生活が想像できる内観写真があると、間取りの理解も深まります。</figcaption>
+          </figure>
+        </div>
+        <div class="project-brief__layout" style="margin-top:20px;">
+          <div class="project-brief__stack">
+            <article class="project-brief__card">
+              <h3>想定する依頼内容</h3>
+              <p>物件概要、間取り、共用部、ロケーション、資料請求、来場予約までをまとめた物件サイト。ポータルサイトだけでは伝えにくいブランド感と、現地来場につながる情報整理を両立させる想定です。</p>
+              <div class="project-brief__meta">
+                <div class="project-brief__metric"><span>目安金額</span><strong>20万〜36万円</strong></div>
+                <div class="project-brief__metric"><span>制作期間</span><strong>4〜6週間</strong></div>
+                <div class="project-brief__metric"><span>必要素材</span><strong>物件概要 / 間取り / 写真 / アクセス / 価格帯</strong></div>
+                <div class="project-brief__metric"><span>写真の目安</span><strong>外観・共用部・内観・周辺環境で10〜16点</strong></div>
+              </div>
+            </article>
+            <article class="project-brief__card">
+              <h3>先にあると進めやすいもの</h3>
+              <ul class="project-brief__list">
+                <li>価格未定でも、想定坪単価や販売予定時期があると文章が組みやすいです</li>
+                <li>ファミリー向けかDINKs向けかで、間取りの見せ方が変わります</li>
+                <li>周辺環境は地図だけでなく、徒歩分数つきの施設情報があると強いです</li>
+              </ul>
+            </article>
+          </div>
+          <article class="project-brief__card">
+            <h3>掲載文のイメージ</h3>
+            <div class="project-brief__code">
+              <span>見出し例: 海と都心のあいだで、静かに整う暮らし。</span>
+              <span>概要例: 2LDK〜3LDK / 68.42m²〜91.18m² / 新豊洲駅 徒歩4分</span>
+              <span>CTA例: 資料を受け取る / モデルルームを予約する</span>
+            </div>
+            <div class="project-brief__quote">写真が少ない場合は、外観、共用部、住戸イメージ、間取り、周辺環境の5カテゴリをまず1枚ずつ揃えるとページが組みやすくなります。</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <div class="section-panel">
+        <div class="section-label">Plan</div>
+        <h2 class="section-title">間取りは比較しやすく並べる。</h2>
+        <div class="plan-grid">
+          <article class="plan-card">
+            <div class="plan-visual"></div>
+            <h3>2LDK / 68.42m²</h3>
+            <p>共働き世帯向け。回遊性のあるLDKと収納の取りやすさを訴求する想定です。</p>
+          </article>
+          <article class="plan-card">
+            <div class="plan-visual"></div>
+            <h3>3LDK / 74.90m²</h3>
+            <p>ファミリー向けの主力プラン。ワークスペースも確保しやすい想定で見せています。</p>
+          </article>
+          <article class="plan-card">
+            <div class="plan-visual"></div>
+            <h3>Premium / 91.18m²</h3>
+            <p>角住戸の開放感を訴求する上位プラン。眺望や採光など感覚的価値を合わせて見せる構成です。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="amenity">
+      <div class="section-panel">
+        <div class="section-label">Amenity</div>
+        <h2 class="section-title">共用部で、暮らしの輪郭を見せる。</h2>
+        <div class="amenity-grid">
+          <article class="amenity-card">
+            <div class="amenity-visual"></div>
+            <h3>Entrance Lounge</h3>
+            <p>最初に高級感を印象づける入口まわり。物件ブランドのトーンを決める場所です。</p>
+          </article>
+          <article class="amenity-card">
+            <div class="amenity-visual"></div>
+            <h3>Working Lounge</h3>
+            <p>在宅勤務や勉強の場としても使える共用空間を見せ、生活の便利さを補強します。</p>
+          </article>
+          <article class="amenity-card">
+            <div class="amenity-visual"></div>
+            <h3>Sky Terrace</h3>
+            <p>物件の象徴になる場所を早めに見せると、他物件との差別化ポイントになりやすいです。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="location">
+      <div class="section-panel">
+        <div class="section-label">Location</div>
+        <h2 class="section-title">立地の強みは、生活動線で語る。</h2>
+        <div class="location-grid">
+          <article class="location-card">
+            <h3>都心アクセス</h3>
+            <p>東京メトロ有楽町線「新豊洲」駅 徒歩4分。主要エリアへ無理のない時間で移動できる立地を想定しています。</p>
+          </article>
+          <article class="location-card">
+            <h3>生活利便</h3>
+            <p>スーパー、公園、カフェ、保育施設などをまとめて見せることで、日々の暮らしを想像しやすくします。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="visit">
+      <div class="section-panel">
+        <div class="section-label">Reserve</div>
+        <h2 class="section-title">検討段階に応じた導線を用意する。</h2>
+        <div class="visit-grid">
+          <article class="visit-card">
+            <h3>資料請求</h3>
+            <p>まだ比較検討中の方には、まず資料請求の入口を用意すると反応が取りやすくなります。</p>
+            <strong>Entry Point</strong>
+          </article>
+          <article class="visit-card">
+            <h3>来場予約</h3>
+            <p>温度感の高いユーザーには、モデルルーム来場予約をわかりやすく提示するのが効果的です。</p>
+            <strong>Model Room</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      &copy; 2026 Harbor Residence Sample Site
+    </footer>
+  </main>
+</body>
+</html>

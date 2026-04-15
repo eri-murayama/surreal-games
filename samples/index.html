@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ポートフォリオ | サンプルサイト一覧</title>
-  <meta name="description" content="制作実績・サンプルサイト一覧ページ。カフェ、結婚式、LP、ジム、旅館、コーポレート、ブログ等のWebサイト制作例をご覧いただけます。">
-  <!-- Google Analytics -->
+  <title>Web制作ポートフォリオ | サンプルサイト一覧</title>
+  <meta name="description" content="LP、店舗サイト、旅館、コーポレート、ブログなど、業種ごとの見せ方を確認できるWeb制作ポートフォリオです。すべてブラウザで閲覧できます。">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -15,274 +14,1562 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <meta property="og:title" content="ポートフォリオ | サンプルサイト一覧">
-  <meta property="og:description" content="制作実績・サンプルサイト一覧">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="Web制作ポートフォリオ | サンプルサイト一覧">
+  <meta property="og:description" content="業種ごとの見せ方を確認できるWeb制作ポートフォリオ。LP、店舗、旅館、コーポレート、ブログなどのサンプルを掲載。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
   <meta name="twitter:card" content="summary_large_image">
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f5efe4;
+      --bg-deep: #1f2430;
+      --surface: rgba(255, 255, 255, 0.78);
+      --surface-strong: rgba(255, 255, 255, 0.92);
+      --line: rgba(31, 36, 48, 0.12);
+      --text: #1f2430;
+      --muted: #5d6473;
+      --accent: #af4f2b;
+      --accent-strong: #8d3a1a;
+      --accent-soft: #f2d4bf;
+      --navy: #24324a;
+      --shadow: 0 18px 48px rgba(31, 36, 48, 0.12);
+      --radius-lg: 28px;
+      --radius-md: 20px;
+      --radius-sm: 14px;
+      --font-head: 'Outfit', sans-serif;
+      --font-body: 'Noto Sans JP', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: 'Noto Sans JP', sans-serif;
-      background: #0f0f0f;
-      color: #fff;
+      margin: 0;
       min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(175, 79, 43, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(36, 50, 74, 0.16), transparent 24%),
+        linear-gradient(180deg, #fbf7f1 0%, var(--bg) 100%);
     }
 
-    /* Header */
-    .header {
-      padding: 60px 24px 40px;
-      text-align: center;
-    }
-    .header-title {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 300;
-      letter-spacing: 0.15em;
-      margin-bottom: 12px;
-    }
-    .header-sub {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 0.1em;
-    }
-    .header-line {
-      width: 40px;
-      height: 2px;
-      background: #fff;
-      margin: 24px auto 0;
+    a {
+      color: inherit;
     }
 
-    /* Grid */
-    .portfolio-grid {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 24px 80px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 32px;
-    }
-
-    /* Card */
-    .card {
-      background: #1a1a1a;
-      border-radius: 16px;
-      overflow: hidden;
-      transition: transform 0.4s, box-shadow 0.4s;
-      text-decoration: none;
-      color: #fff;
+    img {
       display: block;
+      max-width: 100%;
     }
-    .card-thumbnail {
-      aspect-ratio: 16/9;
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 18px 24px;
+      backdrop-filter: blur(18px);
+      background: rgba(251, 247, 241, 0.82);
+      border-bottom: 1px solid rgba(31, 36, 48, 0.08);
+    }
+
+    .brand {
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .topbar__cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.78rem 1.1rem;
+      border-radius: 999px;
+      background: var(--bg-deep);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 12px 24px rgba(31, 36, 48, 0.14);
+    }
+
+    .topbar__cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(31, 36, 48, 0.18);
+    }
+
+    .shell {
+      width: min(1200px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 56px 0 34px;
+    }
+
+    .hero-panel {
       position: relative;
       overflow: hidden;
+      padding: clamp(28px, 5vw, 56px);
+      border-radius: 36px;
+      background:
+        linear-gradient(135deg, rgba(31, 36, 48, 0.96), rgba(36, 50, 74, 0.94) 48%, rgba(175, 79, 43, 0.92) 100%);
+      color: #fff;
+      box-shadow: 0 24px 60px rgba(31, 36, 48, 0.2);
     }
+
+    .hero-panel::before,
+    .hero-panel::after {
+      content: '';
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .hero-panel::before {
+      width: 320px;
+      height: 320px;
+      top: -120px;
+      right: -80px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-panel::after {
+      width: 220px;
+      height: 220px;
+      bottom: -70px;
+      left: -40px;
+      background: rgba(242, 212, 191, 0.12);
+    }
+
+    .hero-kicker {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-title {
+      position: relative;
+      z-index: 1;
+      margin: 20px 0 16px;
+      font-family: var(--font-head);
+      font-size: clamp(2.5rem, 7vw, 5.4rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-lead {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: clamp(1rem, 2vw, 1.1rem);
+      line-height: 1.9;
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-top: 28px;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 170px;
+      padding: 0.92rem 1.25rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .hero-btn--primary {
+      background: #fff;
+      color: var(--bg-deep);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
+    }
+
+    .hero-btn--secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .hero-stat {
+      padding: 1rem 1.1rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-stat strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-family: var(--font-head);
+      font-size: 1.45rem;
+      line-height: 1.1;
+    }
+
+    .hero-stat span {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 18px;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+
+    .section-copy {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      line-height: 1.9;
+    }
+
+    .notice {
+      padding: 22px 24px;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      border: 1px solid rgba(31, 36, 48, 0.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .notice p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.9;
+    }
+
+    .notice strong {
+      color: var(--text);
+    }
+
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .skill-card {
+      padding: 22px;
+      border-radius: var(--radius-md);
+      background: var(--surface-strong);
+      border: 1px solid rgba(31, 36, 48, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .skill-card__num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-family: var(--font-head);
+      font-weight: 700;
+    }
+
+    .skill-card h3 {
+      margin: 16px 0 10px;
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+
+    .skill-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(175, 79, 43, 0.08);
+      border: 1px solid rgba(175, 79, 43, 0.16);
+      color: var(--accent-strong);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .filter-panel {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 22px;
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      border: 1px solid rgba(31, 36, 48, 0.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .filter-heading {
+      margin: 0 0 6px;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .samples-meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-chip {
+      appearance: none;
+      border: 1px solid rgba(31, 36, 48, 0.1);
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 0.68rem 0.96rem;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .filter-chip:hover {
+      transform: translateY(-1px);
+    }
+
+    .filter-chip.active {
+      background: var(--bg-deep);
+      border-color: var(--bg-deep);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(31, 36, 48, 0.16);
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--surface-strong);
+      border-radius: 24px;
+      border: 1px solid rgba(31, 36, 48, 0.08);
+      box-shadow: var(--shadow);
+      transform: translateY(26px);
+      opacity: 0;
+      transition: transform 0.55s ease, opacity 0.55s ease, box-shadow 0.3s ease;
+    }
+
+    .card.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .card.is-hidden {
+      display: none;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 54px rgba(31, 36, 48, 0.16);
+    }
+
+    .card-thumbnail {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+    }
+
     .card-thumbnail img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s;
-    }
-    .card:hover .card-thumbnail img {
-      transform: scale(1.08);
-    }
-    .card-thumbnail::after {
-      content: 'VIEW';
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.6);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      letter-spacing: 0.3em;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .card:hover .card-thumbnail::after {
-      opacity: 1;
+      transition: transform 0.6s ease;
     }
 
-    /* Card entry animation */
-    .card {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s, transform 0.6s, box-shadow 0.4s;
+    .card:hover .card-thumbnail img {
+      transform: scale(1.06);
     }
-    .card.visible {
-      opacity: 1;
-      transform: translateY(0);
+
+    .card-thumbnail::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 35%, rgba(31, 36, 48, 0.46) 100%);
     }
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
+
     .card-body {
-      padding: 20px 24px 24px;
+      padding: 20px 22px 22px;
     }
-    .card-tag {
-      display: inline-block;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      padding: 4px 12px;
-      border-radius: 20px;
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
       margin-bottom: 12px;
-      font-weight: 600;
     }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.42rem 0.78rem;
+      border-radius: 999px;
+      font-family: var(--font-head);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .card-arrow {
+      color: var(--muted);
+      font-size: 1rem;
+      transition: transform 0.25s ease, color 0.25s ease;
+    }
+
+    .card:hover .card-arrow {
+      transform: translateX(4px);
+      color: var(--accent-strong);
+    }
+
     .card-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 8px;
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      line-height: 1.45;
     }
+
     .card-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .card-meta span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.36rem 0.68rem;
+      border-radius: 999px;
+      background: rgba(36, 50, 74, 0.06);
+      border: 1px solid rgba(36, 50, 74, 0.09);
+      color: var(--navy);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .card-cafe .card-tag { background: #5c3d2e; color: #f6dec2; }
+    .card-wedding .card-tag { background: #ead7d0; color: #8f6459; }
+    .card-product .card-tag { background: #0d7377; color: #e7ffff; }
+    .card-gym .card-tag { background: #c53030; color: #fff2f2; }
+    .card-ryokan .card-tag { background: #28443a; color: #f0dd9c; }
+    .card-corporate .card-tag { background: #1b4ea3; color: #eaf1ff; }
+    .card-blog .card-tag { background: #c2693d; color: #fff1e9; }
+    .card-salon .card-tag { background: #a25b4f; color: #fff1ed; }
+    .card-clinic .card-tag { background: #2a8c83; color: #eefdfa; }
+    .card-saas .card-tag { background: #56a6ff; color: #07111f; }
+    .card-realestate .card-tag { background: #355c64; color: #f4efe4; }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .guide-card {
+      padding: 22px;
+      border-radius: var(--radius-md);
+      background: var(--surface-strong);
+      border: 1px solid rgba(31, 36, 48, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .guide-card__num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      padding: 0.36rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(36, 50, 74, 0.08);
+      color: var(--navy);
+      font-family: var(--font-head);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .guide-card h3 {
+      margin: 16px 0 10px;
+      font-size: 1.06rem;
+      line-height: 1.45;
+    }
+
+    .guide-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .showcase-card,
+    .estimate-card,
+    .materials-card,
+    .timeline-item {
+      background: var(--surface-strong);
+      border: 1px solid rgba(31, 36, 48, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .showcase-card {
+      overflow: hidden;
+      border-radius: 26px;
+    }
+
+    .showcase-image {
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(31, 36, 48, 0.08);
+      background: rgba(36, 50, 74, 0.04);
+    }
+
+    .showcase-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .showcase-body {
+      padding: 22px;
+    }
+
+    .showcase-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .showcase-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.38rem 0.72rem;
+      border-radius: 999px;
+      background: rgba(36, 50, 74, 0.08);
+      color: var(--navy);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .showcase-title {
+      margin-top: 14px;
+      font-size: 1.32rem;
+      line-height: 1.35;
+    }
+
+    .showcase-copy {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.85;
+    }
+
+    .showcase-spec {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .showcase-spec div {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(36, 50, 74, 0.04);
+      border: 1px solid rgba(36, 50, 74, 0.08);
+    }
+
+    .showcase-spec span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .showcase-spec strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.96rem;
+      line-height: 1.45;
+    }
+
+    .showcase-note {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(175, 79, 43, 0.07);
+      border: 1px solid rgba(175, 79, 43, 0.1);
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .showcase-note strong {
+      color: var(--text);
+    }
+
+    .estimate-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .estimate-card {
+      padding: 22px;
+      border-radius: var(--radius-md);
+    }
+
+    .estimate-card--featured {
+      background:
+        linear-gradient(135deg, rgba(175, 79, 43, 0.12), rgba(255, 255, 255, 0.92)),
+        var(--surface-strong);
+    }
+
+    .estimate-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.38rem 0.72rem;
+      border-radius: 999px;
+      background: rgba(36, 50, 74, 0.08);
+      color: var(--navy);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .estimate-card h3 {
+      margin: 16px 0 10px;
+      font-size: 1.14rem;
+      line-height: 1.45;
+    }
+
+    .estimate-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+    }
+
+    .estimate-nums {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .estimate-nums div {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(36, 50, 74, 0.04);
+      border: 1px solid rgba(36, 50, 74, 0.08);
+    }
+
+    .estimate-nums span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .estimate-nums strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .materials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .materials-card {
+      padding: 22px;
+      border-radius: var(--radius-md);
+    }
+
+    .materials-card h3 {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      line-height: 1.45;
+    }
+
+    .materials-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.9;
+    }
+
+    .materials-list li + li {
+      margin-top: 0.4rem;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      padding: 18px 20px;
+      border-radius: 22px;
+    }
+
+    .timeline-step {
+      display: inline-flex;
+      align-items: start;
+      justify-content: center;
+      color: var(--accent);
+      font-family: var(--font-head);
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .timeline-item h3 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+      line-height: 1.45;
+    }
+
+    .timeline-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.85;
+    }
+
+    .contact-panel {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(135deg, rgba(175, 79, 43, 0.12), rgba(255, 255, 255, 0.82)),
+        var(--surface-strong);
+      border: 1px solid rgba(31, 36, 48, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .contact-panel h3 {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+      line-height: 1.4;
+    }
+
+    .contact-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+
+    .contact-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(31, 36, 48, 0.92);
+      color: #fff;
+    }
+
+    .contact-box__label {
+      font-family: var(--font-head);
       font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.66);
+    }
+
+    .contact-box__sub {
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 0.84rem;
       line-height: 1.7;
     }
 
-    /* Card color themes */
-    .card-cafe .card-tag { background: #5c3d2e; color: #e0c98f; }
-    .card-wedding .card-tag { background: #f0e0d0; color: #8b6f5e; }
-    .card-product .card-tag { background: #0d7377; color: #fff; }
-    .card-gym .card-tag { background: #ff3c3c; color: #fff; }
-    .card-ryokan .card-tag { background: #2d4a3e; color: #b8963e; }
-    .card-corporate .card-tag { background: #1a73e8; color: #fff; }
-    .card-blog .card-tag { background: #e8734a; color: #fff; }
-
-    /* Coming soon */
-    .card-coming {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    .card-coming .card-thumbnail::after {
-      content: 'COMING SOON';
-      opacity: 1;
-      background: rgba(0,0,0,0.4);
-      font-size: 0.75rem;
-    }
-
-    /* Back link */
-    .back-link {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      color: rgba(255,255,255,0.5);
+    .contact-box__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--bg-deep);
       text-decoration: none;
-      font-size: 0.85rem;
-      transition: color 0.3s;
+      font-weight: 700;
+      transition: transform 0.25s ease;
     }
-    .back-link:hover { color: #fff; }
 
-    /* Footer */
+    .contact-box__link:hover {
+      transform: translateY(-2px);
+    }
+
     .footer {
+      padding: 18px 0 44px;
       text-align: center;
-      padding: 24px;
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.3);
-      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 980px) {
+      .skill-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .showcase-grid,
+      .estimate-grid,
+      .materials-grid,
+      .guide-grid,
+      .hero-stats,
+      .contact-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        padding: 14px 16px;
+      }
+
+      .shell {
+        width: min(100% - 24px, 1200px);
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .hero-panel {
+        padding: 24px 20px;
+        border-radius: 28px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .hero-btn {
+        width: 100%;
+      }
+
+      .hero-stats,
+      .showcase-grid,
+      .estimate-grid,
+      .materials-grid,
+      .guide-grid,
+      .skill-grid,
+      .portfolio-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .showcase-spec,
+      .timeline-item {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: start;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="topbar">
+    <a href="#top" class="brand">Web Portfolio</a>
+    <a href="https://x.com/tadanosyuhuda" class="topbar__cta" target="_blank" rel="noopener noreferrer">相談する</a>
+  </div>
 
-  <a href="../index.html" class="back-link">&larr; トップに戻る</a>
-
-  <header class="header">
-    <h1 class="header-title">PORTFOLIO</h1>
-    <p class="header-sub">制作実績・サンプルサイト</p>
-    <div class="header-line"></div>
-  </header>
-
-  <main class="portfolio-grid">
-
-    <!-- Cafe -->
-    <a href="cafe/index.html" class="card card-cafe">
-      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&h=340&fit=crop" alt="カフェサイト" loading="lazy"></div>
-      <div class="card-body">
-        <span class="card-tag">CAFE</span>
-        <h2 class="card-title">珈琲と時間 COFFEE & TIME</h2>
-        <p class="card-desc">自家焙煎カフェのサイト。ナビゲーション・メニュー表・ギャラリー・アクセス情報を含むフルページ構成。</p>
+  <div class="shell">
+    <header class="hero" id="top">
+      <div class="hero-panel">
+        <span class="hero-kicker">Web Design / Front-end Samples</span>
+        <h1 class="hero-title">伝わるページを、ちゃんと作る。</h1>
+        <p class="hero-lead">LP、店舗、サロン、クリニック、旅館、不動産、コーポレート、SaaS、ブログ風メディアなど、業種ごとの見せ方を確認できるサンプル集です。雰囲気だけでなく、実画面、掲載写真の考え方、文章例、発注イメージ、料金目安までまとめて判断できる入口にしています。</p>
+        <div class="hero-actions">
+          <a href="#samples" class="hero-btn hero-btn--primary">サンプルを見る</a>
+          <a href="https://x.com/tadanosyuhuda" class="hero-btn hero-btn--secondary" target="_blank" rel="noopener noreferrer">相談窓口へ</a>
+        </div>
+        <div class="hero-stats" aria-label="ポートフォリオの概要">
+          <article class="hero-stat">
+            <strong>11業種</strong>
+            <span>店舗、サロン、クリニック、物件、LP、SaaS、企業サイトなど用途別に掲載</span>
+          </article>
+          <article class="hero-stat">
+            <strong>全件閲覧可</strong>
+            <span>静止画ではなく、実際のページ遷移とレイアウトで確認可能</span>
+          </article>
+          <article class="hero-stat">
+            <strong>レスポンシブ前提</strong>
+            <span>PCとスマホの両方で見やすい構成を意識したデモです</span>
+          </article>
+        </div>
       </div>
-    </a>
+    </header>
 
-    <!-- Wedding (coming soon) -->
-    <a href="wedding/index.html" class="card card-wedding">
-      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=340&fit=crop" alt="結婚式招待ページ" loading="lazy"></div>
-      <div class="card-body">
-        <span class="card-tag">WEDDING</span>
-        <h2 class="card-title">結婚式 招待ページ</h2>
-        <p class="card-desc">Web招待状。カウントダウン・出欠回答フォーム・会場案内を含むエレガントなデザイン。</p>
+    <section class="section">
+      <div class="notice">
+        <p><strong>このページについて:</strong> 掲載しているサイトは業種別の見せ方を確認できる <strong>サンプル制作</strong> です。実案件を想定した構成に加えて、各詳細ページでは料金の目安、必要な情報、写真や原稿の準備内容、掲載文の例まで見られるようにしています。</p>
       </div>
-    </a>
+    </section>
 
-    <!-- Product LP (coming soon) -->
-    <a href="product/index.html" class="card card-product">
-      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=600&h=340&fit=crop" alt="新商品LP" loading="lazy"></div>
-      <div class="card-body">
-        <span class="card-tag">LANDING PAGE</span>
-        <h2 class="card-title">新商品PRページ</h2>
-        <p class="card-desc">新商品のプロモーション用LP。インパクトのあるビジュアルとCTAボタンで訴求する構成。</p>
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">What I Can Make</span>
+          <h2 class="section-title">こんなページを想定しています</h2>
+        </div>
       </div>
-    </a>
-
-    <!-- Gym -->
-    <a href="gym/index.html" class="card card-gym">
-      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=340&fit=crop" alt="ジムサイト" loading="lazy"></div>
-      <div class="card-body">
-        <span class="card-tag">GYM</span>
-        <h2 class="card-title">FORGE FITNESS</h2>
-        <p class="card-desc">フィットネスジムのサイト。プログラム紹介・料金プラン比較・トレーナー紹介・体験予約フォーム付き。</p>
+      <p class="section-copy">仕事につながりやすいように、かわいいだけではなく「何を載せるべきか」「どう問い合わせにつなげるか」が伝わるサンプルを並べています。</p>
+      <div class="chip-row" aria-label="対応イメージ">
+        <span class="chip">ランディングページ</span>
+        <span class="chip">店舗サイト</span>
+        <span class="chip">美容サロン</span>
+        <span class="chip">クリニック</span>
+        <span class="chip">サービス紹介</span>
+        <span class="chip">予約導線</span>
+        <span class="chip">記事メディア</span>
+        <span class="chip">物件サイト</span>
+        <span class="chip">SaaS</span>
       </div>
-    </a>
-
-    <!-- Ryokan -->
-    <a href="ryokan/index.html" class="card card-ryokan">
-      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=600&h=340&fit=crop" alt="旅館サイト" loading="lazy"></div>
-      <div class="card-body">
-        <span class="card-tag">RYOKAN</span>
-        <h2 class="card-title">翠風庵 すいふうあん</h2>
-        <p class="card-desc">日本旅館のサイト。客室・温泉・会席料理の紹介と予約フォーム。和の高級感を表現した縦書き演出付き。</p>
+      <div class="skill-grid" style="margin-top: 18px;">
+        <article class="skill-card">
+          <span class="skill-card__num">01</span>
+          <h3>第一印象を作るヒーロー設計</h3>
+          <p>誰向けのサービスか、何を頼めるか、どこを見ればよいかが最初の数秒で伝わる構成を意識しています。</p>
+        </article>
+        <article class="skill-card">
+          <span class="skill-card__num">02</span>
+          <h3>業種に合わせた世界観づくり</h3>
+          <p>旅館なら落ち着き、ジムなら力強さ、ブログなら読みやすさというように、トーンの切り替えを確認できます。</p>
+        </article>
+        <article class="skill-card">
+          <span class="skill-card__num">03</span>
+          <h3>情報整理とCTAの置き方</h3>
+          <p>商品紹介、料金、実績、アクセス、予約など、目的ごとに必要な情報が自然に読める順番で並ぶように設計しています。</p>
+        </article>
+        <article class="skill-card">
+          <span class="skill-card__num">04</span>
+          <h3>そのまま触れるデモ形式</h3>
+          <p>画像一覧ではなく、実際にページを開いてレイアウトや動きを確認できる形にしているので、完成イメージを持ちやすいです。</p>
+        </article>
       </div>
-    </a>
+    </section>
 
-    <!-- Corporate -->
-    <a href="corporate/index.html" class="card card-corporate">
-      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=340&fit=crop" alt="コーポレートサイト" loading="lazy"></div>
-      <div class="card-body">
-        <span class="card-tag">CORPORATE</span>
-        <h2 class="card-title">NexTech Solutions</h2>
-        <p class="card-desc">IT企業のコーポレートサイト。事業紹介・実績カウントアップ・ニュース・採用情報・お問い合わせ。</p>
+    <section class="section" id="samples">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Samples</span>
+          <h2 class="section-title">サンプルサイト一覧</h2>
+        </div>
       </div>
-    </a>
-
-    <!-- Blog -->
-    <a href="blog/index.html" class="card card-blog">
-      <div class="card-thumbnail"><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600&h=340&fit=crop" alt="ブログサイト" loading="lazy"></div>
-      <div class="card-body">
-        <span class="card-tag">BLOG</span>
-        <h2 class="card-title">soramame そらまめ</h2>
-        <p class="card-desc">暮らしとおでかけのメディア。カテゴリフィルター・記事カード・人気ランキング・プロフィール付き。</p>
+      <p class="section-copy">気になる業種をそのまま開いて見てください。ページ全体の雰囲気、情報の並べ方、CTAやフォームの置き方まで確認できます。</p>
+      <div class="filter-panel" aria-label="サンプル絞り込み">
+        <div>
+          <p class="filter-heading">案件タイプから探す</p>
+          <p class="samples-meta"><span id="resultCount">11</span>件表示中。近い案件タイプを押すと、該当するサンプルだけに絞り込めます。</p>
+        </div>
+        <div class="filter-group" role="group" aria-label="絞り込みボタン">
+          <button type="button" class="filter-chip active" data-filter="all" aria-pressed="true">すべて</button>
+          <button type="button" class="filter-chip" data-filter="store" aria-pressed="false">店舗・来店</button>
+          <button type="button" class="filter-chip" data-filter="reservation" aria-pressed="false">予約・申込</button>
+          <button type="button" class="filter-chip" data-filter="service" aria-pressed="false">サービス紹介</button>
+          <button type="button" class="filter-chip" data-filter="lp" aria-pressed="false">販売LP</button>
+          <button type="button" class="filter-chip" data-filter="corporate" aria-pressed="false">企業・採用</button>
+          <button type="button" class="filter-chip" data-filter="media" aria-pressed="false">メディア</button>
+        </div>
       </div>
-    </a>
 
-  </main>
+      <div class="portfolio-grid" style="margin-top: 22px;">
+        <a href="cafe/index.html" class="card card-cafe" data-filters="store reservation">
+          <div class="card-thumbnail"><img src="assets/thumb-cafe.jpg" alt="カフェサイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">CAFE</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">珈琲と時間 COFFEE &amp; TIME</h3>
+            <p class="card-desc">自家焙煎カフェを想定した店舗サイト。メニュー、ギャラリー、アクセスまで一通り掲載したオーソドックスな構成です。</p>
+            <div class="card-meta">
+              <span>店舗紹介</span>
+              <span>メニュー</span>
+              <span>アクセス</span>
+            </div>
+          </div>
+        </a>
 
-  <footer class="footer">
-    &copy; 2025 Portfolio
-  </footer>
+        <a href="salon/index.html" class="card card-salon" data-filters="store reservation service">
+          <div class="card-thumbnail"><img src="assets/thumb-salon.jpg" alt="ヘアサロンサイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">SALON</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">Lumiere Hair Atelier</h3>
+            <p class="card-desc">大人向けヘアサロンを想定したサイト。世界観づくりと、初回来店の予約導線を両立した構成の見本です。</p>
+            <div class="card-meta">
+              <span>美容室</span>
+              <span>スタッフ紹介</span>
+              <span>予約CTA</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="wedding/index.html" class="card card-wedding" data-filters="reservation event">
+          <div class="card-thumbnail"><img src="assets/thumb-wedding.jpg" alt="結婚式招待ページ" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">WEDDING</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">結婚式 招待ページ</h3>
+            <p class="card-desc">イベント・招待ページ向けのサンプル。世界観を先に作りつつ、出欠や会場案内へ自然につなぐ設計を確認できます。</p>
+            <div class="card-meta">
+              <span>イベント告知</span>
+              <span>会場案内</span>
+              <span>フォーム導線</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="product/index.html" class="card card-product" data-filters="lp sales">
+          <div class="card-thumbnail"><img src="assets/thumb-product.jpg" alt="新商品LP" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">LP</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">新商品PRページ</h3>
+            <p class="card-desc">商品の魅力を順番に見せるランディングページ。ベネフィット、比較、レビュー、CTAの流れを見たいときに向いています。</p>
+            <div class="card-meta">
+              <span>販売導線</span>
+              <span>訴求設計</span>
+              <span>CTA</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="gym/index.html" class="card card-gym" data-filters="store reservation service">
+          <div class="card-thumbnail"><img src="assets/thumb-gym.jpg" alt="ジムサイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">GYM</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">FORGE FITNESS</h3>
+            <p class="card-desc">体験予約をゴールに置いたサービスサイト。料金、コース、トレーナー紹介を読みやすく並べる構成の参考になります。</p>
+            <div class="card-meta">
+              <span>サービス紹介</span>
+              <span>料金表</span>
+              <span>予約CTA</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="clinic/index.html" class="card card-clinic" data-filters="reservation service">
+          <div class="card-thumbnail"><img src="assets/thumb-clinic.jpg" alt="クリニックサイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">CLINIC</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">みどり内科クリニック</h3>
+            <p class="card-desc">地域クリニック向けのサンプル。診療案内、受付時間、医師紹介、アクセス、WEB予約まで迷わず確認できます。</p>
+            <div class="card-meta">
+              <span>医療サイト</span>
+              <span>診療案内</span>
+              <span>WEB予約</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="ryokan/index.html" class="card card-ryokan" data-filters="store reservation">
+          <div class="card-thumbnail"><img src="assets/thumb-ryokan.jpg" alt="旅館サイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">RYOKAN</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">翠風庵 すいふうあん</h3>
+            <p class="card-desc">和の落ち着きと宿の魅力を見せるサンプル。客室、温泉、料理、予約導線を品よくまとめたい案件向けの見本です。</p>
+            <div class="card-meta">
+              <span>宿泊サイト</span>
+              <span>写真訴求</span>
+              <span>予約導線</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="corporate/index.html" class="card card-corporate" data-filters="corporate service">
+          <div class="card-thumbnail"><img src="assets/thumb-corporate.jpg" alt="コーポレートサイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">CORPORATE</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">NexTech Solutions</h3>
+            <p class="card-desc">IT企業を想定したコーポレートサイト。事業内容、数字の見せ方、ニュース、採用、お問い合わせの流れを一通り確認できます。</p>
+            <div class="card-meta">
+              <span>事業紹介</span>
+              <span>採用</span>
+              <span>問い合わせ</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="saas/index.html" class="card card-saas" data-filters="service lp corporate">
+          <div class="card-thumbnail"><img src="assets/thumb-saas.jpg" alt="SaaSサイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">SAAS</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">FlowSync</h3>
+            <p class="card-desc">BtoB SaaSを想定したサービス紹介ページ。課題訴求、機能紹介、料金、導入事例、問い合わせ導線まで確認できます。</p>
+            <div class="card-meta">
+              <span>サービスLP</span>
+              <span>料金表</span>
+              <span>資料請求</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="realestate/index.html" class="card card-realestate" data-filters="reservation service">
+          <div class="card-thumbnail"><img src="assets/thumb-realestate.jpg" alt="不動産サイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">PROPERTY</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">Harbor Residence</h3>
+            <p class="card-desc">新築レジデンスの物件サイト向けサンプル。間取り、共用部、ロケーション、来場予約まで流れを見せられます。</p>
+            <div class="card-meta">
+              <span>物件紹介</span>
+              <span>間取り訴求</span>
+              <span>来場予約</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="blog/index.html" class="card card-blog" data-filters="media content">
+          <div class="card-thumbnail"><img src="assets/thumb-blog.jpg" alt="ブログサイト" loading="eager"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="card-tag">BLOG</span>
+              <span class="card-arrow">→</span>
+            </div>
+            <h3 class="card-title">soramame そらまめ</h3>
+            <p class="card-desc">読み物メディア向けのサンプル。カード一覧、カテゴリ導線、ランキング、プロフィールまわりなど、情報量の多いページの整理を見られます。</p>
+            <div class="card-meta">
+              <span>記事一覧</span>
+              <span>カテゴリ導線</span>
+              <span>メディア設計</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Visual Cases</span>
+          <h2 class="section-title">実画面と具体的な依頼イメージ</h2>
+        </div>
+      </div>
+      <p class="section-copy">雰囲気だけではなく、実際にどういう依頼になりやすいかまで見えるように、サンプル画面と発注内容の目安をセットで載せています。詳細ページ側では写真の使い方や掲載文の例も確認できます。</p>
+      <div class="showcase-grid" style="margin-top: 22px;">
+        <article class="showcase-card">
+          <div class="showcase-image"><img src="assets/case-salon.jpg" alt="サロンサイトの実画面"></div>
+          <div class="showcase-body">
+            <div class="showcase-head">
+              <span class="showcase-tag">Salon</span>
+            </div>
+            <h3 class="showcase-title">大人女性向けヘアサロンの新規ページ</h3>
+            <p class="showcase-copy">落ち着いた雰囲気を出したい、初回来店の不安を減らしたい、ホットペッパーやLINE予約へつなげたい、という依頼を想定した内容です。</p>
+            <div class="showcase-spec">
+              <div><span>目安</span><strong>12万〜18万円</strong></div>
+              <div><span>期間</span><strong>2〜3週間</strong></div>
+              <div><span>必要素材</span><strong>店内・スタイル写真 / メニュー / スタッフ紹介</strong></div>
+            </div>
+            <div class="showcase-note"><strong>想定ゴール:</strong> 新規予約を増やす。外観1〜2枚、店内3〜5枚、スタイル写真6枚前後あると組みやすいです。</div>
+          </div>
+        </article>
+
+        <article class="showcase-card">
+          <div class="showcase-image"><img src="assets/case-clinic.jpg" alt="クリニックサイトの実画面"></div>
+          <div class="showcase-body">
+            <div class="showcase-head">
+              <span class="showcase-tag">Clinic</span>
+            </div>
+            <h3 class="showcase-title">地域クリニックの案内ページ</h3>
+            <p class="showcase-copy">診療内容、受付時間、アクセス、初診の流れを迷わず見せたいケース向けです。デザイン性より、情報の見つけやすさを優先した構成にしています。</p>
+            <div class="showcase-spec">
+              <div><span>目安</span><strong>15万〜24万円</strong></div>
+              <div><span>期間</span><strong>2〜4週間</strong></div>
+              <div><span>必要素材</span><strong>診療時間 / 医師情報 / 院内外写真 / 地図</strong></div>
+            </div>
+            <div class="showcase-note"><strong>想定ゴール:</strong> 初診の問い合わせと来院前の不安軽減。外観、受付、待合、診察室、院長写真の5点前後あると伝わりやすいです。</div>
+          </div>
+        </article>
+
+        <article class="showcase-card">
+          <div class="showcase-image"><img src="assets/case-saas.jpg" alt="SaaSサイトの実画面"></div>
+          <div class="showcase-body">
+            <div class="showcase-head">
+              <span class="showcase-tag">SaaS</span>
+            </div>
+            <h3 class="showcase-title">BtoB SaaS のサービス紹介LP</h3>
+            <p class="showcase-copy">プロダクト画面を見せながら、何が解決できるのか、料金はいくらか、資料請求かデモ相談かを整理したい案件向けです。</p>
+            <div class="showcase-spec">
+              <div><span>目安</span><strong>18万〜32万円</strong></div>
+              <div><span>期間</span><strong>3〜4週間</strong></div>
+              <div><span>必要素材</span><strong>画面キャプチャ / 導入効果 / 料金 / 事例</strong></div>
+            </div>
+            <div class="showcase-note"><strong>想定ゴール:</strong> 資料請求やデモ相談の増加。UIキャプチャ4〜6枚、導入効果の数値、3プラン程度の料金情報があると強いです。</div>
+          </div>
+        </article>
+
+        <article class="showcase-card">
+          <div class="showcase-image"><img src="assets/case-realestate.jpg" alt="不動産サイトの実画面"></div>
+          <div class="showcase-body">
+            <div class="showcase-head">
+              <span class="showcase-tag">Property</span>
+            </div>
+            <h3 class="showcase-title">新築レジデンスの物件紹介ページ</h3>
+            <p class="showcase-copy">高級感を出しつつ、間取り、共用部、ロケーション、来場予約までをひとつの流れで見せたいときの参考用です。</p>
+            <div class="showcase-spec">
+              <div><span>目安</span><strong>20万〜35万円</strong></div>
+              <div><span>期間</span><strong>3〜5週間</strong></div>
+              <div><span>必要素材</span><strong>物件写真 / 間取り / アクセス / 物件概要</strong></div>
+            </div>
+            <div class="showcase-note"><strong>想定ゴール:</strong> 資料請求と来場予約。外観・共用部・周辺環境・間取り画像を合計8〜12点ほど用意できると見せやすいです。</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Estimate</span>
+          <h2 class="section-title">料金と納期の目安</h2>
+        </div>
+      </div>
+      <p class="section-copy">あくまで目安ですが、事前に考えやすいように大まかなレンジを載せています。素材の量、ページ数、修正回数で上下します。</p>
+      <div class="estimate-grid" style="margin-top: 22px;">
+        <article class="estimate-card">
+          <span class="estimate-label">Light</span>
+          <h3>まずは1ページだけ整えたい方向け</h3>
+          <p>LP、簡易店舗ページ、イベント案内など、1ページ完結の案件を想定しています。</p>
+          <div class="estimate-nums">
+            <div><span>目安料金</span><strong>8万〜15万円</strong></div>
+            <div><span>目安期間</span><strong>2〜3週間</strong></div>
+            <div><span>向いている内容</span><strong>LP / 小規模案内 / 予約導線1本</strong></div>
+          </div>
+        </article>
+        <article class="estimate-card estimate-card--featured">
+          <span class="estimate-label">Standard</span>
+          <h3>いちばん相談が多そうな構成</h3>
+          <p>トップ1ページの中に、サービス紹介、料金、アクセス、お問い合わせなどを整理して載せる規模です。</p>
+          <div class="estimate-nums">
+            <div><span>目安料金</span><strong>15万〜28万円</strong></div>
+            <div><span>目安期間</span><strong>3〜5週間</strong></div>
+            <div><span>向いている内容</span><strong>店舗 / サロン / クリニック / 企業紹介</strong></div>
+          </div>
+        </article>
+        <article class="estimate-card">
+          <span class="estimate-label">Extended</span>
+          <h3>情報量が多い案件向け</h3>
+          <p>不動産、採用、SaaS、物件紹介など、比較要素や説明量が多く、構成設計が必要な案件を想定しています。</p>
+          <div class="estimate-nums">
+            <div><span>目安料金</span><strong>25万〜45万円</strong></div>
+            <div><span>目安期間</span><strong>4〜6週間</strong></div>
+            <div><span>向いている内容</span><strong>SaaS / 不動産 / 採用 / 多情報ページ</strong></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Materials</span>
+          <h2 class="section-title">最初にあると助かる情報と素材</h2>
+        </div>
+      </div>
+      <p class="section-copy">全部そろっていなくても大丈夫ですが、次の情報があると見積りと制作の進みがかなりスムーズになります。</p>
+      <div class="materials-grid" style="margin-top: 22px;">
+        <article class="materials-card">
+          <h3>最低限ほしい情報</h3>
+          <ul class="materials-list">
+            <li>何のためのページか: 予約、問い合わせ、資料請求、認知など</li>
+            <li>誰に見てほしいか: 店舗客、採用候補者、法人担当者など</li>
+            <li>いつ公開したいか: 希望時期があると逆算しやすいです</li>
+            <li>載せたい内容: メニュー、料金、アクセス、実績、採用情報など</li>
+          </ul>
+        </article>
+        <article class="materials-card">
+          <h3>あると助かる素材</h3>
+          <ul class="materials-list">
+            <li>ロゴ、ブランドカラー、既存SNSや既存サイトのURL</li>
+            <li>店舗、人物、商品、空間などの写真</li>
+            <li>すでにある文章や箇条書きメモ</li>
+            <li>参考にしたいサイト 2〜3件</li>
+          </ul>
+        </article>
+        <article class="materials-card">
+          <h3>写真がまだない場合</h3>
+          <ul class="materials-list">
+            <li>仮素材で先にデザインを組み、あとから差し替える進め方もできます</li>
+            <li>必要なカット一覧: 外観、内観、スタッフ、商品、作業風景などは整理して提案できます</li>
+            <li>スマホ撮影でも始められますが、横写真と縦写真を混ぜてもらえると組みやすいです</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Flow</span>
+          <h2 class="section-title">制作の流れ</h2>
+        </div>
+      </div>
+      <div class="timeline" style="margin-top: 22px;">
+        <article class="timeline-item">
+          <div class="timeline-step">Step 1</div>
+          <div>
+            <h3>相談内容の整理</h3>
+            <p>やりたいこと、近いサンプル、公開時期、予算感がざっくりでもわかると、最初の提案がしやすいです。</p>
+          </div>
+        </article>
+        <article class="timeline-item">
+          <div class="timeline-step">Step 2</div>
+          <div>
+            <h3>必要情報とページ構成を決める</h3>
+            <p>どの情報を載せるか、何ページ必要か、写真が足りないかを確認して、構成の方向を固めます。</p>
+          </div>
+        </article>
+        <article class="timeline-item">
+          <div class="timeline-step">Step 3</div>
+          <div>
+            <h3>デザインと実装</h3>
+            <p>方向性に合わせて見た目と導線を組みます。必要に応じて仮素材や仮原稿で先に進めることも可能です。</p>
+          </div>
+        </article>
+        <article class="timeline-item">
+          <div class="timeline-step">Step 4</div>
+          <div>
+            <h3>確認と差し替え</h3>
+            <p>文章や写真の差し替え、細かい文言調整、公開前のチェックを行います。ここで写真や実データを本番用に置き換えます。</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="contact-panel">
+        <div>
+          <span class="section-kicker">Contact</span>
+          <h3>ポートフォリオを見て相談したい方へ</h3>
+          <p>「このサンプルに近い感じで作りたい」「予算はこのくらい」「写真はまだ少ない」といった状態でも大丈夫です。近いサンプル名、公開したい時期、やりたいことの3つがあると、最初の話がかなり進めやすくなります。</p>
+        </div>
+        <div class="contact-box">
+          <span class="contact-box__label">Contact</span>
+          <p>最初の相談は X のDM がいちばん気づきやすいです。</p>
+          <p class="contact-box__sub">送ってもらえると助かるもの: 希望サンプル名、目的、公開時期、だいたいの予算、素材の有無。</p>
+          <a href="https://x.com/tadanosyuhuda" class="contact-box__link" target="_blank" rel="noopener noreferrer">Xで相談する</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      &copy; 2026 Web Portfolio Samples
+    </footer>
+  </div>
 
   <script>
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 150);
+      entries.forEach((entry, index) => {
+        if (!entry.isIntersecting) return;
+        entry.target.style.transitionDelay = `${Math.min(index * 70, 280)}ms`;
+        entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+
+    const cards = Array.from(document.querySelectorAll('.card'));
+    const filterButtons = Array.from(document.querySelectorAll('.filter-chip'));
+    const resultCount = document.getElementById('resultCount');
+
+    cards.forEach((element) => observer.observe(element));
+
+    function applyFilter(filter) {
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const tags = (card.dataset.filters || '').split(/\s+/).filter(Boolean);
+        const matched = filter === 'all' || tags.includes(filter);
+        card.classList.toggle('is-hidden', !matched);
+        if (matched) {
+          visibleCount += 1;
         }
       });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.card').forEach(el => observer.observe(el));
+
+      resultCount.textContent = String(visibleCount);
+
+      filterButtons.forEach((button) => {
+        const active = button.dataset.filter === filter;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => applyFilter(button.dataset.filter));
+    });
+
+    applyFilter('all');
   </script>
 </body>
 </html>

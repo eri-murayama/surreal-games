@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumiere Hair Atelier | 架空ヘアサロンサンプルサイト</title>
+  <meta name="description" content="感度の高い大人向けヘアサロンを想定したサンプルサイト。世界観、メニュー、スタイル提案、予約導線まで確認できます。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="Lumiere Hair Atelier | ヘアサロンサイトサンプル">
+  <meta property="og:description" content="編集的な空気感で見せるヘアサロンサイトのサンプル。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --bg: #f7efe7;
+      --paper: rgba(255, 250, 246, 0.92);
+      --paper-soft: rgba(255, 250, 246, 0.72);
+      --ink: #2f2624;
+      --muted: #72615a;
+      --accent: #aa5c52;
+      --accent-soft: #ecd1cb;
+      --line: rgba(47, 38, 36, 0.12);
+      --shadow: 0 28px 58px rgba(71, 48, 42, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(170, 92, 82, 0.16), transparent 26%),
+        linear-gradient(180deg, #fff9f5 0%, var(--bg) 100%);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .back-to-portfolio,
+    .sample-badge {
+      position: fixed;
+      top: 16px;
+      z-index: 50;
+      padding: 0.46rem 0.92rem;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      font-size: 0.78rem;
+    }
+
+    .back-to-portfolio {
+      left: 16px;
+      background: rgba(47, 38, 36, 0.4);
+      color: #fff;
+    }
+
+    .sample-badge {
+      right: 16px;
+      background: var(--accent);
+      color: #fff;
+      letter-spacing: 0.14em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 60;
+      width: min(336px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 24px;
+      background: rgba(255, 250, 246, 0.92);
+      border: 1px solid rgba(170, 92, 82, 0.18);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .portfolio-cta p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .portfolio-cta a {
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      padding: 0.92rem 1rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 20px 28px;
+      background: rgba(255, 250, 246, 0.78);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(47, 38, 36, 0.06);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 120px 1.05fr 0.95fr;
+      gap: 24px;
+      padding: 48px 0 34px;
+      align-items: stretch;
+    }
+
+    .hero-rail {
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      padding-top: 16px;
+    }
+
+    .hero-rail span {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      color: rgba(170, 92, 82, 0.76);
+      font-size: 0.82rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+    }
+
+    .hero-copy {
+      padding: 34px 0;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hero-kicker::before {
+      content: '';
+      width: 48px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.02;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.4rem, 8vw, 6.2rem);
+      letter-spacing: -0.05em;
+    }
+
+    .hero-lead {
+      max-width: 560px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.95;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.92rem 1.3rem;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: rgba(170, 92, 82, 0.08);
+      border: 1px solid rgba(170, 92, 82, 0.16);
+      color: var(--accent);
+    }
+
+    .hero-note {
+      margin-top: 28px;
+      max-width: 460px;
+      padding: 18px 20px;
+      border-left: 3px solid var(--accent);
+      background: rgba(255, 255, 255, 0.44);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 660px;
+    }
+
+    .visual-sheet,
+    .visual-tall,
+    .visual-note,
+    .visual-chip {
+      position: absolute;
+      border: 1px solid rgba(47, 38, 36, 0.08);
+      box-shadow: var(--shadow);
+      background: var(--paper);
+    }
+
+    .visual-sheet {
+      inset: 58px 42px 0 0;
+      border-radius: 36px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.92), rgba(236, 209, 203, 0.58)),
+        linear-gradient(135deg, #f5ebe4 0%, #e3beb5 100%);
+    }
+
+    .visual-sheet::before,
+    .visual-sheet::after {
+      content: '';
+      position: absolute;
+      border-radius: 28px;
+    }
+
+    .visual-sheet::before {
+      inset: 24px auto 24px 24px;
+      width: 42%;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.18)),
+        linear-gradient(135deg, #f7f1ec 0%, #f3d9d2 100%);
+    }
+
+    .visual-sheet::after {
+      inset: 84px 26px 58px 46%;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.95), transparent 16%),
+        linear-gradient(145deg, #d2a69c 0%, #f4dfd8 48%, #f7f0ea 100%);
+    }
+
+    .visual-tall {
+      top: 0;
+      right: 20px;
+      width: 186px;
+      height: 260px;
+      border-radius: 110px;
+      background:
+        radial-gradient(circle at 52% 18%, rgba(255,255,255,0.92), transparent 14%),
+        linear-gradient(180deg, #f6ebe6 0%, #ddb5ac 100%);
+    }
+
+    .visual-note {
+      left: 0;
+      bottom: 32px;
+      width: 214px;
+      padding: 20px;
+      border-radius: 24px;
+      transform: rotate(-4deg);
+    }
+
+    .visual-chip {
+      right: 0;
+      bottom: 86px;
+      width: 176px;
+      padding: 18px;
+      border-radius: 24px;
+    }
+
+    .visual-note strong,
+    .visual-chip strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .visual-note span,
+    .visual-chip span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.65;
+    }
+
+    .section {
+      padding: 22px 0;
+    }
+
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .panel,
+    .menu-list,
+    .lookbook-card,
+    .team-card,
+    .reserve-panel {
+      background: var(--paper-soft);
+      border: 1px solid rgba(47, 38, 36, 0.08);
+      box-shadow: var(--shadow);
+      border-radius: 30px;
+      backdrop-filter: blur(12px);
+    }
+
+    .panel {
+      padding: 28px;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin-top: 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.04em;
+    }
+
+    .section-copy {
+      margin: 16px 0 0;
+      color: var(--muted);
+    }
+
+    .quote-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 34px 30px 30px;
+      background:
+        linear-gradient(135deg, rgba(170, 92, 82, 0.12), rgba(255,255,255,0.8)),
+        var(--paper-soft);
+    }
+
+    .quote-panel::before {
+      content: '“';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      color: rgba(170, 92, 82, 0.14);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 7rem;
+      line-height: 1;
+    }
+
+    .quote-text {
+      position: relative;
+      z-index: 1;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      line-height: 1.25;
+    }
+
+    .quote-sub {
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .menu-list {
+      overflow: hidden;
+    }
+
+    .menu-row {
+      display: grid;
+      grid-template-columns: 140px 1fr auto;
+      gap: 20px;
+      align-items: start;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .menu-row:last-child {
+      border-bottom: 0;
+    }
+
+    .menu-type {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .menu-row h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .menu-row p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .menu-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+    }
+
+    .lookbook-grid,
+    .team-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .lookbook-grid,
+    .team-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .lookbook-card,
+    .team-card {
+      padding: 20px;
+    }
+
+    .lookbook-visual,
+    .team-visual {
+      border-radius: 24px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .lookbook-visual {
+      height: 260px;
+      background:
+        radial-gradient(circle at 52% 20%, rgba(255,255,255,0.92), transparent 16%),
+        linear-gradient(180deg, #f0d3cb 0%, #dba49c 52%, #f4e5de 100%);
+    }
+
+    .lookbook-card:nth-child(2) .lookbook-visual {
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,0.92), transparent 16%),
+        linear-gradient(180deg, #e6d0c2 0%, #bb9078 56%, #f7eee6 100%);
+    }
+
+    .lookbook-card:nth-child(3) .lookbook-visual {
+      background:
+        radial-gradient(circle at 52% 16%, rgba(255,255,255,0.92), transparent 16%),
+        linear-gradient(180deg, #ebd7de 0%, #c494a4 56%, #f8eff2 100%);
+    }
+
+    .lookbook-card h3,
+    .team-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.85rem;
+      letter-spacing: -0.03em;
+    }
+
+    .lookbook-card p,
+    .team-card p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .team-card:nth-child(2) {
+      transform: translateY(24px);
+    }
+
+    .team-card:nth-child(3) {
+      transform: translateY(-12px);
+    }
+
+    .team-visual {
+      height: 190px;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.92), transparent 16%),
+        linear-gradient(180deg, #ead1ca 0%, #d59f95 100%);
+    }
+
+    .team-card:nth-child(2) .team-visual {
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.92), transparent 16%),
+        linear-gradient(180deg, #e9d5c7 0%, #c7a089 100%);
+    }
+
+    .team-card:nth-child(3) .team-visual {
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.92), transparent 16%),
+        linear-gradient(180deg, #ead4dc 0%, #bf8b9a 100%);
+    }
+
+    .reserve-panel {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      padding: 26px;
+      align-items: center;
+      background:
+        linear-gradient(135deg, rgba(170, 92, 82, 0.12), rgba(255,255,255,0.8)),
+        var(--paper-soft);
+    }
+
+    .reserve-copy h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.03em;
+    }
+
+    .reserve-copy p {
+      margin: 14px 0 0;
+      color: var(--muted);
+    }
+
+    .reserve-box {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(47, 38, 36, 0.92);
+      color: #fff;
+    }
+
+    .reserve-box small {
+      display: block;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,0.66);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .reserve-box p {
+      margin: 0 0 16px;
+      color: rgba(255,255,255,0.78);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .reserve-box a {
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      padding: 0.9rem 1rem;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .footer {
+      padding: 24px 0 120px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .editorial-grid,
+      .lookbook-grid,
+      .team-grid,
+      .reserve-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-rail {
+        display: none;
+      }
+
+      .hero-visual {
+        min-height: 560px;
+      }
+
+      .team-card:nth-child(2),
+      .team-card:nth-child(3) {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav {
+        padding: 16px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
+
+      .menu-row {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p>美容室、サロン、ブランディング寄りの店舗サイト相談では、このサンプルの空気感をそのまま参照できます。</p>
+    <a href="https://x.com/tadanosyuhuda" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <a href="#top" class="nav-logo">Lumiere Hair Atelier</a>
+    <div class="nav-links">
+      <a href="#concept">Concept</a>
+      <a href="#menu">Menu</a>
+      <a href="#lookbook">Lookbook</a>
+      <a href="#team">Team</a>
+      <a href="#reserve">Reserve</a>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="hero" id="top">
+      <div class="hero-rail"><span>Editorial Salon Sample</span></div>
+      <div class="hero-copy">
+        <div class="hero-kicker">Hair Atelier</div>
+        <h1>髪型より先に、空気感で選ばれる。</h1>
+        <p class="hero-lead">Lumiere は、30代後半から40代の新規客を増やしたい小規模サロンを想定したサンプルです。安さよりも相談しやすさ、トレンド感よりも落ち着いた信頼感が先に伝わるように、予約前の不安をほどく導線で組んでいます。</p>
+        <div class="hero-actions">
+          <a href="#menu" class="btn btn-primary">メニューを見る</a>
+          <a href="#reserve" class="btn btn-secondary">予約導線へ</a>
+        </div>
+        <div class="hero-note">初回来店の不安を減らすために、スタッフ紹介、得意なテイスト、初回提案メニューへの導線を近くにまとめる構成にしています。</div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="visual-sheet"></div>
+        <div class="visual-tall"></div>
+        <div class="visual-note">
+          <strong>Quiet Styling</strong>
+          <span>やわらかい余白と縦方向の視線誘導で、上品さを先に感じてもらう設計です。</span>
+        </div>
+        <div class="visual-chip">
+          <strong>First Visit</strong>
+          <span>相談歓迎の一言を早めに置くと、はじめてでも心理的に入りやすくなります。</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="concept">
+      <div class="editorial-grid">
+        <div class="panel">
+          <div class="section-label">Concept</div>
+          <h2 class="section-title">静かな上質感を、最初の3秒で伝える。</h2>
+          <p class="section-copy">サロンサイトでは、情報量を増やすより「このお店の空気感が自分に合うか」を感じてもらうことが重要です。このサンプルでは、編集ページのような余白とタイポグラフィで、感性の近い人に刺さる見せ方を意識しています。</p>
+        </div>
+        <div class="panel quote-panel">
+          <div class="quote-text">“ 相談しやすそう、が伝わるだけで、予約のハードルはぐっと下がる。 ”</div>
+          <div class="quote-sub">価格訴求だけではなく、相性や雰囲気で選びたい業種向けの見せ方サンプルです。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="menu">
+      <div class="menu-list">
+        <div class="menu-row">
+          <div class="menu-type">Cut</div>
+          <div>
+            <h3>似合わせカット</h3>
+            <p>骨格や髪質に合わせて扱いやすさを整える基本メニュー。静かに相談したい方向けの定番導線です。</p>
+          </div>
+          <div class="menu-price">¥6,600</div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-type">Color</div>
+          <div>
+            <h3>透け感カラー</h3>
+            <p>やわらかい透明感を出したい方向け。大人っぽさを残したまま印象を変えたい人に向いています。</p>
+          </div>
+          <div class="menu-price">¥8,800</div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-type">Care</div>
+          <div>
+            <h3>髪質改善トリートメント</h3>
+            <p>広がりや乾燥をケアしたい方向け。単価よりも「続けたい理由」が伝わるように見せる構成です。</p>
+          </div>
+          <div class="menu-price">¥4,400</div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-type">First Visit</div>
+          <div>
+            <h3>初回カット + カラー</h3>
+            <p>初回来店の方が迷いにくいセット導線。最初の選択肢を絞るだけで予約ボタンが押しやすくなります。</p>
+          </div>
+          <div class="menu-price">¥11,000</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="lookbook">
+      <div class="panel" style="padding-bottom: 24px;">
+        <div class="section-label">Lookbook</div>
+        <h2 class="section-title">見せたいのは、施術よりもその後の気分。</h2>
+        <p class="section-copy">スタイル写真をただ並べるのではなく、似合う人や気分まで言葉で添えると、予約前の想像がしやすくなります。</p>
+        <div class="lookbook-grid" style="margin-top: 22px;">
+          <article class="lookbook-card">
+            <div class="lookbook-visual"></div>
+            <h3>Soft Bob</h3>
+            <p>輪郭をやわらかく見せたい人向け。きちんとしすぎず、でも整って見える定番バランス。</p>
+          </article>
+          <article class="lookbook-card">
+            <div class="lookbook-visual"></div>
+            <h3>Layer Medium</h3>
+            <p>軽さと艶感を両立したスタイル。仕事でも浮かず、少しだけ印象を変えたい人向け。</p>
+          </article>
+          <article class="lookbook-card">
+            <div class="lookbook-visual"></div>
+            <h3>Calm Long</h3>
+            <p>長さを保ちながら雰囲気を更新したいときに。ケアメニューとの相性も見せやすい構成です。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="team">
+      <div class="panel">
+        <div class="section-label">Team</div>
+        <h2 class="section-title">誰に任せるかが見えると、予約理由になる。</h2>
+        <div class="team-grid" style="margin-top: 22px;">
+          <article class="team-card">
+            <div class="team-visual"></div>
+            <h3>Kaori</h3>
+            <p>静かな接客と、扱いやすいボブが得意。初回来店の不安を言葉でほぐすタイプのスタイリスト。</p>
+          </article>
+          <article class="team-card">
+            <div class="team-visual"></div>
+            <h3>Reina</h3>
+            <p>透け感カラー担当。印象は変えたいけれど派手にはしたくない人向けの提案が得意です。</p>
+          </article>
+          <article class="team-card">
+            <div class="team-visual"></div>
+            <h3>Mio</h3>
+            <p>ケアメニュー担当。広がりや乾燥を抑えたい方に、長く付き合える提案を行う想定です。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reserve">
+      <div class="reserve-panel">
+        <div class="reserve-copy">
+          <div class="section-label">Reserve</div>
+          <h2>価格だけでなく、雰囲気で選ばれる予約導線。</h2>
+          <p>サロンサイトは、予約ボタンが多いほど良いわけではありません。世界観を十分見たあとに、自然に押せる位置へCTAを置くと、押しつけ感のない導線になります。</p>
+        </div>
+        <div class="reserve-box">
+          <small>CTA Example</small>
+          <p>初回メニュー、担当スタイリスト、所要時間の目安が近くにあると、予約の迷いを減らせます。</p>
+          <a href="#" onclick="event.preventDefault(); alert('サンプルのため予約は送信されません');">WEB予約を試す</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-brief" id="brief" style="--portfolio-accent:#8d6b5d; --portfolio-heading:#2d2420; --portfolio-muted:#6c5f59; --portfolio-card-bg:rgba(249,244,240,0.94); --portfolio-card-border:rgba(141,107,93,0.14); --portfolio-shadow:rgba(45,36,32,0.08); --portfolio-metric-bg:rgba(255,250,247,0.9); --portfolio-quote-bg:rgba(255,250,247,0.78);">
+      <div class="project-brief__inner">
+        <div class="project-brief__header">
+          <span class="project-brief__eyebrow">Project Note</span>
+          <h2 class="project-brief__title">実際の掲載写真と、依頼内容のイメージ</h2>
+          <p class="project-brief__lead">サロンサイトでは、抽象的な世界観だけだと予約理由が弱くなります。外観、席の雰囲気、スタイル写真をきちんと入れて、誰向けのサロンなのかが伝わる状態にすると相談につながりやすくなります。</p>
+        </div>
+        <div class="project-brief__photos">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=900&q=80" alt="落ち着いた雰囲気のサロン外観">
+            <figcaption><strong>外観</strong>路面店なら、入口の印象がわかる写真を1枚目に置くと来店前の不安が減ります。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=900&q=80" alt="サロンの施術スペース">
+            <figcaption><strong>セット面</strong>席間の広さや照明の雰囲気が見えると、落ち着いた客層に刺さりやすいです。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=900&q=80" alt="ヘアスタイルのイメージ写真">
+            <figcaption><strong>スタイル写真</strong>ただ並べるより、「どんな人に似合うか」を添えたほうが予約に結びつきます。</figcaption>
+          </figure>
+        </div>
+        <div class="project-brief__layout" style="margin-top:20px;">
+          <div class="project-brief__stack">
+            <article class="project-brief__card">
+              <h3>想定する依頼内容</h3>
+              <p>トップ、メニュー、スタイル紹介、スタッフ、予約導線までを載せるサロンサイト。Instagramだけでは伝えにくい価格帯や空気感を、検索から来た人にもわかる形に整える想定です。</p>
+              <div class="project-brief__meta">
+                <div class="project-brief__metric"><span>目安金額</span><strong>14万〜22万円</strong></div>
+                <div class="project-brief__metric"><span>制作期間</span><strong>3〜4週間</strong></div>
+                <div class="project-brief__metric"><span>必要素材</span><strong>メニュー / スタッフ紹介 / 営業時間 / 予約導線</strong></div>
+                <div class="project-brief__metric"><span>写真の目安</span><strong>店内外5〜8枚 + スタイル写真6枚前後</strong></div>
+              </div>
+            </article>
+            <article class="project-brief__card">
+              <h3>先にあると進めやすいもの</h3>
+              <ul class="project-brief__list">
+                <li>ターゲット年齢と得意なテイストをひとことで言える状態にする</li>
+                <li>初回メニューの価格と所要時間を決めておく</li>
+                <li>スタッフ紹介は経歴よりも「どんな相談が得意か」があると強いです</li>
+              </ul>
+            </article>
+          </div>
+          <article class="project-brief__card">
+            <h3>掲載文のイメージ</h3>
+            <div class="project-brief__code">
+              <span>見出し例: 似合わせるより、気分まで整える。</span>
+              <span>紹介文例: 静かな接客で、初めてでも相談しやすい時間を大切にしています。</span>
+              <span>案内文例: 平日 10:00-20:00 / 土日祝 10:00-19:00 / 火曜定休</span>
+            </div>
+            <div class="project-brief__quote">写真が少ない場合は、外観1枚、セット面2枚、スタイル写真4枚でも十分スタートできます。</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      &copy; 2026 Lumiere Hair Atelier Sample Site
+    </footer>
+  </main>
+</body>
+</html>

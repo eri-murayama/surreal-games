@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowSync | BtoB SaaSサンプルサイト</title>
+  <meta name="description" content="BtoB SaaSを想定したサンプルサイト。課題訴求、機能紹介、料金、事例、問い合わせ導線まで確認できます。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="FlowSync | BtoB SaaSサンプルサイト">
+  <meta property="og:description" content="プロダクト画面主役で見せるSaaSサイトのサンプル。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --bg: #07101d;
+      --panel: rgba(12, 19, 34, 0.88);
+      --panel-strong: rgba(18, 27, 47, 0.96);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #edf3ff;
+      --muted: #9aaccc;
+      --accent: #7ce2ff;
+      --accent-2: #85a4ff;
+      --success: #7ff0bf;
+      --shadow: 0 26px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'IBM Plex Sans JP', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(124, 226, 255, 0.16), transparent 18%),
+        radial-gradient(circle at left center, rgba(133, 164, 255, 0.12), transparent 18%),
+        linear-gradient(180deg, #091223 0%, var(--bg) 100%);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.55), transparent 75%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .back-to-portfolio,
+    .sample-badge {
+      position: fixed;
+      top: 16px;
+      z-index: 50;
+      padding: 0.46rem 0.92rem;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      font-size: 0.78rem;
+    }
+
+    .back-to-portfolio {
+      left: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255,255,255,0.92);
+    }
+
+    .sample-badge {
+      right: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07101d;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 60;
+      width: min(338px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 24px;
+      background: rgba(11, 18, 31, 0.92);
+      border: 1px solid rgba(124, 226, 255, 0.18);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .portfolio-cta p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .portfolio-cta a {
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      padding: 0.92rem 1rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07101d;
+      font-weight: 700;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(7, 16, 29, 0.74);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav__inner,
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .nav__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 18px 0;
+    }
+
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.22rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 24px;
+      padding: 46px 0 28px;
+      align-items: start;
+    }
+
+    .hero-copy,
+    .workspace,
+    .panel,
+    .metric-card,
+    .feature-card,
+    .case-card,
+    .price-card,
+    .cta-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 28px;
+    }
+
+    .hero-copy {
+      padding: 34px;
+      position: sticky;
+      top: 88px;
+      background:
+        radial-gradient(circle at top left, rgba(124, 226, 255, 0.14), transparent 24%),
+        var(--panel);
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-kicker::before {
+      content: '';
+      width: 42px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.05;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(3rem, 7vw, 5.4rem);
+      letter-spacing: -0.08em;
+    }
+
+    .hero-lead {
+      margin: 20px 0 0;
+      color: var(--muted);
+      max-width: 500px;
+      font-size: 0.98rem;
+      line-height: 1.9;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.64rem 0.88rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.94rem 1.3rem;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07101d;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text);
+    }
+
+    .hero-footnote {
+      margin-top: 24px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .workspace {
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(124, 226, 255, 0.06), transparent 26%),
+        var(--panel-strong);
+    }
+
+    .workspace-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px 16px;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.74rem;
+    }
+
+    .workspace-topbar span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+    }
+
+    .sidebar,
+    .mainboard {
+      border-radius: 24px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+    }
+
+    .sidebar-block + .sidebar-block {
+      margin-top: 14px;
+    }
+
+    .sidebar-label {
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 10px;
+      padding: 0.78rem 0.82rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-size: 0.84rem;
+    }
+
+    .sidebar-item strong {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.76rem;
+      color: var(--success);
+    }
+
+    .mainboard-top {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric-mini {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .metric-mini span {
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+
+    .metric-mini strong {
+      display: block;
+      margin-top: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: -0.06em;
+    }
+
+    .chart-panel,
+    .command-panel {
+      margin-top: 14px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .chart-grid {
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      height: 180px;
+      margin-top: 18px;
+    }
+
+    .chart-grid span {
+      flex: 1;
+      border-radius: 18px 18px 8px 8px;
+      background: linear-gradient(180deg, rgba(124, 226, 255, 0.92), rgba(133, 164, 255, 0.42));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .command-panel pre {
+      margin: 0;
+      overflow: auto;
+      color: var(--success);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+    }
+
+    .section {
+      padding: 20px 0;
+    }
+
+    .panel {
+      padding: 28px;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin-top: 10px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.06em;
+    }
+
+    .section-copy {
+      margin: 14px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .metric-grid,
+    .case-grid,
+    .price-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .case-grid,
+    .price-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .metric-card,
+    .case-card,
+    .price-card {
+      padding: 22px;
+    }
+
+    .metric-card strong,
+    .price-card strong {
+      display: block;
+      margin-top: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      letter-spacing: -0.06em;
+    }
+
+    .metric-card p,
+    .case-card p,
+    .price-card p,
+    .feature-card p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .fromto {
+      display: grid;
+      grid-template-columns: 1fr 90px 1fr;
+      gap: 16px;
+      margin-top: 22px;
+      align-items: stretch;
+    }
+
+    .feature-card {
+      padding: 22px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+    }
+
+    .feature-list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+    }
+
+    .feature-list li + li {
+      margin-top: 0.55rem;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    .tab-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      padding: 0.72rem 0.96rem;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      color: #07101d;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+
+    .tab-panel {
+      display: none;
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .tab-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .tab-meta div {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tab-meta strong {
+      display: block;
+      margin-top: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: -0.05em;
+    }
+
+    .price-card.featured {
+      background:
+        linear-gradient(180deg, rgba(124,226,255,0.08), transparent 32%),
+        rgba(18, 27, 47, 0.96);
+      border-color: rgba(124, 226, 255, 0.2);
+    }
+
+    .cta-panel {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      padding: 26px;
+      background:
+        linear-gradient(135deg, rgba(124, 226, 255, 0.12), rgba(255,255,255,0.02)),
+        var(--panel);
+    }
+
+    .cta-box {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .cta-box p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .footer {
+      padding: 24px 0 120px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .workspace-grid,
+      .metric-grid,
+      .fromto,
+      .case-grid,
+      .price-grid,
+      .cta-panel,
+      .tab-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy {
+        position: static;
+      }
+
+      .mainboard-top {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        display: none;
+      }
+
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p>SaaS、BtoBサービス、資料請求やデモ相談へつなぐページの相談なら、このサンプルを土台にできます。</p>
+    <a href="https://x.com/tadanosyuhuda" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="#top" class="nav-logo">FlowSync</a>
+      <div class="nav-links">
+        <a href="#story">Story</a>
+        <a href="#features">Features</a>
+        <a href="#cases">Cases</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#cta">CTA</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <div class="hero-kicker">B2B Saas Sample</div>
+        <h1>承認フローを、画面ひとつで見える化する。</h1>
+        <p class="hero-lead">FlowSync は、30〜200名規模のチームで使う業務管理SaaSを想定したサンプルです。営業資料のような抽象表現よりも、画面、数値、運用イメージを先に見せて、比較検討の材料が残るページを目指しています。</p>
+        <div class="hero-badges">
+          <span class="hero-badge">workflow_sync</span>
+          <span class="hero-badge">approval_auto</span>
+          <span class="hero-badge">team_visibility</span>
+        </div>
+        <div class="hero-actions">
+          <a href="#features" class="btn btn-primary">機能を見る</a>
+          <a href="#cta" class="btn btn-secondary">相談導線へ</a>
+        </div>
+        <div class="hero-footnote">SaaSページでは、コピーだけでなく「画面がどう役立つか」が直感で伝わることが重要です。そのため、このサンプルではUIモックを主役にしています。</div>
+      </div>
+
+      <div class="workspace" aria-label="ダッシュボードのモック">
+        <div class="workspace-topbar"><span></span><span></span><span></span> `demo.flowsync.app/dashboard`</div>
+        <div class="workspace-grid">
+          <aside class="sidebar">
+            <div class="sidebar-block">
+              <div class="sidebar-label">Queue</div>
+              <div class="sidebar-item"><span>承認待ち</span><strong>12</strong></div>
+              <div class="sidebar-item"><span>差戻し</span><strong>03</strong></div>
+              <div class="sidebar-item"><span>完了</span><strong>47</strong></div>
+            </div>
+            <div class="sidebar-block">
+              <div class="sidebar-label">Automation</div>
+              <div class="sidebar-item"><span>自動化済み</span><strong>68%</strong></div>
+              <div class="sidebar-item"><span>通知精度</span><strong>99%</strong></div>
+            </div>
+          </aside>
+
+          <div class="mainboard">
+            <div class="mainboard-top">
+              <div class="metric-mini"><span>Lead time</span><strong>2.4d</strong></div>
+              <div class="metric-mini"><span>Throughput</span><strong>182</strong></div>
+              <div class="metric-mini"><span>Saved hours</span><strong>34h</strong></div>
+            </div>
+
+            <div class="chart-panel">
+              <div class="sidebar-label">Weekly throughput</div>
+              <div class="chart-grid">
+                <span style="height: 52%;"></span>
+                <span style="height: 74%;"></span>
+                <span style="height: 68%;"></span>
+                <span style="height: 92%;"></span>
+                <span style="height: 64%;"></span>
+              </div>
+            </div>
+
+            <div class="command-panel">
+              <pre>$ flowsync inspect handoff-pipeline
+
+pending_approvals   12
+avg_response_time   04:12
+workflow_health     stable
+alert_threshold     normal</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="story">
+      <div class="panel">
+        <div class="section-label">Story</div>
+        <h2 class="section-title">問題の説明より、変化の見え方。</h2>
+        <p class="section-copy">SaaSの訴求では、課題と導入後を比較して見せると、使う理由が伝わりやすくなります。このページでは、複雑な説明を減らして「導入前」と「導入後」の差に視線を集めています。</p>
+        <div class="fromto">
+          <article class="feature-card">
+            <h3>Before</h3>
+            <ul class="feature-list">
+              <li>進捗確認がSlack、表計算、口頭に散らばる</li>
+              <li>承認待ちの所在がわからない</li>
+              <li>案件ごとの担当引き継ぎで認識差が出る</li>
+            </ul>
+          </article>
+          <div class="flow-arrow">=></div>
+          <article class="feature-card">
+            <h3>After</h3>
+            <ul class="feature-list">
+              <li>案件の流れがひとつの画面で追える</li>
+              <li>承認待ちが自動で通知される</li>
+              <li>引き継ぎ時の必要情報がテンプレ化される</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="panel">
+        <div class="section-label">Features</div>
+        <h2 class="section-title">機能紹介は、役割ごとに切り替えて見せる。</h2>
+        <p class="section-copy">管理者、現場担当、経営層では知りたい機能が違います。そこで、このサンプルではタブ型にして、役割ごとに響く訴求へ切り替える見せ方を入れています。</p>
+
+        <div class="tab-row" role="tablist" aria-label="機能タブ">
+          <button type="button" class="tab-btn active" data-tab="ops">現場担当</button>
+          <button type="button" class="tab-btn" data-tab="manager">管理者</button>
+          <button type="button" class="tab-btn" data-tab="exec">経営層</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="ops">
+          <h3>現場担当には「迷わず処理できる」が刺さる</h3>
+          <p class="section-copy">タスク、必要資料、承認状況が同時に見えることで、今やるべきことがすぐ判断できます。</p>
+          <div class="tab-meta">
+            <div><span class="section-label">Lead time</span><strong>2.4d</strong></div>
+            <div><span class="section-label">Missing task</span><strong>-42%</strong></div>
+            <div><span class="section-label">Rework</span><strong>-31%</strong></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="manager">
+          <h3>管理者には「どこで止まっているか」が刺さる</h3>
+          <p class="section-copy">案件の停滞箇所がひと目で見えることで、確認のための会議や個別連絡を減らせます。</p>
+          <div class="tab-meta">
+            <div><span class="section-label">Alerts</span><strong>12</strong></div>
+            <div><span class="section-label">Sla hit</span><strong>98%</strong></div>
+            <div><span class="section-label">Review speed</span><strong>+36%</strong></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="exec">
+          <h3>経営層には「全体の健康状態」が刺さる</h3>
+          <p class="section-copy">現場の細かな画面よりも、リードタイム、利益率、案件消化量などの上位指標が判断材料になります。</p>
+          <div class="tab-meta">
+            <div><span class="section-label">Throughput</span><strong>182</strong></div>
+            <div><span class="section-label">Margin</span><strong>+12%</strong></div>
+            <div><span class="section-label">Saved hour</span><strong>34h</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cases">
+      <div class="panel">
+        <div class="section-label">Cases</div>
+        <h2 class="section-title">導入事例は、課題と成果を対で見せる。</h2>
+        <div class="case-grid">
+          <article class="case-card">
+            <h3>広告代理店</h3>
+            <p>案件ごとに申請フローが散らばっていた状態から、承認の所在を一元化して、待ち時間の見える化に成功した想定です。</p>
+          </article>
+          <article class="case-card">
+            <h3>ITベンダー</h3>
+            <p>複数部署をまたぐ引き継ぎをテンプレ化し、案件開始から納品までのムラを減らした事例を想定しています。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-brief" id="brief" style="--portfolio-accent:#7bf0d8; --portfolio-heading:#eaf8ff; --portfolio-muted:rgba(234,248,255,0.76); --portfolio-card-bg:rgba(13,17,30,0.9); --portfolio-card-border:rgba(123,240,216,0.14); --portfolio-shadow:rgba(3,7,18,0.34); --portfolio-metric-bg:rgba(8,12,24,0.78); --portfolio-quote-bg:rgba(8,12,24,0.62); --portfolio-code-bg:rgba(5,8,18,0.88);">
+      <div class="project-brief__inner">
+        <div class="project-brief__header">
+          <span class="project-brief__eyebrow">Project Note</span>
+          <h2 class="project-brief__title">実画面と、依頼時に必要な情報のイメージ</h2>
+          <p class="project-brief__lead">SaaSサイトはコピーだけだと差が伝わりにくいので、画面、導入前後の変化、問い合わせの温度感を具体的に見せるのが大事です。特にデモ相談へつなげたい場合は、実際の運用画面や数値があるほど強くなります。</p>
+        </div>
+        <div class="project-brief__photos">
+          <figure>
+            <img src="../assets/case-saas.jpg" alt="SaaSサイトの実画面スクリーンショット">
+            <figcaption><strong>ファーストビュー</strong>画面が見えるだけで、何のサービスかを理解する速度がかなり上がります。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=900&q=80" alt="ミーティングでプロダクトを確認しているイメージ">
+            <figcaption><strong>導入チーム</strong>比較検討段階では、誰が使うサービスなのかも一緒に伝えるとイメージしやすいです。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=80" alt="ノートPCでSaaSを利用しているイメージ">
+            <figcaption><strong>利用シーン</strong>在宅でも出社でも同じ画面が使えることを、利用場面の写真で補強できます。</figcaption>
+          </figure>
+        </div>
+        <div class="project-brief__layout" style="margin-top:20px;">
+          <div class="project-brief__stack">
+            <article class="project-brief__card">
+              <h3>想定する依頼内容</h3>
+              <p>課題訴求、機能紹介、導入事例、料金、資料請求・デモ相談までを含むSaaSサイト。営業用の資料と整合しつつ、サイトだけでサービス理解が進む状態を目指す想定です。</p>
+              <div class="project-brief__meta">
+                <div class="project-brief__metric"><span>目安金額</span><strong>20万〜35万円</strong></div>
+                <div class="project-brief__metric"><span>制作期間</span><strong>4〜6週間</strong></div>
+                <div class="project-brief__metric"><span>必要素材</span><strong>画面キャプチャ / 導入効果 / 料金表 / 比較ポイント</strong></div>
+                <div class="project-brief__metric"><span>画面の目安</span><strong>UI4〜6枚 + 図解や数値2〜3点</strong></div>
+              </div>
+            </article>
+            <article class="project-brief__card">
+              <h3>先にあると進めやすいもの</h3>
+              <ul class="project-brief__list">
+                <li>誰が最終的に問い合わせるかを決める: 現場担当 / 管理者 / 経営層</li>
+                <li>導入前後の変化を数字で示せると、事例が一気に強くなります</li>
+                <li>無料デモ、資料請求、問い合わせのどれを主CTAにするかを先に決める</li>
+              </ul>
+            </article>
+          </div>
+          <article class="project-brief__card">
+            <h3>掲載文のイメージ</h3>
+            <div class="project-brief__code">
+              <span>見出し例: 承認待ちが、誰の手元で止まっているかをなくす。</span>
+              <span>導入効果例: 平均承認時間 38%短縮 / 進捗確認の会議時間を月34時間削減</span>
+              <span>CTA例: 30分のデモを見る / 自社の運用に合うか相談する</span>
+            </div>
+            <div class="project-brief__quote">SaaSの本文は抽象語よりも、「何がどれだけ楽になるか」を短く言い切ったほうが比較検討で残りやすいです。</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="panel">
+        <div class="section-label">Pricing</div>
+        <h2 class="section-title">価格表は比較しやすく、押しつけすぎない。</h2>
+        <div class="price-grid">
+          <article class="price-card">
+            <h3>Starter</h3>
+            <p>小規模チームでの導入向け。まずは散らばった情報をまとめたい場合の入口。</p>
+            <strong>¥29,800</strong>
+          </article>
+          <article class="price-card featured">
+            <h3>Growth</h3>
+            <p>複数部署運用向けの主力プラン。承認、通知、自動化まで含めて見せたい構成です。</p>
+            <strong>¥79,800</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cta">
+      <div class="cta-panel">
+        <div>
+          <div class="section-label">CTA</div>
+          <h2 class="section-title">最後は、営業される前に相談できる雰囲気へ。</h2>
+          <p class="section-copy">SaaSの問い合わせ導線では、「営業されそう」と感じた瞬間に離脱が起きます。資料請求、デモ相談、料金相談など、温度感に応じた入口を用意すると反応が取りやすくなります。</p>
+        </div>
+        <div class="cta-box">
+          <p>このサンプルでは、押しやすい主要CTAと、比較検討中でも踏みやすい副CTAを並べています。</p>
+          <div class="hero-actions" style="margin-top: 0;">
+            <a href="#" class="btn btn-primary" onclick="event.preventDefault(); alert('サンプルのため送信されません');">デモ相談を試す</a>
+            <a href="#" class="btn btn-secondary" onclick="event.preventDefault(); alert('サンプルのため送信されません');">資料請求を試す</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      &copy; 2026 FlowSync Sample Site
+    </footer>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = button.dataset.tab;
+        buttons.forEach((item) => item.classList.toggle('active', item === button));
+        panels.forEach((panel) => panel.classList.toggle('active', panel.dataset.panel === target));
+      });
+    });
+  </script>
+</body>
+</html>

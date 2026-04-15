@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- OGP -->
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
   <meta property="og:title" content="FORGE FITNESS | フィットネスジム">
   <meta property="og:description" content="本格トレーニングジム。筋トレ、ヨガ、有酸素プログラムで理想の身体を手に入れよう。">
   <meta property="og:type" content="website">
@@ -787,12 +788,69 @@
       letter-spacing: 0.15em;
       box-shadow: 0 4px 12px var(--accent-glow);
     }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 210;
+      width: min(330px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 22px;
+      background: rgba(12, 12, 12, 0.92);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 42px rgba(0,0,0,0.42);
+      backdrop-filter: blur(14px);
+    }
+    .portfolio-cta__copy {
+      margin: 0 0 10px;
+      color: var(--gray-light);
+      font-size: 0.74rem;
+      line-height: 1.6;
+    }
+    .portfolio-cta__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.86rem 1rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.84rem;
+      letter-spacing: 0.06em;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 10px 24px var(--accent-glow);
+    }
+    .portfolio-cta__link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px var(--accent-glow);
+    }
+
+    @media (max-width: 720px) {
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <a href="../index.html" class="back-to-portfolio">&larr; Portfolio</a>
-  <div class="sample-badge">SAMPLE</div>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">サービス紹介や予約導線の方向性が近ければ、このサンプル名で声をかけてもらえます。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
 
   <!-- Navigation -->
   <nav class="nav" id="nav">
@@ -1053,6 +1111,46 @@
   </section>
 
   <!-- Footer -->
+  <section class="project-brief" id="brief" style="--portfolio-accent:#ff3c3c; --portfolio-heading:#f3f3f3; --portfolio-muted:#b8b8b8; --portfolio-card-bg:rgba(12,12,12,0.92); --portfolio-card-border:rgba(255,255,255,0.08); --portfolio-shadow:rgba(0,0,0,0.42); --portfolio-metric-bg:rgba(22,22,22,0.88); --portfolio-quote-bg:rgba(18,18,18,0.78); --portfolio-code-bg:rgba(6,6,6,0.86);">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">ジムサイトとして依頼するときの目安</h2>
+        <p class="project-brief__lead">フィットネス系のページは、鍛えたい人の熱量と、初心者でも入りやすい安心感の両方が必要です。料金、設備、トレーナー、体験導線の順に迷わず読める構成が効果的です。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>ブランドイメージ、料金プラン、トレーナー紹介、設備、アクセス、体験申込までを載せる1ページサイト。広告受けのLPとしても使いやすい構成です。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>目安金額</span><strong>12万〜18万円</strong></div>
+              <div class="project-brief__metric"><span>制作期間</span><strong>2〜4週間</strong></div>
+              <div class="project-brief__metric"><span>必要素材</span><strong>施設写真 / 料金 / トレーナー情報 / 体験導線</strong></div>
+              <div class="project-brief__metric"><span>写真の目安</span><strong>館内8〜12枚 + トレーナー3枚前後</strong></div>
+            </div>
+          </article>
+          <article class="project-brief__card">
+            <h3>先にあると助かるもの</h3>
+            <ul class="project-brief__list">
+              <li>月額、入会金、体験料金などの金額を確定させる</li>
+              <li>初心者向けか本格派向けか、メインターゲットをはっきりさせる</li>
+              <li>シャワー、レンタル、駐車場などの設備情報があると比較しやすいです</li>
+            </ul>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>掲載文のイメージ</h3>
+          <div class="project-brief__code">
+            <span>見出し例: 鍛えるだけじゃない。続けられる身体づくりへ。</span>
+            <span>案内文例: 体験60分 / 手ぶらOK / 平日23時まで営業</span>
+            <span>補足例: 初心者向けのフォーム指導から始めます。</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <footer class="footer">
     <div class="footer-logo">FORGE <span>FITNESS</span></div>
     <p class="footer-copy">&copy; 2025 FORGE FITNESS All Rights Reserved.</p>

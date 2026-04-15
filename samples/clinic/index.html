@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>みどり内科クリニック | 架空クリニックサンプルサイト</title>
+  <meta name="description" content="地域密着型クリニックを想定したサンプルサイト。診療案内、受付時間、医師紹介、アクセス、WEB予約導線まで確認できます。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="みどり内科クリニック | クリニックサイトサンプル">
+  <meta property="og:description" content="情報の見つけやすさを優先したクリニックサイトのサンプル。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --bg: #eef8f6;
+      --surface: #ffffff;
+      --soft: #f6fcfb;
+      --text: #204446;
+      --muted: #5e7a7c;
+      --accent: #278a80;
+      --accent-dark: #16635c;
+      --accent-soft: #d7f0eb;
+      --line: rgba(32, 68, 70, 0.1);
+      --shadow: 0 18px 38px rgba(32, 68, 70, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f9fffe 0%, var(--bg) 100%);
+      line-height: 1.8;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .back-to-portfolio,
+    .sample-badge {
+      position: fixed;
+      top: 16px;
+      z-index: 50;
+      padding: 0.46rem 0.92rem;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      font-size: 0.78rem;
+    }
+
+    .back-to-portfolio {
+      left: 16px;
+      background: rgba(22, 99, 92, 0.5);
+      color: #fff;
+    }
+
+    .sample-badge {
+      right: 16px;
+      background: var(--accent);
+      color: #fff;
+      letter-spacing: 0.12em;
+    }
+
+    .portfolio-cta {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 60;
+      width: min(336px, calc(100% - 32px));
+      padding: 14px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(39, 138, 128, 0.18);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .portfolio-cta p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .portfolio-cta a {
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      padding: 0.92rem 1rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .topline {
+      background: var(--accent-dark);
+      color: #fff;
+      padding: 10px 0;
+      font-size: 0.82rem;
+    }
+
+    .topline__inner,
+    .nav__inner,
+    .shell {
+      width: min(1200px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topline__inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem 1.2rem;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(249, 255, 254, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(32, 68, 70, 0.06);
+    }
+
+    .nav__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 18px 0;
+    }
+
+    .nav-logo {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      padding: 26px 0 18px;
+      align-items: start;
+    }
+
+    .hero-main,
+    .hero-side,
+    .notice-card,
+    .guide-card,
+    .doctor-card,
+    .step-card,
+    .access-card,
+    .qa-card {
+      background: var(--surface);
+      border: 1px solid rgba(32, 68, 70, 0.08);
+      box-shadow: var(--shadow);
+      border-radius: 24px;
+    }
+
+    .hero-main {
+      padding: 28px;
+      background: linear-gradient(135deg, rgba(215, 240, 235, 0.66), rgba(255,255,255,0.96));
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .hero-kicker::before {
+      content: '';
+      width: 42px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      line-height: 1.2;
+    }
+
+    h1 {
+      margin-top: 16px;
+      font-size: clamp(2.4rem, 6vw, 4.1rem);
+      letter-spacing: -0.05em;
+    }
+
+    .hero-lead {
+      max-width: 620px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.64rem 0.92rem;
+      border-radius: 999px;
+      background: rgba(39, 138, 128, 0.08);
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      background: var(--soft);
+    }
+
+    .notice-card {
+      padding: 16px 18px;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-weight: 700;
+      box-shadow: none;
+    }
+
+    .time-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(32, 68, 70, 0.08);
+    }
+
+    .time-card strong {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.8rem 0.5rem;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .reserve-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(39, 138, 128, 0.08);
+      border: 1px solid rgba(39, 138, 128, 0.12);
+    }
+
+    .reserve-box p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .reserve-box a {
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      padding: 0.92rem 1rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .section {
+      padding: 18px 0;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin-top: 8px;
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      letter-spacing: -0.03em;
+    }
+
+    .section-copy {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .guide-grid,
+    .step-grid,
+    .qa-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .guide-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .step-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .qa-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .guide-card,
+    .doctor-card,
+    .step-card,
+    .access-card,
+    .qa-card {
+      padding: 22px;
+    }
+
+    .guide-num,
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-weight: 800;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+
+    .guide-card h3,
+    .doctor-card h3,
+    .step-card h3,
+    .access-card h3,
+    .qa-card h3 {
+      margin-top: 14px;
+      font-size: 1.08rem;
+    }
+
+    .guide-card p,
+    .doctor-card p,
+    .step-card p,
+    .access-card p,
+    .qa-card p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .doctor-wrap,
+    .access-wrap {
+      display: grid;
+      grid-template-columns: 0.84fr 1.16fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .doctor-photo {
+      min-height: 260px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,0.95), transparent 15%),
+        linear-gradient(180deg, #d2ece8 0%, #95c8c2 100%);
+    }
+
+    .access-panel {
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(39, 138, 128, 0.06);
+      border: 1px solid rgba(39, 138, 128, 0.12);
+    }
+
+    .footer {
+      padding: 24px 0 120px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .doctor-wrap,
+      .access-wrap,
+      .guide-grid,
+      .step-grid,
+      .qa-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav__inner {
+        padding: 16px 0;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .sample-badge {
+        display: none;
+      }
+
+      .portfolio-cta {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p>クリニック、歯科、医療系サービスなど、情報の見つけやすさが重要なサイト相談で使えるサンプルです。</p>
+    <a href="https://x.com/tadanosyuhuda" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <div class="topline">
+    <div class="topline__inner">
+      <span>発熱外来は事前予約制</span>
+      <span>初診受付: WEB予約またはお電話にて</span>
+      <span>TEL 03-1234-5678</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="#top" class="nav-logo">みどり内科クリニック</a>
+      <div class="nav-links">
+        <a href="#guide">診療案内</a>
+        <a href="#doctor">医師紹介</a>
+        <a href="#flow">初診の流れ</a>
+        <a href="#access">アクセス</a>
+        <a href="#qa">よくある質問</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="hero" id="top">
+      <div class="hero-main">
+        <div class="hero-kicker">Clinic Sample</div>
+        <h1>不安なときほど、迷わせない案内。</h1>
+        <p class="hero-lead">みどり内科クリニックは、住宅街の駅前で初診患者の問い合わせを増やしたい想定のサンプルです。診療内容、受付時間、発熱外来の注意事項、アクセスを、年配の方でも迷わず読める順番で並べています。</p>
+        <div class="hero-chips">
+          <span class="hero-chip">一般内科</span>
+          <span class="hero-chip">生活習慣病</span>
+          <span class="hero-chip">発熱外来</span>
+          <span class="hero-chip">健康診断</span>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div class="notice-card">本日のご案内: 発熱症状のある方は来院前にお電話ください</div>
+        <div class="time-card">
+          <strong>診療時間</strong>
+          <table aria-label="診療時間">
+            <tr><th>時間</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>
+            <tr><td>09:00-12:30</td><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td></tr>
+            <tr><td>14:30-18:00</td><td>●</td><td>●</td><td>●</td><td>-</td><td>●</td><td>-</td></tr>
+          </table>
+        </div>
+        <div class="reserve-box">
+          <p>WEB予約、電話予約、発熱外来の注意事項など、来院前に知りたい情報をこの欄にまとめる想定です。</p>
+          <a href="#" onclick="event.preventDefault(); alert('サンプルのため送信されません');">WEB予約を試す</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="guide">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Guide</div>
+          <h2 class="section-title">診療案内は、短く・具体的に。</h2>
+        </div>
+      </div>
+      <p class="section-copy">医療サイトでは、詳しすぎる説明よりも「ここで診てもらえるのか」がひと目で伝わることが大事です。内科、発熱外来、健康診断などを短く整理して置くと、迷いを減らせます。</p>
+      <div class="guide-grid">
+        <article class="guide-card">
+          <div class="guide-num">01</div>
+          <h3>一般内科</h3>
+          <p>風邪症状、腹痛、頭痛など、日常的な不調に幅広く対応する想定です。</p>
+        </article>
+        <article class="guide-card">
+          <div class="guide-num">02</div>
+          <h3>生活習慣病</h3>
+          <p>高血圧、脂質異常症、糖尿病など、継続診療につながるメニューを見やすく整理します。</p>
+        </article>
+        <article class="guide-card">
+          <div class="guide-num">03</div>
+          <h3>発熱・感染症外来</h3>
+          <p>予約制や来院前連絡など、重要な注意事項を早い位置で目立たせる構成です。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="doctor">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Doctor</div>
+          <h2 class="section-title">誰が診てくれるかが見える安心感。</h2>
+        </div>
+      </div>
+      <div class="doctor-wrap">
+        <div class="doctor-photo" aria-hidden="true"></div>
+        <article class="doctor-card">
+          <h3>院長 佐伯 みどり</h3>
+          <p>患者さんにとって気になるのは、設備の多さよりも「どんな先生が、どんな姿勢で診てくれるのか」です。このサンプルでは、やさしいトーンの写真スペースと、短く読みやすい紹介文で、初診時の不安を減らす見せ方にしています。</p>
+          <p>医師紹介では、経歴を並べるだけでなく「相談しやすさ」や「どんな症状に強いか」が伝わると、問い合わせや来院の判断がしやすくなります。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="project-brief" id="brief" style="--portfolio-accent:#4b8f7c; --portfolio-heading:#27423d; --portfolio-muted:#5c6f6a; --portfolio-card-bg:rgba(249,253,252,0.95); --portfolio-card-border:rgba(75,143,124,0.16); --portfolio-shadow:rgba(39,66,61,0.08); --portfolio-metric-bg:rgba(242,248,246,0.94); --portfolio-quote-bg:rgba(242,248,246,0.82);">
+      <div class="project-brief__inner">
+        <div class="project-brief__header">
+          <span class="project-brief__eyebrow">Project Note</span>
+          <h2 class="project-brief__title">院内写真と、掲載文の具体例</h2>
+          <p class="project-brief__lead">クリニックサイトは、写真があるだけで安心感がかなり変わります。外観、受付、診察室が見えると「行っても大丈夫そう」が伝わりやすく、特に初診の問い合わせにつながりやすくなります。</p>
+        </div>
+        <div class="project-brief__photos">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=900&q=80" alt="クリニックの外観イメージ">
+            <figcaption><strong>外観</strong>入口の雰囲気が見える写真は、初めて来院する方の安心材料になります。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=80" alt="受付と待合スペースのイメージ">
+            <figcaption><strong>受付・待合</strong>清潔感や席間の広さがわかる写真は、高齢の患者さんにも伝わりやすいです。</figcaption>
+          </figure>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=900&q=80" alt="診察室のイメージ">
+            <figcaption><strong>診察室</strong>設備の説明より先に、落ち着いて相談できそうな印象をつくる役割があります。</figcaption>
+          </figure>
+        </div>
+        <div class="project-brief__layout" style="margin-top:20px;">
+          <div class="project-brief__stack">
+            <article class="project-brief__card">
+              <h3>想定する依頼内容</h3>
+              <p>診療案内、受付時間、医師紹介、初診の流れ、アクセス、WEB予約までをまとめたクリニックサイト。電話での問い合わせを減らしつつ、初診の来院前不安を軽くする設計です。</p>
+              <div class="project-brief__meta">
+                <div class="project-brief__metric"><span>目安金額</span><strong>15万〜24万円</strong></div>
+                <div class="project-brief__metric"><span>制作期間</span><strong>2〜4週間</strong></div>
+                <div class="project-brief__metric"><span>必要素材</span><strong>診療時間 / 医師情報 / 地図 / 予約方法</strong></div>
+                <div class="project-brief__metric"><span>写真の目安</span><strong>外観・受付・待合・診察室・医師写真で5〜7点</strong></div>
+              </div>
+            </article>
+            <article class="project-brief__card">
+              <h3>先にあると進めやすいもの</h3>
+              <ul class="project-brief__list">
+                <li>発熱外来の運用ルールや予約方法を確定させる</li>
+                <li>保険証、お薬手帳、紹介状など持ち物案内を整理する</li>
+                <li>電話番号は画像ではなくテキストで掲載するほうが探しやすいです</li>
+              </ul>
+            </article>
+          </div>
+          <article class="project-brief__card">
+            <h3>掲載文のイメージ</h3>
+            <div class="project-brief__code">
+              <span>案内例: 発熱症状のある方は、来院前に必ずお電話ください。</span>
+              <span>紹介文例: 風邪症状から生活習慣病まで、日常の体調不良を地域で支えます。</span>
+              <span>初診案内例: 保険証、お薬手帳をお持ちのうえ、受付へお越しください。</span>
+            </div>
+            <div class="project-brief__quote">医療サイトは専門用語を増やしすぎず、「自分はここで受診できるか」がすぐわかる文章のほうが伝わります。</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="flow">
+      <div class="section-head">
+        <div>
+          <div class="section-label">First Visit</div>
+          <h2 class="section-title">初診の流れを4ステップで整理。</h2>
+        </div>
+      </div>
+      <div class="step-grid">
+        <article class="step-card">
+          <div class="step-num">1</div>
+          <h3>予約</h3>
+          <p>WEBまたはお電話で受付。発熱症状がある場合は事前連絡の案内を明記します。</p>
+        </article>
+        <article class="step-card">
+          <div class="step-num">2</div>
+          <h3>ご来院</h3>
+          <p>保険証、お薬手帳、紹介状など、必要な持ち物を短くまとめて表示します。</p>
+        </article>
+        <article class="step-card">
+          <div class="step-num">3</div>
+          <h3>診察</h3>
+          <p>問診から診察までの流れを端的に書くと、初診時の心理的ハードルが下がります。</p>
+        </article>
+        <article class="step-card">
+          <div class="step-num">4</div>
+          <h3>お会計</h3>
+          <p>支払い方法や処方の流れを明示すると、来院後のイメージがつきやすくなります。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="access">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Access</div>
+          <h2 class="section-title">アクセスと連絡先は迷わせない。</h2>
+        </div>
+      </div>
+      <div class="access-wrap">
+        <article class="access-card">
+          <h3>アクセス情報</h3>
+          <p>東京都世田谷区桜新町1-2-3 グリーンメディカルモール2F。東急田園都市線 桜新町駅 西口から徒歩3分です。</p>
+          <div class="access-panel">
+            <h3 style="margin-top:0;">TEL 03-1234-5678</h3>
+            <p>迷ったときにすぐ電話できる位置へ、番号を常に見つけやすく配置する想定です。</p>
+          </div>
+        </article>
+        <article class="access-card">
+          <h3>設計の意図</h3>
+          <p>クリニックサイトでは、予約導線と電話番号の見つけやすさが特に重要です。見た目の個性よりも「迷わない」「すぐ行動できる」を優先することで、信頼感のある印象につながります。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="qa">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Q&amp;A</div>
+          <h2 class="section-title">よくある質問を下部にまとめる。</h2>
+        </div>
+      </div>
+      <div class="qa-grid">
+        <article class="qa-card">
+          <h3>予約なしでも受診できますか?</h3>
+          <p>一般外来は状況により受付可能、発熱外来は事前予約制といった運用差を明確に案内します。</p>
+        </article>
+        <article class="qa-card">
+          <h3>健康診断だけの受診もできますか?</h3>
+          <p>定期利用につながる案内は、最後にまとめて置くと情報が探しやすくなります。</p>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      &copy; 2026 みどり内科クリニック Sample Site
+    </footer>
+  </main>
+</body>
+</html>

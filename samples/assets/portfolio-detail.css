@@ -1,0 +1,209 @@
+.project-brief {
+  padding: 72px 24px 40px;
+}
+
+.project-brief__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.project-brief__header {
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+
+.project-brief__eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--portfolio-accent, #8a6a55);
+}
+
+.project-brief__title {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.3vw, 2.7rem);
+  line-height: 1.2;
+  color: var(--portfolio-heading, inherit);
+}
+
+.project-brief__lead {
+  margin: 14px 0 0;
+  font-size: 0.96rem;
+  line-height: 1.9;
+  color: var(--portfolio-muted, rgba(0, 0, 0, 0.72));
+}
+
+.project-brief__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.project-brief__stack {
+  display: grid;
+  gap: 20px;
+}
+
+.project-brief__card {
+  border-radius: 28px;
+  padding: 24px;
+  background: var(--portfolio-card-bg, rgba(255, 255, 255, 0.84));
+  border: 1px solid var(--portfolio-card-border, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 18px 40px var(--portfolio-shadow, rgba(0, 0, 0, 0.08));
+}
+
+.project-brief__card h3 {
+  margin: 0 0 14px;
+  font-size: 1.08rem;
+  color: var(--portfolio-heading, inherit);
+}
+
+.project-brief__card p {
+  margin: 0;
+  color: var(--portfolio-muted, rgba(0, 0, 0, 0.72));
+  line-height: 1.85;
+}
+
+.project-brief__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.project-brief__metric {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--portfolio-metric-bg, rgba(255, 255, 255, 0.6));
+  border: 1px solid var(--portfolio-card-border, rgba(0, 0, 0, 0.08));
+}
+
+.project-brief__metric span {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portfolio-accent, inherit);
+}
+
+.project-brief__metric strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--portfolio-heading, inherit);
+}
+
+.project-brief__list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.project-brief__list li {
+  position: relative;
+  padding-left: 1.05rem;
+  color: var(--portfolio-muted, rgba(0, 0, 0, 0.72));
+  line-height: 1.8;
+}
+
+.project-brief__list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--portfolio-accent, inherit);
+}
+
+.project-brief__quote {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-left: 3px solid var(--portfolio-accent, inherit);
+  background: var(--portfolio-quote-bg, rgba(255, 255, 255, 0.5));
+  color: var(--portfolio-heading, inherit);
+  line-height: 1.85;
+}
+
+.project-brief__photos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.project-brief__photos figure {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--portfolio-card-bg, rgba(255, 255, 255, 0.84));
+  border: 1px solid var(--portfolio-card-border, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 18px 40px var(--portfolio-shadow, rgba(0, 0, 0, 0.08));
+}
+
+.project-brief__photos img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.project-brief__photos figcaption {
+  padding: 12px 14px 15px;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--portfolio-muted, rgba(0, 0, 0, 0.72));
+}
+
+.project-brief__photos strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--portfolio-heading, inherit);
+}
+
+.project-brief__code {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--portfolio-code-bg, rgba(0, 0, 0, 0.05));
+  border: 1px solid var(--portfolio-card-border, rgba(0, 0, 0, 0.08));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--portfolio-heading, inherit);
+}
+
+.project-brief__code span {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .project-brief__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .project-brief__photos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .project-brief {
+    padding: 56px 18px 32px;
+  }
+
+  .project-brief__card {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .project-brief__meta {
+    grid-template-columns: 1fr;
+  }
+}
