@@ -263,6 +263,53 @@
       text-align: right;
     }
 
+    .fever-meter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      min-width: 112px;
+    }
+
+    .fever-label {
+      color: #ffd54f;
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .fever-bar {
+      flex: 1;
+      height: 8px;
+      background: rgba(0,0,0,0.28);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .fever-fill {
+      width: 0;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff9f1c, #ff4d6d, #ffd54f);
+      box-shadow: 0 0 14px rgba(255,159,28,0.35);
+      transition: width 0.2s ease, filter 0.2s ease;
+    }
+
+    .fever-meter.ready .fever-fill,
+    .fever-meter.active .fever-fill {
+      filter: brightness(1.2);
+    }
+
+    .fever-meter.active {
+      background: rgba(255,193,7,0.2);
+      border-color: rgba(255,213,79,0.45);
+      box-shadow: 0 0 18px rgba(255,179,0,0.25);
+    }
+
     .combo-display.active {
       animation: comboPop 0.3s ease;
     }
@@ -643,6 +690,15 @@
       margin-top: 8px;
     }
 
+    #game-container.fever-mode {
+      box-shadow: 0 0 0 2px rgba(255,179,0,0.35), 0 0 40px rgba(255,152,0,0.2);
+    }
+
+    #game-container.fever-mode .monster-emoji,
+    #game-container.fever-mode .question-text {
+      filter: drop-shadow(0 0 18px rgba(255,213,79,0.35));
+    }
+
     @keyframes waveAnnounce {
       0% { transform: scale(0) rotate(-10deg); opacity: 0; }
       60% { transform: scale(1.1) rotate(3deg); opacity: 1; }
@@ -672,6 +728,26 @@
       color: #fff;
       text-align: center;
       line-height: 1.6;
+    }
+
+    .result-banner {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,213,79,0.2), rgba(255,138,128,0.22));
+      border: 1px solid rgba(255,213,79,0.32);
+      color: #fff3b0;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-align: center;
+      min-height: 36px;
+    }
+
+    .result-banner.hidden {
+      display: none;
     }
 
     .result-stats {
@@ -761,6 +837,11 @@
       animation: flashAnim 0.4s ease forwards;
     }
 
+    .flash-overlay.flash-gold {
+      background: radial-gradient(circle, rgba(255,193,7,0.45), transparent);
+      animation: flashAnim 0.4s ease forwards;
+    }
+
     @keyframes flashAnim {
       0% { opacity: 1; }
       100% { opacity: 0; }
@@ -822,6 +903,12 @@
       <div class="hud">
         <div class="hud-left">
           <span class="wave-badge" id="wave-badge">WAVE 1/5</span>
+          <div class="fever-meter" id="fever-meter">
+            <span class="fever-label" id="fever-label">FEVER</span>
+            <div class="fever-bar">
+              <div class="fever-fill" id="fever-fill" style="width:0%"></div>
+            </div>
+          </div>
         </div>
         <div class="hud-right">
           <span class="score-display" id="score-display">&#x1F4AB; 0</span>
@@ -885,6 +972,7 @@
       <div class="result-emoji" id="result-emoji">&#x1F389;</div>
       <h2 class="result-title" id="result-title">すごい！</h2>
       <p class="result-message" id="result-message"></p>
+      <div class="result-banner hidden" id="result-banner"></div>
       <div class="result-stats">
         <div class="stat-row">
           <span class="stat-label">スコア</span>
@@ -901,6 +989,14 @@
         <div class="stat-row">
           <span class="stat-label">さいこうコンボ</span>
           <span class="stat-value" id="stat-combo">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">FEVER</span>
+          <span class="stat-value" id="stat-fever">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">BEST</span>
+          <span class="stat-value" id="stat-best">0</span>
         </div>
       </div>
       <div class="result-buttons">
@@ -934,7 +1030,42 @@ const state = {
   currentAnswer: 0,
   isAnswering: false,
   currentMonster: null,
+  feverCharge: 0,
+  maxFeverCharge: 5,
+  feverActive: false,
+  feverHitsLeft: 0,
+  feverActivations: 0,
+  bestRecord: null,
+  isNewBest: false,
 };
+
+function getBestKey(difficulty) {
+  return 'gero-math-battle-best-' + difficulty;
+}
+
+function loadBestRecord(difficulty) {
+  try {
+    const raw = localStorage.getItem(getBestKey(difficulty));
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function saveBestRecord(difficulty, record) {
+  try {
+    localStorage.setItem(getBestKey(difficulty), JSON.stringify(record));
+  } catch (error) {
+    // Ignore storage failures so the battle can continue.
+  }
+}
+
+function isBetterRecord(record, bestRecord) {
+  if (!bestRecord) return true;
+  if (record.score !== bestRecord.score) return record.score > bestRecord.score;
+  if (record.maxCombo !== bestRecord.maxCombo) return record.maxCombo > bestRecord.maxCombo;
+  return record.elapsed < bestRecord.elapsed;
+}
 
 // ===== MONSTERS =====
 const monsters = [
@@ -975,6 +1106,7 @@ function showScreen(id) {
 
 function goToStart() {
   clearInterval(state.timerInterval);
+  clearFever(true);
   showScreen('start-screen');
 }
 
@@ -989,8 +1121,15 @@ function startGame(difficulty) {
   state.totalQuestions = 0;
   state.correctAnswers = 0;
   state.startTime = Date.now();
+  state.feverCharge = 0;
+  state.feverActive = false;
+  state.feverHitsLeft = 0;
+  state.feverActivations = 0;
+  state.bestRecord = loadBestRecord(difficulty);
+  state.isNewBest = false;
 
   showScreen('battle-screen');
+  document.getElementById('game-container').classList.remove('fever-mode');
   updateHUD();
   updateHearts();
   spawnMonster();
@@ -1153,6 +1292,8 @@ function updateTimerBar() {
 function handleTimeout() {
   state.isAnswering = false;
   state.totalQuestions++;
+  state.combo = 0;
+  clearFever();
 
   // Highlight correct answer
   const grid = document.getElementById('answers-grid');
@@ -1165,6 +1306,7 @@ function handleTimeout() {
   });
 
   playerTakeDamage();
+  updateHUD();
   showFeedback('じかんぎれ！', false);
 
   setTimeout(() => {
@@ -1207,11 +1349,21 @@ function handleCorrect(btn) {
   if (state.combo > state.maxCombo) state.maxCombo = state.combo;
 
   const comboBonus = Math.min(state.combo - 1, 5) * 5;
-  state.score += 10 + comboBonus;
+  const feverTriggered = chargeFever();
+  const feverBonus = state.feverActive ? 15 : 0;
+  const scoreGain = 10 + comboBonus + feverBonus;
+  const attackPower = state.feverActive ? 2 : 1;
+  state.score += scoreGain;
 
   // Visual feedback
-  showFeedback(state.combo >= 3 ? state.combo + 'コンボ！すごい！' : 'せいかい！', true);
-  flashScreen('green');
+  let feedbackText = state.combo >= 3 ? state.combo + 'コンボ！すごい！' : 'せいかい！';
+  if (feverTriggered) {
+    feedbackText = 'FEVER!';
+  } else if (state.feverActive) {
+    feedbackText = 'FEVER HIT!';
+  }
+  showFeedback(feedbackText, true);
+  flashScreen(state.feverActive ? 'gold' : 'green');
   spawnParticles(true);
   shakeScreen();
 
@@ -1220,9 +1372,15 @@ function handleCorrect(btn) {
   me.classList.add('hit');
   setTimeout(() => me.classList.remove('hit'), 500);
 
-  showDamageNumber(10 + comboBonus);
+  showDamageNumber(scoreGain, state.feverActive ? 'CRIT' : '');
 
-  state.monsterHP--;
+  state.monsterHP -= attackPower;
+  if (state.feverActive) {
+    state.feverHitsLeft--;
+    if (state.feverHitsLeft <= 0) {
+      clearFever();
+    }
+  }
   updateMonsterHP();
   updateHUD();
 
@@ -1247,6 +1405,7 @@ function handleCorrect(btn) {
 // ===== WRONG =====
 function handleWrong() {
   state.combo = 0;
+  clearFever();
   showFeedback('ざんねん...', false);
   flashScreen('red');
   playerTakeDamage();
@@ -1281,6 +1440,20 @@ function updateHUD() {
   } else {
     cd.textContent = '';
   }
+
+  const feverMeter = document.getElementById('fever-meter');
+  const feverFill = document.getElementById('fever-fill');
+  const feverLabel = document.getElementById('fever-label');
+  const feverPercent = state.feverActive
+    ? 100
+    : (state.feverCharge / state.maxFeverCharge) * 100;
+
+  feverFill.style.width = feverPercent + '%';
+  feverMeter.classList.toggle('ready', !state.feverActive && state.feverCharge >= state.maxFeverCharge - 1);
+  feverMeter.classList.toggle('active', state.feverActive);
+  feverLabel.textContent = state.feverActive
+    ? 'FEVER x' + Math.max(state.feverHitsLeft, 0)
+    : 'FEVER';
 }
 
 function updateHearts() {
@@ -1302,6 +1475,27 @@ function updateMonsterHP() {
   document.getElementById('monster-hp-fill').style.width = Math.max(0, pct) + '%';
 }
 
+function chargeFever() {
+  if (state.feverActive) return false;
+  const gain = state.combo >= 3 ? 2 : 1;
+  state.feverCharge = Math.min(state.maxFeverCharge, state.feverCharge + gain);
+  if (state.feverCharge >= state.maxFeverCharge) {
+    state.feverActive = true;
+    state.feverHitsLeft = 3;
+    state.feverActivations++;
+    document.getElementById('game-container').classList.add('fever-mode');
+    return true;
+  }
+  return false;
+}
+
+function clearFever(resetCharge) {
+  state.feverActive = false;
+  state.feverHitsLeft = 0;
+  state.feverCharge = resetCharge ? 0 : Math.min(state.feverCharge, state.maxFeverCharge - 2);
+  document.getElementById('game-container').classList.remove('fever-mode');
+}
+
 // ===== VISUAL EFFECTS =====
 function showFeedback(text, isCorrect) {
   const el = document.getElementById('feedback-text');
@@ -1315,7 +1509,13 @@ function flashScreen(color) {
   const el = document.getElementById('flash-overlay');
   el.className = 'flash-overlay';
   void el.offsetWidth;
-  el.classList.add(color === 'green' ? 'flash-green' : 'flash-red');
+  if (color === 'green') {
+    el.classList.add('flash-green');
+  } else if (color === 'gold') {
+    el.classList.add('flash-gold');
+  } else {
+    el.classList.add('flash-red');
+  }
 }
 
 function shakeScreen() {
@@ -1326,11 +1526,11 @@ function shakeScreen() {
   setTimeout(() => gc.classList.remove('shake'), 400);
 }
 
-function showDamageNumber(amount) {
+function showDamageNumber(amount, suffix) {
   const ma = document.getElementById('monster-area');
   const dn = document.createElement('div');
   dn.className = 'damage-number';
-  dn.textContent = '-' + amount;
+  dn.textContent = '-' + amount + (suffix ? ' ' + suffix : '');
   dn.style.left = (40 + Math.random() * 20) + '%';
   dn.style.top = '30%';
   ma.appendChild(dn);
@@ -1362,14 +1562,29 @@ function spawnParticles(isCorrect) {
 // ===== END GAME =====
 function endGame(won) {
   clearInterval(state.timerInterval);
+  document.getElementById('game-container').classList.remove('fever-mode');
   const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
   const accuracy = state.totalQuestions > 0
     ? Math.round((state.correctAnswers / state.totalQuestions) * 100) : 0;
+  const resultRecord = {
+    score: state.score,
+    maxCombo: state.maxCombo,
+    accuracy,
+    elapsed
+  };
+
+  if (isBetterRecord(resultRecord, state.bestRecord)) {
+    state.bestRecord = resultRecord;
+    state.isNewBest = true;
+    saveBestRecord(state.difficulty, resultRecord);
+  }
 
   document.getElementById('stat-score').textContent = state.score;
   document.getElementById('stat-accuracy').textContent = accuracy + '%';
   document.getElementById('stat-time').textContent = elapsed + 'びょう';
   document.getElementById('stat-combo').textContent = state.maxCombo;
+  document.getElementById('stat-fever').textContent = state.feverActivations + 'かい';
+  document.getElementById('stat-best').textContent = state.bestRecord ? state.bestRecord.score : state.score;
 
   let title, emoji, message;
 
@@ -1402,6 +1617,18 @@ function endGame(won) {
   document.getElementById('result-title').textContent = title;
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-message').textContent = message;
+
+  const resultBanner = document.getElementById('result-banner');
+  if (state.isNewBest) {
+    resultBanner.textContent = 'NEW BEST! スコアこうしん';
+    resultBanner.classList.remove('hidden');
+  } else if (won && state.feverActivations > 0) {
+    resultBanner.textContent = 'FEVER ' + state.feverActivations + 'かい';
+    resultBanner.classList.remove('hidden');
+  } else {
+    resultBanner.textContent = '';
+    resultBanner.classList.add('hidden');
+  }
 
   showScreen('result-screen');
   geroShare('#result-screen', {

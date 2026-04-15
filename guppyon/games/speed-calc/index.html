@@ -349,6 +349,26 @@
 
     .combo-badge.visible { opacity: 1; }
 
+    .best-record {
+      margin: 14px auto 0;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      font-size: 0.84rem;
+      color: #b9b3dd;
+      line-height: 1.5;
+      padding: 10px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .best-record.hidden {
+      display: none;
+    }
+
     /* Progress bar */
     .progress-wrap {
       width: calc(100% - 8px);
@@ -365,6 +385,40 @@
       border-radius: 3px;
       transition: width 0.3s ease;
       box-shadow: 0 0 8px rgba(155,124,255,0.5);
+    }
+
+    .challenge-strip {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      margin: 0 4px 10px;
+    }
+
+    .challenge-pill {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #d8d0ff;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    .challenge-pill.hot {
+      color: #fff4b0;
+      border-color: rgba(255,209,102,0.45);
+      box-shadow: 0 0 18px rgba(255,209,102,0.18);
+      transform: translateY(-1px);
+    }
+
+    .challenge-pill.good {
+      color: #b8ffea;
+      border-color: rgba(78,204,163,0.35);
+      box-shadow: 0 0 18px rgba(78,204,163,0.15);
     }
 
     /* Problem display */
@@ -512,6 +566,11 @@
     .feedback-overlay.show-wrong {
       animation: feedbackPop 0.5s ease forwards;
       color: #ff6b8a;
+    }
+
+    .game-container.rush-mode .choice-btn {
+      border-color: rgba(255,209,102,0.28);
+      box-shadow: 0 0 24px rgba(255,209,102,0.12);
     }
 
     @keyframes feedbackPop {
@@ -703,6 +762,7 @@
           <button class="diff-btn hard" data-diff="hard" onclick="selectDiff('hard')">むずかしい</button>
         </div>
         <p class="diff-desc" id="diffDesc">2桁の四則演算（＋ − ×）</p>
+        <div class="best-record" id="bestRecordText">ベスト: まだないよ</div>
 
         <button class="start-btn" onclick="startCountdown()">スタート ▶</button>
         <div class="frog-mascot">🐸</div>
@@ -734,6 +794,11 @@
 
         <div class="progress-wrap">
           <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+
+        <div class="challenge-strip">
+          <div class="challenge-pill" id="flashPill">FLASH 0</div>
+          <div class="challenge-pill" id="pacePill">PACE --</div>
         </div>
 
         <div class="problem-area">
@@ -773,7 +838,17 @@
             <div class="stat-label">最大コンボ</div>
             <div class="stat-value" id="resultCombo">0<span class="stat-unit">連続</span></div>
           </div>
+          <div class="stat-card">
+            <div class="stat-label">FLASH</div>
+            <div class="stat-value" id="resultFlash">0<span class="stat-unit">回</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">BEST</div>
+            <div class="stat-value" id="resultBest">--</div>
+          </div>
         </div>
+
+        <div class="best-record hidden" id="resultRecordText"></div>
 
         <div class="result-btns">
           <button class="replay-btn" onclick="replayGame()">🔄 もう一度チャレンジ</button>
@@ -856,6 +931,61 @@ let timerInterval = null;
 let startTime = 0;
 let elapsedMs = 0;
 let answerLocked = false;
+let flashCount = 0;
+let rushStreak = 0;
+let questionStartedAt = 0;
+let bestRecord = null;
+let isNewBest = false;
+
+const flashThresholds = {
+  easy: 2200,
+  normal: 2600,
+  hard: 3200
+};
+
+function getBestKey(diff) {
+  return 'gero-speed-calc-best-' + diff;
+}
+
+function loadBestRecord(diff) {
+  try {
+    const raw = localStorage.getItem(getBestKey(diff));
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function saveBestRecord(diff, record) {
+  try {
+    localStorage.setItem(getBestKey(diff), JSON.stringify(record));
+  } catch (error) {
+    // Ignore storage failures so the game remains playable.
+  }
+}
+
+function rankValue(rank) {
+  if (rank === 'S') return 4;
+  if (rank === 'A') return 3;
+  if (rank === 'B') return 2;
+  return 1;
+}
+
+function isBetterRecord(record, currentBest) {
+  if (!currentBest) return true;
+  if (rankValue(record.rank) !== rankValue(currentBest.rank)) {
+    return rankValue(record.rank) > rankValue(currentBest.rank);
+  }
+  if (record.accuracy !== currentBest.accuracy) {
+    return record.accuracy > currentBest.accuracy;
+  }
+  return record.totalSec < currentBest.totalSec;
+}
+
+function formatBestRecord(record) {
+  if (!record) return 'ベスト: まだないよ';
+  return `ベスト ${record.rank} / ${record.totalSec.toFixed(1)}秒 / ${record.accuracy}%`;
+}
 
 // ===== Difficulty descriptions =====
 const diffDescs = {
@@ -986,6 +1116,8 @@ function selectDiff(d) {
     btn.classList.toggle('selected', btn.dataset.diff === d);
   });
   document.getElementById('diffDesc').textContent = diffDescs[d];
+  bestRecord = loadBestRecord(d);
+  document.getElementById('bestRecordText').textContent = formatBestRecord(bestRecord);
 }
 
 // ===== Countdown =====
@@ -1031,13 +1163,19 @@ function startGame() {
   maxCombo = 0;
   elapsedMs = 0;
   answerLocked = false;
+  flashCount = 0;
+  rushStreak = 0;
+  bestRecord = loadBestRecord(difficulty);
+  isNewBest = false;
 
   showScreen('gameScreen');
+  document.querySelector('.game-container').classList.remove('rush-mode');
 
   startTime = performance.now();
   clearInterval(timerInterval);
   timerInterval = setInterval(updateTimer, 100);
 
+  updateChallengeHUD(0, 0);
   loadQuestion();
 }
 
@@ -1049,10 +1187,12 @@ function updateTimer() {
 function loadQuestion() {
   answerLocked = false;
   const q = questions[currentQ];
+  questionStartedAt = performance.now();
 
   // Update HUD
   document.getElementById('questionCounter').textContent = `${currentQ + 1} / ${TOTAL_QUESTIONS}`;
   document.getElementById('progressBar').style.width = `${(currentQ / TOTAL_QUESTIONS) * 100}%`;
+  updateChallengeHUD(currentQ, performance.now() - startTime);
 
   // Problem
   const pt = document.getElementById('problemText');
@@ -1078,6 +1218,7 @@ function checkAnswer(idx) {
 
   const q = questions[currentQ];
   const btns = ['choiceA', 'choiceB', 'choiceC', 'choiceD'];
+  const responseMs = performance.now() - questionStartedAt;
   btns.forEach(id => document.getElementById(id).disabled = true);
 
   if (idx === q.correctIdx) {
@@ -1086,16 +1227,26 @@ function checkAnswer(idx) {
     correctCount++;
     combo++;
     if (combo > maxCombo) maxCombo = combo;
+    const isFlash = responseMs <= flashThresholds[difficulty];
+    if (isFlash) {
+      flashCount++;
+      rushStreak++;
+    } else {
+      rushStreak = 0;
+    }
     updateComboHUD();
-    showFeedback('correct');
-    if (combo >= 3) sfxCombo();
+    updateChallengeHUD(currentQ + 1, performance.now() - startTime);
+    showFeedback('correct', { isFlash, responseMs, rushStreak });
+    if (combo >= 3 || rushStreak >= 2) sfxCombo();
     else sfxCorrect();
   } else {
     // Wrong — show correct in green, wrong in red
     document.getElementById(btns[idx]).classList.add('wrong');
     document.getElementById(btns[q.correctIdx]).classList.add('correct');
     combo = 0;
+    rushStreak = 0;
     updateComboHUD();
+    updateChallengeHUD(currentQ + 1, performance.now() - startTime);
     showFeedback('wrong');
     sfxWrong();
   }
@@ -1109,13 +1260,40 @@ function updateComboHUD() {
   badge.classList.toggle('visible', combo >= 3);
 }
 
-function showFeedback(type) {
+function updateChallengeHUD(answeredCount, elapsedSoFarMs) {
+  const flashPill = document.getElementById('flashPill');
+  const pacePill = document.getElementById('pacePill');
+  flashPill.textContent = `FLASH ${flashCount}`;
+  flashPill.classList.toggle('hot', rushStreak >= 2);
+
+  if (answeredCount > 0) {
+    const projectedSec = (elapsedSoFarMs / answeredCount) * TOTAL_QUESTIONS / 1000;
+    pacePill.textContent = `PACE ${projectedSec.toFixed(1)}s`;
+    pacePill.classList.toggle('good', !!bestRecord && projectedSec <= bestRecord.totalSec);
+  } else if (bestRecord) {
+    pacePill.textContent = `BEST ${bestRecord.totalSec.toFixed(1)}s`;
+    pacePill.classList.add('good');
+  } else {
+    pacePill.textContent = 'PACE --';
+    pacePill.classList.remove('good');
+  }
+
+  document.querySelector('.game-container').classList.toggle('rush-mode', rushStreak >= 3);
+}
+
+function showFeedback(type, detail) {
   const el = document.getElementById('feedbackOverlay');
   el.className = 'feedback-overlay';
   void el.offsetWidth;
   if (type === 'correct') {
     const msgs = ['正解！', 'その調子！', 'ナイス！', 'パーフェクト！'];
-    el.textContent = combo >= 5 ? `🔥 ${combo}連続！` : msgs[Math.floor(Math.random() * msgs.length)];
+    if (detail && detail.isFlash) {
+      el.textContent = detail.rushStreak >= 3
+        ? `⚡ RUSH x${detail.rushStreak}`
+        : `⚡ FLASH ${(detail.responseMs / 1000).toFixed(1)}s`;
+    } else {
+      el.textContent = combo >= 5 ? `🔥 ${combo}連続！` : msgs[Math.floor(Math.random() * msgs.length)];
+    }
     el.classList.add('show-correct');
   } else {
     const msgs = ['不正解…', 'ざんねん！', 'もう一息！'];
@@ -1161,15 +1339,47 @@ function endGame() {
     rank = 'C'; rankClass = 'rank-C';
   }
 
+  const previousBest = bestRecord;
+  const record = {
+    rank,
+    accuracy,
+    totalSec,
+    avgSec,
+    maxCombo,
+    flashCount
+  };
+  if (isBetterRecord(record, previousBest)) {
+    bestRecord = record;
+    isNewBest = true;
+    saveBestRecord(difficulty, record);
+  }
+
   // Populate result
   document.getElementById('resultTime').innerHTML = `${totalSec.toFixed(1)}<span class="stat-unit">秒</span>`;
   document.getElementById('resultAccuracy').innerHTML = `${accuracy}<span class="stat-unit">%</span>`;
   document.getElementById('resultAvg').innerHTML = `${avgSec.toFixed(1)}<span class="stat-unit">秒</span>`;
   document.getElementById('resultCombo').innerHTML = `${maxCombo}<span class="stat-unit">連続</span>`;
+  document.getElementById('resultFlash').innerHTML = `${flashCount}<span class="stat-unit">回</span>`;
+  document.getElementById('resultBest').innerHTML = bestRecord
+    ? `${bestRecord.totalSec.toFixed(1)}<span class="stat-unit">秒</span>`
+    : '--';
 
   const rankEl = document.getElementById('rankDisplay');
   rankEl.textContent = rank;
   rankEl.className = `rank-display ${rankClass}`;
+
+  const resultRecordText = document.getElementById('resultRecordText');
+  if (isNewBest) {
+    resultRecordText.textContent = 'NEW BEST! さいこうきろく こうしん';
+    resultRecordText.classList.remove('hidden');
+  } else if (previousBest) {
+    const diff = Math.max(totalSec - previousBest.totalSec, 0);
+    resultRecordText.textContent = `ベストまで あと ${diff.toFixed(1)}秒`;
+    resultRecordText.classList.remove('hidden');
+  } else {
+    resultRecordText.classList.add('hidden');
+  }
+  document.getElementById('bestRecordText').textContent = formatBestRecord(bestRecord);
 
   setTimeout(() => showScreen('resultScreen'), 300);
 
@@ -1182,6 +1392,7 @@ function endGame() {
 
 // ===== Replay =====
 function replayGame() {
+  document.querySelector('.game-container').classList.remove('rush-mode');
   showScreen('titleScreen');
 }
 
@@ -1193,6 +1404,9 @@ function showScreen(id) {
   // Show back btn only on title/result, hide on game (to avoid misclick)
   document.getElementById('backBtn').style.opacity = (id === 'gameScreen') ? '0.35' : '1';
   document.getElementById('backBtn').style.pointerEvents = (id === 'gameScreen') ? 'none' : 'auto';
+  if (id !== 'gameScreen') {
+    document.querySelector('.game-container').classList.remove('rush-mode');
+  }
 }
 
 // ===== Init =====

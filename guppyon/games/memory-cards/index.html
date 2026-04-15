@@ -219,6 +219,39 @@
       text-align: center;
     }
 
+    .status-banner {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.8);
+      color: var(--purple-deep);
+      font-family: 'Hachi Maru Pop', cursive;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(123, 31, 162, 0.08);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.5;
+    }
+
+    .best-memory {
+      margin-top: 14px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.76);
+      color: var(--purple-deep);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 14px rgba(123, 31, 162, 0.08);
+      line-height: 1.6;
+    }
+
     /* ===== Card Grid ===== */
     .card-grid {
       display: grid;
@@ -413,6 +446,28 @@
       margin-top: 8px;
     }
 
+    .result-stickers {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .sticker-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fff6d9, #ffe3f0);
+      color: var(--purple-deep);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(123, 31, 162, 0.08);
+    }
+
     /* ===== Buttons ===== */
     .btn-group {
       display: flex;
@@ -515,6 +570,12 @@
         gap: 8px;
       }
 
+      .status-banner,
+      .best-memory {
+        font-size: 0.82rem;
+        padding: 8px 10px;
+      }
+
       .difficulty-card {
         padding: 14px 16px;
       }
@@ -600,6 +661,7 @@
           <span class="diff-desc">4×5 マス（10ペア）</span>
         </div>
       </div>
+      <div class="best-memory" id="best-memory-text">ベスト: カードをえらぶと きろくが みえるよ</div>
       <div class="btn-group" style="margin-top: 12px;">
         <a href="../../index.html" class="game-btn btn-secondary">🏠 もどる</a>
       </div>
@@ -624,7 +686,13 @@
           <span class="stat-icon">⏱️</span>
           <span class="stat-value" id="timer">0:00</span>
         </div>
+        <div class="stat-item">
+          <span class="stat-icon">✨</span>
+          <span>れんぞく</span>
+          <span class="stat-value" id="streak-count">0</span>
+        </div>
       </div>
+      <div class="status-banner" id="status-banner">よーくみて ぴったり そろえよう！</div>
       <div id="card-grid" class="card-grid"></div>
       <div class="btn-group">
         <button class="game-btn btn-secondary" id="btn-back-to-start">🏠 やめる</button>
@@ -649,8 +717,17 @@
             <span>⏱️ じかん</span>
             <span class="rs-value" id="rs-time"></span>
           </div>
+          <div class="result-stat-row">
+            <span>✨ れんぞく</span>
+            <span class="rs-value" id="rs-streak"></span>
+          </div>
+          <div class="result-stat-row">
+            <span>🏆 ベスト</span>
+            <span class="rs-value" id="rs-best"></span>
+          </div>
         </div>
         <p class="result-message" id="result-message"></p>
+        <div class="result-stickers" id="result-stickers"></div>
       </div>
       <div class="btn-group">
         <button class="game-btn btn-primary" id="btn-retry">🔄 もういちど</button>
@@ -683,6 +760,44 @@
     let totalPairs = 0;
     let timerInterval = null;
     let elapsedSeconds = 0;
+    let matchStreak = 0;
+    let bestStreak = 0;
+    let previewTimeout = null;
+    let bestRecord = null;
+    let previewActive = false;
+
+    function getBestKey(difficulty) {
+      return 'gero-memory-cards-best-' + difficulty;
+    }
+
+    function loadBestRecord(difficulty) {
+      try {
+        const raw = localStorage.getItem(getBestKey(difficulty));
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveBestRecord(difficulty, record) {
+      try {
+        localStorage.setItem(getBestKey(difficulty), JSON.stringify(record));
+      } catch (error) {
+        // Ignore storage failures and keep the game running.
+      }
+    }
+
+    function isBetterRecord(record, currentBest) {
+      if (!currentBest) return true;
+      if (record.stars !== currentBest.stars) return record.stars > currentBest.stars;
+      if (record.moves !== currentBest.moves) return record.moves < currentBest.moves;
+      return record.elapsedSeconds < currentBest.elapsedSeconds;
+    }
+
+    function formatBestRecord(record) {
+      if (!record) return 'ベスト: まだないよ';
+      return `ベスト ${record.stars}つぼし / ${record.moves}かい / ${formatTime(record.elapsedSeconds)}`;
+    }
 
     // DOM refs
     const startScreen  = document.getElementById('start-screen');
@@ -693,6 +808,9 @@
     const pairsTotalEl = document.getElementById('pairs-total');
     const moveCountEl  = document.getElementById('move-count');
     const timerEl      = document.getElementById('timer');
+    const streakCountEl = document.getElementById('streak-count');
+    const statusBannerEl = document.getElementById('status-banner');
+    const bestMemoryTextEl = document.getElementById('best-memory-text');
 
     // ===== Screen Management =====
     function showScreen(screen) {
@@ -705,10 +823,17 @@
       const handler = () => startGame(card.dataset.difficulty);
       card.addEventListener('click', handler);
       card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }});
+      const previewRecord = () => {
+        bestMemoryTextEl.textContent = formatBestRecord(loadBestRecord(card.dataset.difficulty));
+      };
+      card.addEventListener('mouseenter', previewRecord);
+      card.addEventListener('focus', previewRecord);
     });
 
     document.getElementById('btn-back-to-start').addEventListener('click', () => {
       stopTimer();
+      clearTimeout(previewTimeout);
+      previewActive = false;
       showScreen(startScreen);
     });
 
@@ -724,15 +849,22 @@
       pairsFound = 0;
       moves = 0;
       elapsedSeconds = 0;
+      matchStreak = 0;
+      bestStreak = 0;
       firstCard = null;
       secondCard = null;
-      lockBoard = false;
+      lockBoard = true;
+      bestRecord = loadBestRecord(difficulty);
+      previewActive = true;
 
       // Update UI
       pairsFoundEl.textContent = '0';
       pairsTotalEl.textContent = totalPairs;
       moveCountEl.textContent = '0';
       timerEl.textContent = '0:00';
+      streakCountEl.textContent = '0';
+      statusBannerEl.textContent = 'よーくみて きおえてね';
+      bestMemoryTextEl.textContent = formatBestRecord(bestRecord);
 
       // Build cards array
       const emojis = ALL_EMOJIS.slice(0, cfg.pairs);
@@ -771,12 +903,30 @@
       });
 
       showScreen(gameScreen);
-      startTimer();
+      startPreview();
+    }
+
+    function startPreview() {
+      clearTimeout(previewTimeout);
+      cards.forEach(card => card.classList.add('flipped'));
+      statusBannerEl.textContent = 'チラみせちゅう... よーくみてね！';
+
+      previewTimeout = setTimeout(() => {
+        statusBannerEl.textContent = 'スタート！ おなじカードを さがそう';
+        cards.forEach(card => card.classList.remove('flipped'));
+        previewTimeout = setTimeout(() => {
+          previewActive = false;
+          lockBoard = false;
+          statusBannerEl.textContent = 'ぴったりそろえると キラキラだよ';
+          startTimer();
+        }, 450);
+      }, 2200);
     }
 
     // ===== Card Flip Logic =====
     function flipCard(cardEl) {
       if (lockBoard) return;
+      if (previewActive) return;
       if (cardEl.classList.contains('flipped')) return;
       if (cardEl.classList.contains('matched')) return;
 
@@ -809,7 +959,13 @@
       firstCard.classList.add('matched');
       secondCard.classList.add('matched');
       pairsFound++;
+      matchStreak++;
+      if (matchStreak > bestStreak) bestStreak = matchStreak;
       pairsFoundEl.textContent = pairsFound;
+      streakCountEl.textContent = matchStreak;
+      statusBannerEl.textContent = matchStreak >= 2
+        ? `すごい！ ${matchStreak}れんぞく！`
+        : 'ぴったり！ つぎも いけるよ';
 
       resetSelection();
 
@@ -819,6 +975,9 @@
     }
 
     function handleMismatch() {
+      matchStreak = 0;
+      streakCountEl.textContent = '0';
+      statusBannerEl.textContent = 'つぎで とりかえそう！';
       firstCard.classList.add('shake');
       secondCard.classList.add('shake');
 
@@ -860,11 +1019,27 @@
 
       const stars = calcStars(moves, totalPairs);
       const timeStr = formatTime(elapsedSeconds);
+      const previousBest = bestRecord;
+      const record = {
+        stars,
+        moves,
+        elapsedSeconds,
+        bestStreak
+      };
+      const isNewBest = isBetterRecord(record, previousBest);
+      if (isNewBest) {
+        bestRecord = record;
+        saveBestRecord(currentDifficulty, record);
+      }
 
       // Fill result UI
       document.getElementById('rs-pairs').textContent = totalPairs + 'ペア';
       document.getElementById('rs-moves').textContent = moves + 'かい';
       document.getElementById('rs-time').textContent = timeStr;
+      document.getElementById('rs-streak').textContent = bestStreak + 'れんぞく';
+      document.getElementById('rs-best').textContent = bestRecord
+        ? `${bestRecord.moves}かい / ${formatTime(bestRecord.elapsedSeconds)}`
+        : '-';
 
       const starsEl = document.getElementById('result-stars');
       starsEl.innerHTML = '';
@@ -883,6 +1058,24 @@
       } else {
         msgEl.textContent = 'がんばったね！ またちょうせんしよう！💪';
       }
+
+      const stickers = [];
+      if (stars === 3) stickers.push('👑 てんさいシール');
+      if (bestStreak >= 3) stickers.push('⚡ れんぞくシール');
+      if (isNewBest) stickers.push('🏆 ベストこうしん');
+      if (elapsedSeconds <= totalPairs * 6) stickers.push('🌈 すばやいシール');
+      if (stickers.length === 0) stickers.push('💖 がんばりシール');
+
+      const stickersEl = document.getElementById('result-stickers');
+      stickersEl.innerHTML = '';
+      stickers.forEach(label => {
+        const chip = document.createElement('span');
+        chip.className = 'sticker-chip';
+        chip.textContent = label;
+        stickersEl.appendChild(chip);
+      });
+
+      bestMemoryTextEl.textContent = formatBestRecord(bestRecord);
 
       showScreen(resultScreen);
       geroShare('#result-screen', {
@@ -982,6 +1175,8 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
+
+    bestMemoryTextEl.textContent = formatBestRecord(loadBestRecord('normal'));
   </script>
 <script src="../../js/share-gate.js"></script>
 </body>
