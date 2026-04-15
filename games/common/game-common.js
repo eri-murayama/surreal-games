@@ -14,6 +14,15 @@
 
   const SITE_BASE = '../../';
 
+  function getSiteRoot() {
+    const path = window.location.pathname;
+    const gamesIndex = path.indexOf('/games/');
+    if (gamesIndex !== -1) {
+      return path.slice(0, gamesIndex + 1);
+    }
+    return path.replace(/\/[^/]*$/, '/');
+  }
+
   function ensureSharedFavicon() {
     if (!document.head) return;
 
@@ -34,6 +43,18 @@
   }
 
   ensureSharedFavicon();
+
+  function registerSiteServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return;
+    }
+
+    const swUrl = getSiteRoot() + 'sw.js';
+    navigator.serviceWorker.register(swUrl).catch(function () {});
+  }
+
+  registerSiteServiceWorker();
 
   function ensureSafeBackLinks() {
     var links = document.querySelectorAll('.back-to-top-link');

@@ -24,6 +24,9 @@
   <meta name="twitter:description" content="シュールゲームスの図鑑。キャラクター、実績、称号、死に方をひとまとめに。">
   <meta name="twitter:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="canonical" href="https://eri-murayama.github.io/surreal-games/collection.html">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff69b4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
@@ -850,6 +853,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">本文へスキップ</a>
 
   <!-- 固定ナビ -->
   <nav class="page-fixed-nav" id="page-fixed-nav" aria-label="図鑑ページの固定ナビゲーション">
@@ -909,7 +913,7 @@
     </button>
   </nav>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <!-- ============ ホームパネル ============ -->
     <section id="panel-home" class="col-panel is-active" role="tabpanel">
       <div class="col-panel__header">
@@ -1236,10 +1240,11 @@
     </section>
   </main>
 
-  <footer style="padding: 2rem 1.5rem; text-align: center; border-top: 1px solid var(--card-border);">
-    <p style="color: var(--text-muted); font-size: 0.8rem;">
+  <footer class="site-subfooter">
+    <p class="site-subfooter__copy">
       <a href="privacy.html" style="color: inherit;">プライバシーポリシー</a>
       &nbsp;&copy; 2026 シュールゲームス.
+      <a href="credits.html" class="site-subfooter__link">クレジット・権利表記</a>
     </p>
   </footer>
 
@@ -1499,7 +1504,8 @@
 
         document.getElementById('share-achievements').addEventListener('click', function () {
           const text = '【シュールゲームス 実績】\n' + unlockedCount + ' / ' + total + ' 解除済み（' + pct + '%）\n総プレイ: ' + stats.totalPlays + '\n#シュールゲームス';
-          window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(window.location.origin + '/collection.html'), '_blank');
+          const shareUrl = new URL('collection.html', window.location.href).href;
+          window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(shareUrl), '_blank');
         });
       })();
 

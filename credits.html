@@ -24,6 +24,9 @@
   <meta name="twitter:description" content="シュールゲームスのクレジット、権利表記、外部ライブラリ、ファンゲームに関する案内です。">
   <meta name="twitter:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="canonical" href="https://eri-murayama.github.io/surreal-games/credits.html">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff69b4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
@@ -126,7 +129,8 @@
   </style>
 </head>
 <body>
-  <div class="credits-page">
+  <a class="skip-link" href="#main-content">本文へスキップ</a>
+  <main class="credits-page" id="main-content" tabindex="-1">
     <a href="index.html" class="back-link">← トップに戻る</a>
     <h1>クレジット・権利表記</h1>
     <p class="lede">使っていいこと、やめてほしいこと、使っている素材やサービスを、短くまとめています。</p>
@@ -191,10 +195,19 @@
     </section>
 
     <p class="updated-date">最終更新日: 2026年4月15日</p>
-  </div>
+  </main>
 
-  <footer class="credits-footer">
+  <footer class="credits-footer site-subfooter">
     <p>&copy; 2026 シュールゲームス.</p>
+    <p class="site-subfooter__copy">
+      <a href="privacy.html" class="site-subfooter__link">プライバシーポリシー</a>
+      <a href="index.html" class="site-subfooter__link">トップ</a>
+    </p>
   </footer>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 </body>
 </html>

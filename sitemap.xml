@@ -2,22 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/</loc>
-    <lastmod>2026-04-13</lastmod>
+    <lastmod>2026-04-15</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/collection.html</loc>
-    <lastmod>2026-04-13</lastmod>
+    <lastmod>2026-04-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/prototypes.html</loc>
-    <lastmod>2026-04-13</lastmod>
+    <lastmod>2026-04-15</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/privacy.html</loc>
-    <lastmod>2026-04-13</lastmod>
+    <lastmod>2026-04-15</lastmod>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/credits.html</loc>
+    <lastmod>2026-04-15</lastmod>
     <priority>0.3</priority>
   </url>
 
@@ -207,6 +212,21 @@
   <url>
     <loc>https://eri-murayama.github.io/surreal-games/games/typing-game/index.html</loc>
     <lastmod>2026-04-13</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/awkward-uncle/index.html</loc>
+    <lastmod>2026-04-15</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/dekaunko-escape/index.html</loc>
+    <lastmod>2026-04-15</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://eri-murayama.github.io/surreal-games/games/soul-connect/index.html</loc>
+    <lastmod>2026-04-15</lastmod>
     <priority>0.7</priority>
   </url>
 </urlset>
