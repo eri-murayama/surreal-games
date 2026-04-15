@@ -61,6 +61,40 @@
     .back-link:hover {
       background: #4ecdc4; color: white;
     }
+    .helper-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 28px;
+    }
+    .helper-link {
+      display: block;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 2px solid #dff3f1;
+      text-decoration: none;
+      color: #555;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .helper-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border-color: #4ecdc4;
+    }
+    .helper-link strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #2bbbad;
+      font-size: 0.95rem;
+    }
+    .helper-link span {
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #777;
+    }
     .update-date {
       text-align: center; font-size: 0.8rem; color: #999; margin-top: 20px;
     }
@@ -86,6 +120,21 @@
       <div style="font-size: 3rem;">🔒🐸</div>
       <h1>プライバシーポリシー</h1>
       <p>ゲロゲーロ学園は、お子さまとそのご家族のプライバシーを大切にしています。</p>
+    </div>
+
+    <div class="helper-links" aria-label="保護者向けメニュー">
+      <a href="index.html#parents" class="helper-link">
+        <strong>🏠 保護者向け入口</strong>
+        <span>トップページの「おうちの方へ」に戻ります。</span>
+      </a>
+      <a href="safety-guide.html" class="helper-link">
+        <strong>📖 安全ガイド</strong>
+        <span>スマホやタブレットを安全に渡す方法を手順つきで確認できます。</span>
+      </a>
+      <a href="index.html" class="helper-link">
+        <strong>🎮 ゲーム一覧</strong>
+        <span>年齢にあわせてゲームを選びたいときはこちらです。</span>
+      </a>
     </div>
 
     <div class="policy-section">
