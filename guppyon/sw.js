@@ -3,7 +3,7 @@
    オフライン対応 & PWA
    ============================================ */
 
-const CACHE_NAME = 'gero-gero-v3';
+const CACHE_NAME = 'gero-gero-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const ASSETS = [
   './js/pwa-register.js',
   './js/share-gate.js',
   './js/baby-launcher.js',
+  './js/game-upgrades.js',
   './manifest.json',
   './safety-guide.html',
   './privacy.html',
@@ -32,6 +33,10 @@ const ASSETS = [
   './games/kanji-reading/index.html',
   './games/prefecture-master/index.html',
   './games/speed-calc/index.html',
+  './games/counting-frogs/index.html',
+  './games/counting-frogs/game.js',
+  './games/rhythm-lights/index.html',
+  './games/rhythm-lights/game.js',
 ];
 
 // Install: cache all assets
