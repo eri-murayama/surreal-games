@@ -1,25 +1,17 @@
 param(
-  [ValidateSet('setup', 'update', 'remove', 'path', 'status')]
-  [string]$Action = 'setup',
+  [ValidateSet('setup', 'export', 'update', 'remove', 'path', 'status')]
+  [string]$Action = 'export',
 
   [string]$Branch = 'samples-before-portfolio-refresh',
 
-  [string]$TargetDir = (Join-Path (Split-Path -Parent (Resolve-Path (Join-Path $PSScriptRoot '..')).Path) 'website-samples-before-refresh')
+  [string]$TargetDir = (Join-Path (Split-Path -Parent (Resolve-Path (Join-Path $PSScriptRoot '..')).Path) 'website-samples-archive')
 )
 
 $ErrorActionPreference = 'Stop'
 
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $ResolvedTarget = [System.IO.Path]::GetFullPath($TargetDir)
-
-function Normalize-GitPath {
-  param(
-    [Parameter(Mandatory = $true)]
-    [string]$PathValue
-  )
-
-  return ([System.IO.Path]::GetFullPath($PathValue)).Replace('\', '/')
-}
+$ResolvedSamplesPath = Join-Path $ResolvedTarget 'samples'
 
 function Invoke-GitRepo {
   param(
@@ -33,123 +25,110 @@ function Invoke-GitRepo {
   }
 }
 
-function Invoke-GitTarget {
-  param(
-    [Parameter(Mandatory = $true)]
-    [string[]]$Args
-  )
-
-  & git -C $ResolvedTarget @Args
-  if ($LASTEXITCODE -ne 0) {
-    throw "git -C `"$ResolvedTarget`" $($Args -join ' ') failed."
-  }
-}
-
-function Get-WorktreeList {
-  $lines = & git -C $RepoRoot worktree list --porcelain
-  if ($LASTEXITCODE -ne 0) {
-    throw 'git worktree list failed.'
-  }
-  return $lines
-}
-
-function Test-BranchExists {
+function Test-LocalBranchExists {
   & git -C $RepoRoot show-ref --verify --quiet "refs/heads/$Branch"
   return $LASTEXITCODE -eq 0
 }
 
-function Test-WorktreeRegistered {
-  $normalizedTarget = Normalize-GitPath -PathValue $ResolvedTarget
-
-  foreach ($line in Get-WorktreeList) {
-    if (-not $line.StartsWith('worktree ')) {
-      continue
-    }
-
-    $worktreePath = $line.Substring(9)
-    if ((Normalize-GitPath -PathValue $worktreePath) -eq $normalizedTarget) {
-      return $true
-    }
-  }
-
-  return $false
+function Test-RemoteBranchExists {
+  & git -C $RepoRoot show-ref --verify --quiet "refs/remotes/origin/$Branch"
+  return $LASTEXITCODE -eq 0
 }
 
-function Ensure-ArchiveBranch {
+function Resolve-ArchiveRef {
   Invoke-GitRepo @('fetch', 'origin', $Branch)
 
-  if (-not (Test-BranchExists)) {
-    Invoke-GitRepo @('branch', '--track', $Branch, "origin/$Branch")
+  if (Test-LocalBranchExists) {
+    return $Branch
   }
+
+  if (Test-RemoteBranchExists) {
+    return "origin/$Branch"
+  }
+
+  throw "Archive branch not found: $Branch"
+}
+
+function Assert-SafeTarget {
+  if ($ResolvedTarget -eq $RepoRoot) {
+    throw 'Target directory cannot be the repository root.'
+  }
+
+  if ($ResolvedTarget.Length -lt 10) {
+    throw "Target directory looks unsafe: $ResolvedTarget"
+  }
+}
+
+function Export-SamplesOnly {
+  Assert-SafeTarget
+
+  $archiveRef = Resolve-ArchiveRef
+  $zipPath = Join-Path ([System.IO.Path]::GetTempPath()) ("samples-archive-" + [System.Guid]::NewGuid().ToString() + ".zip")
+
+  try {
+    if (Test-Path $ResolvedTarget) {
+      Remove-Item -LiteralPath $ResolvedTarget -Recurse -Force
+    }
+
+    New-Item -ItemType Directory -Path $ResolvedTarget | Out-Null
+    Invoke-GitRepo @('archive', "--format=zip", "--output=$zipPath", $archiveRef, 'samples')
+    Expand-Archive -LiteralPath $zipPath -DestinationPath $ResolvedTarget -Force
+  }
+  finally {
+    if (Test-Path $zipPath) {
+      Remove-Item -LiteralPath $zipPath -Force
+    }
+  }
+
+  Write-Output "Exported samples from $archiveRef to $ResolvedSamplesPath"
 }
 
 switch ($Action) {
   'path' {
-    Write-Output $ResolvedTarget
+    Write-Output $ResolvedSamplesPath
     break
   }
 
   'status' {
+    $archiveRef = Resolve-ArchiveRef
     Write-Output "Repo root: $RepoRoot"
     Write-Output "Archive branch: $Branch"
-    Write-Output "Archive path: $ResolvedTarget"
-    Write-Output "Registered: $(Test-WorktreeRegistered)"
-    if (Test-Path $ResolvedTarget) {
-      $head = & git -C $ResolvedTarget rev-parse --short HEAD
-      $branchName = & git -C $ResolvedTarget branch --show-current
-      if ($LASTEXITCODE -ne 0) {
-        throw 'Failed to inspect archive worktree.'
-      }
-      Write-Output "Checked out branch: $branchName"
-      Write-Output "HEAD: $head"
+    Write-Output "Archive ref: $archiveRef"
+    Write-Output "Archive directory: $ResolvedTarget"
+    Write-Output "Samples path: $ResolvedSamplesPath"
+    Write-Output "Export exists: $(Test-Path $ResolvedSamplesPath)"
+    if (Test-Path $ResolvedSamplesPath) {
+      $entries = Get-ChildItem -LiteralPath $ResolvedSamplesPath | Select-Object -ExpandProperty Name
+      Write-Output "Entries: $($entries -join ', ')"
     }
     break
   }
 
   'setup' {
-    Ensure-ArchiveBranch
+    Export-SamplesOnly
+    break
+  }
 
-    if (Test-Path $ResolvedTarget) {
-      if (Test-WorktreeRegistered) {
-        Write-Output "Archive worktree already exists: $ResolvedTarget"
-        break
-      }
-      throw "Target path already exists but is not registered as a git worktree: $ResolvedTarget"
-    }
-
-    Invoke-GitRepo @('worktree', 'add', $ResolvedTarget, $Branch)
-    Write-Output "Archive worktree created: $ResolvedTarget"
+  'export' {
+    Export-SamplesOnly
     break
   }
 
   'update' {
-    Ensure-ArchiveBranch
-
-    if (-not (Test-Path $ResolvedTarget)) {
-      Invoke-GitRepo @('worktree', 'add', $ResolvedTarget, $Branch)
-      Write-Output "Archive worktree created: $ResolvedTarget"
-      break
-    }
-
-    if (-not (Test-WorktreeRegistered)) {
-      throw "Target path exists but is not registered as a git worktree: $ResolvedTarget"
-    }
-
-    Invoke-GitTarget @('fetch', 'origin', $Branch)
-    Invoke-GitTarget @('checkout', $Branch)
-    Invoke-GitTarget @('pull', '--ff-only', 'origin', $Branch)
-    Write-Output "Archive worktree updated: $ResolvedTarget"
+    Export-SamplesOnly
     break
   }
 
   'remove' {
+    Assert-SafeTarget
+
     if (-not (Test-Path $ResolvedTarget)) {
-      Write-Output "Archive worktree does not exist: $ResolvedTarget"
+      Write-Output "Archive export does not exist: $ResolvedTarget"
       break
     }
 
-    Invoke-GitRepo @('worktree', 'remove', $ResolvedTarget)
-    Write-Output "Archive worktree removed: $ResolvedTarget"
+    Remove-Item -LiteralPath $ResolvedTarget -Recurse -Force
+    Write-Output "Archive export removed: $ResolvedTarget"
     break
   }
 }

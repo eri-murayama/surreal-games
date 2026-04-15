@@ -6,26 +6,29 @@
 
 - 現行版: `main` ブランチの `samples/`
 - 変更前アーカイブ: `samples-before-portfolio-refresh` ブランチ
-- 旧版をローカルで並行表示したいとき: `tools/samples-archive.ps1`
+- 旧版をローカルで見たいとき: `tools/samples-archive.ps1` で `samples/` だけを書き出す
 
 ## 旧版をローカルに出す
 
 PowerShell でリポジトリ直下から実行します。
 
 ```powershell
-.\tools\samples-archive.ps1 -Action setup
+.\tools\samples-archive.ps1 -Action export
 ```
 
-これで、兄弟フォルダとして `../website-samples-before-refresh` が作られます。
+これで、兄弟フォルダとして `../website-samples-archive` が作られ、その中に旧版の `samples/` だけが出力されます。
 
 - 現行版: `C:\workspace\website\samples\`
-- 旧版: `C:\workspace\website-samples-before-refresh\samples\`
+- 旧版: `C:\workspace\website-samples-archive\samples\`
+
+この方式は、リポジトリ全体を複製せずに `samples/` だけを取り出すので、`games/` や `videos/` などは含まれません。
 
 ## よく使うコマンド
 
 ```powershell
 .\tools\samples-archive.ps1 -Action path
 .\tools\samples-archive.ps1 -Action status
+.\tools\samples-archive.ps1 -Action export
 .\tools\samples-archive.ps1 -Action update
 .\tools\samples-archive.ps1 -Action remove
 ```
