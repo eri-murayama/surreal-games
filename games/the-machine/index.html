@@ -22,6 +22,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../common/game-common.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
   <a href="../../index.html" class="back-to-top-link">← トップに戻る</a>
@@ -43,10 +44,17 @@
     </div>
   </div>
 
-  <!-- ===== オープニング: ロボットバトル ===== -->
+  <!-- ===== オープニング: 3Dロボットバトル ===== -->
   <div id="opening-screen" class="screen">
-    <canvas id="opening-canvas" width="500" height="500"></canvas>
-    <div class="cinematic-overlay">
+    <div id="opening-3d"></div>
+    <div class="letterbox top"></div>
+    <div class="letterbox bottom"></div>
+    <div class="opening-hud">
+      <div class="hp-bar hp-blue"><div class="hp-fill" id="hp-blue-fill"></div><span class="hp-name">UNIT-07</span></div>
+      <div class="hp-bar hp-red"><div class="hp-fill" id="hp-red-fill"></div><span class="hp-name">GOLIATH</span></div>
+    </div>
+    <div class="hit-text-overlay" id="hit-text-overlay"></div>
+    <div class="cinematic-overlay opening-overlay">
       <p class="cinematic-text" id="opening-text"></p>
       <p class="tap-hint" id="opening-hint">TAP</p>
     </div>

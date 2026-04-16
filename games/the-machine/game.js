@@ -1764,171 +1764,427 @@
     return iv;
   }
 
-  // ===== OPENING: 派手なロボットバトル =====
+  // ===== OPENING: 3Dロボットバトル =====
   let openingRaf = null;
   function startOpeningCinematic() {
     show('opening-screen');
     $('opening-text').textContent = '';
     $('opening-hint').style.visibility = 'hidden';
-    const oc = $('opening-canvas');
-    const octx = oc.getContext('2d');
-    const state = {
-      t: 0,
-      beams: [],
-      explosions: [],
-      mechL: { x: 100, y: 260, vx: 0, vy: 0, color: '#4fa3ff', charge: 0 },
-      mechR: { x: 400, y: 260, vx: 0, vy: 0, color: '#ff4444', charge: 0 },
-      crowdGlow: 0,
-    };
-    function spawnBeam(from, to, color) {
-      state.beams.push({ x1: from.x, y1: from.y, x2: to.x, y2: to.y, life: 1, color });
+    $('hit-text-overlay').style.opacity = '0';
+    $('hp-blue-fill').style.width = '100%';
+    $('hp-red-fill').style.width = '100%';
+
+    // Three.js セットアップ
+    const container = $('opening-3d');
+    container.innerHTML = '';
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x1a1030, 0.006);
+    const aspect = container.clientWidth / Math.max(1, container.clientHeight);
+    const camera = new THREE.PerspectiveCamera(65, aspect, 0.1, 200);
+    camera.position.set(0, 6, 14);
+    camera.lookAt(0, 3, 2);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x1a1030);
+    container.appendChild(renderer.domElement);
+    // リサイズ対応
+    function onResize() {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / Math.max(1, h);
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+    window.addEventListener('resize', onResize);
+
+    // 照明（明るく！）
+    const ambLight = new THREE.AmbientLight(0xffffff, 1.2);
+    scene.add(ambLight);
+    // 上部全体照明
+    const hemiLight = new THREE.HemisphereLight(0xaabbff, 0x444422, 1.0);
+    scene.add(hemiLight);
+    const spot1 = new THREE.SpotLight(0x4fa3ff, 3, 60, 0.6, 0.3);
+    spot1.position.set(-6, 18, 5);
+    scene.add(spot1);
+    const spot2 = new THREE.SpotLight(0xff4444, 3, 60, 0.6, 0.3);
+    spot2.position.set(6, 18, 5);
+    scene.add(spot2);
+    // 正面から白い光
+    const frontLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    frontLight.position.set(0, 10, 15);
+    scene.add(frontLight);
+    const pointFlash = new THREE.PointLight(0xffffff, 0, 20);
+    pointFlash.position.set(0, 5, 5);
+    scene.add(pointFlash);
+
+    // アリーナ床(グリッド)
+    const floorGeo = new THREE.PlaneGeometry(40, 40);
+    const floorMat = new THREE.MeshStandardMaterial({
+      color: 0x2a1545,
+      roughness: 0.5,
+      metalness: 0.3,
+    });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
+    const grid = new THREE.GridHelper(40, 20, 0xff3030, 0x330011);
+    grid.position.y = 0.01;
+    scene.add(grid);
+
+    // ===== 観客スタンド(360°囲む + 階段状 + 人型シルエット) =====
+    const crowdColors = [0x334488, 0x884433, 0x338844, 0x885588, 0x666666, 0x448888];
+    const skinMat = new THREE.MeshStandardMaterial({ color: 0xddb896 });
+    const crowdGroup = new THREE.Group();
+    // 4方向にスタンド
+    [0, 90, 180, 270].forEach(deg => {
+      const rad = deg * Math.PI / 180;
+      const dist = 12;
+      const standW = deg % 180 === 0 ? 22 : 14;
+      // 3段の階段席
+      for (let row = 0; row < 3; row++) {
+        const rowDist = dist + row * 2;
+        const rowY = 1 + row * 1.5;
+        // 席台
+        const seatGeo = new THREE.BoxGeometry(standW, 0.3, 1.8);
+        const seatMat = new THREE.MeshStandardMaterial({ color: 0x333344 });
+        const seat = new THREE.Mesh(seatGeo, seatMat);
+        seat.position.set(Math.sin(rad) * rowDist, rowY, Math.cos(rad) * rowDist);
+        seat.rotation.y = rad;
+        crowdGroup.add(seat);
+        // 人
+        const count = Math.floor(standW / 1.2);
+        for (let p = 0; p < count; p++) {
+          const px = (p - count / 2) * 1.2 + (Math.random() - 0.5) * 0.3;
+          const person = new THREE.Group();
+          // 体(ランダム色)
+          const clothMat = new THREE.MeshStandardMaterial({ color: crowdColors[Math.floor(Math.random() * crowdColors.length)] });
+          const body = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.8, 0.3), clothMat);
+          body.position.y = 0.6;
+          person.add(body);
+          // 頭
+          const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), skinMat);
+          head.position.y = 1.2;
+          person.add(head);
+          // たまに腕を上げている(応援ポーズ)
+          if (Math.random() < 0.3) {
+            const arm = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.6, 0.1), skinMat);
+            arm.position.set(Math.random() < 0.5 ? -0.3 : 0.3, 1.4, 0);
+            arm.rotation.z = (Math.random() - 0.5) * 0.6;
+            person.add(arm);
+          }
+          // 配置
+          const lx = Math.sin(rad) * rowDist + Math.cos(rad) * px;
+          const lz = Math.cos(rad) * rowDist - Math.sin(rad) * px;
+          person.position.set(lx, rowY, lz);
+          person.rotation.y = rad + Math.PI; // アリーナの方を向く
+          crowdGroup.add(person);
+        }
+      }
+    });
+    scene.add(crowdGroup);
+
+    // ペンライト(観客から放つ光)
+    const penLights = [];
+    for (let i = 0; i < 60; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const dist = 11 + Math.random() * 4;
+      const c = Math.random() < 0.5 ? 0x4fa3ff : 0xff4444;
+      const pl = new THREE.PointLight(c, 0.3, 5);
+      pl.position.set(Math.sin(ang) * dist, 2.5 + Math.random() * 3, Math.cos(ang) * dist);
+      scene.add(pl);
+      penLights.push(pl);
+    }
+
+    // ===== パイロット(リモコンで操作してる人) =====
+    function buildPilot(teamColor) {
+      const pilot = new THREE.Group();
+      const coatMat = new THREE.MeshStandardMaterial({ color: teamColor, roughness: 0.6 });
+      const pilotSkin = new THREE.MeshStandardMaterial({ color: 0xddb896 });
+      // 体(コート)
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.0, 0.4), coatMat);
+      body.position.y = 1.0;
+      pilot.add(body);
+      // 頭
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), pilotSkin);
+      head.position.y = 1.8;
+      pilot.add(head);
+      // 髪
+      const hair = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.15, 0.35), new THREE.MeshStandardMaterial({ color: 0x222222 }));
+      hair.position.y = 1.95;
+      pilot.add(hair);
+      // 脚
+      const legMat = new THREE.MeshStandardMaterial({ color: 0x222233 });
+      const legL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.8, 0.18), legMat);
+      legL.position.set(-0.12, 0.4, 0);
+      pilot.add(legL);
+      const legR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.8, 0.18), legMat);
+      legR.position.set(0.12, 0.4, 0);
+      pilot.add(legR);
+      // 両腕 + リモコン
+      const armL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 0.12), pilotSkin);
+      armL.position.set(-0.35, 1.1, 0.2);
+      armL.rotation.x = -0.5;
+      pilot.add(armL);
+      const armR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 0.12), pilotSkin);
+      armR.position.set(0.35, 1.1, 0.2);
+      armR.rotation.x = -0.5;
+      pilot.add(armR);
+      // コントローラ (両手の間)
+      const ctrl = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.25), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+      ctrl.position.set(0, 0.9, 0.3);
+      ctrl.rotation.x = -0.3;
+      pilot.add(ctrl);
+      // コントローラの赤い光
+      const ctrlLight = new THREE.PointLight(teamColor, 0.5, 2);
+      ctrlLight.position.set(0, 1.0, 0.4);
+      pilot.add(ctrlLight);
+      pilot.userData = { armL, armR, ctrl };
+      return pilot;
+    }
+    const pilotBlue = buildPilot(0x4fa3ff);
+    pilotBlue.position.set(-4.5, 0, 5);
+    pilotBlue.rotation.y = 0.4;
+    scene.add(pilotBlue);
+    const pilotRed = buildPilot(0xff4444);
+    pilotRed.position.set(4.5, 0, 5);
+    pilotRed.rotation.y = -0.4;
+    scene.add(pilotRed);
+
+    // ===== ロボット構築 =====
+    function buildMech(color) {
+      const g = new THREE.Group();
+      const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.3, metalness: 0.8 });
+      const dark = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.4, metalness: 0.7 });
+      // 胴体
+      const body = new THREE.Mesh(new THREE.BoxGeometry(2, 2.5, 1.4), mat);
+      body.position.y = 3.5;
+      g.add(body);
+      // 頭
+      const head = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1, 1), dark);
+      head.position.y = 5.3;
+      g.add(head);
+      // 目(発光)
+      const eyeMat = new THREE.MeshBasicMaterial({ color });
+      const eye = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.2, 0.1), eyeMat);
+      eye.position.set(0, 5.3, 0.51);
+      g.add(eye);
+      // 腕
+      const armL = new THREE.Mesh(new THREE.BoxGeometry(0.6, 2.6, 0.6), dark);
+      armL.position.set(-1.5, 3.5, 0);
+      g.add(armL);
+      const armR = new THREE.Mesh(new THREE.BoxGeometry(0.6, 2.6, 0.6), dark);
+      armR.position.set(1.5, 3.5, 0);
+      g.add(armR);
+      // 大砲(右腕先)
+      const cannon = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.35, 1.5, 8), dark);
+      cannon.rotation.x = Math.PI / 2;
+      cannon.position.set(1.5, 2.5, 0.8);
+      g.add(cannon);
+      // 脚
+      const legL = new THREE.Mesh(new THREE.BoxGeometry(0.7, 2.2, 0.7), dark);
+      legL.position.set(-0.6, 1.1, 0);
+      g.add(legL);
+      const legR = new THREE.Mesh(new THREE.BoxGeometry(0.7, 2.2, 0.7), dark);
+      legR.position.set(0.6, 1.1, 0);
+      g.add(legR);
+      // スラスター炎(常時)
+      const thruster = new THREE.PointLight(0xff8800, 0.5, 3);
+      thruster.position.set(0, 2, -0.8);
+      g.add(thruster);
+      g.userData = { armL, armR, head, thruster, cannon };
+      return g;
+    }
+    const mechBlue = buildMech(0x4fa3ff);
+    mechBlue.position.set(-3, 0, 2);
+    mechBlue.rotation.y = 0.3;
+    scene.add(mechBlue);
+    const mechRed = buildMech(0xff4444);
+    mechRed.position.set(3, 0, 2);
+    mechRed.rotation.y = -0.3;
+    scene.add(mechRed);
+
+    // ===== エフェクト =====
+    const sparkParticles = [];
+    function addSparks(pos, count) {
+      for (let i = 0; i < count; i++) {
+        const geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+        const mat = new THREE.MeshBasicMaterial({ color: 0xffdd44 });
+        const m = new THREE.Mesh(geo, mat);
+        m.position.copy(pos);
+        m.userData.vel = new THREE.Vector3((Math.random()-0.5)*0.3, Math.random()*0.2, (Math.random()-0.5)*0.3);
+        m.userData.life = 1;
+        scene.add(m);
+        sparkParticles.push(m);
+      }
+    }
+    let beamMesh = null;
+    function fireBeam(from, to, color, thick) {
+      if (beamMesh) { scene.remove(beamMesh); beamMesh = null; }
+      const dir = new THREE.Vector3().subVectors(to, from);
+      const len = dir.length();
+      const geo = new THREE.CylinderGeometry(thick || 0.15, thick || 0.15, len, 8);
+      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9 });
+      beamMesh = new THREE.Mesh(geo, mat);
+      const mid = new THREE.Vector3().addVectors(from, to).multiplyScalar(0.5);
+      beamMesh.position.copy(mid);
+      beamMesh.lookAt(to);
+      beamMesh.rotateX(Math.PI / 2);
+      scene.add(beamMesh);
+      pointFlash.position.copy(mid);
+      pointFlash.intensity = 6;
+      pointFlash.color.set(color);
+      addSparks(to, 20);
       window.GameAudio.sfxHit(400);
     }
-    function spawnExplosion(x, y) {
-      state.explosions.push({ x, y, r: 10, life: 1 });
-      window.GameAudio.sfxNg();
-      shake(12);
+    function showHitText(text) {
+      const el = $('hit-text-overlay');
+      el.textContent = text;
+      el.style.opacity = '1';
+      setTimeout(() => { el.style.opacity = '0'; }, 700);
     }
-    function drawMech(m, facing) {
-      octx.save();
-      octx.translate(m.x, m.y);
-      if (facing < 0) octx.scale(-1, 1);
-      // 胴体
-      octx.fillStyle = m.color;
-      octx.fillRect(-30, -40, 60, 70);
-      // 頭
-      octx.fillStyle = '#222';
-      octx.fillRect(-18, -65, 36, 28);
-      // 目(光)
-      octx.fillStyle = m.color;
-      octx.fillRect(-12, -58, 24, 6);
-      // 腕
-      octx.fillStyle = '#555';
-      octx.fillRect(25, -30, 18, 60);
-      octx.fillRect(-43, -30, 18, 60);
-      // 砲
-      if (m.charge > 0) {
-        octx.fillStyle = `rgba(255,255,0,${m.charge})`;
-        octx.beginPath();
-        octx.arc(45, 0, 10 + m.charge * 8, 0, Math.PI * 2);
-        octx.fill();
-      }
-      // 脚
-      octx.fillStyle = '#666';
-      octx.fillRect(-25, 30, 16, 40);
-      octx.fillRect(9, 30, 16, 40);
-      octx.restore();
+    let shieldMesh = null;
+    function showShield(mech) {
+      const geo = new THREE.SphereGeometry(2, 16, 16);
+      const mat = new THREE.MeshBasicMaterial({ color: mech === mechBlue ? 0x4fa3ff : 0xff4444, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
+      shieldMesh = new THREE.Mesh(geo, mat);
+      shieldMesh.position.copy(mech.position);
+      shieldMesh.position.y = 3;
+      scene.add(shieldMesh);
     }
-    function drawCrowd() {
-      // 観客のシルエット
-      octx.fillStyle = `rgba(0,0,0,${0.9})`;
-      for (let i = 0; i < 20; i++) {
-        const bx = 20 + i * 24;
-        const bh = 30 + (i % 3) * 8;
-        octx.fillRect(bx, 470 - bh, 16, bh);
-        octx.beginPath();
-        octx.arc(bx + 8, 470 - bh - 6, 8, 0, Math.PI * 2);
-        octx.fill();
+
+    // ===== バトルコレオグラフィ(タイムライン) =====
+    let hpBlue = 100, hpRed = 100;
+    const timeline = [
+      // [frame, action]
+      [30,  () => { /* Blue charges */ }],
+      [60,  () => { fireBeam(mechBlue.position.clone().add(new THREE.Vector3(1.5, 3, 0.8)), mechRed.position.clone().add(new THREE.Vector3(0, 3, 0)), 0x4fa3ff); hpRed -= 15; showHitText('HIT!'); }],
+      [90,  () => { if (beamMesh) { scene.remove(beamMesh); beamMesh = null; } }],
+      [120, () => { /* Red retaliates */ }],
+      [150, () => { fireBeam(mechRed.position.clone().add(new THREE.Vector3(-1.5, 3, 0.8)), mechBlue.position.clone().add(new THREE.Vector3(0, 3, 0)), 0xff4444); hpBlue -= 20; showHitText('CRITICAL!'); }],
+      [180, () => { if (beamMesh) { scene.remove(beamMesh); beamMesh = null; } }],
+      [200, () => { showShield(mechBlue); showHitText('SHIELD!'); }],
+      [210, () => { fireBeam(mechRed.position.clone().add(new THREE.Vector3(-1.5, 3, 0.8)), mechBlue.position.clone().add(new THREE.Vector3(0, 3, 0)), 0xff4444); showHitText('BLOCKED!'); }],
+      [240, () => { if (beamMesh) { scene.remove(beamMesh); beamMesh = null; } if (shieldMesh) { scene.remove(shieldMesh); shieldMesh = null; } }],
+      [260, () => { /* Blue charges ultimate */ }],
+      [290, () => { fireBeam(mechBlue.position.clone().add(new THREE.Vector3(1.5, 4, 0.8)), mechRed.position.clone().add(new THREE.Vector3(0, 3, 0)), 0xffffff, 0.5); hpRed -= 40; showHitText('DEVASTATING!!'); }],
+      [310, () => { fireBeam(mechBlue.position.clone().add(new THREE.Vector3(1.5, 3, 0.8)), mechRed.position.clone().add(new THREE.Vector3(0, 2, 0)), 0x4fa3ff); hpRed -= 30; }],
+      [330, () => { if (beamMesh) { scene.remove(beamMesh); beamMesh = null; } hpRed = 0; showHitText('K.O.!!!'); }],
+    ];
+
+    let t = 0;
+    let collapsed = false;
+    function animate() {
+      t++;
+      // タイムライン実行
+      timeline.forEach(ev => { if (t === ev[0]) ev[1](); });
+      // HP反映
+      $('hp-blue-fill').style.width = Math.max(0, hpBlue) + '%';
+      $('hp-red-fill').style.width = Math.max(0, hpRed) + '%';
+      // フラッシュ減衰
+      if (pointFlash.intensity > 0) pointFlash.intensity *= 0.92;
+      // Red倒壊アニメ
+      if (t > 330 && !collapsed) {
+        mechRed.rotation.z -= 0.015;
+        mechRed.position.y -= 0.02;
+        if (mechRed.rotation.z < -0.8) collapsed = true;
       }
-      // 応援の光
-      if (state.crowdGlow > 0) {
-        octx.fillStyle = `rgba(255,255,100,${state.crowdGlow * 0.2})`;
-        octx.fillRect(0, 440, 500, 60);
-        state.crowdGlow *= 0.9;
+      // パーティクル(スパーク)更新
+      for (let i = sparkParticles.length - 1; i >= 0; i--) {
+        const p = sparkParticles[i];
+        p.position.add(p.userData.vel);
+        p.userData.vel.y -= 0.008;
+        p.userData.life -= 0.03;
+        if (p.userData.life <= 0) {
+          scene.remove(p);
+          sparkParticles.splice(i, 1);
+        }
       }
-    }
-    function frame() {
-      state.t++;
-      // 背景グラデ (アリーナ)
-      const grad = octx.createLinearGradient(0, 0, 0, 500);
-      grad.addColorStop(0, '#1a0530');
-      grad.addColorStop(0.6, '#300a20');
-      grad.addColorStop(1, '#0a0000');
-      octx.fillStyle = grad;
-      octx.fillRect(0, 0, 500, 500);
-      // 格子フィールド(未来感)
-      octx.strokeStyle = 'rgba(255,48,48,0.15)';
-      octx.lineWidth = 1;
-      for (let x = 0; x < 500; x += 40) {
-        octx.beginPath();
-        octx.moveTo(x, 350);
-        octx.lineTo(x + (x - 250) * 0.5, 500);
-        octx.stroke();
+      // スラスター炎ちらつき
+      [mechBlue, mechRed].forEach(m => {
+        m.userData.thruster.intensity = 0.3 + Math.random() * 0.5;
+      });
+      // パイロット操作アニメ(リモコンをガチャガチャ)
+      [pilotBlue, pilotRed].forEach(p => {
+        p.userData.ctrl.rotation.z = Math.sin(t * 0.2) * 0.1;
+        p.userData.armL.rotation.z = Math.sin(t * 0.3) * 0.08;
+        p.userData.armR.rotation.z = -Math.sin(t * 0.3 + 1) * 0.08;
+      });
+      // ペンライト揺れ
+      penLights.forEach((pl, i) => {
+        pl.intensity = 0.15 + Math.sin(t * 0.1 + i) * 0.15;
+      });
+      // ===== カメラワーク(周回＋ドラマチック切替) =====
+      const center = new THREE.Vector3(0, 3, 2);
+      if (t < 80) {
+        // 1. 遠景周回(アリーナ全景を見せる)
+        const ang = t * 0.02;
+        const dist = 16;
+        camera.position.set(Math.sin(ang) * dist, 7 + Math.sin(t * 0.01) * 2, Math.cos(ang) * dist);
+      } else if (t < 130) {
+        // 2. Blue側のパイロットに寄る(操作してる姿)
+        const f = (t - 80) / 50;
+        camera.position.set(-4 + f * 1, 2.5, 7 - f * 1);
+        center.set(-3, 2, 3);
+      } else if (t < 180) {
+        // 3. 横アングル(サイドビュー、両方のロボットが並ぶ)
+        camera.position.set(0, 4, 12);
+        center.set(0, 3, 2);
+      } else if (t < 220) {
+        // 4. Red側パイロットに寄る
+        const f = (t - 180) / 40;
+        camera.position.set(4 - f * 1, 2.5, 7 - f * 1);
+        center.set(3, 2, 3);
+      } else if (t < 280) {
+        // 5. ゆっくり半周(裏側から)
+        const ang = Math.PI + (t - 220) * 0.02;
+        camera.position.set(Math.sin(ang) * 12, 5, Math.cos(ang) * 12);
+        center.set(0, 3, 2);
+      } else if (t < 340) {
+        // 6. 最終攻撃で低アングル接近
+        const f = (t - 280) / 60;
+        camera.position.set(-2 + f * 2, 1.5 + f * 2, 8 - f * 4);
+        center.set(0, 3, 2);
+      } else if (t < 420) {
+        // 7. 倒壊するRedロボをじっくり映す
+        const f = Math.min(1, (t - 340) / 80);
+        camera.position.set(
+          3 + Math.sin(f * 1.5) * 2,
+          2 + f * 3,
+          2 + 6 - f * 2
+        );
+        center.set(mechRed.position.x, Math.max(0.5, mechRed.position.y + 2), mechRed.position.z);
+      } else {
+        // 8. 勝利: Blue パイロットを正面から映す
+        const f = Math.min(1, (t - 420) / 40);
+        // パイロットの正面に回り込む
+        camera.position.set(
+          -4.5 + Math.sin(t * 0.008) * 0.3,
+          2.0,
+          5 + 3 - f * 1
+        );
+        center.set(-4.5, 1.8, 5);
+        // 勝利ポーズ: 両腕をバンザイ（肩の位置からrotationだけで上げる）
+        pilotBlue.userData.armL.position.set(-0.35, 1.1, 0);
+        pilotBlue.userData.armL.rotation.set(0, 0, -2.5 + Math.sin(t * 0.2) * 0.4);
+        pilotBlue.userData.armR.position.set(0.35, 1.1, 0);
+        pilotBlue.userData.armR.rotation.set(0, 0, 2.5 - Math.sin(t * 0.2 + 1.5) * 0.4);
+        // コントローラを下ろす
+        pilotBlue.userData.ctrl.position.set(0, 0.5, 0.2);
+        pilotBlue.userData.ctrl.rotation.set(0, 0, 0);
       }
-      for (let y = 350; y < 500; y += 20) {
-        octx.beginPath();
-        octx.moveTo(0, y);
-        octx.lineTo(500, y);
-        octx.stroke();
-      }
-      drawCrowd();
-      // 機体アクション (時間ベース)
-      state.mechL.charge = Math.max(0, state.mechL.charge - 0.02);
-      state.mechR.charge = Math.max(0, state.mechR.charge - 0.02);
-      // 攻撃シーケンス
-      if (state.t === 40) state.mechL.charge = 1;
-      if (state.t === 70) {
-        spawnBeam({x: state.mechL.x + 40, y: state.mechL.y}, {x: state.mechR.x, y: state.mechR.y}, '#4fa3ff');
-        state.mechR.x += 20; state.crowdGlow = 1;
-      }
-      if (state.t === 90) spawnExplosion(state.mechR.x, state.mechR.y - 20);
-      if (state.t === 130) state.mechR.charge = 1;
-      if (state.t === 160) {
-        spawnBeam({x: state.mechR.x - 40, y: state.mechR.y}, {x: state.mechL.x, y: state.mechL.y}, '#ff4444');
-        state.crowdGlow = 1;
-      }
-      if (state.t === 180) spawnExplosion(state.mechL.x + 10, state.mechL.y);
-      if (state.t === 220) {
-        state.mechL.charge = 1;
-      }
-      if (state.t === 250) {
-        spawnBeam({x: state.mechL.x + 40, y: state.mechL.y - 20}, {x: state.mechR.x, y: state.mechR.y - 30}, '#fff');
-        spawnExplosion(state.mechR.x, state.mechR.y);
-        spawnExplosion(state.mechR.x + 20, state.mechR.y - 20);
-        spawnExplosion(state.mechR.x - 20, state.mechR.y + 10);
-        state.crowdGlow = 1;
-      }
-      // 機体描画
-      drawMech(state.mechL, 1);
-      drawMech(state.mechR, -1);
-      // ビーム
-      for (let i = state.beams.length - 1; i >= 0; i--) {
-        const b = state.beams[i];
-        octx.strokeStyle = b.color;
-        octx.lineWidth = 6 + b.life * 10;
-        octx.globalAlpha = b.life;
-        octx.beginPath();
-        octx.moveTo(b.x1, b.y1);
-        octx.lineTo(b.x2, b.y2);
-        octx.stroke();
-        octx.globalAlpha = 1;
-        b.life -= 0.08;
-        if (b.life <= 0) state.beams.splice(i, 1);
-      }
-      // 爆発
-      for (let i = state.explosions.length - 1; i >= 0; i--) {
-        const e = state.explosions[i];
-        e.r += 4; e.life -= 0.05;
-        if (e.life <= 0) { state.explosions.splice(i, 1); continue; }
-        octx.fillStyle = `rgba(255,200,0,${e.life})`;
-        octx.beginPath();
-        octx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
-        octx.fill();
-        octx.fillStyle = `rgba(255,255,255,${e.life * 0.7})`;
-        octx.beginPath();
-        octx.arc(e.x, e.y, e.r * 0.5, 0, Math.PI * 2);
-        octx.fill();
-      }
-      // シェイク反映
+      camera.lookAt(center);
+      // カメラシェイク
       if (shakeAmount > 0.5) {
-        const dx = (Math.random() - 0.5) * shakeAmount;
-        const dy = (Math.random() - 0.5) * shakeAmount;
-        oc.style.transform = `translate(${dx}px, ${dy}px)`;
-        shakeAmount *= 0.85;
-      } else oc.style.transform = '';
-      openingRaf = requestAnimationFrame(frame);
+        camera.position.x += (Math.random() - 0.5) * shakeAmount * 0.05;
+        camera.position.y += (Math.random() - 0.5) * shakeAmount * 0.05;
+        shakeAmount *= 0.88;
+      }
+      renderer.render(scene, camera);
+      openingRaf = requestAnimationFrame(animate);
     }
-    frame();
+    animate();
+
     // テキスト演出
     setTimeout(() => {
       typeWriter('opening-text', curLang === 'en'
@@ -1947,9 +2203,12 @@
       $('opening-hint').style.visibility = 'visible';
       waitForTap('opening-screen', () => {
         cancelAnimationFrame(openingRaf);
+        window.removeEventListener('resize', onResize);
+        renderer.dispose();
+        container.innerHTML = '';
         showBoyScene();
       });
-    }, 6200);
+    }, 8500);
   }
 
   // ===== BOY: 少年が番組を観ている =====
