@@ -266,31 +266,7 @@
       inset: 58px 42px 0 0;
       border-radius: 36px;
       overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.92), rgba(236, 209, 203, 0.58)),
-        linear-gradient(135deg, #f5ebe4 0%, #e3beb5 100%);
-    }
-
-    .visual-sheet::before,
-    .visual-sheet::after {
-      content: '';
-      position: absolute;
-      border-radius: 28px;
-    }
-
-    .visual-sheet::before {
-      inset: 24px auto 24px 24px;
-      width: 42%;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.18)),
-        linear-gradient(135deg, #f7f1ec 0%, #f3d9d2 100%);
-    }
-
-    .visual-sheet::after {
-      inset: 84px 26px 58px 46%;
-      background:
-        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.95), transparent 16%),
-        linear-gradient(145deg, #d2a69c 0%, #f4dfd8 48%, #f7f0ea 100%);
+      margin: 0;
     }
 
     .visual-tall {
@@ -299,9 +275,8 @@
       width: 186px;
       height: 260px;
       border-radius: 110px;
-      background:
-        radial-gradient(circle at 52% 18%, rgba(255,255,255,0.92), transparent 14%),
-        linear-gradient(180deg, #f6ebe6 0%, #ddb5ac 100%);
+      overflow: hidden;
+      margin: 0;
     }
 
     .visual-note {
@@ -319,6 +294,40 @@
       width: 176px;
       padding: 18px;
       border-radius: 24px;
+    }
+
+    .visual-sheet img,
+    .visual-tall img,
+    .lookbook-visual img,
+    .team-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .visual-sheet figcaption,
+    .visual-tall figcaption {
+      position: absolute;
+      left: 20px;
+      bottom: 18px;
+      z-index: 1;
+      padding: 0.58rem 0.78rem;
+      border-radius: 999px;
+      background: rgba(47, 38, 36, 0.56);
+      color: #fff;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .visual-sheet::after,
+    .visual-tall::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(47, 38, 36, 0.02), rgba(47, 38, 36, 0.34));
+      pointer-events: none;
     }
 
     .visual-note strong,
@@ -511,6 +520,16 @@
       letter-spacing: -0.03em;
     }
 
+    .team-role {
+      display: inline-flex;
+      margin-top: 10px;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
     .lookbook-card p,
     .team-card p {
       margin: 10px 0 0;
@@ -631,6 +650,22 @@
       }
     }
 
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
     @media (max-width: 720px) {
       .nav {
         padding: 16px;
@@ -638,6 +673,25 @@
 
       .nav-links {
         display: none;
+      }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(255, 250, 246, 0.98);
+        backdrop-filter: blur(14px);
+        padding: 20px 24px;
+        gap: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        z-index: 40;
+      }
+
+      .hamburger {
+        display: flex;
       }
 
       .shell {
@@ -675,13 +729,16 @@
 
   <nav class="nav">
     <a href="#top" class="nav-logo">Lumiere Hair Atelier</a>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="#concept">Concept</a>
       <a href="#menu">Menu</a>
       <a href="#lookbook">Lookbook</a>
       <a href="#team">Team</a>
       <a href="#reserve">Reserve</a>
     </div>
+    <button class="hamburger" id="hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <main class="shell">
@@ -697,9 +754,15 @@
         </div>
         <div class="hero-note">初回来店の不安を減らすために、スタッフ紹介、得意なテイスト、初回提案メニューへの導線を近くにまとめる構成にしています。</div>
       </div>
-      <div class="hero-visual" aria-hidden="true">
-        <div class="visual-sheet"></div>
-        <div class="visual-tall"></div>
+      <div class="hero-visual">
+        <figure class="visual-sheet">
+          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80" alt="セット面とミラーが並ぶ、落ち着いた雰囲気のサロン内観" loading="eager">
+          <figcaption>Interior</figcaption>
+        </figure>
+        <figure class="visual-tall">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&q=80" alt="やわらかいニュアンスヘアのスタイルイメージ" loading="eager">
+          <figcaption>Style</figcaption>
+        </figure>
         <div class="visual-note">
           <strong>Quiet Styling</strong>
           <span>やわらかい余白と縦方向の視線誘導で、上品さを先に感じてもらう設計です。</span>
@@ -769,17 +832,17 @@
         <p class="section-copy">スタイル写真をただ並べるのではなく、似合う人や気分まで言葉で添えると、予約前の想像がしやすくなります。</p>
         <div class="lookbook-grid" style="margin-top: 22px;">
           <article class="lookbook-card">
-            <div class="lookbook-visual"></div>
+            <div class="lookbook-visual"><img src="https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=900&q=80" alt="柔らかな質感のボブスタイル"></div>
             <h3>Soft Bob</h3>
             <p>輪郭をやわらかく見せたい人向け。きちんとしすぎず、でも整って見える定番バランス。</p>
           </article>
           <article class="lookbook-card">
-            <div class="lookbook-visual"></div>
+            <div class="lookbook-visual"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=900&q=80" alt="透明感カラーが映えるミディアムスタイル"></div>
             <h3>Layer Medium</h3>
             <p>軽さと艶感を両立したスタイル。仕事でも浮かず、少しだけ印象を変えたい人向け。</p>
           </article>
           <article class="lookbook-card">
-            <div class="lookbook-visual"></div>
+            <div class="lookbook-visual"><img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=900&q=80" alt="自然なツヤ感を引き出したロングスタイル"></div>
             <h3>Calm Long</h3>
             <p>長さを保ちながら雰囲気を更新したいときに。ケアメニューとの相性も見せやすい構成です。</p>
           </article>
@@ -793,18 +856,21 @@
         <h2 class="section-title">誰に任せるかが見えると、予約理由になる。</h2>
         <div class="team-grid" style="margin-top: 22px;">
           <article class="team-card">
-            <div class="team-visual"></div>
+            <div class="team-visual"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&q=80" alt="トップスタイリストのプロフィール写真"></div>
             <h3>Kaori</h3>
+            <span class="team-role">Top Stylist</span>
             <p>静かな接客と、扱いやすいボブが得意。初回来店の不安を言葉でほぐすタイプのスタイリスト。</p>
           </article>
           <article class="team-card">
-            <div class="team-visual"></div>
+            <div class="team-visual"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&q=80" alt="カラーリストのプロフィール写真"></div>
             <h3>Reina</h3>
+            <span class="team-role">Color Specialist</span>
             <p>透け感カラー担当。印象は変えたいけれど派手にはしたくない人向けの提案が得意です。</p>
           </article>
           <article class="team-card">
-            <div class="team-visual"></div>
+            <div class="team-visual"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&q=80" alt="ヘアケア担当スタッフのプロフィール写真"></div>
             <h3>Mio</h3>
+            <span class="team-role">Care Specialist</span>
             <p>ケアメニュー担当。広がりや乾燥を抑えたい方に、長く付き合える提案を行う想定です。</p>
           </article>
         </div>
@@ -885,5 +951,16 @@
       &copy; 2026 Lumiere Hair Atelier Sample Site
     </footer>
   </main>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+  </script>
 </body>
 </html>

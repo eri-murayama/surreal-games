@@ -447,6 +447,12 @@
       line-height: 2.4;
       color: var(--text);
     }
+    .greeting-text p {
+      margin: 0 0 1.4rem;
+    }
+    .greeting-text p:last-child {
+      margin-bottom: 0;
+    }
 
     /* ===== Countdown ===== */
     .countdown-section {
@@ -696,6 +702,12 @@
       line-height: 2.2;
       color: var(--text);
     }
+    .closing-text p {
+      margin: 0 0 1rem;
+    }
+    .closing-text p:last-child {
+      margin-bottom: 0;
+    }
     .closing-names {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.5rem;
@@ -807,14 +819,9 @@
     <h2 class="section-title fade-in">Greeting</h2>
     <p class="section-title-jp fade-in">ごあいさつ</p>
     <div class="greeting-text fade-in">
-      謹啓　時下ますますご清祥のこととお慶び申し上げます<br><br>
-      このたび　私たちは結婚式を挙げることになりました<br><br>
-      つきましては　日頃お世話になっている皆さまに<br>
-      感謝の気持ちを込めて<br>
-      ささやかな小宴を催したいと存じます<br><br>
-      ご多用中　誠に恐縮ではございますが<br>
-      ぜひご出席いただけますと幸いです<br><br>
-      謹白
+      <p>謹啓 時下ますますご清祥のこととお慶び申し上げます。</p>
+      <p>このたび私たちは結婚式を挙げることになりました。日頃お世話になっている皆さまへ感謝の気持ちを込めて、ささやかな小宴を催したいと存じます。</p>
+      <p>ご多用中誠に恐縮ではございますが、ぜひご出席いただけますと幸いです。謹白</p>
     </div>
   </section>
 
@@ -888,11 +895,51 @@
       <div class="venue-map" style="padding:0;overflow:hidden;">
         <img src="images/venue-exterior.jpg" alt="会場外観" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
       </div>
-      <div class="venue-info">
-        〒107-0062 東京都港区南青山4-8-15<br>
-        東京メトロ 表参道駅 B3出口より徒歩7分<br>
-        TEL: 03-XXXX-XXXX<br><br>
-        ※お車でお越しの方は会場駐車場をご利用いただけます
+      <div class="venue-info">〒107-0062 東京都港区南青山4-8-15。東京メトロ 表参道駅 B3出口より徒歩7分、TEL 03-XXXX-XXXX。お車でお越しの方は会場駐車場をご利用いただけます。</div>
+    </div>
+  </section>
+
+  <section class="project-brief" id="information" style="--portfolio-accent:#b78b95; --portfolio-heading:#5b4350; --portfolio-muted:#7d6973; --portfolio-card-bg:rgba(255,255,255,0.82); --portfolio-card-border:rgba(183,139,149,0.22); --portfolio-shadow:rgba(91,67,80,0.1); --portfolio-metric-bg:rgba(255,247,249,0.88); --portfolio-quote-bg:rgba(255,247,249,0.72);">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Information</span>
+        <h2 class="project-brief__title">参列前に知りたい情報を、やさしくまとめる。</h2>
+        <p class="project-brief__lead">招待状ページは雰囲気だけでなく、当日の不安を減らすことも大事です。服装、返信期限、アクセス、お子さま連れの案内などを整理しておくと、ゲストが安心して返事をしやすくなります。</p>
+      </div>
+      <div class="project-brief__photos">
+        <figure>
+          <img src="images/venue-exterior.jpg" alt="会場外観の写真" loading="lazy">
+          <figcaption><strong>会場案内</strong>入口の写真があると、はじめて来るゲストにもわかりやすくなります。</figcaption>
+        </figure>
+        <figure>
+          <img src="images/strip-flower-arrange.jpg" alt="披露宴装花のイメージ" loading="lazy">
+          <figcaption><strong>当日の雰囲気</strong>装花やテーブルコーディネートが見えると、会の空気感が伝わりやすいです。</figcaption>
+        </figure>
+        <figure>
+          <img src="images/strip-invitation.jpg" alt="招待状のイメージ" loading="lazy">
+          <figcaption><strong>返信案内</strong>回答期限や入力項目を先に示すと、返信のハードルが下がります。</figcaption>
+        </figure>
+      </div>
+      <div class="project-brief__layout" style="margin-top:20px;">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>当日案内に入れておくと親切な項目</h3>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>Dress Code</span><strong>平服でお越しください。ヒールの低い靴でも問題ありません。</strong></div>
+              <div class="project-brief__metric"><span>Reply</span><strong>ご回答期限は 2026年10月20日(火) です。</strong></div>
+              <div class="project-brief__metric"><span>Family</span><strong>お子さま連れの方は備考欄で人数をお知らせください。</strong></div>
+              <div class="project-brief__metric"><span>Parking</span><strong>会場駐車場の台数に限りがあるため、なるべく公共交通機関をご利用ください。</strong></div>
+            </div>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>ゲスト向け補足の例</h3>
+          <ul class="project-brief__list">
+            <li>披露宴後にテラスでデザートブッフェを予定しています</li>
+            <li>アレルギーや苦手な食材がある方は、回答フォームでお知らせください</li>
+            <li>写真共有用の案内やハッシュタグは、当日用の小さなカードでも補足できます</li>
+          </ul>
+        </article>
       </div>
     </div>
   </section>
@@ -943,9 +990,8 @@
   <!-- Closing -->
   <section class="section closing">
     <div class="closing-text fade-in">
-      皆さまにお会いできることを<br>
-      心より楽しみにしております<br><br>
-      素敵な一日を一緒に過ごしましょう
+      <p>皆さまにお会いできることを、心より楽しみにしております。</p>
+      <p>どうぞ当日は、肩の力を抜いて楽しい一日を一緒に過ごしてください。</p>
     </div>
     <div class="closing-names fade-in">Yuto & Sakura</div>
   </section>
@@ -955,23 +1001,23 @@
     <div class="photo-strip-title fade-in">Our Memories</div>
     <div class="photo-strip-sub fade-in">思い出のアルバム</div>
     <div class="photo-scroll">
-      <div class="photo-scroll-item"><img src="images/strip-wedding1.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-bouquet.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-wedding2.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-wedding3.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-flower-arrange.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-flower2.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-ring.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-invitation.jpg" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-wedding1.jpg" alt="挙式の様子" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-bouquet.jpg" alt="ブーケ" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-wedding2.jpg" alt="披露宴の風景" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-wedding3.jpg" alt="ふたりの笑顔" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-flower-arrange.jpg" alt="テーブル装花" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-flower2.jpg" alt="会場の花飾り" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-ring.jpg" alt="結婚指輪" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-invitation.jpg" alt="招待状" loading="lazy"></div>
       <!-- duplicate for seamless loop -->
-      <div class="photo-scroll-item"><img src="images/strip-wedding1.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-bouquet.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-wedding2.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-wedding3.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-flower-arrange.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-flower2.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-ring.jpg" alt="" loading="lazy"></div>
-      <div class="photo-scroll-item"><img src="images/strip-invitation.jpg" alt="" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-wedding1.jpg" alt="挙式の様子" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-bouquet.jpg" alt="ブーケ" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-wedding2.jpg" alt="披露宴の風景" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-wedding3.jpg" alt="ふたりの笑顔" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-flower-arrange.jpg" alt="テーブル装花" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-flower2.jpg" alt="会場の花飾り" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-ring.jpg" alt="結婚指輪" loading="lazy"></div>
+      <div class="photo-scroll-item"><img src="images/strip-invitation.jpg" alt="招待状" loading="lazy"></div>
     </div>
   </section>
 

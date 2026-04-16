@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="900" viewBox="0 0 760 900" fill="none">
+  <rect width="760" height="900" rx="48" fill="#06101C"/>
+  <rect x="180" y="46" width="400" height="808" rx="46" fill="#0D1729" stroke="#1A2C4B" stroke-width="8"/>
+  <rect x="216" y="118" width="328" height="54" rx="20" fill="#111D33"/>
+  <text x="252" y="152" fill="#EAF8FF" font-size="24" font-family="Arial, sans-serif" font-weight="700">Approvals</text>
+  <rect x="236" y="204" width="288" height="124" rx="26" fill="#13203E"/>
+  <text x="264" y="244" fill="#A9C7D7" font-size="18" font-family="Arial, sans-serif">My queue</text>
+  <text x="264" y="294" fill="#7BF0D8" font-size="52" font-family="Arial, sans-serif" font-weight="700">12</text>
+  <rect x="236" y="352" width="288" height="108" rx="24" fill="#101A31"/>
+  <text x="264" y="396" fill="#EAF8FF" font-size="20" font-family="Arial, sans-serif" font-weight="700">Budget request</text>
+  <text x="264" y="430" fill="#A9C7D7" font-size="18" font-family="Arial, sans-serif">needs finance review</text>
+  <rect x="236" y="480" width="288" height="108" rx="24" fill="#101A31"/>
+  <text x="264" y="524" fill="#EAF8FF" font-size="20" font-family="Arial, sans-serif" font-weight="700">Client onboarding</text>
+  <text x="264" y="558" fill="#A9C7D7" font-size="18" font-family="Arial, sans-serif">security sign-off complete</text>
+  <rect x="236" y="612" width="288" height="128" rx="24" fill="#111D33"/>
+  <text x="264" y="656" fill="#EAF8FF" font-size="20" font-family="Arial, sans-serif" font-weight="700">Saved this week</text>
+  <text x="264" y="714" fill="#FFD27C" font-size="54" font-family="Arial, sans-serif" font-weight="700">8.5h</text>
+  <circle cx="380" cy="794" r="18" fill="#1A2848"/>
+</svg>

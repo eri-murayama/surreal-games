@@ -174,9 +174,29 @@
       overflow: hidden;
       min-height: 720px;
       padding: 34px;
-      background:
-        linear-gradient(180deg, rgba(40,50,53,0.12), rgba(40,50,53,0.72)),
-        linear-gradient(135deg, #d5ddd9 0%, #97aeb3 34%, #4b696f 100%);
+      background: #314d54;
+    }
+
+    .hero-visual__image,
+    .panorama-card img,
+    .plan-visual img,
+    .amenity-visual img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .hero-visual__image {
+      position: absolute;
+      inset: 0;
+      opacity: 0.98;
+      filter: saturate(0.94);
+    }
+
+    .panorama-card img {
+      position: absolute;
+      inset: 0;
     }
 
     .hero-visual::before {
@@ -191,12 +211,9 @@
     .hero-visual::after {
       content: '';
       position: absolute;
-      inset: auto 52px 72px auto;
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.36), transparent 64%);
-      filter: blur(6px);
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,15,20,0.18), rgba(18,25,31,0.74));
+      pointer-events: none;
     }
 
     .hero-copy {
@@ -398,9 +415,7 @@
       overflow: hidden;
       border-radius: 30px;
       min-height: 360px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0)),
-        linear-gradient(135deg, #dce4e0 0%, #b4c5c9 28%, #6b878d 72%, #314d54 100%);
+      background: #314d54;
     }
 
     .panorama-card::before {
@@ -411,6 +426,14 @@
       height: 220px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(255,255,255,0.28), transparent 64%);
+      z-index: 1;
+    }
+
+    .panorama-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,15,20,0.1), rgba(18,25,31,0.56));
     }
 
     .panorama-caption {
@@ -419,6 +442,7 @@
       bottom: 30px;
       color: #fff;
       max-width: 360px;
+      z-index: 2;
     }
 
     .panorama-caption h3 {
@@ -452,28 +476,23 @@
 
     .plan-visual::before,
     .amenity-visual::before {
-      content: '';
-      position: absolute;
-      inset: 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(63, 98, 105, 0.18);
+      content: none;
     }
 
     .plan-visual::after {
-      content: '';
-      position: absolute;
-      inset: 40px;
-      background:
-        linear-gradient(90deg, transparent 20%, rgba(63,98,105,0.16) 20%, rgba(63,98,105,0.16) 23%, transparent 23%, transparent 54%, rgba(63,98,105,0.16) 54%, rgba(63,98,105,0.16) 57%, transparent 57%),
-        linear-gradient(180deg, transparent 28%, rgba(63,98,105,0.16) 28%, rgba(63,98,105,0.16) 31%, transparent 31%, transparent 62%, rgba(63,98,105,0.16) 62%, rgba(63,98,105,0.16) 65%, transparent 65%);
+      content: none;
     }
 
-    .amenity-card:nth-child(2) .amenity-visual {
-      background: linear-gradient(135deg, #ecf0ef, #bfd0d4);
+    .plan-visual {
+      padding: 16px;
+      background: #f8f5ef;
     }
 
-    .amenity-card:nth-child(3) .amenity-visual {
-      background: linear-gradient(135deg, #ede6d8, #cfba95);
+    .plan-visual img {
+      object-fit: contain;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(63, 98, 105, 0.12);
     }
 
     .plan-card h3,
@@ -562,6 +581,7 @@
   <main class="shell">
     <section class="hero" id="top">
       <div class="hero-visual">
+        <img class="hero-visual__image" src="https://images.unsplash.com/photo-1494526585095-c41746248156?w=1400&q=80" alt="水辺に建つレジデンス外観のイメージ" loading="eager">
         <div class="hero-copy">
           <div class="hero-kicker">Property Sample</div>
           <h1>Harbor Residence</h1>
@@ -604,6 +624,7 @@
             <p>派手さよりも、日常の静かな上質感を感じられる見せ方に寄せています。</p>
           </article>
           <div class="panorama-card">
+            <img src="https://images.unsplash.com/photo-1511818966892-d7d671e672a2?w=1200&q=80" alt="夕景のウォーターフロントを望む共用ラウンジ">
             <div class="panorama-caption">
               <h3>Waterfront Evening</h3>
               <p>共用部や眺望の魅力を「写真で見たい」ユーザー向けに、象徴的なビジュアルの置き方を示しています。</p>
@@ -674,17 +695,17 @@
         <h2 class="section-title">間取りは比較しやすく並べる。</h2>
         <div class="plan-grid">
           <article class="plan-card">
-            <div class="plan-visual"></div>
+            <div class="plan-visual"><img src="../assets/floorplan-2ldk.svg" alt="2LDK住戸の間取り図"></div>
             <h3>2LDK / 68.42m²</h3>
             <p>共働き世帯向け。回遊性のあるLDKと収納の取りやすさを訴求する想定です。</p>
           </article>
           <article class="plan-card">
-            <div class="plan-visual"></div>
+            <div class="plan-visual"><img src="../assets/floorplan-3ldk.svg" alt="3LDK住戸の間取り図"></div>
             <h3>3LDK / 74.90m²</h3>
             <p>ファミリー向けの主力プラン。ワークスペースも確保しやすい想定で見せています。</p>
           </article>
           <article class="plan-card">
-            <div class="plan-visual"></div>
+            <div class="plan-visual"><img src="../assets/floorplan-premium.svg" alt="プレミアム住戸の間取り図"></div>
             <h3>Premium / 91.18m²</h3>
             <p>角住戸の開放感を訴求する上位プラン。眺望や採光など感覚的価値を合わせて見せる構成です。</p>
           </article>
@@ -698,17 +719,17 @@
         <h2 class="section-title">共用部で、暮らしの輪郭を見せる。</h2>
         <div class="amenity-grid">
           <article class="amenity-card">
-            <div class="amenity-visual"></div>
+            <div class="amenity-visual"><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80" alt="エントランスラウンジのイメージ"></div>
             <h3>Entrance Lounge</h3>
             <p>最初に高級感を印象づける入口まわり。物件ブランドのトーンを決める場所です。</p>
           </article>
           <article class="amenity-card">
-            <div class="amenity-visual"></div>
+            <div class="amenity-visual"><img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80" alt="ワーキングラウンジのイメージ"></div>
             <h3>Working Lounge</h3>
             <p>在宅勤務や勉強の場としても使える共用空間を見せ、生活の便利さを補強します。</p>
           </article>
           <article class="amenity-card">
-            <div class="amenity-visual"></div>
+            <div class="amenity-visual"><img src="https://images.unsplash.com/photo-1511818966892-d7d671e672a2?w=1200&q=80" alt="スカイテラスのイメージ"></div>
             <h3>Sky Terrace</h3>
             <p>物件の象徴になる場所を早めに見せると、他物件との差別化ポイントになりやすいです。</p>
           </article>

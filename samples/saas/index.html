@@ -186,6 +186,7 @@
       padding: 34px;
       position: sticky;
       top: 88px;
+      min-width: 0;
       background:
         radial-gradient(circle at top left, rgba(124, 226, 255, 0.14), transparent 24%),
         var(--panel);
@@ -287,6 +288,7 @@
 
     .workspace {
       padding: 18px;
+      min-width: 0;
       background:
         linear-gradient(180deg, rgba(124, 226, 255, 0.06), transparent 26%),
         var(--panel-strong);
@@ -295,11 +297,14 @@
     .workspace-topbar {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
       padding: 10px 12px 16px;
       color: var(--muted);
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.74rem;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .workspace-topbar span {
@@ -444,6 +449,7 @@
     }
 
     .metric-grid,
+    .screen-grid,
     .case-grid,
     .price-grid {
       display: grid;
@@ -455,12 +461,18 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .screen-grid {
+      grid-template-columns: 1.18fr 1.02fr 0.84fr;
+      align-items: start;
+    }
+
     .case-grid,
     .price-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .metric-card,
+    .screen-card,
     .case-card,
     .price-card {
       padding: 22px;
@@ -476,12 +488,34 @@
     }
 
     .metric-card p,
+    .screen-card p,
     .case-card p,
     .price-card p,
     .feature-card p {
       margin: 12px 0 0;
       color: var(--muted);
       font-size: 0.92rem;
+    }
+
+    .screen-card {
+      overflow: hidden;
+    }
+
+    .screen-card img {
+      width: 100%;
+      border-radius: 22px;
+      display: block;
+      border: 1px solid rgba(123,240,216,0.14);
+      background: rgba(4, 8, 18, 0.88);
+    }
+
+    .screen-card small {
+      display: inline-flex;
+      margin-top: 16px;
+      color: var(--accent);
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
 
     .fromto {
@@ -624,6 +658,7 @@
       .hero,
       .workspace-grid,
       .metric-grid,
+      .screen-grid,
       .fromto,
       .case-grid,
       .price-grid,
@@ -677,6 +712,7 @@
       <div class="nav-links">
         <a href="#story">Story</a>
         <a href="#features">Features</a>
+        <a href="#screens">Screens</a>
         <a href="#cases">Cases</a>
         <a href="#pricing">Pricing</a>
         <a href="#cta">CTA</a>
@@ -817,6 +853,34 @@ alert_threshold     normal</pre>
             <div><span class="section-label">Margin</span><strong>+12%</strong></div>
             <div><span class="section-label">Saved hour</span><strong>34h</strong></div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="screens">
+      <div class="panel">
+        <div class="section-label">Screens</div>
+        <h2 class="section-title">画面が3種類あると、運用のイメージが一気に伝わる。</h2>
+        <p class="section-copy">担当者、マネージャー、経営層で見たい情報はかなり違います。だからこそ「誰向けの画面か」を切り分けて見せると、比較検討の場で社内共有しやすいSaaSサイトになります。</p>
+        <div class="screen-grid">
+          <article class="screen-card">
+            <img src="../assets/saas-screen-approvals.svg" alt="承認キューを管理するSaaS画面サンプル" loading="lazy">
+            <small>Ops View</small>
+            <h3>承認待ちと滞留案件を、一画面で追える。</h3>
+            <p>現場向けページでは「一覧でわかる」「急ぎが埋もれない」が重要です。デモ相談につなげるなら、こうした具体画面があるほど比較時に残りやすくなります。</p>
+          </article>
+          <article class="screen-card">
+            <img src="../assets/saas-screen-analytics.svg" alt="導入効果を可視化するSaaS分析画面サンプル" loading="lazy">
+            <small>Manager View</small>
+            <h3>導入後の変化を、数字で持ち帰れる。</h3>
+            <p>承認速度や削減時間が見える画面があると、部門責任者が稟議に使いやすくなります。本文だけでなく、数値の見え方まで見せるのが有効です。</p>
+          </article>
+          <article class="screen-card">
+            <img src="../assets/saas-screen-mobile.svg" alt="スマートフォンで確認するSaaS画面サンプル" loading="lazy">
+            <small>Mobile</small>
+            <h3>外出中でも止めない。</h3>
+            <p>スマホUIがあると、営業や管理職が移動中でも使える印象を持ってもらいやすくなります。</p>
+          </article>
         </div>
       </div>
     </section>

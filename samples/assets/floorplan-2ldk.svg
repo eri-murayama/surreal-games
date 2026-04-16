@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" fill="none">
+  <rect width="900" height="640" rx="36" fill="#FBF8F1"/>
+  <rect x="38" y="38" width="824" height="564" rx="26" fill="#FFFFFF" stroke="#C6B48F" stroke-width="8"/>
+  <rect x="80" y="86" width="390" height="292" rx="22" fill="#EEF3F2" stroke="#4A666D" stroke-width="6"/>
+  <text x="112" y="132" fill="#314B52" font-size="28" font-family="Arial, sans-serif" font-weight="700">LDK 18.6J</text>
+  <rect x="512" y="86" width="146" height="150" rx="20" fill="#F7EFE2" stroke="#B98E58" stroke-width="6"/>
+  <text x="536" y="136" fill="#6A5231" font-size="24" font-family="Arial, sans-serif" font-weight="700">Bed 1</text>
+  <text x="542" y="168" fill="#6A5231" font-size="18" font-family="Arial, sans-serif">6.2J</text>
+  <rect x="678" y="86" width="142" height="150" rx="20" fill="#F7EFE2" stroke="#B98E58" stroke-width="6"/>
+  <text x="700" y="136" fill="#6A5231" font-size="24" font-family="Arial, sans-serif" font-weight="700">Bed 2</text>
+  <text x="706" y="168" fill="#6A5231" font-size="18" font-family="Arial, sans-serif">5.1J</text>
+  <rect x="512" y="258" width="308" height="120" rx="20" fill="#F2F5F5" stroke="#4A666D" stroke-width="6"/>
+  <text x="542" y="316" fill="#314B52" font-size="24" font-family="Arial, sans-serif" font-weight="700">Corridor / Storage</text>
+  <rect x="80" y="412" width="182" height="132" rx="20" fill="#E6EEEC" stroke="#4A666D" stroke-width="6"/>
+  <text x="120" y="482" fill="#314B52" font-size="22" font-family="Arial, sans-serif" font-weight="700">Bath</text>
+  <rect x="282" y="412" width="122" height="132" rx="20" fill="#F4F2ED" stroke="#9DA9A8" stroke-width="6"/>
+  <text x="308" y="468" fill="#5D6664" font-size="18" font-family="Arial, sans-serif" font-weight="700">Powder</text>
+  <rect x="424" y="412" width="116" height="132" rx="20" fill="#F4F2ED" stroke="#9DA9A8" stroke-width="6"/>
+  <text x="456" y="484" fill="#5D6664" font-size="20" font-family="Arial, sans-serif" font-weight="700">WC</text>
+  <rect x="560" y="412" width="260" height="132" rx="20" fill="#F7F3EA" stroke="#B98E58" stroke-width="6"/>
+  <text x="612" y="468" fill="#6A5231" font-size="24" font-family="Arial, sans-serif" font-weight="700">Entrance</text>
+  <path d="M486 86V544" stroke="#314B52" stroke-width="6"/>
+  <path d="M80 395H820" stroke="#314B52" stroke-width="6"/>
+  <path d="M670 86V379" stroke="#314B52" stroke-width="6" stroke-dasharray="16 12"/>
+  <path d="M246 86V220" stroke="#4A666D" stroke-width="5" stroke-dasharray="14 12"/>
+  <text x="84" y="578" fill="#7B6950" font-size="20" font-family="Arial, sans-serif">2LDK / 68.42m²</text>
+</svg>

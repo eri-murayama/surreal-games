@@ -347,7 +347,8 @@
 
     .guide-grid,
     .step-grid,
-    .qa-grid {
+    .qa-grid,
+    .facility-grid {
       display: grid;
       gap: 16px;
       margin-top: 18px;
@@ -355,6 +356,10 @@
 
     .guide-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .facility-grid {
+      grid-template-columns: 1.08fr 0.96fr 0.96fr;
     }
 
     .step-grid {
@@ -366,6 +371,7 @@
     }
 
     .guide-card,
+    .facility-card,
     .doctor-card,
     .step-card,
     .access-card,
@@ -388,6 +394,7 @@
     }
 
     .guide-card h3,
+    .facility-card h3,
     .doctor-card h3,
     .step-card h3,
     .access-card h3,
@@ -397,6 +404,7 @@
     }
 
     .guide-card p,
+    .facility-card p,
     .doctor-card p,
     .step-card p,
     .access-card p,
@@ -404,6 +412,27 @@
       margin: 10px 0 0;
       color: var(--muted);
       font-size: 0.92rem;
+    }
+
+    .facility-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .facility-card img,
+    .doctor-photo img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .facility-card img {
+      height: 230px;
+    }
+
+    .facility-card__body {
+      padding: 18px 20px 20px;
     }
 
     .doctor-wrap,
@@ -417,9 +446,8 @@
     .doctor-photo {
       min-height: 260px;
       border-radius: 22px;
-      background:
-        radial-gradient(circle at 50% 18%, rgba(255,255,255,0.95), transparent 15%),
-        linear-gradient(180deg, #d2ece8 0%, #95c8c2 100%);
+      overflow: hidden;
+      margin: 0;
     }
 
     .access-panel {
@@ -441,10 +469,27 @@
       .doctor-wrap,
       .access-wrap,
       .guide-grid,
+      .facility-grid,
       .step-grid,
       .qa-grid {
         grid-template-columns: 1fr;
       }
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      transition: transform 0.3s, opacity 0.3s;
     }
 
     @media (max-width: 720px) {
@@ -454,6 +499,25 @@
 
       .nav-links {
         display: none;
+      }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(249, 255, 254, 0.98);
+        backdrop-filter: blur(14px);
+        padding: 20px 24px;
+        gap: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        z-index: 40;
+      }
+
+      .hamburger {
+        display: flex;
       }
 
       .sample-badge {
@@ -488,13 +552,16 @@
   <nav class="nav">
     <div class="nav__inner">
       <a href="#top" class="nav-logo">みどり内科クリニック</a>
-      <div class="nav-links">
+      <div class="nav-links" id="navLinks">
         <a href="#guide">診療案内</a>
         <a href="#doctor">医師紹介</a>
         <a href="#flow">初診の流れ</a>
         <a href="#access">アクセス</a>
         <a href="#qa">よくある質問</a>
       </div>
+      <button class="hamburger" id="hamburger" aria-label="メニュー">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
@@ -555,6 +622,39 @@
       </div>
     </section>
 
+    <section class="section" id="facility">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Facility</div>
+          <h2 class="section-title">院内の空気感が見えると、初診の不安はかなり下がる。</h2>
+        </div>
+      </div>
+      <p class="section-copy">外観、受付、診察室の写真があるだけで、「どんな雰囲気のクリニックか」が具体的に伝わります。特に年配の方や初診の方には、文字情報だけよりも写真があるほうが来院前の安心につながりやすいです。</p>
+      <div class="facility-grid">
+        <article class="facility-card">
+          <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=900&q=80" alt="駅前にあるクリニック外観のイメージ">
+          <div class="facility-card__body">
+            <h3>入口と受付のわかりやすさ</h3>
+            <p>ビルの何階か、入口はどこか、受付に入るまで迷わない写真があると、高齢の患者さんにも親切です。</p>
+          </div>
+        </article>
+        <article class="facility-card">
+          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=80" alt="待合スペースと受付カウンターのイメージ">
+          <div class="facility-card__body">
+            <h3>待合の雰囲気</h3>
+            <p>椅子の間隔、受付の様子、清潔感が見えると、発熱時や付き添い来院の不安も和らぎやすくなります。</p>
+          </div>
+        </article>
+        <article class="facility-card">
+          <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=900&q=80" alt="診察室と医療機器のイメージ">
+          <div class="facility-card__body">
+            <h3>診察室と設備</h3>
+            <p>診察の空気感が伝わると、「ここで診てもらえそう」という判断が早くなり、問い合わせ前の離脱も減らしやすいです。</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="section" id="doctor">
       <div class="section-head">
         <div>
@@ -563,7 +663,9 @@
         </div>
       </div>
       <div class="doctor-wrap">
-        <div class="doctor-photo" aria-hidden="true"></div>
+        <figure class="doctor-photo">
+          <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=900&q=80" alt="院長のプロフィール写真イメージ" loading="lazy">
+        </figure>
         <article class="doctor-card">
           <h3>院長 佐伯 みどり</h3>
           <p>患者さんにとって気になるのは、設備の多さよりも「どんな先生が、どんな姿勢で診てくれるのか」です。このサンプルでは、やさしいトーンの写真スペースと、短く読みやすい紹介文で、初診時の不安を減らす見せ方にしています。</p>
@@ -704,5 +806,16 @@
       &copy; 2026 みどり内科クリニック Sample Site
     </footer>
   </main>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+  </script>
 </body>
 </html>

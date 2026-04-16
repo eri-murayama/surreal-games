@@ -166,9 +166,50 @@
       transition: color 0.3s;
     }
     .nav.scrolled .nav-links a { color: var(--text); }
+    .nav.scrolled .nav-logo-link { color: var(--deep-green); }
     .nav-links a:hover { color: var(--gold); }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      width: 22px;
+      height: 2px;
+      background: #fff;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .nav.scrolled .hamburger span {
+      background: var(--text);
+    }
+
     @media (max-width: 768px) {
-      .nav { display: none; }
+      .nav {
+        justify-content: space-between;
+        padding: 0 20px;
+      }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(247, 243, 236, 0.98);
+        backdrop-filter: blur(12px);
+        padding: 20px 24px;
+        gap: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      }
+      .nav-links.open a {
+        color: var(--text);
+      }
     }
 
     /* ===== Hero ===== */
@@ -184,7 +225,7 @@
     .hero-bg {
       position: absolute;
       inset: 0;
-      background: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=80') center/cover no-repeat;
+      background: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=1920&q=80') center/cover no-repeat;
       transform: scale(1.05);
       animation: heroZoom 20s ease-in-out infinite alternate;
     }
@@ -295,6 +336,9 @@
       border-radius: 2px;
       box-shadow: 12px 12px 0 var(--kinari-dark);
     }
+    .concept-text {
+      min-width: 0;
+    }
     .concept-text h3 {
       font-family: 'Zen Old Mincho', serif;
       font-size: 1.3rem;
@@ -319,9 +363,26 @@
       margin-top: 24px;
     }
     @media (max-width: 768px) {
+      .hero-bg {
+        transform: none;
+        animation: none;
+      }
       .concept-body {
         grid-template-columns: 1fr;
         gap: 32px;
+      }
+      .concept-image {
+        box-shadow: 8px 8px 0 var(--kinari-dark);
+      }
+      .concept-vertical-text {
+        writing-mode: horizontal-tb;
+        letter-spacing: 0.12em;
+        line-height: 1.8;
+      }
+      .fade-in-left,
+      .fade-in-right {
+        opacity: 1 !important;
+        transform: none !important;
       }
     }
 
@@ -758,7 +819,8 @@
 
 <!-- Navigation -->
 <nav class="nav" id="nav">
-  <ul class="nav-links">
+  <a href="#" style="font-family:'Zen Old Mincho',serif;font-size:1rem;color:#fff;text-decoration:none;letter-spacing:0.15em;transition:color 0.3s;" class="nav-logo-link">翠風庵</a>
+  <ul class="nav-links" id="navLinks">
     <li><a href="#concept">おもてなし</a></li>
     <li><a href="#rooms">客室</a></li>
     <li><a href="#onsen">温泉</a></li>
@@ -766,6 +828,9 @@
     <li><a href="#facility">館内案内</a></li>
     <li><a href="#reservation">ご予約</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- Hero -->
@@ -797,7 +862,7 @@
         loading="lazy"
       >
       <div class="concept-text fade-in-right">
-        <h3>一期一会の<br>おもてなしを</h3>
+        <h3>一期一会のおもてなしを</h3>
         <p>
           奥湯河原の渓流沿いに佇む全八室の小さな宿。
           喧騒を離れ、四季折々の自然に包まれながら、
@@ -809,9 +874,7 @@
           源泉掛け流しの湯と旬の食材を活かした会席料理、
           そして何より「人の温もり」でおもてなしいたします。
         </p>
-        <div class="concept-vertical-text">
-          花鳥風月を愛で<br>心静かに過ごす贅沢
-        </div>
+        <div class="concept-vertical-text">花鳥風月を愛で、心静かに過ごす贅沢</div>
       </div>
     </div>
   </div>
@@ -918,11 +981,7 @@
       <h2 class="section-title">温泉</h2>
       <div class="section-title-line"></div>
     </div>
-    <p class="onsen-intro fade-in">
-      奥湯河原の源泉から湧き出る良質な弱アルカリ性単純温泉。<br>
-      肌に柔らかく、芯から温まる名湯を<br>
-      源泉掛け流しでお愉しみください。
-    </p>
+    <p class="onsen-intro fade-in">奥湯河原の源泉から湧き出る良質な弱アルカリ性単純温泉です。肌にやわらかく、芯から温まる名湯を、源泉掛け流しでお愉しみいただけます。</p>
     <div class="onsen-gallery fade-in">
       <div class="onsen-gallery-item">
         <img src="https://images.unsplash.com/photo-1545579133-99bb5ab189bd?w=1000&q=80" alt="露天風呂" loading="lazy">
@@ -940,15 +999,15 @@
     <div class="onsen-features fade-in">
       <div class="onsen-feature">
         <h4>源泉掛け流し</h4>
-        <p>加水・加温・循環なし。<br>源泉そのままの贅沢な湯を<br>心ゆくまでご堪能ください。</p>
+        <p>加水・加温・循環なし。源泉そのままの贅沢な湯を、心ゆくまでご堪能ください。</p>
       </div>
       <div class="onsen-feature">
         <h4>美肌の湯</h4>
-        <p>pH8.5の弱アルカリ性。<br>古い角質を柔らかくし<br>しっとりすべすべの肌に。</p>
+        <p>pH8.5の弱アルカリ性。古い角質をやわらかくし、しっとりすべすべの肌へ導きます。</p>
       </div>
       <div class="onsen-feature">
         <h4>四季の露天風呂</h4>
-        <p>春は桜、夏は新緑、<br>秋は紅葉、冬は雪見風呂。<br>移ろう景色と共に。</p>
+        <p>春は桜、夏は新緑、秋は紅葉、冬は雪見風呂。移ろう景色とともにお楽しみください。</p>
       </div>
     </div>
   </div>
@@ -962,10 +1021,7 @@
       <h2 class="section-title">お料理</h2>
       <div class="section-title-line"></div>
     </div>
-    <p class="cuisine-intro fade-in">
-      地元の旬の食材を活かした月替わりの会席料理。<br>
-      料理長が一品一品、心を込めてお仕立ていたします。
-    </p>
+    <p class="cuisine-intro fade-in">地元の旬の食材を活かした月替わりの会席料理を、料理長が一品ずつ心を込めてお仕立ていたします。</p>
     <div class="cuisine-grid">
       <div class="cuisine-card fade-in">
         <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80" alt="会席料理" loading="lazy">
@@ -995,6 +1051,51 @@
           <p>地元の食材をふんだんに使った和朝食。炊きたてのご飯、焼き魚、手作り豆腐など、朝から身体に優しい品々を。</p>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="project-brief" id="stay-flow" style="--portfolio-accent:#9d875f; --portfolio-heading:#2d241a; --portfolio-muted:#615343; --portfolio-card-bg:rgba(255,250,241,0.88); --portfolio-card-border:rgba(157,135,95,0.2); --portfolio-shadow:rgba(45,36,26,0.12); --portfolio-metric-bg:rgba(248,241,229,0.92); --portfolio-quote-bg:rgba(248,241,229,0.78);">
+  <div class="project-brief__inner">
+    <div class="project-brief__header">
+      <span class="project-brief__eyebrow">Stay Flow</span>
+      <h2 class="project-brief__title">滞在の流れが見えると、予約の決め手になりやすい。</h2>
+      <p class="project-brief__lead">旅館サイトでは、客室や料理の魅力だけでなく「到着してからどんな時間を過ごせるか」が見えると予約につながりやすくなります。特に送迎、貸切風呂、夕食時間などは先に見えると安心です。</p>
+    </div>
+    <div class="project-brief__photos">
+      <figure>
+        <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=80" alt="和室でくつろぐ時間のイメージ" loading="lazy">
+        <figcaption><strong>到着後の時間</strong>客室に入って最初に感じる空気感が見えると、写真の印象が強く残ります。</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1545579133-99bb5ab189bd?w=900&q=80" alt="露天風呂のイメージ" loading="lazy">
+        <figcaption><strong>湯あみ</strong>大浴場だけでなく、貸切風呂や入浴時間の案内があると比較しやすいです。</figcaption>
+      </figure>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=900&q=80" alt="朝食のイメージ" loading="lazy">
+        <figcaption><strong>翌朝の食事</strong>朝食の写真は、宿泊後半の満足感まで想像させる役割があります。</figcaption>
+      </figure>
+    </div>
+    <div class="project-brief__layout" style="margin-top:20px;">
+      <div class="project-brief__stack">
+        <article class="project-brief__card">
+          <h3>よく見られる滞在情報</h3>
+          <div class="project-brief__meta">
+            <div class="project-brief__metric"><span>Check In</span><strong>15:00 から。湯河原駅送迎は14:30〜17:00対応。</strong></div>
+            <div class="project-brief__metric"><span>Dinner</span><strong>18:00 または 19:00 開始で選択可能。</strong></div>
+            <div class="project-brief__metric"><span>Private Bath</span><strong>貸切風呂は45分制、当日チェックイン時に予約。</strong></div>
+            <div class="project-brief__metric"><span>Check Out</span><strong>11:00。朝食後も庭園散策やラウンジ利用が可能。</strong></div>
+          </div>
+        </article>
+      </div>
+      <article class="project-brief__card">
+        <h3>宿ページにあると親切な補足</h3>
+        <ul class="project-brief__list">
+          <li>送迎の時間帯と予約方法を明記する</li>
+          <li>食事時間の選択可否やアレルギー対応を案内する</li>
+          <li>チェックアウト後の荷物預かりや周辺散策情報もあると便利です</li>
+        </ul>
+      </article>
     </div>
   </div>
 </section>
@@ -1152,11 +1253,7 @@
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-name">翠 風 庵</div>
-  <div class="footer-info">
-    〒259-0314 神奈川県足柄下郡湯河原町宮上999（架空の住所）<br>
-    TEL: 0465-00-0000 &nbsp;|&nbsp; FAX: 0465-00-0001<br>
-    チェックイン 15:00 / チェックアウト 11:00
-  </div>
+  <div class="footer-info">〒259-0314 神奈川県足柄下郡湯河原町宮上999（架空の住所） / TEL 0465-00-0000 / FAX 0465-00-0001 / チェックイン 15:00 / チェックアウト 11:00</div>
   <div class="footer-links">
     <a href="#concept">おもてなし</a>
     <a href="#rooms">客室</a>
@@ -1164,7 +1261,7 @@
     <a href="#cuisine">お料理</a>
     <a href="#reservation">ご予約</a>
   </div>
-  <p class="footer-copy">&copy; 2024 湯宿 翠風庵 &mdash; This is a sample website.</p>
+  <p class="footer-copy">&copy; 2026 湯宿 翠風庵 &mdash; This is a sample website.</p>
 </footer>
 
 <script>
@@ -1194,6 +1291,16 @@
     } else {
       nav.classList.remove('scrolled');
     }
+  });
+
+  // ===== Hamburger menu =====
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
   });
 
   // ===== Form submit =====

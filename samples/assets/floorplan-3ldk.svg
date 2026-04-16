@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" fill="none">
+  <rect width="900" height="640" rx="36" fill="#F8F5EE"/>
+  <rect x="38" y="38" width="824" height="564" rx="26" fill="#FFFFFF" stroke="#C6B48F" stroke-width="8"/>
+  <rect x="80" y="86" width="330" height="258" rx="20" fill="#EEF3F2" stroke="#4A666D" stroke-width="6"/>
+  <text x="108" y="132" fill="#314B52" font-size="28" font-family="Arial, sans-serif" font-weight="700">LDK 16.8J</text>
+  <rect x="440" y="86" width="150" height="150" rx="20" fill="#F7EFE2" stroke="#B98E58" stroke-width="6"/>
+  <text x="464" y="136" fill="#6A5231" font-size="24" font-family="Arial, sans-serif" font-weight="700">Bed 1</text>
+  <text x="470" y="168" fill="#6A5231" font-size="18" font-family="Arial, sans-serif">6.0J</text>
+  <rect x="610" y="86" width="150" height="150" rx="20" fill="#F7EFE2" stroke="#B98E58" stroke-width="6"/>
+  <text x="634" y="136" fill="#6A5231" font-size="24" font-family="Arial, sans-serif" font-weight="700">Bed 2</text>
+  <text x="640" y="168" fill="#6A5231" font-size="18" font-family="Arial, sans-serif">5.2J</text>
+  <rect x="780" y="86" width="84" height="150" rx="20" fill="#F4F2ED" stroke="#9DA9A8" stroke-width="6"/>
+  <text x="800" y="156" fill="#5D6664" font-size="16" font-family="Arial, sans-serif" font-weight="700">SIC</text>
+  <rect x="440" y="258" width="150" height="126" rx="20" fill="#F7EFE2" stroke="#B98E58" stroke-width="6"/>
+  <text x="464" y="314" fill="#6A5231" font-size="24" font-family="Arial, sans-serif" font-weight="700">Bed 3</text>
+  <text x="472" y="346" fill="#6A5231" font-size="18" font-family="Arial, sans-serif">4.8J</text>
+  <rect x="610" y="258" width="254" height="126" rx="20" fill="#F2F5F5" stroke="#4A666D" stroke-width="6"/>
+  <text x="650" y="318" fill="#314B52" font-size="24" font-family="Arial, sans-serif" font-weight="700">Hall / Storage</text>
+  <rect x="80" y="372" width="182" height="152" rx="20" fill="#E6EEEC" stroke="#4A666D" stroke-width="6"/>
+  <text x="116" y="452" fill="#314B52" font-size="22" font-family="Arial, sans-serif" font-weight="700">Bath</text>
+  <rect x="282" y="372" width="132" height="152" rx="20" fill="#F4F2ED" stroke="#9DA9A8" stroke-width="6"/>
+  <text x="304" y="438" fill="#5D6664" font-size="20" font-family="Arial, sans-serif" font-weight="700">Powder</text>
+  <text x="324" y="468" fill="#5D6664" font-size="16" font-family="Arial, sans-serif">WIC</text>
+  <rect x="440" y="412" width="162" height="112" rx="20" fill="#F4F2ED" stroke="#9DA9A8" stroke-width="6"/>
+  <text x="500" y="474" fill="#5D6664" font-size="20" font-family="Arial, sans-serif" font-weight="700">WC</text>
+  <rect x="624" y="412" width="240" height="112" rx="20" fill="#F7F3EA" stroke="#B98E58" stroke-width="6"/>
+  <text x="676" y="474" fill="#6A5231" font-size="22" font-family="Arial, sans-serif" font-weight="700">Entrance</text>
+  <path d="M426 86V524" stroke="#314B52" stroke-width="6"/>
+  <path d="M80 358H864" stroke="#314B52" stroke-width="6"/>
+  <path d="M602 86V384" stroke="#314B52" stroke-width="6" stroke-dasharray="16 12"/>
+  <text x="84" y="578" fill="#7B6950" font-size="20" font-family="Arial, sans-serif">3LDK / 74.90m²</text>
+</svg>
