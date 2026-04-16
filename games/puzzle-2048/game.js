@@ -823,20 +823,10 @@ function showGameOver(){
   const shareBtn = document.createElement('button');
   shareBtn.id = 'share-btn';
   shareBtn.textContent = t('shareBtn');
-  shareBtn.style.cssText =
-    'display:block;width:80%;max-width:280px;margin:8px auto;'+
-    'padding:14px 0;border:none;border-radius:12px;'+
-    'font-family:inherit;font-size:1.1rem;font-weight:700;'+
-    'cursor:pointer;transition:transform .15s,box-shadow .15s;'+
-    'background:linear-gradient(135deg,#1da1f2,#0d8bd9);color:#fff;';
-  shareBtn.addEventListener('mouseenter',function(){
-    this.style.transform='scale(1.04)';
-    this.style.boxShadow='0 0 20px rgba(29,161,242,.4)';
-  });
-  shareBtn.addEventListener('mouseleave',function(){
-    this.style.transform='';
-    this.style.boxShadow='';
-  });
+  shareBtn.className = 'sg-result-share-btn';
+  shareBtn.style.display = 'block';
+  shareBtn.style.width = '80%';
+  shareBtn.style.maxWidth = '280px';
   shareBtn.addEventListener('click',function(){
     const gameURL = window.location.href;
     const text = t('shareText')(score, highestEvo, moveCount) + gameURL;

@@ -350,27 +350,7 @@
     const shareBtn = document.createElement('button');
     shareBtn.id = 'share-btn';
     shareBtn.textContent = 'Xでシェア';
-    shareBtn.style.cssText =
-      'font-family: var(--font-display);' +
-      'font-size: 1.1rem;' +
-      'color: var(--white);' +
-      'background: linear-gradient(135deg, #1da1f2, #0d8bd9);' +
-      'border: none;' +
-      'padding: 14px 40px;' +
-      'border-radius: 50px;' +
-      'cursor: pointer;' +
-      'letter-spacing: 0.05em;' +
-      'box-shadow: 0 4px 15px rgba(29,161,242,0.4);' +
-      'transition: transform 0.2s, box-shadow 0.2s;' +
-      'margin-bottom: 8px;';
-    shareBtn.addEventListener('mouseenter', function () {
-      this.style.transform = 'translateY(-2px)';
-      this.style.boxShadow = '0 8px 25px rgba(29,161,242,0.5)';
-    });
-    shareBtn.addEventListener('mouseleave', function () {
-      this.style.transform = '';
-      this.style.boxShadow = '0 4px 15px rgba(29,161,242,0.4)';
-    });
+    shareBtn.className = 'sg-result-share-btn';
     shareBtn.addEventListener('click', function () {
       const gameURL = window.location.href;
       const shareText =

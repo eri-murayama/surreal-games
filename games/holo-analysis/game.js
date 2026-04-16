@@ -501,10 +501,9 @@
     if (!shareBtn) {
       shareBtn = document.createElement('button');
       shareBtn.id = 'share-btn';
-      shareBtn.style.cssText = 'font-family:"Hachi Maru Pop",cursive;font-size:1rem;padding:12px 32px;background:linear-gradient(135deg,#1da1f2,#0d8bd9);color:#fff;border:none;border-radius:30px;cursor:pointer;box-shadow:0 4px 16px rgba(29,161,242,0.4);transition:transform 0.2s,box-shadow 0.2s;margin-bottom:12px;display:inline-block;';
+      shareBtn.className = 'sg-result-share-btn';
+      shareBtn.style.fontFamily = '"Hachi Maru Pop", cursive';
       shareBtn.textContent = '𝕏 でシェア';
-      shareBtn.addEventListener('mouseenter', function () { shareBtn.style.transform = 'scale(1.1)'; });
-      shareBtn.addEventListener('mouseleave', function () { shareBtn.style.transform = 'scale(1)'; });
       var retryBtn = document.getElementById('retry-btn');
       retryBtn.parentNode.insertBefore(shareBtn, retryBtn);
     }

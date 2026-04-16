@@ -63,7 +63,17 @@
       msg_defective: 'The boy did not execute the commands correctly.',
     },
   };
-  let curLang = (localStorage.getItem('machine_lang') || (navigator.language.startsWith('ja') ? 'ja' : 'en'));
+  // SurrealI18n で言語状態を管理（machine_lang → sg_lang に統一）
+  // 旧 machine_lang キーがあれば移行
+  try {
+    const old = localStorage.getItem('machine_lang');
+    if (old && !localStorage.getItem('sg_lang')) {
+      localStorage.setItem('sg_lang', old);
+    }
+    localStorage.removeItem('machine_lang');
+  } catch(e) {}
+  SurrealI18n.init(null, { onLangChange: function(lang) { curLang = lang; applyI18n(); } });
+  let curLang = SurrealI18n.currentLang;
   function t(key) { return (I18N[curLang] && I18N[curLang][key]) || I18N.ja[key] || key; }
   function applyI18n() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -3143,18 +3153,14 @@
     obs.observe($('title-screen'), { attributes: true });
   })();
 
-  // ===== 言語切替 =====
+  // ===== 言語切替（SurrealI18n経由） =====
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      curLang = btn.dataset.lang;
-      localStorage.setItem('machine_lang', curLang);
-      applyI18n();
-      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === curLang));
+      SurrealI18n.setLang(btn.dataset.lang);
     });
   });
   // 初期言語を反映
   applyI18n();
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === curLang));
 
   // ===== BGM試聴パネル =====
   document.querySelectorAll('.bgm-btn').forEach(btn => {

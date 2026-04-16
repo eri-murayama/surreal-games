@@ -471,8 +471,7 @@
     if (!shareBtn) {
       shareBtn = document.createElement('button');
       shareBtn.id = 'share-btn';
-      shareBtn.className = 'btn-start';
-      shareBtn.style.cssText = 'background:linear-gradient(135deg,#1da1f2,#0d8bd9);margin-bottom:12px;display:inline-block;';
+      shareBtn.className = 'btn-start sg-result-share-btn';
       shareBtn.textContent = '𝕏 でシェア';
       var replayBtnEl = document.getElementById('replay-btn');
       replayBtnEl.parentNode.insertBefore(shareBtn, replayBtnEl);

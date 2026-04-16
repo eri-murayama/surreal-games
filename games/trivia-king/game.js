@@ -519,8 +519,7 @@
     const shareBtn = document.createElement('button');
     shareBtn.id = 'share-btn';
     shareBtn.textContent = '𝕏 で結果をシェア';
-    shareBtn.className = 'btn-start';
-    shareBtn.style.cssText = 'margin-top: 12px; font-size: clamp(0.95rem, 3vw, 1.2rem); background: linear-gradient(135deg, #1da1f2 0%, #0d8ecf 100%);';
+    shareBtn.className = 'btn-start sg-result-share-btn';
 
     shareBtn.addEventListener('click', function () {
       const gameURL = window.location.href;

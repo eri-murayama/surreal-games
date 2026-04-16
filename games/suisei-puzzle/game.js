@@ -543,8 +543,7 @@
     shareBtn.target = '_blank';
     shareBtn.rel = 'noopener noreferrer';
     shareBtn.textContent = tl('shareBtn');
-    shareBtn.className = 'btn-primary';
-    shareBtn.style.cssText = 'display:inline-block;text-decoration:none;text-align:center;margin-bottom:12px;background:linear-gradient(135deg,#1d9bf0,#1a8cd8);';
+    shareBtn.className = 'btn-primary sg-result-share-btn';
 
     // Insert before retry button
     const retryBtn = $('retry-btn');

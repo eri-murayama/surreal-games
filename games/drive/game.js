@@ -42,7 +42,7 @@
   };
 
   /** Get translated name of a slot/race item */
-  function itemName(item) { return item[currentLang] || item.ja; }
+  function itemName(item) { return item[SurrealI18n.currentLang] || item.ja; }
 
   // アイテム
   const RACE_ITEMS = [
@@ -100,8 +100,7 @@
   // --- 共通モジュール ---
   const sg = SurrealGames.init('drive');
 
-  // --- 多言語対応 ---
-  let currentLang = 'ja';
+  // --- 多言語対応（SurrealI18n 使用） ---
 
   const LANG = {
     ja: {
@@ -218,22 +217,18 @@
     },
   };
 
+  // SurrealI18n は言語状態管理に使用、翻訳は LANG オブジェクトから直接参照
+  SurrealI18n.init(null, { onLangChange: applyLang });
+
   function t(key, ...args) {
-    const val = LANG[currentLang][key];
+    const val = LANG[SurrealI18n.currentLang][key];
     if (typeof val === 'function') return val(...args);
     return val;
   }
 
-  function setLang(lang) {
-    currentLang = lang;
-    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
-    try { localStorage.setItem('sg_lang', lang); } catch(e) {}
-    window.dispatchEvent(new Event('surreal-lang-change'));
+  /** itemName は SurrealI18n.currentLang を参照 */
+  function applyLang(lang) {
     document.title = t('gameTitle') + ' - ' + (lang === 'ja' ? 'シュールゲームス' : 'Surreal Games');
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
-    window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
     // --- 全画面共通のテキスト更新 ---
     document.querySelector('.game-title').textContent = t('gameTitle');
@@ -324,7 +319,7 @@
 
   // Init lang from browser
   document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    btn.addEventListener('click', () => SurrealI18n.setLang(btn.dataset.lang));
   });
 
   // --- ハイスコア表示 ---
@@ -1396,9 +1391,6 @@
 
   // --- 初期化 ---
   showScreen('title');
-  setLang((function() {
-    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
-    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
-  })());
+  applyLang(SurrealI18n.currentLang);
 
 })();

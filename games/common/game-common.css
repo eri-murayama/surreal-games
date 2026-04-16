@@ -391,6 +391,30 @@ html, body {
   color: #fff;
 }
 
+/* --- リザルト画面内シェアボタン --- */
+.sg-result-share-btn {
+  display: inline-block;
+  margin: 10px auto 12px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 700;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #1da1f2, #0d8bd9);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(29, 161, 242, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.sg-result-share-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(29, 161, 242, 0.5);
+}
+
 /* --- アクセシビリティ: アニメーション低減 --- */
 @media (prefers-reduced-motion: reduce) {
   *,

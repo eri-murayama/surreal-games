@@ -651,9 +651,9 @@
 
     const shareBtn = document.createElement('button');
     shareBtn.id = 'share-btn';
-    shareBtn.className = 'btn-primary';
+    shareBtn.className = 'btn-primary sg-result-share-btn';
+    shareBtn.style.background = 'linear-gradient(135deg, #1a1a1a, #333)';
     shareBtn.textContent = t('shareResult');
-    shareBtn.style.cssText = 'background: linear-gradient(135deg, #1a1a1a, #333); margin-bottom: 12px;';
     shareBtn.addEventListener('click', () => {
       const gameURL = window.location.href;
       const text = t('shareText', score, maxStack, rank) + '\n' + gameURL;

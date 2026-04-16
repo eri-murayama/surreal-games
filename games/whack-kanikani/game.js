@@ -1,10 +1,7 @@
-// ===== 多言語対応 =====
-let currentLang = (function() {
-  try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
-  return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
-})();
+// ===== 多言語対応（SurrealI18n 使用） =====
+const sg = SurrealGames.init('whack-kanikani');
 
-const LANG = {
+SurrealI18n.init({
   ja: {
     title: '🦀 かにかにパニック！ 🦀<br><span style="font-size:0.5em;opacity:0.8;">‐カニみそが飛び出ちゃう‐</span>',
     subtitle: '夢の中のヤクザ「かにかに」を叩け！腹筋は毎日換気するよ！',
@@ -17,7 +14,6 @@ const LANG = {
     endTitle: '終了〜！',
     retryBtn: 'もう一回やる',
     shareBtn: 'Xでシェアする',
-    backToTop: '← トップに戻る',
     painLines: ['いたい…', 'なんで…？', 'ひどいよ…', 'やめて…', 'うう…', 'ぼくが何したの…', 'いたいよぉ…', 'もうやだ…', 'ごめんなさい…'],
     missTexts: ['スカッ', 'ハズレ〜', '空振り！', 'おしい？'],
     resultScore: (s, c) => `${s}点（最大コンボ: ${c}）`,
@@ -43,7 +39,6 @@ const LANG = {
     endTitle: "Time's Up!",
     retryBtn: 'Play Again',
     shareBtn: 'Share on X',
-    backToTop: '← Back to Top',
     painLines: ['Ouch…', 'Why…?', 'So mean…', 'Stop it…', 'Oww…', 'What did I do…', 'It hurts…', 'No more…', "I'm sorry…"],
     missTexts: ['Whiff!', 'Miss~', 'Swing!', 'So close?'],
     resultScore: (s, c) => `${s} pts (Max Combo: ${c})`,
@@ -57,18 +52,14 @@ const LANG = {
     bubble1: 'Abs need<br>daily air!',
     bubble2: 'Hit me and<br>I come back!',
   },
-};
+}, {
+  onLangChange: updateLangUI
+});
 
-const sg = SurrealGames.init('whack-kanikani');
+function t(key, ...args) { return SurrealI18n.t(key, ...args); }
 
-function t(key) { return LANG[currentLang][key]; }
-
-function setLang(lang) {
-  currentLang = lang;
-  document.documentElement.lang = lang;
-  try { localStorage.setItem('sg_lang', lang); } catch(e) {}
+function updateLangUI(lang) {
   document.title = lang === 'ja' ? 'かにかにパニック！ ‐カニみそが飛び出ちゃう‐' : 'Kani-Kani Panic! - Whack-a-Crab';
-  window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
 
   // タイトル
   document.querySelector('.game-title').innerHTML = t('title');
@@ -95,11 +86,6 @@ function setLang(lang) {
   const b2 = document.querySelector('.deco-bubble--2');
   if (b1) b1.innerHTML = t('bubble1');
   if (b2) b2.innerHTML = t('bubble2');
-
-  // 言語ボタン
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lang === lang);
-  });
 
   // ハイスコア表示更新
   updateHighScoreDisplay();
@@ -390,12 +376,10 @@ function endGame() {
   const shareBtn = document.createElement('button');
   shareBtn.id = 'share-btn';
   shareBtn.textContent = t('shareBtn');
-  shareBtn.style.cssText = 'display:block; margin:10px auto; padding:10px 24px; font-size:1rem; font-family:inherit; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-weight:700; transition:transform 0.1s;';
-  shareBtn.addEventListener('mouseenter', () => { shareBtn.style.transform = 'scale(1.05)'; });
-  shareBtn.addEventListener('mouseleave', () => { shareBtn.style.transform = 'scale(1)'; });
+  shareBtn.className = 'sg-result-share-btn';
   shareBtn.addEventListener('click', () => {
     const gameURL = window.location.href;
-    const shareText = currentLang === 'ja'
+    const shareText = SurrealI18n.currentLang === 'ja'
       ? `🦀 かにかにパニック！ ‐カニみそが飛び出ちゃう‐\nスコア: ${score}点（最大コンボ: ${maxCombo}）\nランク: ${matched.rank}\n\n#シュールゲームス\n${gameURL}`
       : `🦀 Kani-Kani Panic!\nScore: ${score} pts (Max Combo: ${maxCombo})\nRank: ${matched.rank}\n\n#SurrealGames\n${gameURL}`;
     const twitterURL = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
@@ -423,13 +407,13 @@ function updateHighScoreDisplay() {
   const highScore = sg.getHighScore();
   const el = document.getElementById('sg-high-score-display');
   if (highScore && el) {
-    const label = currentLang === 'en' ? '🏆 HIGH SCORE: ' : '🏆 ハイスコア: ';
+    const label = SurrealI18n.currentLang === 'en' ? '🏆 HIGH SCORE: ' : '🏆 ハイスコア: ';
     el.textContent = label + highScore;
     el.style.display = 'block';
   }
 }
 
 // 初期表示時に保存された言語設定を適用
-setLang(currentLang);
+updateLangUI(SurrealI18n.currentLang);
 // ハイスコアを表示
 updateHighScoreDisplay();

@@ -2510,8 +2510,8 @@
 
   // ===== Xシェアボタン =====
   function createShareButton(gameId) {
-    // 既存のシェアボタンがある場合はスキップ（各ゲーム独自実装を優先）
-    if (document.getElementById('share-btn') || document.querySelector('.sg-share-btn')) return;
+    // フローティングシェアボタンが既にあればスキップ
+    if (document.querySelector('.sg-share-btn')) return;
     var game = GAME_CATALOG.find(function (g) { return g.id === gameId; });
     var title = game ? game.title : 'シュールゲームス';
     var btn = document.createElement('a');
@@ -2553,9 +2553,11 @@
       jpBtn.classList.toggle('active', lang === 'ja');
       enBtn.classList.toggle('active', lang === 'en');
       if (window.SurrealI18n) {
+        // SurrealI18n.setLang が surreal-lang-change イベントも発火する
         SurrealI18n.setLang(lang);
+      } else {
+        window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang: lang } }));
       }
-      window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang: lang } }));
     }
 
     jpBtn.addEventListener('click', function () { setLang('ja'); });

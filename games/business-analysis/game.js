@@ -88,13 +88,12 @@
     }
   };
 
-  // ===== ゲーム状態 =====
-  let currentLang = (function() {
-    try { const s = localStorage.getItem('sg_lang'); if (s === 'ja' || s === 'en') return s; } catch(e) {}
-    return (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
-  })();
+  // ===== SurrealI18n 初期化 =====
+  // このゲームは t() がオブジェクト全体を返す独自パターンなので、
+  // SurrealI18n は言語状態管理のみ使用する
+  SurrealI18n.init(null, { onLangChange: function() { applyLang(); } });
 
-  function t() { return i18n[currentLang]; }
+  function t() { return i18n[SurrealI18n.currentLang]; }
 
   const objectCorrectMap = {
     oyaji: false, ramen: false, sign: false, table: false, register: true
@@ -611,22 +610,11 @@
     }
   }
 
-  function setLang(lang) {
-    currentLang = lang;
-    document.documentElement.lang = lang;
-    try { localStorage.setItem('sg_lang', lang); } catch(e) {}
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
-    applyLang();
-    window.dispatchEvent(new CustomEvent('surreal-lang-change', { detail: { lang } }));
-  }
-
   function initLangSwitch() {
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        setLang(btn.dataset.lang);
+        SurrealI18n.setLang(btn.dataset.lang);
       });
     });
   }
@@ -639,7 +627,7 @@
     initLangSwitch();
     document.addEventListener('click', handleScreenTap);
     // 保存された言語設定を適用
-    setLang(currentLang);
+    applyLang();
   }
 
   if (document.readyState === 'loading') {
