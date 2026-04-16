@@ -94,16 +94,16 @@ document.querySelectorAll('.about-bg-chara').forEach((el) => observer.observe(el
   }
 
   function doJumpscare() {
-    // 背景オーバーレイを追加
-    const overlay = document.createElement('div');
+    var overlay = document.createElement('div');
     overlay.className = 'jumpscare-overlay';
+    var img = document.createElement('img');
+    img.src = 'assets/images/manmen-no-emi-full.png';
+    img.className = 'jumpscare-img';
     document.body.appendChild(overlay);
-    chara.classList.add('jumpscare');
-    // 0.6秒で元に戻す
-    setTimeout(() => {
-      chara.classList.remove('jumpscare');
+    document.body.appendChild(img);
+    setTimeout(function() {
+      img.remove();
       overlay.remove();
-      // 次のジャンプスケアをスケジュール
       if (isInView) scheduleJumpscare();
     }, 600);
   }

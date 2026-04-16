@@ -442,6 +442,7 @@ function updateBoardGlow(){
 /* ── カットイン専用画像（余白が大きいキャラはトリミング版を使用） ── */
 const CUTIN_IMAGES = {
   6: 'images/manmen-no-emi-cutin.png', // おじさん
+  7: 'images/softcream-full.png',      // ソフトクリーム
 };
 
 /* ── 演出: 進化カットイン ── */

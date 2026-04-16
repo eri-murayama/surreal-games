@@ -716,7 +716,7 @@ footer {
 
 /* ゲームカード内のキャラ画像 */
 .card-chara {
-  width: 55%;
+  width: 75%;
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
@@ -936,7 +936,7 @@ footer {
 }
 
 /* --- 篤 --- */
-.card-chara--atsushi { width: 85%; }
+.card-chara--atsushi { width: 140%; max-width: none; }
 .atsushi-speech {
   color: #0d47a1;
   box-shadow: 0 4px 20px rgba(13, 71, 161, 0.3);
@@ -944,7 +944,7 @@ footer {
 }
 
 /* --- さくらんぼ --- */
-.card-chara--sakuranbo { width: 75%; border-radius: 12px; }
+.card-chara--sakuranbo { width: 90%; border-radius: 12px; }
 .sakuranbo-speech {
   color: #ad1457;
   box-shadow: 0 4px 20px rgba(173, 20, 87, 0.3);
@@ -952,7 +952,7 @@ footer {
 }
 
 /* --- ヨシノリ --- */
-.card-chara--yoshinori { width: 70%; }
+.card-chara--yoshinori { width: 75%; }
 .yoshinori-speech {
   color: #f57f17;
   box-shadow: 0 4px 20px rgba(245, 127, 23, 0.35);
@@ -960,7 +960,7 @@ footer {
 }
 
 /* --- うんち --- */
-.card-chara--unko { width: 120%; max-width: none; margin-left: 15%; }
+.card-chara--unko { width: 110%; max-width: none; }
 .unko-speech {
   color: #8B4513;
   box-shadow: 0 4px 20px rgba(139, 69, 19, 0.3);
@@ -968,7 +968,7 @@ footer {
 }
 
 /* --- リバーシ --- */
-.card-chara--reversi { width: 65%; }
+.card-chara--reversi { width: 75%; }
 .card-flip-back__img--reversi {
   width: 220%;
   top: -150%;
@@ -980,8 +980,16 @@ footer {
   border-color: #4a0e4e;
 }
 
+/* --- シュール進化論（2048） --- */
+.card-chara--2048 { width: 75%; }
+.card-flip-back__img--2048 {
+  width: 220%;
+  top: -80%;
+  left: -60%;
+}
+
 /* --- カブトムシ様 --- */
-.card-chara--kabutomushi { width: 55%; }
+.card-chara--kabutomushi { width: 75%; }
 .card-flip-back__img--kabutomushi {
   width: 250%;
   top: -80%;
@@ -1357,15 +1365,25 @@ footer {
   width: min(90vw, 90vh) !important;
   height: auto !important;
   object-fit: contain;
-  background: none;
+  background: #fff;
+  border-radius: 16px;
   transition: none !important;
 }
 /* 巨大化時の背景オーバーレイ */
 .jumpscare-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   z-index: 998;
+}
+.jumpscare-img {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 90vh);
+  height: auto;
+  z-index: 999;
 }
 
 .about-deco {
