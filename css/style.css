@@ -2333,8 +2333,8 @@ footer {
   box-shadow: 0 6px 20px rgba(255, 20, 147, 0.5);
 }
 .roulette-card__image img {
-  max-width: 82%;
-  max-height: 82%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 .roulette-card__name {
