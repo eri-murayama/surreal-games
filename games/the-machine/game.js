@@ -558,16 +558,26 @@
       init: (s) => { s.phase = 0; },
       draw: (s) => {
         s.phase += 0.025;
-        const r = 80 + Math.sin(s.phase) * 60;
+        const sinVal = Math.sin(s.phase);
+        const r = 80 + sinVal * 60;
         ctx.fillStyle = '#fef6e4'; ctx.fillRect(0, 0, 500, 500);
-        ctx.fillStyle = '#a0d8ef';
+        // ターゲット帯(最大時)
+        ctx.strokeStyle = 'rgba(57,255,20,0.3)';
+        ctx.lineWidth = 6;
+        ctx.beginPath(); ctx.arc(250, 250, 138, 0, Math.PI*2); ctx.stroke();
+        // 息の円
+        ctx.fillStyle = sinVal > 0.85 ? '#39ff14' : '#a0d8ef';
         ctx.beginPath(); ctx.arc(250, 250, r, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = '#000';
-        ctx.font = 'bold 24px monospace';
+        ctx.font = 'bold 20px monospace';
         ctx.textAlign = 'center';
+        ctx.fillText('TAP WHEN FULL', 250, 120);
         ctx.fillText('BREATHE', 250, 256);
       },
-      onClick: () => 'win'
+      onClick: (s) => {
+        const sinVal = Math.sin(s.phase);
+        return sinVal > 0.85 ? 'win' : 'lose';
+      }
     },
     {
       name: 'WATER PLANT', act: 2, duration: 3000,
@@ -1127,18 +1137,26 @@
     currentMg.draw(mgState, elapsed);
     // ACT2: 進行に応じて画面が徐々に暗く紫がかる(崩壊進行)
     if (currentMg.act === 2) {
-      const progress = Math.min(1, mgIndex / 11);
-      // 前半: 薄い黄色味 → 中盤: 紫 → 後半: 暗い赤紫
-      const r = Math.round(20 + progress * 40);
-      const g = Math.round(10 + progress * 10);
-      const b = Math.round(40 + progress * 30);
-      const a = progress * 0.55;
+      const progress = Math.min(1, mgIndex / 15); // 16本分で正規化
+      // 前半: 透明 → 中盤: 紫 → 後半: 濃い赤紫
+      const r = Math.round(40 + progress * 60);
+      const g = Math.round(5 + progress * 5);
+      const b = Math.round(60 + progress * 40);
+      const a = progress * 0.7;
       ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
       ctx.fillRect(0, 0, 500, 500);
-      // 後半はスキャンライン強化
-      if (progress > 0.5) {
-        ctx.fillStyle = `rgba(0,0,0,${(progress - 0.5) * 0.4})`;
+      // 中盤からスキャンライン
+      if (progress > 0.3) {
+        const scanA = (progress - 0.3) * 0.6;
+        ctx.fillStyle = `rgba(0,0,0,${scanA})`;
         for (let y = 0; y < 500; y += 4) ctx.fillRect(0, y, 500, 1);
+      }
+      // 後半からノイズ粒(不穏さ)
+      if (progress > 0.6) {
+        for (let i = 0; i < Math.floor(progress * 20); i++) {
+          ctx.fillStyle = `rgba(255,0,0,${Math.random() * progress * 0.15})`;
+          ctx.fillRect(Math.random() * 500, Math.random() * 500, 2, 2);
+        }
       }
     }
     // マウストレイル
@@ -1276,15 +1294,18 @@
     e.preventDefault();
     if (!currentMg) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const x = (t.clientX - rect.left) * (500 / rect.width);
-    const y = (t.clientY - rect.top) * (500 / rect.height);
+    const tc = e.touches[0];
+    const x = (tc.clientX - rect.left) * (500 / rect.width);
+    const y = (tc.clientY - rect.top) * (500 / rect.height);
+    lastTouchX = x;
+    lastTouchY = y;
     handleInput(x, y, 'down');
   }, { passive: false });
+  let lastTouchX = 250, lastTouchY = 250;
   canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
     if (!currentMg) return;
-    handleInput(0, 0, 'up');
+    handleInput(lastTouchX, lastTouchY, 'up');
   }, { passive: false });
 
   function handleInput(x, y, type) {
@@ -1457,10 +1478,12 @@
     // ヒートマップ描画
     drawHeatmap();
     // ゴースト再生開始
-    setTimeout(() => startGhostReplay(), 3000);
+    // 統計行が全部出揃ったあとにメッセージ＆ゴースト再生
+    const statsDelay = lines.length * 300 + 400; // 7行*0.3s + 余白
+    setTimeout(() => startGhostReplay(), statsDelay);
     setTimeout(() => {
       $('mirror-message').textContent = t('msg_' + finalEndingKey);
-    }, 2700);
+    }, statsDelay + 300);
   }
 
   // ヒートマップを鏡画面のミニキャンバスに描く
@@ -1537,11 +1560,8 @@
       gctx.fillText('YOUR INPUTS', 6, 12);
       if (elapsed < replayDuration + 500) {
         ghostRaf = requestAnimationFrame(tick);
-      } else {
-        // ループ再生
-        ghostStartTime = performance.now();
-        ghostRaf = requestAnimationFrame(tick);
       }
+      // 再生終了後はそのまま停止(無限ループしない)
     }
     tick();
   }
@@ -1759,7 +1779,10 @@
   }
 
   // タイプライター風にテキストを出す
+  const activeTypewriters = {};
   function typeWriter(elId, fullText, speed, done) {
+    // 前のタイプライターが走ってたら止める
+    if (activeTypewriters[elId]) clearInterval(activeTypewriters[elId]);
     const el = $(elId);
     el.textContent = '';
     let i = 0;
@@ -1768,9 +1791,11 @@
       i++;
       if (i >= fullText.length) {
         clearInterval(iv);
+        delete activeTypewriters[elId];
         if (done) done();
       }
     }, speed || 40);
+    activeTypewriters[elId] = iv;
     return iv;
   }
 
@@ -2214,6 +2239,14 @@
       waitForTap('opening-screen', () => {
         cancelAnimationFrame(openingRaf);
         window.removeEventListener('resize', onResize);
+        // Three.js完全解放
+        scene.traverse(obj => {
+          if (obj.geometry) obj.geometry.dispose();
+          if (obj.material) {
+            if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
+            else obj.material.dispose();
+          }
+        });
         renderer.dispose();
         container.innerHTML = '';
         showBoyScene();
@@ -2498,10 +2531,17 @@
   const BONUS_POOL = [
     'ANSWER PHONE','WATER PLANT','WAVE HELLO','EAT LUNCH','CATCH LEAF',
     'COUNT SHEEP','POUR TEA','BRUSH TEETH','PICK FLOWER','SWAT FLY',
-    'SAY YES','SMILE','BREATHE','OBEY',
+    'SAY YES','SMILE','BREATHE',
   ];
+  let lastBonusName = '';
   function pickBonusMinigame() {
-    const name = BONUS_POOL[Math.floor(Math.random() * BONUS_POOL.length)];
+    let name;
+    let tries = 0;
+    do {
+      name = BONUS_POOL[Math.floor(Math.random() * BONUS_POOL.length)];
+      tries++;
+    } while (name === lastBonusName && tries < 10);
+    lastBonusName = name;
     return minigames.find(m => m.name === name);
   }
 
@@ -2587,11 +2627,17 @@
       cancelAnimationFrame(tcRaf);
       $('test-complete-screen').removeEventListener('click', onTap);
       $('test-complete-screen').removeEventListener('touchstart', onTap);
-      // プレイヤーが席を立った → 試験終了エンド
-      // ボーナスで途中まで続けて止めたならその分は記録済み
       stats.stoppedAt = stats.bonusCompleted + stats.bonusFailed;
-      // 結果集計に直接行く(手術されずに済む)
-      showResultScene();
+      // 席を立ったSE＋画面フェード
+      window.GameAudio.sfxJingle('wait');
+      const tc = $('tc-canvas');
+      if (tc) tc.style.transition = 'opacity 1s';
+      if (tc) tc.style.opacity = '0';
+      $('tc-text').textContent = curLang === 'en' ? 'You stood up.' : '少年は、席を立った。';
+      setTimeout(() => {
+        if (tc) { tc.style.transition = ''; tc.style.opacity = '1'; }
+        showResultScene();
+      }, 1500);
     }, waitMs);
   }
 
@@ -3054,10 +3100,12 @@
   $('title-btn').addEventListener('click', () => location.reload());
   $('other-btn').addEventListener('click', () => { location.href = '../../index.html'; });
   $('share-btn').addEventListener('click', () => {
-    const score = $('mirror-stats').textContent.match(/MACHINE SCORE\.+(\d+)%/);
-    const pct = score ? score[1] : '?';
-    const text = `わたしの機械度は ${pct}% でした。\nTHE MACHINE / Gamedev.js Jam 2026 #gamedevjs`;
-    const url = location.href.replace('/game.html', '/').split('?')[0];
+    const pct = finalMachineScore || 0;
+    const endName = ENDINGS[finalEndingKey] ? ENDINGS[finalEndingKey].title : '';
+    const text = curLang === 'en'
+      ? `My compatibility: ${pct}% [${endName}]\nTHE MACHINE / Gamedev.js Jam 2026 #gamedevjs`
+      : `わたしの機械度は ${pct}% でした [${endName}]\nTHE MACHINE / Gamedev.js Jam 2026 #gamedevjs`;
+    const url = location.href.split('?')[0];
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
   });
 
