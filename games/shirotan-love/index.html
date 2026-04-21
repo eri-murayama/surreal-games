@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>しろたんと恋のかけら～きみと、ほのぼの～ - シュールゲームス</title>
+  <meta name="description" content="海辺で出会ったしろたんとの、甘くてちょっぴり切ない物語。選択肢であなたの答えを。※非公式ファン作品・非営利">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="しろたんと恋のかけら | シュールゲームス">
+  <meta property="og:description" content="海辺で出会ったしろたんとの、甘くてちょっぴり切ない物語。※非公式ファン作品">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/shirotan-love/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+  <div id="game-wrapper" data-sg-scale="420x740" data-sg-scale-max="1.2" data-sg-scale-max-offset-y="56">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <div class="title-bg"></div>
+      <div class="title-content">
+        <h1 class="game-title" data-i18n="title">しろたんと恋のかけら</h1>
+        <p class="game-subtitle" data-i18n="subtitle">～きみと、ほのぼの～</p>
+        <img class="title-char" src="assets/shirotan2.png" alt="しろたん">
+        <button id="start-btn" class="primary-btn" data-i18n="startBtn">はじめる</button>
+        <div class="title-actions">
+          <button id="lang-btn" class="icon-btn">JP/EN</button>
+          <button id="mute-btn" class="icon-btn">🔊</button>
+        </div>
+        <p class="disclaimer" data-i18n="disclaimer">※「しろたん」は株式会社クリエイティブヨーコのキャラクターです。本作は非公式のファン作品（非営利）です。</p>
+      </div>
+    </div>
+
+    <!-- メインADV画面 -->
+    <div id="adv-screen" class="screen">
+      <div class="scene-bg" id="scene-bg"></div>
+
+      <!-- 好感度表示 -->
+      <div class="love-meter">
+        <span class="meter-icon">💗</span>
+        <div class="meter-bar"><div id="meter-fill" class="meter-fill"></div></div>
+        <span id="meter-value" class="meter-value">0</span>
+      </div>
+
+      <!-- 場面番号 -->
+      <div class="scene-num" id="scene-num">1 / 6</div>
+
+      <!-- キャラクター -->
+      <div id="char-stage" class="char-stage">
+        <img id="char-img" src="assets/shirotan4.png" alt="しろたん">
+        <div id="char-emo" class="char-emo"></div>
+      </div>
+
+      <!-- 台詞 -->
+      <div class="dialog-box">
+        <div class="speaker" id="speaker"></div>
+        <div class="dialog-text" id="dialog-text"></div>
+        <div class="next-hint" id="next-hint">▼ タップ</div>
+      </div>
+
+      <!-- 選択肢 -->
+      <div class="choices" id="choices"></div>
+
+      <!-- メニュー -->
+      <div class="adv-menu">
+        <button id="skip-btn" class="mini-btn">≫</button>
+        <button id="mute2-btn" class="mini-btn">🔊</button>
+      </div>
+    </div>
+
+    <!-- エンディング画面 -->
+    <div id="end-screen" class="screen">
+      <div class="end-bg"></div>
+      <div class="end-content">
+        <h2 id="end-title" class="end-title"></h2>
+        <img id="end-char" class="end-char" src="assets/shirotan2.png" alt="しろたん">
+        <p id="end-text" class="end-text"></p>
+        <div class="end-actions">
+          <button id="share-btn" class="primary-btn share" data-i18n="shareBtn">𝕏でシェア</button>
+          <button id="replay-btn" class="primary-btn" data-i18n="replayBtn">もういちど</button>
+          <a href="../../prototypes.html" class="nav-link" data-i18n="moreGames">他のゲームも遊ぶ →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

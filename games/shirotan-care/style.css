@@ -1,0 +1,350 @@
+body {
+  margin: 0;
+  font-family: 'Zen Maru Gothic', 'Hachi Maru Pop', sans-serif;
+  background: linear-gradient(180deg, #e6f5ff 0%, #fff4e0 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #4a5a6a;
+}
+
+#game-wrapper {
+  width: 420px;
+  margin: 0 auto;
+  padding: 10px 14px 14px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.game-header { text-align: center; margin: 6px 0 2px; }
+.game-title {
+  font-family: 'Hachi Maru Pop', sans-serif;
+  font-size: 26px;
+  color: #7cb6e0;
+  margin: 0;
+  text-shadow: 2px 2px 0 #fff, 3px 3px 0 #ffe0b5;
+}
+.game-subtitle {
+  font-size: 13px;
+  color: #c09a6e;
+  margin: 2px 0 6px;
+}
+
+.top-controls {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  display: flex;
+  gap: 6px;
+  z-index: 5;
+}
+.icon-btn {
+  background: #fff;
+  border: 2px solid #ffe0b5;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #ffe0b5;
+  color: #c09a6e;
+  font-weight: 700;
+  padding: 0;
+}
+.icon-btn:active { transform: translateY(2px); box-shadow: none; }
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  background: #fff;
+  border: 2px solid #ffe4c4;
+  border-radius: 14px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+.stat { display: flex; align-items: center; gap: 6px; }
+.stat-label {
+  font-size: 11px;
+  color: #8c7060;
+  font-weight: 700;
+  width: 38px;
+  flex-shrink: 0;
+}
+.bar {
+  flex: 1;
+  height: 10px;
+  background: #f4ead8;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #e8d5b8;
+}
+.fill {
+  height: 100%;
+  transition: width 0.35s;
+  border-radius: 6px;
+}
+.fill.hunger { background: linear-gradient(90deg, #ffb070, #ff8860); width: 80%; }
+.fill.clean  { background: linear-gradient(90deg, #7dc7e0, #a5e0ef); width: 80%; }
+.fill.happy  { background: linear-gradient(90deg, #ffe070, #ffb070); width: 80%; }
+.fill.love   { background: linear-gradient(90deg, #ff9ec0, #ffb5d0); width: 20%; }
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 4px solid #fff;
+  box-shadow: 0 6px 0 #ffe0b5, 0 10px 24px rgba(255, 200, 160, 0.3);
+  margin: 4px 0 8px;
+}
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #bfe7ff 0%, #fff4d8 100%);
+  transition: background 1s;
+}
+.bg-layer.night { background: linear-gradient(180deg, #2d2d5a 0%, #6b5a9c 100%); }
+.bg-layer.sunset { background: linear-gradient(180deg, #ffd8a8 0%, #ffb5c5 100%); }
+
+/* 雲・星 */
+.weather {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.weather::before, .weather::after {
+  content: "";
+  position: absolute;
+  background: rgba(255,255,255,0.75);
+  border-radius: 50%;
+  filter: blur(6px);
+}
+.weather::before { width:70px; height:35px; top:30px; left:40px; animation: drift 30s linear infinite; }
+.weather::after { width:90px; height:40px; top:60px; right:20px; animation: drift 40s linear infinite reverse; }
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(30px); } }
+
+.char {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 180px;
+  animation: bob 2.6s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+.char.sleeping { animation: sleepBob 4s ease-in-out infinite; }
+@keyframes sleepBob {
+  0%, 100% { transform: translateX(-50%) translateY(0) rotate(-2deg); }
+  50% { transform: translateX(-50%) translateY(2px) rotate(2deg); }
+}
+#shirotan {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 4px 8px rgba(100, 140, 180, 0.3));
+  transition: filter 0.3s;
+}
+.char.happy #shirotan { filter: drop-shadow(0 0 12px #ffb5d0) drop-shadow(0 4px 8px rgba(255,150,200,0.4)); }
+.char.dirty #shirotan { filter: sepia(0.4) drop-shadow(0 4px 8px rgba(100,80,60,0.4)); }
+
+.mood {
+  position: absolute;
+  top: 10px;
+  right: -6px;
+  font-size: 28px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.mood.show { opacity: 1; animation: moodPop 0.5s ease-out; }
+@keyframes moodPop {
+  0% { transform: scale(0) rotate(-20deg); }
+  60% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.dirt-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.dirt-layer.show {
+  opacity: 1;
+  background-image:
+    radial-gradient(circle at 30% 70%, rgba(130, 90, 50, 0.3) 0 8px, transparent 9px),
+    radial-gradient(circle at 60% 80%, rgba(130, 90, 50, 0.3) 0 6px, transparent 7px),
+    radial-gradient(circle at 50% 60%, rgba(130, 90, 50, 0.25) 0 5px, transparent 6px);
+}
+
+.speech {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 2px solid #ffc9dc;
+  font-size: 13px;
+  color: #7a5a70;
+  max-width: 80%;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.speech.show { opacity: 1; }
+.speech::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border: 6px solid transparent;
+  border-top-color: #ffc9dc;
+}
+
+.fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.fx-item {
+  position: absolute;
+  font-size: 24px;
+  animation: fxFloat 1.2s ease-out forwards;
+}
+@keyframes fxFloat {
+  0% { opacity: 0; transform: translateY(0) scale(0.6); }
+  30% { opacity: 1; transform: translateY(-20px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-around;
+  background: #fff;
+  border: 2px solid #ffe4c4;
+  border-radius: 10px;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #8c7060;
+}
+.info b { color: #7a5a4a; font-size: 14px; }
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.act-btn {
+  padding: 8px 2px;
+  border: 2px solid #ffe4c4;
+  background: #fff;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 11px;
+  color: #7a5a4a;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #ffd0a0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.act-btn:active { transform: translateY(2px); box-shadow: none; }
+.act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bottom-controls {
+  margin-bottom: 4px;
+}
+.act-btn.share {
+  width: 100%;
+  padding: 10px;
+  background: #7cb6e0;
+  color: #fff;
+  border: none;
+  box-shadow: 0 3px 0 #4a8bb5;
+  font-size: 14px;
+}
+
+.nav-links {
+  text-align: center;
+  margin: 4px 0 6px;
+}
+.nav-link {
+  color: #7cb6e0;
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.disclaimer {
+  font-size: 10px;
+  color: #9d8aa0;
+  text-align: center;
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+.toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(40, 40, 60, 0.9);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  z-index: 100;
+  animation: toastIn 0.3s ease-out;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* レベルアップオーバーレイ */
+.lvup-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 240, 230, 0.85);
+  z-index: 50;
+  animation: lvupFade 2s ease-out forwards;
+  pointer-events: none;
+}
+.lvup-text {
+  font-family: 'Hachi Maru Pop', sans-serif;
+  font-size: 36px;
+  color: #ff9ec0;
+  text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffd5e5;
+  animation: lvupPop 0.6s ease-out;
+}
+@keyframes lvupFade {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes lvupPop {
+  from { transform: scale(0) rotate(-20deg); }
+  to { transform: scale(1) rotate(0); }
+}
+
+@media (max-width: 430px) {
+  #game-wrapper { width: 100%; }
+}

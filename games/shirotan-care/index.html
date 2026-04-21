@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>しろたん育成日記～まったりおせわ～ - シュールゲームス</title>
+  <meta name="description" content="しろたんをおせわして大切に育てよう。ごはん・なでなで・おふろでなつき度UP！※非公式ファン作品・非営利">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="しろたん育成日記 | シュールゲームス">
+  <meta property="og:description" content="しろたんをおせわしてなかよくなろう。※非公式ファン作品">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/shirotan-care/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+  <div id="game-wrapper" data-sg-scale="420x740" data-sg-scale-max="1.2" data-sg-scale-max-offset-y="56">
+    <header class="game-header">
+      <h1 class="game-title" data-i18n="title">しろたん育成日記</h1>
+      <p class="game-subtitle" data-i18n="subtitle">～まったりおせわ～</p>
+    </header>
+
+    <div class="top-controls">
+      <button id="lang-btn" class="icon-btn">JP/EN</button>
+      <button id="mute-btn" class="icon-btn">🔊</button>
+    </div>
+
+    <!-- ステータスパネル -->
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-label" data-i18n="statHunger">おなか</span>
+        <div class="bar"><div id="bar-hunger" class="fill hunger"></div></div>
+      </div>
+      <div class="stat">
+        <span class="stat-label" data-i18n="statClean">きれい</span>
+        <div class="bar"><div id="bar-clean" class="fill clean"></div></div>
+      </div>
+      <div class="stat">
+        <span class="stat-label" data-i18n="statHappy">きげん</span>
+        <div class="bar"><div id="bar-happy" class="fill happy"></div></div>
+      </div>
+      <div class="stat">
+        <span class="stat-label" data-i18n="statLove">なつき</span>
+        <div class="bar"><div id="bar-love" class="fill love"></div></div>
+      </div>
+    </div>
+
+    <!-- ステージ -->
+    <div id="stage" class="stage">
+      <div class="bg-layer" id="bg-layer"></div>
+      <div id="weather" class="weather"></div>
+      <div id="dirt-layer" class="dirt-layer"></div>
+      <div id="char" class="char">
+        <img id="shirotan" src="assets/shirotan1.png" alt="しろたん" draggable="false">
+        <div id="mood" class="mood"></div>
+      </div>
+      <div id="fx" class="fx"></div>
+      <div id="speech" class="speech"></div>
+    </div>
+
+    <!-- 情報 -->
+    <div class="info-row">
+      <span class="info"><span data-i18n="labelDay">Day</span>: <b id="day">1</b></span>
+      <span class="info"><span data-i18n="labelLevel">Lv</span>: <b id="level">1</b></span>
+      <span class="info">💗 <b id="love-pts">0</b></span>
+    </div>
+
+    <!-- アクション -->
+    <div class="actions">
+      <button class="act-btn" data-action="feed">🐟<br><span data-i18n="actFeed">ごはん</span></button>
+      <button class="act-btn" data-action="pet">🤲<br><span data-i18n="actPet">なでなで</span></button>
+      <button class="act-btn" data-action="bath">🛁<br><span data-i18n="actBath">おふろ</span></button>
+      <button class="act-btn" data-action="play">🎾<br><span data-i18n="actPlay">あそぶ</span></button>
+      <button class="act-btn" data-action="sleep">😴<br><span data-i18n="actSleep">おやすみ</span></button>
+    </div>
+
+    <div class="bottom-controls">
+      <button id="share-btn" class="act-btn share" data-i18n="shareBtn">𝕏でシェア</button>
+    </div>
+
+    <div class="nav-links">
+      <a href="../../prototypes.html" class="nav-link" data-i18n="moreGames">他のゲームも遊ぶ →</a>
+    </div>
+
+    <p class="disclaimer" data-i18n="disclaimer">※「しろたん」は株式会社クリエイティブヨーコのキャラクターです。本作は非公式のファン作品（非営利）です。</p>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>しろたんお着替え～ゆるふわコーデ～ - シュールゲームス</title>
+  <meta name="description" content="しろたんをかわいく着替えさせよう！ゆるふわコーデの着せ替えゲーム。※非公式ファン作品・非営利">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="しろたんお着替え～ゆるふわコーデ～ | シュールゲームス">
+  <meta property="og:description" content="しろたんをかわいく着替えさせよう！※非公式ファン作品">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/shirotan-dressup/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+  <div id="game-wrapper" data-sg-scale="420x740" data-sg-scale-max="1.2" data-sg-scale-max-offset-y="56">
+    <header class="game-header">
+      <h1 class="game-title" data-i18n="title">しろたんお着替え</h1>
+      <p class="game-subtitle" data-i18n="subtitle">～ゆるふわコーデ～</p>
+    </header>
+
+    <!-- 上段ボタン -->
+    <div class="top-controls">
+      <button id="lang-btn" class="icon-btn" aria-label="言語切替">JP/EN</button>
+      <button id="mute-btn" class="icon-btn" aria-label="音量">🔊</button>
+    </div>
+
+    <!-- ステージ -->
+    <div id="stage" class="stage">
+      <div id="bg-layer" class="bg-layer bg-sky"></div>
+      <div id="char" class="char">
+        <div id="acc-back" class="acc-back"></div>
+        <img id="shirotan" src="assets/shirotan1.png" alt="しろたん" draggable="false">
+        <div id="acc-hat" class="acc-hat"></div>
+        <div id="acc-cheek" class="acc-cheek"></div>
+        <div id="acc-outfit" class="acc-outfit"></div>
+      </div>
+      <div id="sparkles" class="sparkles"></div>
+    </div>
+
+    <!-- タブ -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="hat" data-i18n="tabHat">ぼうし</button>
+      <button class="tab-btn" data-tab="outfit" data-i18n="tabOutfit">ふく</button>
+      <button class="tab-btn" data-tab="cheek" data-i18n="tabCheek">ほっぺ</button>
+      <button class="tab-btn" data-tab="back" data-i18n="tabBack">もちもの</button>
+      <button class="tab-btn" data-tab="bg" data-i18n="tabBg">はいけい</button>
+    </div>
+
+    <!-- パレット -->
+    <div id="palette" class="palette"></div>
+
+    <!-- 下段ボタン -->
+    <div class="bottom-controls">
+      <button id="reset-btn" class="act-btn" data-i18n="resetBtn">リセット</button>
+      <button id="random-btn" class="act-btn primary" data-i18n="randomBtn">おまかせ</button>
+      <button id="share-btn" class="act-btn share" data-i18n="shareBtn">𝕏でシェア</button>
+    </div>
+
+    <div class="nav-links">
+      <a href="../../prototypes.html" class="nav-link" data-i18n="moreGames">他のゲームも遊ぶ →</a>
+    </div>
+
+    <p class="disclaimer" data-i18n="disclaimer">※「しろたん」は株式会社クリエイティブヨーコのキャラクターです。本作は非公式のファン作品（非営利）です。</p>
+  </div>
+
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
