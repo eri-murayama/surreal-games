@@ -1,0 +1,526 @@
+/* ===== THE MACHINE ===== */
+body {
+  background: #000;
+  color: #f0f0f0;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.back-to-top-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  color: #888;
+  text-decoration: none;
+  font-size: 12px;
+  z-index: 1000;
+}
+.back-to-top-link:hover { color: #fff; }
+
+.mute-btn {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid #444;
+  color: #fff;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 1000;
+}
+.mute-btn:hover { background: rgba(0,0,0,0.9); }
+
+.screen {
+  display: none;
+  width: 100%;
+  max-width: 500px;
+  height: 100vh;
+  max-height: 700px;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.screen.active { display: flex; }
+
+.btn-primary, .btn-secondary {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 14px;
+  padding: 14px 28px;
+  border: 2px solid #fff;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 16px;
+  letter-spacing: 2px;
+  transition: all 0.15s;
+}
+.btn-primary:hover, .btn-secondary:hover {
+  background: #fff;
+  color: #000;
+}
+.btn-secondary {
+  border-color: #888;
+  color: #888;
+}
+
+/* ===== タイトル画面 ===== */
+#title-screen {
+  background: radial-gradient(ellipse at center, #1a0a0a 0%, #000 75%);
+  position: relative;
+  overflow: hidden;
+}
+#title-bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.title-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0) 0,
+    rgba(255,255,255,0) 2px,
+    rgba(255,255,255,0.05) 2px,
+    rgba(255,255,255,0.05) 3px
+  );
+  pointer-events: none;
+}
+.title-container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.game-title {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 42px;
+  line-height: 1.4;
+  letter-spacing: 4px;
+  color: #fff;
+  margin-bottom: 24px;
+  text-shadow:
+    0 0 12px rgba(255,255,255,0.6),
+    0 0 24px rgba(255,48,48,0.4),
+    2px 0 0 rgba(255,48,48,0.5),
+    -2px 0 0 rgba(0,255,247,0.5);
+  animation: titlePulse 3s ease-in-out infinite;
+}
+@keyframes titlePulse {
+  0%, 100% { letter-spacing: 4px; }
+  50% { letter-spacing: 6px; }
+}
+.subtitle {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 32px;
+  letter-spacing: 2px;
+}
+.proto-note {
+  margin-top: 24px;
+  font-size: 11px;
+  color: #555;
+}
+.lang-switch {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.lang-btn {
+  background: transparent;
+  color: #888;
+  border: 1px solid #444;
+  padding: 6px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', sans-serif;
+}
+.lang-btn.active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+.lang-btn:hover { color: #fff; }
+
+/* ===== 3Dオープニング ===== */
+#opening-3d {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+#opening-3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.letterbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: #000;
+  z-index: 3;
+}
+.letterbox.top { top: 0; }
+.letterbox.bottom { bottom: 0; }
+.opening-hud {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 4;
+}
+.hp-bar {
+  width: 42%;
+  height: 18px;
+  border: 2px solid #fff;
+  background: #111;
+  position: relative;
+}
+.hp-fill {
+  height: 100%;
+  transition: width 0.3s;
+}
+.hp-blue .hp-fill { background: #4fa3ff; width: 100%; }
+.hp-red .hp-fill { background: #ff4444; width: 100%; }
+.hp-name {
+  position: absolute;
+  top: -18px;
+  left: 4px;
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 9px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.hp-red .hp-name { left: auto; right: 4px; }
+.hit-text-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 26px;
+  color: #ffd54f;
+  text-shadow: 0 0 12px rgba(255,200,0,0.8), 2px 2px 0 #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.opening-overlay {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  z-index: 6;
+}
+
+/* ===== シネマティック共通 ===== */
+#opening-screen, #boy-screen, #poster-screen,
+#vr-transition-screen, #result-screen, #reveal-screen,
+#test-complete-screen {
+  background: #000;
+  position: relative;
+}
+#opening-canvas, #boy-canvas, #poster-canvas,
+#vr-canvas, #result-canvas, #reveal-canvas,
+#tc-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+  max-height: 700px;
+  margin: auto;
+}
+.tc-overlay { pointer-events: auto; cursor: pointer; }
+.cinematic-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: 40px;
+  pointer-events: none;
+}
+.cinematic-overlay.poster-overlay { pointer-events: auto; }
+.cinematic-overlay #apply-btn { pointer-events: auto; }
+.cinematic-text {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.8;
+  text-shadow:
+    0 0 8px rgba(0,0,0,0.9),
+    0 2px 4px rgba(0,0,0,0.8);
+  min-height: 60px;
+  padding: 16px 20px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 4px;
+}
+.tap-hint {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 10px;
+  color: #fff;
+  margin-top: 16px;
+  animation: blink 1s infinite;
+  letter-spacing: 3px;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0.2; }
+}
+
+/* ===== オープニング演出 ===== */
+#boot-screen { background: #000; }
+.boot-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(255,0,0,0.15), transparent 70%),
+    repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px);
+  animation: bootFlash 1.4s infinite;
+}
+@keyframes bootFlash {
+  0%, 50% { opacity: 0.6; }
+  51%, 100% { opacity: 1; }
+}
+.boot-container {
+  position: relative;
+  text-align: center;
+  z-index: 2;
+}
+.boot-line {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 14px;
+  color: #ff3030;
+  margin-bottom: 24px;
+  min-height: 18px;
+}
+.boot-bar {
+  width: 280px;
+  height: 16px;
+  border: 2px solid #ff3030;
+  background: #000;
+  margin: 0 auto;
+}
+.boot-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: #ff3030;
+  transition: width 0.1s linear;
+}
+.boot-warning {
+  margin-top: 24px;
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 10px;
+  color: #ff8080;
+  letter-spacing: 2px;
+  min-height: 14px;
+}
+
+/* ===== ミニゲーム画面 ===== */
+#game-screen { background: #111; }
+.game-hud {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 16px;
+  background: #000;
+  border-bottom: 1px solid #333;
+}
+.hud-act {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 10px;
+  color: #888;
+  letter-spacing: 2px;
+}
+.hud-task {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 16px;
+  color: #fff;
+  margin: 6px 0 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.hud-timer {
+  width: 100%;
+  height: 4px;
+  background: #222;
+}
+.hud-timer-fill {
+  height: 100%;
+  width: 100%;
+  background: #ff3030;
+  transition: width 0.05s linear;
+}
+#game-canvas {
+  display: block;
+  background: #1a1a1a;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  aspect-ratio: 1;
+  cursor: crosshair;
+}
+.game-feedback {
+  width: 100%;
+  text-align: center;
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 18px;
+  padding: 12px 0;
+  min-height: 44px;
+  background: #000;
+}
+.game-feedback.ok { color: #39ff14; }
+.game-feedback.ng { color: #ff3030; }
+
+/* ===== グリッチ遷移 ===== */
+#glitch-screen { background: #000; }
+.glitch-overlay {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, #fff 0, #fff 2px, #000 2px, #000 4px);
+  mix-blend-mode: difference;
+  animation: glitchFlicker 0.08s infinite;
+}
+@keyframes glitchFlicker {
+  0%, 100% { transform: translateX(0); opacity: 1; }
+  25% { transform: translateX(-4px); opacity: 0.6; }
+  50% { transform: translateX(4px); opacity: 0.9; }
+  75% { transform: translateX(-2px); opacity: 0.4; }
+}
+.glitch-text {
+  position: relative;
+  z-index: 2;
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 32px;
+  color: #fff;
+  text-shadow: 2px 0 #ff3030, -2px 0 #00fff7;
+}
+
+/* ===== 第3幕 鏡 ===== */
+#mirror-screen { background: #000; }
+.mirror-container {
+  text-align: center;
+  padding: 20px;
+  max-width: 480px;
+  width: 100%;
+}
+.mirror-title {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 16px;
+  letter-spacing: 4px;
+}
+.mirror-canvases {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+.mini-canvas-wrap { text-align: center; }
+.mini-canvas-label {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 9px;
+  color: #666;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+#mirror-heatmap, #mirror-ghost {
+  display: block;
+  background: #0a0a0a;
+  border: 1px solid #333;
+}
+.mirror-stats {
+  text-align: left;
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 11px;
+  color: #aaa;
+  line-height: 2;
+  margin-bottom: 24px;
+  min-height: 140px;
+}
+.mirror-stats .stat-line {
+  opacity: 0;
+  animation: fadeInLine 0.5s forwards;
+}
+@keyframes fadeInLine {
+  to { opacity: 1; }
+}
+.mirror-message {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.8;
+  margin: 24px 0;
+  min-height: 60px;
+}
+
+/* ===== 結末 ===== */
+#end-screen { background: #000; }
+.end-container { text-align: center; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; max-width: 480px; }
+.end-container .btn-primary, .end-container .btn-secondary { margin-top: 0; }
+.end-title {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+  min-height: 24px;
+  text-shadow: 0 0 12px currentColor;
+}
+.end-line {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 15px;
+  color: #fff;
+  line-height: 2;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+  min-height: 200px;
+}
+
+/* ===== BGM試聴パネル(プロト専用) ===== */
+#bgm-panel {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  background: rgba(0,0,0,0.85);
+  border: 1px solid #444;
+  padding: 10px;
+  z-index: 999;
+  max-width: 200px;
+}
+.bgm-panel-title {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 6px;
+}
+.bgm-btn {
+  display: block;
+  width: 100%;
+  font-size: 11px;
+  padding: 6px;
+  margin-bottom: 4px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  cursor: pointer;
+  text-align: left;
+}
+.bgm-btn:hover { background: #333; }
+.bgm-btn.bgm-stop { background: #501010; }

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>THE MACHINE - BGM書き出しツール</title>
+  <style>
+    body { background:#111; color:#f0f0f0; font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+    h1 { font-size: 22px; }
+    .row { background:#222; padding:14px; margin-bottom:10px; border:1px solid #333; border-radius:6px; }
+    .row h3 { margin:0 0 6px; font-size:15px; }
+    .row p { margin:0 0 10px; font-size:12px; color:#aaa; }
+    button { background:#333; color:#fff; border:1px solid #555; padding:8px 14px; cursor:pointer; margin-right:6px; font-size:13px; }
+    button:hover { background:#444; }
+    button:disabled { opacity: 0.5; cursor: wait; }
+    .duration { background:#000; border:1px solid #555; color:#fff; width:60px; padding:6px; }
+    .note { font-size:11px; color:#666; margin-top:14px; }
+    .status { font-size:12px; color:#39ff14; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <h1>🎵 THE MACHINE / BGM書き出しツール</h1>
+  <p style="font-size:13px;color:#aaa;">SNS投稿用に各BGMをWAVファイルでダウンロードできます。秒数は調整可。</p>
+
+  <div class="row" data-name="act1">
+    <h3>🤖 第1幕: メカバトル (壮大8bit)</h3>
+    <p>4つ打ちドラム + 速いリード + 太いベース。ループ約2秒。</p>
+    <input type="number" class="duration" value="16" min="2" max="120"> 秒
+    <button class="play-btn">▶ 試聴</button>
+    <button class="dl-btn">⬇ WAVダウンロード</button>
+    <div class="status"></div>
+  </div>
+
+  <div class="row" data-name="act2a">
+    <h3>🌸 第2幕前半: ほのぼの (マリンバ風)</h3>
+    <p>三角波メロディ + 鳥の声。揺らぎあり、自然な雰囲気。ループ約8秒。</p>
+    <input type="number" class="duration" value="16" min="2" max="120"> 秒
+    <button class="play-btn">▶ 試聴</button>
+    <button class="dl-btn">⬇ WAVダウンロード</button>
+    <div class="status"></div>
+  </div>
+
+  <div class="row" data-name="act2b">
+    <h3>⚙️ 第2幕後半: 機械化したほのぼの</h3>
+    <p>同じメロディが矩形波・揺らぎゼロで硬質化。ループ約8秒。</p>
+    <input type="number" class="duration" value="16" min="2" max="120"> 秒
+    <button class="play-btn">▶ 試聴</button>
+    <button class="dl-btn">⬇ WAVダウンロード</button>
+    <div class="status"></div>
+  </div>
+
+  <div class="row" data-name="act3">
+    <h3>🪞 第3幕: 鏡 (心拍→メトロノーム→歯車)</h3>
+    <p>3フェーズ進行。最低16秒以上推奨。</p>
+    <input type="number" class="duration" value="20" min="6" max="120"> 秒
+    <button class="play-btn">▶ 試聴</button>
+    <button class="dl-btn">⬇ WAVダウンロード</button>
+    <div class="status"></div>
+  </div>
+
+  <div class="row" data-name="ending_comedy">
+    <h3>🎤 エンディング用BGM (歌のせ用)</h3>
+    <p>BPM110、C-G-Am-F進行。ボーカル帯域を空けた軽快なバッキング。歌詞「お尻お尻 小高い山 登って 進め runaway runaway 母は食事中よ」を乗せる想定。</p>
+    <input type="number" class="duration" value="30" min="8" max="180"> 秒
+    <button class="play-btn">▶ 試聴</button>
+    <button class="dl-btn">⬇ WAVダウンロード</button>
+    <div class="status"></div>
+  </div>
+
+  <p class="note">
+    ※ このページはBGM書き出し専用ツールで、ゲーム本体には含まれません。<br>
+    ※ WAV形式（44.1kHz / ステレオ / 16bit）。ファイルサイズが気になる場合はAudacityなどでmp3に変換してください。
+  </p>
+
+  <script src="audio.js"></script>
+  <script>
+    // AudioBuffer → WAV(16bit PCM) エンコーダ
+    function audioBufferToWav(buffer) {
+      const numCh = buffer.numberOfChannels;
+      const sampleRate = buffer.sampleRate;
+      const length = buffer.length * numCh * 2 + 44;
+      const arr = new ArrayBuffer(length);
+      const view = new DataView(arr);
+
+      function writeStr(o, s) { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); }
+      writeStr(0, 'RIFF');
+      view.setUint32(4, length - 8, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, numCh, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * numCh * 2, true);
+      view.setUint16(32, numCh * 2, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      view.setUint32(40, length - 44, true);
+
+      // インターリーブ書き込み
+      let offset = 44;
+      const channels = [];
+      for (let c = 0; c < numCh; c++) channels.push(buffer.getChannelData(c));
+      for (let i = 0; i < buffer.length; i++) {
+        for (let c = 0; c < numCh; c++) {
+          let s = Math.max(-1, Math.min(1, channels[c][i]));
+          s = s < 0 ? s * 0x8000 : s * 0x7fff;
+          view.setInt16(offset, s, true);
+          offset += 2;
+        }
+      }
+      return new Blob([arr], { type: 'audio/wav' });
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    document.querySelectorAll('.row').forEach(row => {
+      const name = row.dataset.name;
+      const durInput = row.querySelector('.duration');
+      const playBtn = row.querySelector('.play-btn');
+      const dlBtn = row.querySelector('.dl-btn');
+      const status = row.querySelector('.status');
+
+      playBtn.addEventListener('click', () => {
+        document.querySelectorAll('.row').forEach(r => {
+          // 試聴は1個だけ
+          GameAudio.stop();
+        });
+        GameAudio.play(name);
+        status.textContent = '🔊 試聴中...';
+      });
+
+      dlBtn.addEventListener('click', async () => {
+        const dur = Math.max(2, parseFloat(durInput.value) || 16);
+        dlBtn.disabled = true;
+        status.textContent = '⏳ レンダリング中...';
+        try {
+          GameAudio.stop();
+          const buffer = await GameAudio.renderToBuffer(name, dur);
+          const blob = audioBufferToWav(buffer);
+          downloadBlob(blob, `the-machine-${name}-${dur}s.wav`);
+          status.textContent = '✅ ダウンロード開始';
+        } catch (e) {
+          status.textContent = '❌ エラー: ' + e.message;
+          console.error(e);
+        }
+        dlBtn.disabled = false;
+      });
+    });
+
+    // 全停止ボタン
+    const stopAll = document.createElement('button');
+    stopAll.textContent = '⏹ 全停止';
+    stopAll.style.marginTop = '8px';
+    stopAll.addEventListener('click', () => {
+      GameAudio.stop();
+      document.querySelectorAll('.status').forEach(s => s.textContent = '');
+    });
+    document.body.insertBefore(stopAll, document.querySelector('.note'));
+  </script>
+</body>
+</html>
