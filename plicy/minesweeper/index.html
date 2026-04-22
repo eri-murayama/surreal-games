@@ -422,32 +422,31 @@ h1 {
   margin-top: 14px;
 }
 .result-actions .overlay-btn { margin-top: 0; font-size: 14px; padding: 7px 18px; }
-.result-btn-share { background: #1a1a2e !important; border-color: #444 !important; }
-.result-btn-share:hover { background: #2a2a3e !important; }
 
 /* 音声コントロール */
 .audio-controls {
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  top: 8px;
+  right: 8px;
   z-index: 5001;
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
 }
 .audio-btn {
-  background: #1a1a2a;
+  background: rgba(26, 26, 42, 0.85);
   border: 1px solid #3a3a4a;
   color: #888;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 20px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   transition: all 0.2s;
   font-family: inherit;
+  backdrop-filter: blur(4px);
 }
 .audio-btn:hover { background: #2a2a3a; color: #bbb; }
 .audio-btn.playing {
@@ -455,31 +454,8 @@ h1 {
   border-color: #6644aa;
   box-shadow: 0 0 10px rgba(100, 50, 180, 0.3);
 }
-.audio-btn .icon { font-size: 16px; }
+.audio-btn .icon { font-size: 13px; }
 
-/* Xシェアボタン（固定・右下） */
-.sg-share-btn {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 5000;
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  font-size: 1.1rem;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
-  transition: transform 0.15s, background 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  text-decoration: none;
-}
-.sg-share-btn:hover { transform: scale(1.1); background: rgba(0, 0, 0, 0.7); }
 </style>
 </head>
 <body>
@@ -520,9 +496,6 @@ h1 {
     <span class="icon">👻</span>怪談
   </button>
 </div>
-
-<!-- Xシェアボタン -->
-<button class="sg-share-btn" id="shareBtn" onclick="shareToX()" title="Xでシェア">𝕏</button>
 
 <script src="kaidan-audio.js"></script>
 <script>
@@ -1084,7 +1057,6 @@ function gameOver(hitR, hitC) {
       <div class="gameover-text">お前を呪う</div>
       <div class="result-actions">
         <button class="overlay-btn" onclick="closeOverlay(this); initGame();">もう一度</button>
-        <button class="overlay-btn result-btn-share" onclick="shareToX()">𝕏 シェア</button>
       </div>
     `;
     document.body.appendChild(overlay);
@@ -1159,7 +1131,6 @@ function showVictory(isNewRecord) {
     ${recordHtml}
     <div class="result-actions">
       <button class="overlay-btn" onclick="closeOverlay(this); initGame();">もう一度</button>
-      <button class="overlay-btn result-btn-share" onclick="shareToX()">𝕏 シェア</button>
     </div>
   `;
   document.body.appendChild(overlay);
@@ -1192,19 +1163,6 @@ function closeOverlay(btn) {
   const overlay = btn.closest('.victory-overlay, .gameover-overlay');
   if (overlay) overlay.remove();
   document.querySelectorAll('.confetti,.jobutsu-ghost,.jobutsu-text').forEach(e => e.remove());
-}
-
-function shareToX() {
-  const diffNames = ['初級','中級','上級'];
-  const diffLabel = diffNames[currentDiff];
-  const siteUrl = 'https://eri-murayama.github.io/surreal-games/games/minesweeper/index.html';
-  let text;
-  if (gameState === 'won') {
-    text = `【かいだんマインスイーパー】${diffLabel}を${elapsedTime}秒でクリア！成仏しました...👻\n#シュールゲームス`;
-  } else {
-    text = '【かいだんマインスイーパー】呪われてしまった...💀\n#シュールゲームス';
-  }
-  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(siteUrl), '_blank');
 }
 
 window.addEventListener('resize', () => {
