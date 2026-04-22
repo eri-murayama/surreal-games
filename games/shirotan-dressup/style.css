@@ -114,6 +114,22 @@ body {
   filter: drop-shadow(0 4px 8px rgba(100, 140, 180, 0.3));
 }
 
+/* 画像アクセサリー（フル重ね） */
+.acc-img {
+  position: absolute;
+  inset: 0;
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  display: none;
+}
+.acc-img[src] { display: block; }
+#acc-img-back { z-index: 0; }
+#acc-img-outfit { z-index: 2; }
+#acc-img-hat { z-index: 3; }
+
 /* アクセサリー */
 .acc-hat, .acc-outfit, .acc-cheek, .acc-back {
   position: absolute;
@@ -230,6 +246,10 @@ body {
   font-size: 14px;
   color: #b58eb8;
   font-weight: 700;
+}
+.pal-item.has-img {
+  padding: 4px;
+  background: #fffaf5;
 }
 .pal-item.bg-preview {
   background-size: cover;

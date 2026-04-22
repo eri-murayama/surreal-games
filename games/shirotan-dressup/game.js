@@ -35,12 +35,15 @@
   }
 
   // ============ アイテム定義 ============
+  // 文字列=絵文字 / {img: 'path'}=画像オーバーレイ / ''=なし
   var ITEMS = {
-    hat:    ['', '🎀', '👑', '🎩', '🧢', '🌸', '🎓', '⭐', '🍓', '🌟'],
+    hat:    ['', { img: 'assets/ribbon.png', label: 'りぼん' }, '🎀', '👑', '🎩', '🧢', '🌸', '🎓', '⭐', '🍓', '🌟'],
     outfit: ['', '👗', '🧣', '🎽', '👚', '🦺', '🎀', '🌺'],
     cheek:  ['', '💗', '🌸', '✨', '♥', '⭐'],
-    back:   ['', '☁️', '🌈', '🌸', '💫', '🎈', '🌙', '⭐']
+    back:   ['', { img: 'assets/bag.png', label: 'かばん' }, '☁️', '🌈', '🌸', '💫', '🎈', '🌙', '⭐']
   };
+  function isImgItem(v) { return v && typeof v === 'object' && v.img; }
+  function itemKey(v) { return isImgItem(v) ? 'img:' + v.img : (v || ''); }
   var BGS = ['bg-sky','bg-sunset','bg-night','bg-meadow','bg-ocean','bg-sakura'];
 
   // ============ 状態 ============
@@ -181,10 +184,23 @@
   }
 
   // ============ 描画 ============
+  function setSlot(slot, elEmoji, elImg) {
+    var v = state[slot];
+    if (isImgItem(v)) {
+      elEmoji.textContent = '';
+      elImg.setAttribute('src', v.img);
+      elImg.style.display = 'block';
+    } else {
+      elEmoji.textContent = v || '';
+      elImg.removeAttribute('src');
+      elImg.style.display = 'none';
+    }
+  }
+
   function renderChar() {
-    document.getElementById('acc-hat').textContent = state.hat;
-    document.getElementById('acc-outfit').textContent = state.outfit;
-    document.getElementById('acc-back').textContent = state.back;
+    setSlot('hat', document.getElementById('acc-hat'), document.getElementById('acc-img-hat'));
+    setSlot('outfit', document.getElementById('acc-outfit'), document.getElementById('acc-img-outfit'));
+    setSlot('back', document.getElementById('acc-back'), document.getElementById('acc-img-back'));
     var cheek = document.getElementById('acc-cheek');
     cheek.textContent = state.cheek ? state.cheek + ' ' + state.cheek : '';
     var bg = document.getElementById('bg-layer');
@@ -212,17 +228,28 @@
       return;
     }
     var list = ITEMS[currentTab] || [];
-    list.forEach(function (emoji) {
+    list.forEach(function (v) {
       var item = document.createElement('div');
-      item.className = 'pal-item' + (emoji === '' ? ' none' : '');
-      item.textContent = emoji === '' ? t('none') : emoji;
-      if (state[currentTab] === emoji) item.classList.add('selected');
+      item.className = 'pal-item' + (v === '' ? ' none' : '');
+      if (v === '') {
+        item.textContent = t('none');
+      } else if (isImgItem(v)) {
+        var im = document.createElement('img');
+        im.src = v.img;
+        im.alt = v.label || '';
+        im.style.cssText = 'width:100%;height:100%;object-fit:contain;pointer-events:none;';
+        item.appendChild(im);
+        item.classList.add('has-img');
+      } else {
+        item.textContent = v;
+      }
+      if (itemKey(state[currentTab]) === itemKey(v)) item.classList.add('selected');
       item.addEventListener('click', function () {
-        state[currentTab] = emoji;
+        state[currentTab] = v;
         sfxPop();
         renderChar();
         renderPalette();
-        if (emoji) spawnSparkle();
+        if (v) spawnSparkle();
       });
       pal.appendChild(item);
     });
