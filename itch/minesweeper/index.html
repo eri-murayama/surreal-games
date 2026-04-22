@@ -194,6 +194,7 @@ h1 {
   overflow: hidden;
   position: relative;
   z-index: 1;
+  padding-bottom: 64px;
 }
 .board {
   display: grid;
@@ -428,8 +429,8 @@ h1 {
 /* Audio controls */
 .audio-controls {
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  bottom: 16px;
+  left: 16px;
   z-index: 5001;
   display: flex;
   gap: 6px;
@@ -509,11 +510,8 @@ h1 {
   <div class="board" id="board"></div>
 </div>
 
-<!-- Kaidan (Japanese ghost story) audio -->
-<audio id="kaidanVoice" loop>
-  <source src="audio/kaidan.mp3" type="audio/mpeg">
-  <source src="audio/kaidan.ogg" type="audio/ogg">
-</audio>
+<!-- Kaidan audio embedded as base64 (itch.io iframe does not reliably serve mp3/sub-dir js) -->
+<script src="kaidan-audio.js"></script>
 
 <div class="audio-controls">
   <button class="audio-btn" id="bgmBtn" onclick="toggleBGM()" title="BGM ON/OFF">
@@ -686,44 +684,91 @@ function updateBGMBtn() {
   }
 }
 
-// ===== Kaidan audio =====
+// ===== Kaidan audio (Web Audio API + base64 embedded) =====
+// plicy版と同じ実装。itch.io iframeでも動作実績あり
 let voicePlaying = false;
+let voiceBuffer = null;
+let voiceSource = null;
+let voiceGain = null;
+let voiceLoading = false;
 
-function toggleVoice() {
-  const voice = document.getElementById('kaidanVoice');
-  const btn = document.getElementById('voiceBtn');
-  if (!voicePlaying) {
-    voice.volume = 0.8;
-    voice.play().then(() => {
-      voicePlaying = true;
-      btn.classList.add('playing');
-      btn.innerHTML = '<span class="icon">👻</span>Kaidan ON';
-    }).catch(() => {
-      btn.innerHTML = '<span class="icon">👻</span>No file';
-      setTimeout(() => { btn.innerHTML = '<span class="icon">👻</span>Kaidan'; }, 2000);
-    });
-  } else {
-    voice.pause();
-    voicePlaying = false;
-    btn.classList.remove('playing');
-    btn.innerHTML = '<span class="icon">👻</span>Kaidan';
+function base64ToArrayBuffer(base64) {
+  const binary = atob(base64);
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+
+async function loadKaidanVoice() {
+  if (voiceBuffer || voiceLoading) return voiceBuffer;
+  voiceLoading = true;
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  try {
+    if (!window.__KAIDAN_AUDIO_B64) throw new Error('audio data not loaded');
+    const buf = base64ToArrayBuffer(window.__KAIDAN_AUDIO_B64);
+    voiceBuffer = await audioCtx.decodeAudioData(buf);
+    voiceLoading = false;
+    return voiceBuffer;
+  } catch (e) {
+    voiceLoading = false;
+    const btn = document.getElementById('voiceBtn');
+    btn.innerHTML = '<span class="icon">👻</span>Load failed';
+    setTimeout(() => { btn.innerHTML = '<span class="icon">👻</span>Kaidan'; }, 2500);
+    throw e;
   }
 }
 
-// Auto-start BGM and Kaidan audio on first click
+async function startKaidanVoice() {
+  try {
+    await loadKaidanVoice();
+    if (!voiceBuffer) return;
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
+    voiceSource = audioCtx.createBufferSource();
+    voiceSource.buffer = voiceBuffer;
+    voiceSource.loop = true;
+    voiceGain = audioCtx.createGain();
+    voiceGain.gain.value = 0.9;
+    voiceSource.connect(voiceGain);
+    voiceGain.connect(audioCtx.destination);
+    voiceSource.start(0);
+    voicePlaying = true;
+    const btn = document.getElementById('voiceBtn');
+    btn.classList.add('playing');
+    btn.innerHTML = '<span class="icon">👻</span>Kaidan ON';
+  } catch (e) {}
+}
+
+function stopKaidanVoice() {
+  if (voiceSource) {
+    try { voiceSource.stop(0); } catch(e) {}
+    voiceSource.disconnect();
+    voiceSource = null;
+  }
+  if (voiceGain) { voiceGain.disconnect(); voiceGain = null; }
+  voicePlaying = false;
+  const btn = document.getElementById('voiceBtn');
+  btn.classList.remove('playing');
+  btn.innerHTML = '<span class="icon">👻</span>Kaidan';
+}
+
+function toggleVoice() {
+  if (!voicePlaying) {
+    startKaidanVoice();
+  } else {
+    stopKaidanVoice();
+  }
+}
+
+// 最初のクリックでBGM+怪談音声を自動開始
 let audioAutoStarted = false;
 document.addEventListener('click', function autoStartAudio() {
   if (!audioAutoStarted) {
     audioAutoStarted = true;
     startBGM();
-    const voice = document.getElementById('kaidanVoice');
-    voice.volume = 0.9;
-    voice.play().then(() => {
-      voicePlaying = true;
-      const btn = document.getElementById('voiceBtn');
-      btn.classList.add('playing');
-      btn.innerHTML = '<span class="icon">👻</span>Kaidan ON';
-    }).catch(() => {});
+    startKaidanVoice();
   }
 }, { once: true });
 
@@ -817,14 +862,18 @@ function renderBoard() {
   const hiH = document.querySelector('.highscore-bar').offsetHeight;
   const statusBarH = document.getElementById('statusBar').offsetHeight;
   const statusH = h1H + diffH + hiH + statusBarH + 6 + 3 + 3 + 4 + 12;
-  const availH = vh - statusH;
+  // 下部のBGM/Kaidan/シェアボタンと被らないように余白を確保
+  const bottomReserve = 72;
+  const availH = vh - statusH - bottomReserve;
   const availW = vw * 0.96;
 
   const cellFromH = Math.floor((availH - 10) / rows);
   const cellFromW = Math.floor((availW - 10) / cols);
   let cellSize = Math.min(cellFromH, cellFromW);
   cellSize = Math.max(cellSize, 12);
-  cellSize = Math.min(cellSize, 40);
+  // PC画面で十分大きく表示されるよう上限を引き上げ
+  const maxCell = vw >= 768 ? 60 : 44;
+  cellSize = Math.min(cellSize, maxCell);
 
   boardEl.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
   boardEl.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
