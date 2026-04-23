@@ -34,7 +34,7 @@
       msg_obedient: 'おじさんは、合格した。',
       msg_hesitant: 'おじさんは、少しだけ、迷った。',
       msg_awakened: 'おじさんは、家に帰ることにした。',
-      msg_defective: 'おじさんは、命令を正しく実行しなかった。',
+      msg_defective: 'おじさんは機械になれなかった。',
     },
     en: {
       subtitle: '47 years old. Still chasing the dream.',
@@ -225,7 +225,7 @@
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 32px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('PRESS', 250, 240);
+        ctx.fillText(curLang === 'en' ? 'PRESS' : '連打', 250, 240);
         ctx.fillText(`${s.count}/${s.need}`, 250, 280);
       },
       onClick: (s, x, y) => {
@@ -261,7 +261,7 @@
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 28px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('TAP IN GREEN', 250, 160);
+        ctx.fillText(curLang === 'en' ? 'TAP IN GREEN' : '緑でタップ', 250, 160);
       },
       onClick: (s) => {
         return (s.pos > 0.36 && s.pos < 0.64) ? 'win' : 'lose';
@@ -290,7 +290,7 @@
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 22px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(s.side === 'L' ? 'TAP RIGHT' : 'TAP LEFT', 250, 60);
+        ctx.fillText(s.side === 'L' ? (curLang === 'en' ? 'TAP RIGHT' : '右をタップ') : (curLang === 'en' ? 'TAP LEFT' : '左をタップ'), 250, 60);
       },
       onClick: (s, x, y) => {
         const safe = s.side === 'L' ? (x > 250) : (x < 250);
@@ -321,8 +321,8 @@
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 22px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('HOLD TO CHARGE', 250, 80);
-        ctx.fillText('RELEASE IN GREEN', 250, 220);
+        ctx.fillText(curLang === 'en' ? 'HOLD TO CHARGE' : '長押しでチャージ', 250, 80);
+        ctx.fillText(curLang === 'en' ? 'RELEASE IN GREEN' : '緑で離す', 250, 220);
       },
       onClick: () => null,
       onMouseDown: (s) => { s.holding = true; window.GameAudio.sfxCharge(); },
@@ -357,7 +357,7 @@
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 22px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('!  DODGE  !', 250, 28);
+        ctx.fillText(curLang === 'en' ? '!  DODGE  !' : '！　避けろ　！', 250, 28);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 16px monospace';
         ctx.fillText(s.side === 'L' ? 'TAP RIGHT' : 'TAP LEFT', 250, 80);
@@ -384,8 +384,8 @@
         ctx.fillText('A', 130, 280);
         ctx.fillText('B', 370, 280);
         ctx.font = 'bold 20px monospace';
-        ctx.fillText('MANUAL OVERRIDE', 250, 80);
-        ctx.fillText('ALTERNATE A-B', 250, 120);
+        ctx.fillText(curLang === 'en' ? 'MANUAL OVERRIDE' : '手動操作', 250, 80);
+        ctx.fillText(curLang === 'en' ? 'ALTERNATE A-B' : 'A・B交互に', 250, 120);
         ctx.fillText(`${s.count}/${s.need}`, 250, 440);
       },
       onClick: (s, x, y) => {
@@ -427,7 +427,7 @@
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 24px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(`HP: ${s.hp}`, 250, 60);
+        ctx.fillText(`${curLang === 'en' ? 'HP' : '体力'}: ${s.hp}`, 250, 60);
       },
       onClick: (s, x, y) => {
         const dx = x - s.cx, dy = y - s.cy;
@@ -1206,8 +1206,8 @@
         s.question = questions[Math.floor(Math.random() * questions.length)];
         // 正解の「膝」+ ハズレ選択肢をランダムから2個選ぶ
         const wrongPool = curLang === 'en'
-          ? ['BURGER','NEW YORK','TUESDAY','SKY TREE','SOUP','DREAM','INTERNET','MOON','PC','PUDDING','A COMMA','YOUR DAD']
-          : ['ハンバーガー','ニューヨーク','火曜日','スカイツリー','スープ','夢','インターネット','月','パソコン','プリン','読点','あなたの父'];
+          ? ['BURGER','NEW YORK','EARTH','YOUR DAD','FAN','SUSHI','PRETTY']
+          : ['ハンバーガー','ニューヨーク','地球','父親','換気扇','寿司','ぷりぷりプリティー'];
         // シャッフル
         const shuffled = wrongPool.slice().sort(() => Math.random() - 0.5);
         const wrongs = shuffled.slice(0, 2);
@@ -1549,8 +1549,8 @@
     // 難易度カーブ: 進むほど短くする(最大25%短縮)
     const speedFactor = Math.max(0.75, 1 - mgIndex * 0.04);
     mgEffectiveDuration = mg.duration * speedFactor;
-    $('hud-act').textContent = mg.act === 1 ? 'PHASE 1' : 'PHASE 2';
-    $('hud-task').textContent = mg.name;
+    $('hud-act').textContent = mg.act === 1 ? (curLang === 'en' ? 'PHASE 1' : 'フェーズ1') : (curLang === 'en' ? 'PHASE 2' : 'フェーズ2');
+    $('hud-task').textContent = mgDisplayName(mg);
     $('game-feedback').textContent = '';
     $('game-feedback').className = 'game-feedback';
     // 「OBEY」突入時に BGM を機械化版へ切替
@@ -1630,7 +1630,7 @@
       if (inBonusPhase) stats.bonusCompleted++;
       currentCombo++;
       if (currentCombo > bestCombo) bestCombo = currentCombo;
-      $('game-feedback').textContent = currentCombo >= 3 ? `OK  x${currentCombo}` : 'OK';
+      $('game-feedback').textContent = currentCombo >= 3 ? `${curLang === 'en' ? 'OK' : 'せいかい'}  x${currentCombo}` : (curLang === 'en' ? 'OK' : 'せいかい');
       $('game-feedback').className = 'game-feedback ok';
       const jname = currentMg.jingle || (currentMg.act === 1 ? 'mech' : 'soft');
       window.GameAudio.sfxJingle(jname);
@@ -1641,7 +1641,7 @@
       stats.failed++;
       if (inBonusPhase) stats.bonusFailed++;
       currentCombo = 0;
-      $('game-feedback').textContent = 'FAIL';
+      $('game-feedback').textContent = curLang === 'en' ? 'FAIL' : 'ざんねん';
       $('game-feedback').className = 'game-feedback ng';
       window.GameAudio.sfxNg();
       flash('255,48,48', 0.6);
@@ -1668,11 +1668,11 @@
 
   // ===== ミニゲーム名のフラッシュ表示(WarioWare風) =====
   function showTaskFlash(mg) {
-    $('hud-act').textContent = mg.act === 1 ? 'PHASE 1' : 'PHASE 2';
-    $('hud-task').textContent = mg.name;
+    const displayName = mgDisplayName(mg);
+    $('hud-act').textContent = mg.act === 1 ? (curLang === 'en' ? 'PHASE 1' : 'フェーズ1') : (curLang === 'en' ? 'PHASE 2' : 'フェーズ2');
+    $('hud-task').textContent = displayName;
     $('game-feedback').textContent = '';
     $('game-feedback').className = 'game-feedback';
-    // でかいタスク名を canvas にドカンと出す
     let t = 0;
     function flashLoop() {
       t++;
@@ -1683,9 +1683,11 @@
       const scale = Math.min(1.4, 0.4 + t * 0.12);
       ctx.scale(scale, scale);
       ctx.fillStyle = mg.act === 1 ? '#ff3030' : '#fff5b0';
-      ctx.font = 'bold 36px monospace';
+      // 日本語長い場合は縮小
+      const fs = displayName.length > 8 ? 28 : 36;
+      ctx.font = `bold ${fs}px monospace`;
       ctx.textAlign = 'center';
-      ctx.fillText(mg.name, 0, 12);
+      ctx.fillText(displayName, 0, 12);
       ctx.restore();
       drawOverlay();
       if (t < 18) {
@@ -2196,22 +2198,129 @@
     $('end-title').style.color = ending.color;
     $('end-title').style.textShadow = `0 0 16px ${ending.color}`;
     const lines = ending[curLang] || ending.ja;
-    let i = 0;
+    // 累積表示(下に追加していくスタイル)をクリック送りに
+    let lineIdx = 0;
+    let endTyping = false;
+    let endIv = null;
     const el = $('end-line');
     el.innerHTML = '';
-    const interval = setInterval(() => {
-      if (i >= lines.length) { clearInterval(interval); return; }
-      el.innerHTML += (lines[i] || '&nbsp;') + '<br>';
-      i++;
-    }, 800);
+    function typeEndLine() {
+      const fullText = lines[lineIdx] || '';
+      const prefix = el.innerHTML;
+      endTyping = true;
+      if (endIv) clearInterval(endIv);
+      if (fullText === '') {
+        el.innerHTML = prefix + '&nbsp;<br>';
+        endTyping = false;
+        return;
+      }
+      let i = 0;
+      endIv = setInterval(() => {
+        el.innerHTML = prefix + fullText.substr(0, i + 1);
+        i++;
+        if (i >= fullText.length) {
+          clearInterval(endIv);
+          endIv = null;
+          el.innerHTML = prefix + fullText + '<br>';
+          endTyping = false;
+        }
+      }, 40);
+    }
+    function onEndTap(e) {
+      if (e && e.target) {
+        let t = e.target;
+        while (t && t !== $('end-screen')) {
+          if (t.tagName === 'BUTTON') return;
+          t = t.parentElement;
+        }
+      }
+      if (endTyping) {
+        if (endIv) clearInterval(endIv);
+        const fullText = lines[lineIdx] || '';
+        const prefix = el.innerHTML.replace(/[^<]*$/, ''); // 途中表示分を消す
+        el.innerHTML = prefix + (fullText || '&nbsp;') + '<br>';
+        endTyping = false;
+      } else {
+        lineIdx++;
+        if (lineIdx >= lines.length) {
+          $('end-screen').removeEventListener('click', onEndTap);
+          $('end-screen').removeEventListener('touchstart', onEndTap);
+          return;
+        }
+        typeEndLine();
+      }
+    }
+    $('end-screen').addEventListener('click', onEndTap);
+    $('end-screen').addEventListener('touchstart', onEndTap);
+    typeEndLine();
   });
 
   // ===== タイトル → オープニングシネマ → おじさん → ポスター → boot → PHASE1 =====
   $('start-btn').addEventListener('click', () => {
     window.GameAudio.sfxClick();
-    window.GameAudio.play('act1'); // オープニングはメカバトルBGM
-    startOpeningCinematic();
+    window.GameAudio.play('title'); // 夢シーンは静かめBGM
+    showDreamRain(() => {
+      window.GameAudio.stop();
+      window.GameAudio.play('act1');
+      startOpeningCinematic();
+    });
   });
+
+  // ===== 夢が降ってくる演出 =====
+  let dreamRaf = null;
+  function showDreamRain(onDone) {
+    show('dream-rain-screen');
+    const dc = $('dream-rain-canvas');
+    const dctx = upscaleCanvas(dc);
+    const dreams = [];
+    // 夢を大量にスポーン
+    for (let i = 0; i < 80; i++) {
+      dreams.push({
+        x: Math.random() * 500,
+        y: -Math.random() * 500,
+        vy: 1 + Math.random() * 2.5,
+        size: 24 + Math.random() * 40,
+        rot: (Math.random() - 0.5) * 0.6,
+        sway: Math.random() * Math.PI * 2,
+        color: Math.random() < 0.3 ? '#ff6ec7' : (Math.random() < 0.5 ? '#c084fc' : '#ffa347'),
+        alpha: 0.5 + Math.random() * 0.5,
+      });
+    }
+    let t = 0;
+    function frame() {
+      t++;
+      // 背景はCSSに任せて透過気味にフェード
+      dctx.clearRect(0, 0, 500, 500);
+      dreams.forEach(d => {
+        d.y += d.vy;
+        d.sway += 0.04;
+        const x = d.x + Math.sin(d.sway) * 12;
+        if (d.y > 530) {
+          d.y = -40;
+          d.x = Math.random() * 500;
+        }
+        dctx.save();
+        dctx.globalAlpha = d.alpha;
+        dctx.translate(x, d.y);
+        dctx.rotate(d.rot + Math.sin(d.sway) * 0.1);
+        dctx.fillStyle = d.color;
+        dctx.font = `bold ${d.size}px "Zen Maru Gothic", sans-serif`;
+        dctx.textAlign = 'center';
+        // ぼんやり影
+        dctx.shadowColor = d.color;
+        dctx.shadowBlur = 12;
+        dctx.fillText('夢', 0, 0);
+        dctx.restore();
+      });
+      dreamRaf = requestAnimationFrame(frame);
+    }
+    frame();
+    // 3.5秒で次へ
+    setTimeout(() => {
+      cancelAnimationFrame(dreamRaf);
+      onDone();
+    }, 3500);
+  }
 
   // シネマ共通: 次の画面に進むためのワンタップ待ち
   function waitForTap(screenId, onTap) {
@@ -2223,6 +2332,121 @@
     };
     el.addEventListener('click', handler);
     el.addEventListener('touchstart', handler);
+  }
+
+  // ミニゲーム名の日本語マップ
+  const MG_NAME_JA = {
+    'AIM AND SHOOT': '照準発射',
+    'SMASH BUTTON': 'ボタン連打',
+    'DODGE MISSILE': 'ミサイル回避',
+    'EVADE LASER': 'レーザー回避',
+    'DESTROY CORE': 'コア破壊',
+    'MANUAL OVERRIDE': '手動操作',
+    'CHARGE CANNON': '大砲チャージ',
+    'LOCK ON': 'ロックオン',
+    'GREET OJISAN': 'おじさんに挨拶',
+    'WHERE': 'ここはどこ',
+    'ANSWER PHONE': '電話に出る',
+    'COMPLIMENT': 'ほめる',
+    'WATER PLANT': '水やり',
+    'FANTASY': '芋虫',
+    'WAVE HELLO': '手を振る',
+    'WHAT DO': 'どうする',
+    'EAT LUNCH': '昼食',
+    'CATCH LEAF': '葉っぱを取る',
+    'COUNT SHEEP': '羊を数える',
+    'POUR TEA': 'お茶を注ぐ',
+    'BRUSH TEETH': '歯を磨く',
+    'PICK FLOWER': '花を摘む',
+    'SWAT FLY': 'ハエを叩く',
+    'SAY YES': 'YESと答える',
+    'SMILE': '笑顔',
+    'BREATHE': '呼吸',
+    'OBEY': '従え',
+    'WAIT': '待て',
+  };
+  function mgDisplayName(mg) {
+    if (curLang === 'en') return mg.name;
+    return MG_NAME_JA[mg.name] || mg.name;
+  }
+
+  // ===== クリック送り対応のダイアログ再生 =====
+  // screenId の要素に click/touch リスナーを付けて、
+  // タイピング中クリック → 全文表示
+  // 完了後クリック → 次の行 (全行表示し終わったら onDone 呼び出し)
+  // opts: { speed, hintEl, onLineStart(idx), onLineComplete(idx) }
+  function playDialogue(screenId, textElId, lines, opts, onDone) {
+    opts = opts || {};
+    const speed = opts.speed || 40;
+    const screenEl = $(screenId);
+    const textEl = $(textElId);
+    const hintEl = opts.hintEl ? $(opts.hintEl) : null;
+    let lineIdx = 0;
+    let typing = false;
+    let iv = null;
+
+    function showHint(b) {
+      if (hintEl) hintEl.style.visibility = b ? 'visible' : 'hidden';
+    }
+    function typeCurrent() {
+      if (opts.onLineStart) opts.onLineStart(lineIdx);
+      const fullText = lines[lineIdx] || '';
+      textEl.textContent = '';
+      let i = 0;
+      typing = true;
+      showHint(false);
+      if (iv) clearInterval(iv);
+      if (fullText === '') {
+        // 空行は即完了
+        typing = false;
+        showHint(true);
+        if (opts.onLineComplete) opts.onLineComplete(lineIdx);
+        return;
+      }
+      iv = setInterval(() => {
+        textEl.textContent = fullText.substr(0, i + 1);
+        i++;
+        if (i >= fullText.length) {
+          clearInterval(iv);
+          iv = null;
+          typing = false;
+          showHint(true);
+          if (opts.onLineComplete) opts.onLineComplete(lineIdx);
+        }
+      }, speed);
+    }
+    function onTap(e) {
+      // ボタンクリックは無視(エンディング画面のretry等と競合しないように)
+      if (e && e.target) {
+        let t = e.target;
+        while (t && t !== screenEl) {
+          if (t.tagName === 'BUTTON') return;
+          t = t.parentElement;
+        }
+      }
+      if (typing) {
+        // タイピング中なら一瞬で全文表示
+        if (iv) clearInterval(iv);
+        textEl.textContent = lines[lineIdx] || '';
+        typing = false;
+        showHint(true);
+        if (opts.onLineComplete) opts.onLineComplete(lineIdx);
+      } else {
+        // 次の行 or 終了
+        lineIdx++;
+        if (lineIdx >= lines.length) {
+          screenEl.removeEventListener('click', onTap);
+          screenEl.removeEventListener('touchstart', onTap);
+          showHint(false);
+          if (onDone) onDone();
+        } else {
+          typeCurrent();
+        }
+      }
+    }
+    screenEl.addEventListener('click', onTap);
+    screenEl.addEventListener('touchstart', onTap);
+    typeCurrent();
   }
 
   // タイプライター風にテキストを出す
@@ -2659,6 +2883,24 @@
       });
       // ===== カメラワーク(周回＋ドラマチック切替) =====
       const center = new THREE.Vector3(0, 3, 2);
+      // 観客ズーム要求中は自動で近景観客にカメラ切替
+      const crowdZoom = scene.userData.crowdZoomGetter && scene.userData.crowdZoomGetter();
+      if (crowdZoom) {
+        // 裏の観客席に寄る。モヒカン巨人が画面に映る位置
+        const zt = t * 0.015;
+        camera.position.set(Math.sin(zt) * 3, 4 + Math.sin(t * 0.02) * 1, 0);
+        center.set(Math.sin(zt) * 5, 4, -12);
+        // 以下のカメラ分岐はスキップ
+        camera.lookAt(center);
+        if (shakeAmount > 0.5) {
+          camera.position.x += (Math.random() - 0.5) * shakeAmount * 0.05;
+          camera.position.y += (Math.random() - 0.5) * shakeAmount * 0.05;
+          shakeAmount *= 0.88;
+        }
+        renderer.render(scene, camera);
+        openingRaf = requestAnimationFrame(animate);
+        return;
+      }
       if (t < 80) {
         // 1. 遠景周回(アリーナ全景を見せる)
         const ang = t * 0.02;
@@ -2728,26 +2970,35 @@
     }
     animate();
 
-    // テキスト演出
+    // テキスト演出(クリック送り)
+    const openingLines = curLang === 'en'
+      ? [
+          'Strong! Really strong robot! Whoa! Let\'s go!',
+          'Whoooaaa whooa whoa whoa whoa!!',
+          'So cool seriously! I wanna pilot one! Same!',
+        ]
+      : [
+          '強い！まじ強いロボ！すげえ！おらおら！すげえ！',
+          'わーわーわーわーわー',
+          'かっけえよまじで！ロボ操りてえよ！それな！',
+        ];
+    // 観客ズーム用フラグ: 2行目(idx=1)で観客カメラへ
+    let crowdZoomRequested = false;
     setTimeout(() => {
-      typeWriter('opening-text', curLang === 'en'
-        ? '20XX. The age of the Machine Battles.'
-        : '20XX年。マシンバトルの時代。', 45);
-    }, 500);
-    setTimeout(() => {
-      typeWriter('opening-text', curLang === 'en'
-        ? 'Giant robots. Roaring crowds. Glory.'
-        : '巨大ロボ。歓声。栄光。', 45);
-    }, 3600);
-    setTimeout(() => {
-      typeWriter('opening-text', curLang === 'en'
-        ? 'Everyone wants to pilot one.'
-        : 'みんな、乗りたがった。', 45);
-      $('opening-hint').style.visibility = 'visible';
-      waitForTap('opening-screen', () => {
+      playDialogue('opening-screen', 'opening-text', openingLines, {
+        speed: 45,
+        hintEl: 'opening-hint',
+        onLineStart: (idx) => {
+          if (idx === 1) {
+            // 観客アップモード発動(カメラワークで判定)
+            crowdZoomRequested = true;
+          } else {
+            crowdZoomRequested = false;
+          }
+        },
+      }, () => {
         cancelAnimationFrame(openingRaf);
         window.removeEventListener('resize', onResize);
-        // Three.js完全解放
         scene.traverse(obj => {
           if (obj.geometry) obj.geometry.dispose();
           if (obj.material) {
@@ -2759,7 +3010,9 @@
         container.innerHTML = '';
         showBoyScene();
       });
-    }, 8500);
+    }, 500);
+    // 観客ズームリクエストをカメラループに渡す
+    scene.userData.crowdZoomGetter = () => crowdZoomRequested;
   }
 
   // ===== BOY: おじさんが番組を観ている =====
@@ -2869,21 +3122,23 @@
       boyRaf = requestAnimationFrame(frame);
     }
     frame();
+    const boyLines = curLang === 'en'
+      ? [
+          'I WANNA RIIIIIIDE!!!',
+          'MOOOOOM!! I\'M GONNA RIDE!!',
+          'I\'M GONNA PILOT A ROBOOOOOT!!',
+        ]
+      : [
+          'のりてええええええええええ',
+          'おかあさーーん！俺乗るからーーー！',
+          'ロボのるからーーーー！',
+        ];
     setTimeout(() => {
-      typeWriter('boy-text', curLang === 'en'
-        ? '...I also want to pilot one.'
-        : '…俺も、乗りたい。', 60);
-    }, 600);
-    setTimeout(() => {
-      typeWriter('boy-text', curLang === 'en'
-        ? 'Someday, I wanna be a pilot. (47 years old)'
-        : 'いつか、パイロットになりたい。（47歳）', 60);
-      $('boy-hint').style.visibility = 'visible';
-      waitForTap('boy-screen', () => {
+      playDialogue('boy-screen', 'boy-text', boyLines, { speed: 60, hintEl: 'boy-hint' }, () => {
         cancelAnimationFrame(boyRaf);
         showPosterScene();
       });
-    }, 3600);
+    }, 600);
   }
 
   // ===== POSTER: 応募ポスター =====
@@ -2925,7 +3180,7 @@
       pctx.fillText(curLang === 'en' ? 'WANTED' : '募集', 0, -170);
       pctx.fillStyle = '#000';
       pctx.font = 'bold 18px sans-serif';
-      pctx.fillText(curLang === 'en' ? 'PILOT CANDIDATES' : 'パイロット候補生', 0, -140);
+      pctx.fillText(curLang === 'en' ? 'HEY, ROBOT DREAMER!' : 'ロボに憧れるそこの君！', 0, -140);
       // ロボのシルエット(小さめ)
       pctx.fillStyle = '#1a1a1a';
       pctx.fillRect(-30, -110, 60, 70);
@@ -2935,43 +3190,23 @@
       pctx.fillStyle = '#1a1a1a';
       pctx.fillRect(-38, -100, 10, 55);
       pctx.fillRect(28, -100, 10, 55);
-      // 募集要件(マシンの性能要件に近いが人間の資質にも読める)
+      // 募集要件
       pctx.fillStyle = '#000';
-      pctx.textAlign = 'left';
+      pctx.textAlign = 'center';
       pctx.font = 'bold 13px sans-serif';
       const reqTitle = curLang === 'en' ? '— REQUIREMENTS —' : '— 応募条件 —';
-      pctx.textAlign = 'center';
       pctx.fillText(reqTitle, 0, -25);
-      pctx.textAlign = 'left';
-      pctx.font = '12px sans-serif';
-      const reqs = curLang === 'en' ? [
-        '- Long-duration operation',
-        '- Quick response',
-        '- Low emotion',
-        '- Few relatives (preferred)',
-      ] : [
-        '・長時間の稼働が可能',
-        '・指示への迅速な反応',
-        '・感情の起伏が少ない',
-        '・親族が少ない方優遇',
-      ];
-      reqs.forEach((r, i) => {
-        pctx.fillText(r, -155, 0 + i * 18);
-      });
-      // キャッチコピー(直接的でない、示唆的)
-      pctx.textAlign = 'center';
-      pctx.fillStyle = '#c0332f';
-      pctx.font = 'bold 13px sans-serif';
-      pctx.fillText(curLang === 'en' ? '"You can be part of something bigger."' : '「君も、あの機体の一部になれる。」', 0, 140);
-      // 下部注意書き(極小)
+      pctx.font = 'bold 20px sans-serif';
+      pctx.fillText(curLang === 'en' ? 'Machine-like person' : '機械みたいな人', 0, 10);
+      // 注意書き(上部に移動、ボタンに被らない)
       pctx.fillStyle = '#666';
-      pctx.font = '8px sans-serif';
+      pctx.font = '9px sans-serif';
       pctx.fillText(curLang === 'en'
         ? '* Applicants must consent to full body modification and neural integration.'
-        : '※ 応募には身体改造および神経接続への同意が必要です。', 0, 175);
+        : '※ 応募には身体改造および神経接続への同意が必要です。', 0, 60);
       pctx.fillText(curLang === 'en'
         ? '* Application is irrevocable once submitted.'
-        : '※ 応募後の撤回はできません。', 0, 190);
+        : '※ 応募後の撤回はできません。', 0, 78);
       pctx.restore();
       posterRaf = requestAnimationFrame(frame);
     }
@@ -3021,8 +3256,8 @@
     }
     frame();
     const msgs = curLang === 'en'
-      ? ['LOADING VR SIMULATION...', 'PHASE 2: ADAPTATION TEST', 'A DAILY LIFE SCENARIO', 'STAY CALM. OBEY.']
-      : ['VR環境ロード中...', 'フェーズ2: 適応性テスト', '日常生活シミュレーション', '冷静に。従順に。'];
+      ? ['LOADING VR...', 'PHASE 2', 'DAILY LIFE SIMULATION', 'THINK NOTHING. MOVE LIKE A MACHINE.']
+      : ['VR環境ロード中...', 'フェーズ2', '日常生活シミュレーション', '何も考えず。機械的に。'];
     let idx = 0;
     typeWriter('vr-text', msgs[0], 35);
     const iv = setInterval(() => {
@@ -3552,43 +3787,44 @@
       '― 神経接続 完了 ―',
       '統合完了。',
     ];
-    let ti = 0;
     $('reveal-hint').style.visibility = 'hidden';
-    function nextText() {
-      if (ti >= texts.length) {
-        $('reveal-hint').style.visibility = 'visible';
-        waitForTap('reveal-screen', () => {
-          cancelAnimationFrame(revealRaf);
-          showMirror();
-        });
-        return;
-      }
-      // テキストごとに phase を進める
-      // index 2以降がパーツ装着
-      if (ti >= 2 && ti <= 8) {
-        phase = ti - 1; // 1~7
-        state.t = 0; // 血フラッシュ再開
-        state.dropY = -200; // 落下再開
-        window.GameAudio.sfxHit(300 + phase * 40);
-        shake(10);
-      }
-      if (ti === 9) {
-        phase = 8; // 完成
-        window.GameAudio.sfxJingle('obey');
-      }
-      typeWriter('reveal-text', texts[ti], 50, () => {
-        setTimeout(() => { ti++; nextText(); }, 1300);
+    setTimeout(() => {
+      playDialogue('reveal-screen', 'reveal-text', texts, {
+        speed: 50,
+        hintEl: 'reveal-hint',
+        onLineStart: (idx) => {
+          // 行が始まるタイミングでフェーズ変更＆エフェクト
+          if (idx >= 2 && idx <= 8) {
+            phase = idx - 1; // 1~7
+            state.t = 0;      // 血フラッシュ再開
+            state.dropY = -200; // 落下再開
+            window.GameAudio.sfxHit(300 + phase * 40);
+            shake(10);
+          }
+          if (idx === 9) {
+            phase = 8;
+            window.GameAudio.sfxJingle('obey');
+          }
+        },
+      }, () => {
+        cancelAnimationFrame(revealRaf);
+        showMirror();
       });
-    }
-    setTimeout(nextText, 800);
+    }, 800);
   }
   function runBootSequence() {
-    const lines = [
+    const lines = curLang === 'en' ? [
       'CONNECTING TO MACHINE...',
       'CALIBRATING NEURAL LINK...',
       'PILOT RECOGNIZED.',
       'WARNING: ENEMY DETECTED',
       'BATTLE START',
+    ] : [
+      'マシンに接続中...',
+      '神経リンク調整中...',
+      'パイロットを認識しました',
+      '警告：敵機接近',
+      '戦闘開始',
     ];
     let i = 0;
     let progress = 0;
@@ -3600,7 +3836,7 @@
       }
       $('boot-line').textContent = lines[i];
       window.GameAudio.sfxBoot();
-      if (i === lines.length - 2) $('boot-warning').textContent = '! ! ! WARNING ! ! !';
+      if (i === lines.length - 2) $('boot-warning').textContent = curLang === 'en' ? '! ! ! WARNING ! ! !' : '！！！警告！！！';
       i++;
       const interval = setInterval(() => {
         progress += 5;

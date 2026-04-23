@@ -231,13 +231,16 @@ body {
 /* ===== シネマティック共通 ===== */
 #opening-screen, #boy-screen, #poster-screen,
 #vr-transition-screen, #result-screen, #reveal-screen,
-#test-complete-screen {
+#test-complete-screen, #dream-rain-screen {
   background: #000;
   position: relative;
 }
+#dream-rain-screen {
+  background: radial-gradient(ellipse at top, #ffd4e8 0%, #fff0ff 40%, #e8d4ff 100%);
+}
 #opening-canvas, #boy-canvas, #poster-canvas,
 #vr-canvas, #result-canvas, #reveal-canvas,
-#tc-canvas {
+#tc-canvas, #dream-rain-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
