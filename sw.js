@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
 const CACHE_PREFIX = 'surreal-games-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-${CACHE_VERSION}`;
@@ -88,6 +88,16 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (!shouldCacheRuntime(request)) return;
+
+  // JSONはネットワーク優先（新しいお知らせが即反映されるように）
+  if (url.pathname.endsWith('.json')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => cacheIfValid(RUNTIME_CACHE, request, response))
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cached) => {

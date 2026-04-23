@@ -523,7 +523,7 @@ if (logo) {
     });
   }
 
-  fetch('data/news.json')
+  fetch('data/news.json', { cache: 'no-store' })
     .then(function(res) {
       if (!res.ok) throw new Error('news fetch failed');
       return res.json();
