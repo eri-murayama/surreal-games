@@ -455,6 +455,124 @@
     return startSequencer(stepFn, stepDur);
   }
 
+  // ===== ENDING YOUTH: 青春さわやか歌用BGM =====
+  // 歌詞想定: 「鼻毛と耳毛が交わる一つに。交差し絡んで解けて別れる。」
+  // BPM 132、Gメジャー、明るいポップパンク/青春JPOP風
+  function bgmEndingYouthSpec() {
+    const localBpm = 132;
+    const localSpb = 60 / localBpm;
+    const stepDur = localSpb / 2; // 8分音符
+    // G-Em-C-D (王道の青春進行)
+    const bassPattern = [
+      'G2','G2','REST','G2', 'G2','REST','G2','REST',  // G
+      'E3','E3','REST','E3', 'E3','REST','E3','REST',  // Em
+      'C3','C3','REST','C3', 'C3','REST','C3','REST',  // C
+      'D3','D3','REST','D3', 'D3','REST','D3','REST',  // D
+    ];
+    // ブライトな高音アルペジオ(ギター風)
+    const leadPattern = [
+      'G5','B5','D6','B5', 'G5','B5','D6','B5',
+      'G5','B5','E6','B5', 'G5','B5','E6','B5',
+      'G5','C6','E6','C6', 'G5','C6','E6','C6',
+      'A5','D6','F5','D6', 'A5','D6','F5','D6',
+    ];
+    return {
+      stepDur,
+      stepFn: (step, time) => {
+        const i32 = step % 32;
+        // ドラム(軽快な8ビート)
+        if (i32 % 4 === 0) playKick(time, 0.5);
+        if (i32 % 8 === 4) playNoise(time, 0.06, 4500, 0.15); // スネア
+        if (i32 % 2 === 1) playNoise(time, 0.025, 10000, 0.06); // ハイハット
+        if (i32 === 28) playNoise(time, 0.08, 2000, 0.12); // 小さいフィル
+        // ベース(しっかり低音)
+        const bn = bassPattern[i32];
+        if (bn && NOTES[bn]) {
+          playTone(NOTES[bn] / 2, time, stepDur * 1.7, 'triangle', 0.15,
+            {attack:0.003, decay:0.05, sustain:0.5, release:0.08});
+        }
+        // ギター風高音(三角+ちょい歪み)
+        const ln = leadPattern[i32];
+        if (ln && NOTES[ln]) {
+          playTone(NOTES[ln], time, stepDur * 0.75, 'triangle', 0.1,
+            {attack:0.002, decay:0.06, sustain:0.3, release:0.04});
+          // 微かな歪み感で厚み
+          playTone(NOTES[ln] * 1.005, time, stepDur * 0.6, 'square', 0.03,
+            {attack:0.002, decay:0.04, sustain:0.2, release:0.02});
+        }
+        // コード感のパッド(各コードの頭に)
+        if (i32 % 8 === 0) {
+          const chordRoot = ['G4','E4','C5','A4'][Math.floor(i32 / 8)];
+          if (NOTES[chordRoot]) {
+            playTone(NOTES[chordRoot], time, stepDur * 7.5, 'sine', 0.05,
+              {attack:0.1, decay:0.2, sustain:0.6, release:0.4});
+          }
+        }
+        // たまにクラッシュ(セクション頭)
+        if (i32 === 0) playNoise(time, 0.4, 6000, 0.08);
+      }
+    };
+  }
+  function bgmEndingYouth() {
+    const {stepFn, stepDur} = bgmEndingYouthSpec();
+    return startSequencer(stepFn, stepDur);
+  }
+
+  // ===== ENDING DRUM: 規則正しい太鼓ずんずん系 =====
+  // 歌のせ用。4つ打ちの低音太鼓が延々続く。ボーカル帯域は完全に空ける。
+  function bgmEndingDrumSpec() {
+    const localBpm = 100;
+    const localSpb = 60 / localBpm;
+    const stepDur = localSpb / 2; // 8分音符
+    return {
+      stepDur,
+      stepFn: (step, time) => {
+        const i8 = step % 8;   // 1小節=8
+        const i32 = step % 32; // 4小節
+        // メインの太鼓(ずんずんずんずん=4分打ち)
+        if (i8 % 2 === 0) {
+          // キック(深い太鼓)
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(90, time);
+          osc.frequency.exponentialRampToValueAtTime(40, time + 0.15);
+          g.gain.setValueAtTime(0.7, time);
+          g.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+          osc.connect(g);
+          g.connect(masterGain);
+          osc.start(time);
+          osc.stop(time + 0.24);
+          // 同時に木の太鼓感(フィルタノイズ)
+          playNoise(time, 0.04, 200, 0.1);
+        }
+        // たまに高音の太鼓(和風の「カン」)
+        if (i32 === 14 || i32 === 30) {
+          const osc2 = ctx.createOscillator();
+          const g2 = ctx.createGain();
+          osc2.type = 'triangle';
+          osc2.frequency.setValueAtTime(400, time);
+          osc2.frequency.exponentialRampToValueAtTime(300, time + 0.1);
+          g2.gain.setValueAtTime(0.15, time);
+          g2.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+          osc2.connect(g2);
+          g2.connect(masterGain);
+          osc2.start(time);
+          osc2.stop(time + 0.16);
+        }
+        // 低音ドローン(ほんのり。ボーカルを邪魔しない超低音)
+        if (i32 === 0) {
+          playTone(NOTES.C3 / 2, time, stepDur * 30, 'sine', 0.06,
+            {attack:0.3, decay:0.2, sustain:0.8, release:0.8});
+        }
+      }
+    };
+  }
+  function bgmEndingDrum() {
+    const {stepFn, stepDur} = bgmEndingDrumSpec();
+    return startSequencer(stepFn, stepDur);
+  }
+
 
   // ===== SE =====
   function sfxOk() {
@@ -543,6 +661,8 @@
     if (name === 'finale_awakened') currentBgm = bgmFinaleAwakened();
     if (name === 'finale_defective')currentBgm = bgmFinaleDefective();
     if (name === 'ending_comedy')   currentBgm = bgmEndingComedy();
+    if (name === 'ending_youth')    currentBgm = bgmEndingYouth();
+    if (name === 'ending_drum')     currentBgm = bgmEndingDrum();
   }
   function stop() {
     if (currentBgm) { currentBgm.stop(); currentBgm = null; }
@@ -576,6 +696,8 @@
       finale_awakened: bgmFinaleAwakenedSpec,
       finale_defective: bgmFinaleDefectiveSpec,
       ending_comedy: bgmEndingComedySpec,
+      ending_youth: bgmEndingYouthSpec,
+      ending_drum: bgmEndingDrumSpec,
     };
     const {stepFn, stepDur} = specs[name]();
     let step = 0;

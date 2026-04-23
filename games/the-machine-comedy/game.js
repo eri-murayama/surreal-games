@@ -915,59 +915,94 @@
       }
     },
     {
-      name: 'BRUSH TEETH', act: 2, duration: 3000, jingle: 'soft',
-      init: (s) => { s.count = 0; s.need = 10; s.lastSide = null; s.clean = 0; },
+      name: 'BRUSH TEETH', act: 2, duration: 4500, jingle: 'soft',
+      init: (s) => { s.count = 0; s.need = 6; s.lastSide = null; s.clean = 0; s.flashSide = null; s.flashT = 0; },
       draw: (s) => {
         s.clean = s.count / s.need;
+        if (s.flashT > 0) s.flashT -= 0.05;
         ctx.fillStyle = '#e0f0ff'; ctx.fillRect(0, 0, 500, 500);
-        // 鏡
+        // 左右の大きなタップ領域(色で示す)
+        const nextSide = s.lastSide === 'L' ? 'R' : (s.lastSide === 'R' ? 'L' : null);
+        // 左ゾーン
+        ctx.fillStyle = (nextSide === 'L' || nextSide === null) ? '#ffd6e4' : '#eeeeee';
+        ctx.fillRect(0, 100, 250, 400);
+        // 右ゾーン
+        ctx.fillStyle = (nextSide === 'R' || nextSide === null) ? '#ffd6e4' : '#eeeeee';
+        ctx.fillRect(250, 100, 250, 400);
+        // 中央の区切り線
+        ctx.strokeStyle = '#999';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([8, 8]);
+        ctx.beginPath(); ctx.moveTo(250, 100); ctx.lineTo(250, 500); ctx.stroke();
+        ctx.setLineDash([]);
+        // 左右の矢印ヒント
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 56px sans-serif';
+        ctx.textAlign = 'center';
+        if (nextSide === 'L' || nextSide === null) ctx.fillText('←', 125, 370);
+        if (nextSide === 'R' || nextSide === null) ctx.fillText('→', 375, 370);
+        // 鏡(小さめ)
         ctx.fillStyle = '#ccc';
-        ctx.fillRect(100, 100, 300, 260);
+        ctx.fillRect(175, 115, 150, 120);
         ctx.fillStyle = '#e8f4ff';
-        ctx.fillRect(110, 110, 280, 240);
-        // おじさんの顔(鏡に映った)
-        const bx = 250, by = 230;
+        ctx.fillRect(180, 120, 140, 110);
+        // おじさんの顔
+        const bx = 250, by = 175;
         ctx.fillStyle = '#e8b38a';
         ctx.beginPath();
-        ctx.arc(bx, by, 56, 0, Math.PI * 2);
+        ctx.arc(bx, by, 40, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#2a1a08';
         ctx.beginPath();
-        ctx.arc(bx, by - 10, 56, Math.PI, 0);
+        ctx.arc(bx, by - 8, 40, Math.PI, 0);
         ctx.fill();
-        ctx.fillRect(bx - 50, by - 10, 100, 16);
+        ctx.fillRect(bx - 36, by - 8, 72, 10);
         // 目
         ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(bx - 18, by - 2, 7, 0, Math.PI * 2); ctx.arc(bx + 18, by - 2, 7, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(bx - 12, by - 2, 5, 0, Math.PI * 2); ctx.arc(bx + 12, by - 2, 5, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#000';
-        ctx.beginPath(); ctx.arc(bx - 18, by - 2, 3, 0, Math.PI * 2); ctx.arc(bx + 18, by - 2, 3, 0, Math.PI * 2); ctx.fill();
-        // 口(歯)
+        ctx.beginPath(); ctx.arc(bx - 12, by - 2, 2, 0, Math.PI * 2); ctx.arc(bx + 12, by - 2, 2, 0, Math.PI * 2); ctx.fill();
+        // 歯
         ctx.fillStyle = '#000';
-        ctx.fillRect(bx - 20, by + 15, 40, 14);
+        ctx.fillRect(bx - 14, by + 11, 28, 10);
         ctx.fillStyle = `rgb(${Math.round(200 + s.clean * 55)},${Math.round(200 + s.clean * 55)},${Math.round(180 + s.clean * 75)})`;
-        for (let i = 0; i < 5; i++) ctx.fillRect(bx - 18 + i * 8, by + 17, 6, 10);
+        for (let i = 0; i < 4; i++) ctx.fillRect(bx - 12 + i * 7, by + 13, 5, 7);
         // 歯ブラシ(揺れる)
         const bangle = s.lastSide === 'L' ? -0.3 : 0.3;
         ctx.save();
-        ctx.translate(bx, by + 22);
+        ctx.translate(bx, by + 18);
         ctx.rotate(bangle);
         ctx.fillStyle = '#ff80c0';
-        ctx.fillRect(-3, -4, 40, 8);
+        ctx.fillRect(-3, -3, 30, 6);
         ctx.fillStyle = '#fff';
-        ctx.fillRect(35, -6, 14, 12);
+        ctx.fillRect(25, -5, 10, 10);
         ctx.restore();
+        // フラッシュ(押した側)
+        if (s.flashT > 0 && s.flashSide) {
+          const fx = s.flashSide === 'L' ? 0 : 250;
+          ctx.fillStyle = `rgba(255,255,255,${s.flashT * 0.5})`;
+          ctx.fillRect(fx, 100, 250, 400);
+        }
         // テキスト
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 20px monospace';
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 22px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('BRUSH LEFT-RIGHT', 250, 410);
-        ctx.fillText(`${s.count}/${s.need}`, 250, 440);
+        ctx.fillText(curLang === 'en' ? 'BRUSH L - R' : '左右交互に磨く', 250, 70);
+        ctx.font = 'bold 18px monospace';
+        ctx.fillText(`${s.count}/${s.need}`, 250, 470);
       },
-      onClick: (s, x) => {
+      onClick: (s, x, y) => {
+        if (y < 100) return null;
         const side = x < 250 ? 'L' : 'R';
-        if (s.lastSide === side) return null; // 同側連打は無効
+        if (s.lastSide === side) {
+          // 同側連打は無効(でも失敗にもしない、軽くフラッシュだけ)
+          return null;
+        }
         s.lastSide = side;
         s.count++;
+        s.flashSide = side;
+        s.flashT = 1;
+        window.GameAudio.sfxHit(500 + s.count * 40);
         if (s.count >= s.need) return 'win';
         return null;
       }
@@ -1079,6 +1114,10 @@
         s.need = 12;
         s.fireworks = [];
         s.t = 0;
+        const qs = curLang === 'en'
+          ? ['WHAT DO?!','WHY?!','HELP!!','PANIC!!','AAAAA!','NO NO NO','HUH?!','OH NO!']
+          : ['どうする？','なぜ？','助けて！！','パニック！','あああ！','いやいや','え、え？','やばい！'];
+        s.question = qs[Math.floor(Math.random() * qs.length)];
       },
       draw: (s) => {
         s.t++;
@@ -1086,14 +1125,14 @@
         const hue = Math.min(1, s.count / s.need);
         ctx.fillStyle = `rgb(${255 - Math.round(hue * 30)},${220 - Math.round(hue * 40)},${220 - Math.round(hue * 20)})`;
         ctx.fillRect(0, 0, 500, 500);
-        // ぼさぼさ2人
+        // ぼさぼさ2人(画面いっぱい)
         if (hairyDuoImg.complete && hairyDuoImg.naturalWidth > 0) {
-          const imgW = 320;
+          const imgW = 460;
           const imgH = imgW * (hairyDuoImg.naturalHeight / hairyDuoImg.naturalWidth);
           const shake = Math.min(12, s.count * 1.2);
           const dx = (Math.random() - 0.5) * shake;
           const dy = (Math.random() - 0.5) * shake;
-          ctx.drawImage(hairyDuoImg, 250 - imgW / 2 + dx, 180 - imgH / 2 + dy, imgW, imgH);
+          ctx.drawImage(hairyDuoImg, 250 - imgW / 2 + dx, 200 - imgH / 2 + dy, imgW, imgH);
         }
         // でかい「どうする？」
         ctx.save();
@@ -1103,11 +1142,13 @@
         ctx.fillStyle = '#c0332f';
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 6;
-        ctx.font = 'bold 52px sans-serif';
+        // 長さに応じてフォント縮小
+        const qLen = s.question.length;
+        const qSize = qLen > 7 ? 36 : (qLen > 5 ? 44 : 52);
+        ctx.font = `bold ${qSize}px sans-serif`;
         ctx.textAlign = 'center';
-        const q = curLang === 'en' ? 'WHAT DO?!' : 'どうする？';
-        ctx.strokeText(q, 0, 0);
-        ctx.fillText(q, 0, 0);
+        ctx.strokeText(s.question, 0, 0);
+        ctx.fillText(s.question, 0, 0);
         ctx.restore();
         // カウンター
         ctx.fillStyle = '#000';
@@ -1158,32 +1199,42 @@
       name: 'WHERE', act: 2, duration: 4000, jingle: 'yes',
       init: (s) => {
         s.t = 0;
-        // 選択肢の並び順をシャッフル(正解は常に「膝」)
-        const opts = ['KNEE','BURGER','NEWYORK'];
-        for (let i = opts.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [opts[i], opts[j]] = [opts[j], opts[i]];
-        }
-        s.opts = opts;
+        // 質問をランダム選択
+        const questions = curLang === 'en'
+          ? ['WHERE?','WHAT IS THIS?','WHAT PART?','GUESS!','NAME IT!']
+          : ['ここはなに？','どこ？','これは何？','当てて！','名前は？'];
+        s.question = questions[Math.floor(Math.random() * questions.length)];
+        // 正解の「膝」+ ハズレ選択肢をランダムから2個選ぶ
+        const wrongPool = curLang === 'en'
+          ? ['BURGER','NEW YORK','TUESDAY','SKY TREE','SOUP','DREAM','INTERNET','MOON','PC','PUDDING','A COMMA','YOUR DAD']
+          : ['ハンバーガー','ニューヨーク','火曜日','スカイツリー','スープ','夢','インターネット','月','パソコン','プリン','読点','あなたの父'];
+        // シャッフル
+        const shuffled = wrongPool.slice().sort(() => Math.random() - 0.5);
+        const wrongs = shuffled.slice(0, 2);
+        const correct = curLang === 'en' ? 'KNEE' : 'ひざ';
+        // 3つの選択肢を作る(位置もランダム)
+        const allOpts = [correct, wrongs[0], wrongs[1]];
+        allOpts.sort(() => Math.random() - 0.5);
+        s.opts = allOpts;
+        s.correctLabel = correct;
       },
       draw: (s) => {
         s.t++;
-        // 背景(不穏な水色)
         ctx.fillStyle = '#e8f4ff';
         ctx.fillRect(0, 0, 500, 500);
         // 質問
         ctx.fillStyle = '#000';
         ctx.font = 'bold 28px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(curLang === 'en' ? 'WHERE?' : 'ここはなに？', 250, 50);
+        ctx.fillText(s.question, 250, 50);
         // パスタ男
         if (pastaManImg.complete && pastaManImg.naturalWidth > 0) {
-          const imgW = 220;
+          const imgW = 340;
           const imgH = imgW * (pastaManImg.naturalHeight / pastaManImg.naturalWidth);
           const bobble = Math.sin(s.t * 0.08) * 3;
-          ctx.drawImage(pastaManImg, 250 - imgW / 2, 70 + bobble, imgW, imgH);
+          ctx.drawImage(pastaManImg, 250 - imgW / 2, 75 + bobble, imgW, imgH);
         }
-        // 選択肢ボタン(3つ、横並び)
+        // 選択肢
         const btnY = 410;
         const btnH = 60;
         const btnW = 148;
@@ -1197,16 +1248,12 @@
           ctx.lineWidth = 3;
           ctx.strokeRect(bx, btnY, btnW, btnH);
           ctx.fillStyle = '#000';
-          ctx.font = 'bold 18px sans-serif';
+          // 長さに応じてフォント調整
+          const len = opt.length;
+          const fs = len > 7 ? 13 : (len > 5 ? 15 : 18);
+          ctx.font = `bold ${fs}px sans-serif`;
           ctx.textAlign = 'center';
-          let label = '';
-          if (opt === 'KNEE')    label = curLang === 'en' ? 'KNEE' : 'ひざ';
-          if (opt === 'BURGER')  label = curLang === 'en' ? 'BURGER' : 'ハンバーガー';
-          if (opt === 'NEWYORK') label = curLang === 'en' ? 'NEW YORK' : 'ニューヨーク';
-          // ハンバーガーは長いので少し縮小
-          if (opt === 'BURGER' && curLang === 'ja') ctx.font = 'bold 15px sans-serif';
-          if (opt === 'NEWYORK') ctx.font = 'bold 16px sans-serif';
-          ctx.fillText(label, bx + btnW / 2, btnY + btnH / 2 + 6);
+          ctx.fillText(opt, bx + btnW / 2, btnY + btnH / 2 + 6);
         });
       },
       onClick: (s, x, y) => {
@@ -1219,7 +1266,7 @@
         for (let i = 0; i < 3; i++) {
           const bx = startX + i * (btnW + gap);
           if (x >= bx && x <= bx + btnW) {
-            return s.opts[i] === 'KNEE' ? 'win' : 'lose';
+            return s.opts[i] === s.correctLabel ? 'win' : 'lose';
           }
         }
         return null;
@@ -1230,10 +1277,20 @@
       init: (s) => {
         s.count = 0;
         s.need = 5;
-        s.blush = 0;           // 0-1 照れ具合
-        s.bounce = 0;          // クリック時の揺れ
-        s.hearts = [];         // 舞い上がるハート
+        s.blush = 0;
+        s.bounce = 0;
+        s.hearts = [];
         s.t = 0;
+        // 指示文をランダム選択
+        const prompts = curLang === 'en'
+          ? ['COMPLIMENT HIM','PRAISE HIM','MAKE HIM BLUSH','SAY NICE THINGS','BE KIND']
+          : ['ほめてあげて','褒めちぎれ','照れさせろ','優しくして','機嫌を取れ'];
+        s.prompt = prompts[Math.floor(Math.random() * prompts.length)];
+        // ボタン文言もランダム
+        const btnLabels = curLang === 'en'
+          ? ['PRAISE ♥','NICE! ♥','COOL! ♥','LOVELY ♥','YOU GOOD ♥','PERFECT ♥']
+          : ['ほめる ♥','素敵！ ♥','かわいい ♥','すごい ♥','好き ♥','素晴らしい ♥'];
+        s.btnLabel = btnLabels[Math.floor(Math.random() * btnLabels.length)];
       },
       draw: (s) => {
         s.t++;
@@ -1247,17 +1304,17 @@
         ctx.fillStyle = '#000';
         ctx.font = 'bold 24px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(curLang === 'en' ? 'COMPLIMENT HIM' : 'ほめてあげて', 250, 50);
+        ctx.fillText(s.prompt, 250, 50);
         ctx.font = '14px sans-serif';
         ctx.fillStyle = '#666';
         ctx.fillText(`${s.count}/${s.need}`, 250, 75);
         // 顔(照れるほど少し跳ねる)
         s.bounce *= 0.85;
         if (catmanImg.complete && catmanImg.naturalWidth > 0) {
-          const imgW = 240;
+          const imgW = 360;
           const imgH = imgW * (catmanImg.naturalHeight / catmanImg.naturalWidth);
           const cx = 250;
-          const cy = 220 + s.bounce;
+          const cy = 210 + s.bounce;
           // 照れ赤オーラ
           if (s.blush > 0) {
             const aura = ctx.createRadialGradient(cx, cy, 20, cx, cy, 180);
@@ -1293,7 +1350,7 @@
         ctx.strokeRect(103, btnY + 3, 294, 64);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 26px sans-serif';
-        ctx.fillText(curLang === 'en' ? 'PRAISE ♥' : 'ほめる ♥', 250, btnY + 45);
+        ctx.fillText(s.btnLabel, 250, btnY + 45);
       },
       onClick: (s, x, y) => {
         if (x > 100 && x < 400 && y > 400 && y < 470) {
@@ -1319,22 +1376,36 @@
     {
       name: 'FANTASY', act: 2, duration: 4500, jingle: 'soft',
       init: (s) => {
-        // 芋虫6節。横並び。それぞれ tapped=false
-        s.segs = [0,1,2,3,4,5].map(i => ({ idx: i, eaten: false }));
+        s.segs = [0,1,2,3,4].map(i => ({ idx: i, eaten: false }));
         s.ateCount = 0;
         s.t = 0;
-        s.showFantasy = 0; // 最後に「ファンタジー！」
+        s.showFantasy = 0;
+        s.yummies = [];
+        // 指示ランダム
+        const prompts = curLang === 'en'
+          ? ['EAT IT ALL','CHOMP CHOMP','YUM YUM','DEVOUR IT','EAT UP']
+          : ['ぜんぶ食べて','食べちゃえ','もぐもぐ','召し上がれ','いただきます'];
+        s.prompt = prompts[Math.floor(Math.random() * prompts.length)];
+        // 美味いのバリエーション
+        s.yummyOptions = curLang === 'en'
+          ? ['YUMMY!','TASTY!','MMMH!','DELICIOUS!','YUM!','NOM!']
+          : ['美味い！','うまっ！','うめえ！','絶品！','旨っ！','おいちい！'];
+        // 最後のデカ文字ランダム
+        const finaleTxts = curLang === 'en'
+          ? ['FANTASY!','MAGIC!','MIRACLE!','WHAT A DAY!','BEAUTIFUL!']
+          : ['ファンタジー！','まほう！','奇跡！','最高！','神秘！'];
+        s.finaleText = finaleTxts[Math.floor(Math.random() * finaleTxts.length)];
       },
       draw: (s) => {
         s.t++;
-        // 背景(空と草)
+        // 背景
         const grad = ctx.createLinearGradient(0, 0, 0, 500);
-        grad.addColorStop(0, '#ffe4a8'); // 夕焼け
+        grad.addColorStop(0, '#ffe4a8');
         grad.addColorStop(0.6, '#ffb8d0');
-        grad.addColorStop(1, '#80c25b'); // 草
+        grad.addColorStop(1, '#80c25b');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 500, 500);
-        // キラキラ(ファンタジー風)
+        // キラキラ
         for (let i = 0; i < 15; i++) {
           const sx = (i * 31 + s.t * 2) % 500;
           const sy = (i * 53) % 300;
@@ -1345,33 +1416,42 @@
         ctx.fillStyle = '#000';
         ctx.font = 'bold 24px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(curLang === 'en' ? 'EAT IT ALL' : 'ぜんぶ食べて', 250, 80);
+        ctx.fillText(s.prompt, 250, 80);
         ctx.font = '14px sans-serif';
-        ctx.fillText(`${s.ateCount}/6`, 250, 105);
-        // 芋虫を6節に分割して描画
-        if (caterpillarImg.complete && caterpillarImg.naturalWidth > 0) {
-          const imgW = caterpillarImg.naturalWidth;
-          const imgH = caterpillarImg.naturalHeight;
-          const segSrcW = imgW / 6;
-          const displayW = 440;
-          const displayH = displayW * (imgH / imgW);
-          const baseX = (500 - displayW) / 2;
-          const baseY = 260;
-          const segDstW = displayW / 6;
-          s.segs.forEach(seg => {
-            if (seg.eaten) return;
-            const sx = seg.idx * segSrcW;
-            const dx = baseX + seg.idx * segDstW;
-            // 微妙に動く(くねくね)
-            const wobble = Math.sin(s.t * 0.15 + seg.idx * 0.5) * 3;
-            ctx.drawImage(
-              caterpillarImg,
-              sx, 0, segSrcW, imgH,
-              dx, baseY + wobble, segDstW + 1, displayH
-            );
-          });
+        ctx.fillText(`${s.ateCount}/5`, 250, 105);
+        // 5パーツをそれぞれ同じ矩形に重ねて描画(各画像内で正しい位置に配置済み)
+        const displayW = 500;
+        const displayH = displayW * (414 / 877);
+        const baseY = 240;
+        s.segs.forEach(seg => {
+          if (seg.eaten) return;
+          const img = catSegImgs[seg.idx];
+          if (!img.complete || img.naturalWidth === 0) return;
+          const wobble = Math.sin(s.t * 0.15 + seg.idx * 0.5) * 3;
+          ctx.drawImage(img, 0, baseY + wobble, displayW, displayH);
+        });
+        // 「美味い！」ポップ(各節を食べた瞬間)
+        for (let i = s.yummies.length - 1; i >= 0; i--) {
+          const y2 = s.yummies[i];
+          y2.y -= 1.5;
+          y2.life -= 0.02;
+          if (y2.life <= 0) { s.yummies.splice(i, 1); continue; }
+          ctx.save();
+          ctx.translate(y2.x, y2.y);
+          const scl = 0.8 + (1 - y2.life) * 0.6;
+          ctx.scale(scl, scl);
+          ctx.rotate((y2.rot || 0) * (1 - y2.life) * 0.3);
+          ctx.fillStyle = `rgba(255,80,30,${y2.life})`;
+          ctx.strokeStyle = `rgba(255,255,255,${y2.life})`;
+          ctx.lineWidth = 4;
+          ctx.font = 'bold 32px sans-serif';
+          ctx.textAlign = 'center';
+          const txt = y2.text;
+          ctx.strokeText(txt, 0, 0);
+          ctx.fillText(txt, 0, 0);
+          ctx.restore();
         }
-        // 「ファンタジー！」演出(全部食べたあと)
+        // 「ファンタジー！」演出
         if (s.showFantasy > 0) {
           ctx.save();
           ctx.translate(250, 250);
@@ -1382,34 +1462,43 @@
           ctx.lineWidth = 6;
           ctx.font = 'bold 44px sans-serif';
           ctx.textAlign = 'center';
-          const txt = curLang === 'en' ? 'FANTASY!' : 'ファンタジー！';
-          ctx.strokeText(txt, 0, 0);
-          ctx.fillText(txt, 0, 0);
+          ctx.strokeText(s.finaleText, 0, 0);
+          ctx.fillText(s.finaleText, 0, 0);
           ctx.restore();
           s.showFantasy++;
         }
       },
       onClick: (s, x, y) => {
-        const displayW = 440;
-        const segDstW = displayW / 6;
-        const baseX = (500 - displayW) / 2;
-        const baseY = 260;
-        const displayH = displayW * (caterpillarImg.naturalHeight / Math.max(1, caterpillarImg.naturalWidth));
-        // クリック位置が芋虫の表示範囲内か
-        if (y < baseY - 30 || y > baseY + displayH + 30) return null;
-        // どの節か
-        const segIdx = Math.floor((x - baseX) / segDstW);
-        if (segIdx < 0 || segIdx >= 6) return null;
+        const displayW = 500;
+        const displayH = displayW * (414 / 877);
+        const baseY = 240;
+        if (y < baseY - 10 || y > baseY + displayH + 10) return null;
+        // 表示座標→元画像(877px基準)のx位置に変換
+        const srcX = (x / displayW) * 877;
+        // 各パーツが元画像で占める大体のx範囲(目測ベース)
+        const bounds = [
+          { min: 0,   max: 290 }, // 頭
+          { min: 290, max: 420 }, // 2
+          { min: 420, max: 540 }, // 3
+          { min: 540, max: 670 }, // 4
+          { min: 670, max: 877 }, // 尻尾
+        ];
+        let segIdx = -1;
+        for (let i = 0; i < bounds.length; i++) {
+          if (srcX >= bounds[i].min && srcX < bounds[i].max) { segIdx = i; break; }
+        }
+        if (segIdx < 0) return null;
         const seg = s.segs[segIdx];
         if (!seg || seg.eaten) return null;
         seg.eaten = true;
         s.ateCount++;
+        const yumText = s.yummyOptions[Math.floor(Math.random() * s.yummyOptions.length)];
+        s.yummies.push({ x, y: y - 10, life: 1, rot: Math.random() - 0.5, text: yumText });
         spawnBurst(x, y, '200,50,100', 10);
         shake(5);
         window.GameAudio.sfxHit(300 + segIdx * 60);
-        if (s.ateCount >= 6) {
+        if (s.ateCount >= 5) {
           s.showFantasy = 1;
-          // 1秒後に勝利
           setTimeout(() => { if (currentMg && currentMg.name === 'FANTASY') finishMg('win'); }, 900);
         }
         return null;
@@ -1722,9 +1811,13 @@
     // 平和 → 日常 → 違和感 → 狂気
     mgQueue = buildQueue([
       'GREET OJISAN',
+      'WHERE',         // ← イラスト(パスタ男)
       'ANSWER PHONE',
+      'COMPLIMENT',    // ← イラスト(猫耳おじさん)
       'WATER PLANT',
+      'FANTASY',       // ← イラスト(芋虫)
       'WAVE HELLO',
+      'WHAT DO',       // ← イラスト(もじゃもじゃ2人)
       'EAT LUNCH',
       'CATCH LEAF',
       'COUNT SHEEP',
@@ -1733,11 +1826,7 @@
       'PICK FLOWER',
       'SWAT FLY',
       'SAY YES',
-      'WHERE',
       'SMILE',
-      'WHAT DO',
-      'COMPLIMENT',
-      'FANTASY',
       'BREATHE',
       'OBEY',
       'WAIT',
@@ -2086,12 +2175,23 @@
     },
   };
 
+  // エンディング用の歌(MP3)を事前ロード
+  const vocalsAudio = new Audio('assets/vocals.mp3');
+  vocalsAudio.volume = 0.9;
+
   $('mirror-next').addEventListener('click', () => {
     cancelAnimationFrame(ghostRaf);
     window.GameAudio.stop();
     show('end-screen');
     const ending = ENDINGS[finalEndingKey] || ENDINGS.obedient;
-    window.GameAudio.play(ending.bgm);
+    // エンディング共通でずんずん太鼓BGMに上書き
+    window.GameAudio.play('ending_drum');
+    // 歌を同時再生(ミュート状態なら鳴らない)
+    try {
+      vocalsAudio.currentTime = 0;
+      const p = vocalsAudio.play();
+      if (p && p.catch) p.catch(() => {});
+    } catch(e) {}
     $('end-title').textContent = ending.title;
     $('end-title').style.color = ending.color;
     $('end-title').style.textShadow = `0 0 16px ${ending.color}`;
@@ -2267,7 +2367,13 @@
     scene.add(crowdGroup);
 
     // ===== 観客席に巨大ナマコ(1段まるまる占拠) =====
-    const wormTexture = new THREE.TextureLoader().load('assets/worm.png');
+    console.log('[the-machine-comedy] Loading worm & mohawk textures...');
+    const wormTexture = new THREE.TextureLoader().load(
+      'assets/worm.png',
+      () => console.log('[the-machine-comedy] worm.png loaded'),
+      undefined,
+      (err) => console.error('[the-machine-comedy] worm.png FAILED', err)
+    );
     wormTexture.anisotropy = 4;
     const wormMat = new THREE.MeshBasicMaterial({
       map: wormTexture,
@@ -2282,7 +2388,12 @@
     scene.add(wormMesh);
 
     // ===== 客席にモヒカン兄さんを散りばめる =====
-    const mohawkTexture = new THREE.TextureLoader().load('assets/mohawk.png');
+    const mohawkTexture = new THREE.TextureLoader().load(
+      'assets/mohawk.png',
+      () => console.log('[the-machine-comedy] mohawk.png loaded'),
+      undefined,
+      (err) => console.error('[the-machine-comedy] mohawk.png FAILED', err)
+    );
     mohawkTexture.anisotropy = 4;
     const mohawkMat = new THREE.MeshBasicMaterial({
       map: mohawkTexture,
@@ -2658,6 +2769,14 @@
   protagonistImg.src = 'assets/protagonist.png';
   const caterpillarImg = new Image();
   caterpillarImg.src = 'assets/caterpillar.png';
+  // 芋虫5分割パーツ(インデックス0=頭, 4=尻尾)。位置は既に877x414キャンバス内で正しく配置済み。
+  const catSegImgs = [
+    'assets/cat-seg5.png', // 頭(緑・顔付き)
+    'assets/cat-seg4.png', // 2(黄)
+    'assets/cat-seg3.png', // 3(緑)
+    'assets/cat-seg2.png', // 4(黄)
+    'assets/cat-seg1.png', // 尻尾(緑)
+  ].map(src => { const im = new Image(); im.src = src; return im; });
   const catmanImg = new Image();
   catmanImg.src = 'assets/catman.png';
   const pastaManImg = new Image();
@@ -2721,15 +2840,13 @@
       glow.addColorStop(1, 'rgba(0,0,0,0)');
       bctx.fillStyle = glow;
       bctx.fillRect(0, 0, 500, 500);
-      // ===== 主人公(47歳おじさん) =====
+      // ===== 主人公(47歳おじさん・画面大きめ) =====
       if (protagonistImg.complete && protagonistImg.naturalWidth > 0) {
-        // 画面左、TVに向かって少し横向き
-        const imgW = 220;
+        const imgW = 320;
         const imgH = imgW * (protagonistImg.naturalHeight / protagonistImg.naturalWidth);
-        const px = 40;
-        const py = 500 - imgH - 20;
+        const px = 10;
+        const py = 500 - imgH - 5;
         bctx.save();
-        // TV側を向くように少し反転(元絵が左向きなので必要に応じて)
         bctx.drawImage(protagonistImg, px, py, imgW, imgH);
         bctx.restore();
       } else {
@@ -2828,19 +2945,15 @@
       pctx.textAlign = 'left';
       pctx.font = '12px sans-serif';
       const reqs = curLang === 'en' ? [
-        '- Able to operate for long durations',
-        '- Quick response to instructions',
-        '- Low emotional fluctuation',
-        '- High physical endurance',
-        '- Compatible body structure',
-        '- No familial obligations preferred',
+        '- Long-duration operation',
+        '- Quick response',
+        '- Low emotion',
+        '- Few relatives (preferred)',
       ] : [
-        '・長時間の連続稼働が可能な方',
+        '・長時間の稼働が可能',
         '・指示への迅速な反応',
-        '・感情の起伏が少ない方',
-        '・高い身体耐久性',
-        '・適合する身体構造',
-        '・親族関係の少ない方優遇',
+        '・感情の起伏が少ない',
+        '・親族が少ない方優遇',
       ];
       reqs.forEach((r, i) => {
         pctx.fillText(r, -155, 0 + i * 18);
@@ -2933,10 +3046,9 @@
   let tcRaf = null;
   let tcWaitTimer = null;
   let tcClicked = false;
+  // ボーナスフェーズはあなたのイラスト付きミニゲーム4本だけ登場
   const BONUS_POOL = [
-    'ANSWER PHONE','WATER PLANT','WAVE HELLO','EAT LUNCH','CATCH LEAF',
-    'COUNT SHEEP','POUR TEA','BRUSH TEETH','PICK FLOWER','SWAT FLY',
-    'SAY YES','WHERE','SMILE','WHAT DO','COMPLIMENT','FANTASY','BREATHE',
+    'WHERE','COMPLIMENT','WHAT DO','FANTASY',
   ];
   let lastBonusName = '';
   function pickBonusMinigame() {
@@ -2950,51 +3062,69 @@
     return minigames.find(m => m.name === name);
   }
 
+  // TEST COMPLETE 画面の文言候補(毎回ランダムに切替)
+  const TC_MESSAGES_JA = [
+    { title: '試験終了',   sub1: 'ご協力ありがとうございました。',       sub2: 'お帰りいただいて結構です。' },
+    { title: '検査完了',   sub1: '異常は検出されませんでした。',         sub2: '退室をお願いします。' },
+    { title: '観察終了',   sub1: '記録を取り終わりました。',             sub2: '施設の出口は右手です。' },
+    { title: '選考終了',   sub1: '次の応募者をお待ちしております。',     sub2: 'ご苦労様でした。' },
+    { title: '審査完了',   sub1: '判定は後日郵送いたします。',           sub2: 'お疲れさまでした。' },
+    { title: 'データ取得完了', sub1: '資料はすべて破棄してください。',   sub2: 'もう、帰っていいんですよ。' },
+    { title: '評価終了',   sub1: '所定の手続きは完了しました。',         sub2: 'これ以上、何もなさらなくて結構です。' },
+    { title: 'SESSION END', sub1: 'あなたの行動は記録されました。',      sub2: '…ほら、帰ろう?' },
+  ];
+  const TC_MESSAGES_EN = [
+    { title: 'TEST COMPLETE', sub1: 'Thank you for your cooperation.',     sub2: 'You may leave now.' },
+    { title: 'EXAM COMPLETE', sub1: 'No abnormalities detected.',          sub2: 'Please exit the room.' },
+    { title: 'OBSERVATION END', sub1: 'All records have been taken.',      sub2: 'The exit is to your right.' },
+    { title: 'SELECTION END', sub1: 'Waiting for the next applicant.',     sub2: 'Good job.' },
+    { title: 'EVALUATION DONE', sub1: 'Results will be mailed later.',     sub2: 'Well done.' },
+    { title: 'DATA ACQUIRED', sub1: 'Please dispose of all materials.',    sub2: 'You can go home now.' },
+    { title: 'ASSESSMENT END', sub1: 'The procedure is complete.',         sub2: 'Please do nothing more.' },
+    { title: 'SESSION END', sub1: 'Your actions have been logged.',        sub2: '…hey, go home, okay?' },
+  ];
+
   function showTestComplete() {
     show('test-complete-screen');
     tcClicked = false;
-    // PHASE2通常後に1回だけ再生、以降のボーナスフェーズでは無音寄りに
     if (!inBonusPhase) {
       window.GameAudio.stop();
     }
+    // 毎回ランダムに文言を選ぶ
+    const pool = curLang === 'en' ? TC_MESSAGES_EN : TC_MESSAGES_JA;
+    const msg = pool[Math.floor(Math.random() * pool.length)];
     const tcc = $('tc-canvas');
     const tcctx = tcc.getContext('2d');
     const state = { t: 0, dot: 0 };
     function frame() {
       state.t++;
-      // 殺風景な白バック(試験終了の事務的な感じ)
       tcctx.fillStyle = '#f0ede0';
       tcctx.fillRect(0, 0, 500, 500);
-      // 上部に小さなシステム情報
       tcctx.fillStyle = '#888';
       tcctx.font = '10px monospace';
       tcctx.textAlign = 'left';
       tcctx.fillText('SYS: IDLE', 10, 16);
       tcctx.textAlign = 'right';
       tcctx.fillText('STATUS: OK', 490, 16);
-      // 中央の大きな文字
+      // 中央の大きな文字(タイトル)
       tcctx.textAlign = 'center';
       tcctx.fillStyle = '#1a1a1a';
-      tcctx.font = 'bold 34px monospace';
-      tcctx.fillText(curLang === 'en' ? 'TEST COMPLETE' : '試験終了', 250, 200);
-      // 指示のない待機
+      // タイトルが長い場合はフォント縮小
+      const titleLen = msg.title.length;
+      tcctx.font = `bold ${titleLen > 10 ? 26 : 34}px monospace`;
+      tcctx.fillText(msg.title, 250, 200);
+      // サブ文
       tcctx.fillStyle = '#555';
       tcctx.font = '14px monospace';
-      const sub = curLang === 'en'
-        ? 'Thank you for your cooperation.'
-        : 'ご協力ありがとうございました。';
-      tcctx.fillText(sub, 250, 240);
-      const sub2 = curLang === 'en'
-        ? 'You may leave now.'
-        : 'お帰りいただいて結構です。';
-      tcctx.fillText(sub2, 250, 262);
-      // 徐々に点灯するドット(動きがないとプレイヤーが不安になる)
+      tcctx.fillText(msg.sub1, 250, 240);
+      tcctx.fillText(msg.sub2, 250, 262);
+      // ドット
       state.dot += 0.03;
       const d = Math.floor(state.dot % 4);
       tcctx.fillStyle = '#aaa';
       tcctx.font = 'bold 24px monospace';
       tcctx.fillText('.'.repeat(d), 250, 320);
-      // 下部の細かい文字(応募者番号など)
+      // 応募者番号
       tcctx.fillStyle = '#888';
       tcctx.font = '9px monospace';
       tcctx.fillText(curLang === 'en' ? 'APPLICANT #' + (10000 + Math.floor(state.t / 100)) : '応募者番号 #' + (10000 + Math.floor(state.t / 100)), 250, 470);
@@ -3091,12 +3221,12 @@
           : `rgba(255,255,100,${Math.random() * 0.3})`;
         rctx.fillRect(x, y, 2, 2);
       }
-      // ===== 主人公(47歳おじさん) =====
+      // ===== 主人公(47歳おじさん・でかく表示) =====
       if (protagonistImg.complete && protagonistImg.naturalWidth > 0) {
-        const imgW = 250;
+        const imgW = 380;
         const imgH = imgW * (protagonistImg.naturalHeight / protagonistImg.naturalWidth);
         const px = 250 - imgW / 2;
-        const py = 500 - imgH - 10;
+        const py = 500 - imgH - 5;
         rctx.save();
         if (goesHome) {
           // 帰宅: ちょっと肩を落とすように少し傾ける
@@ -3542,6 +3672,7 @@
   $('mute-btn').addEventListener('click', () => {
     isMuted = !isMuted;
     window.GameAudio.setMute(isMuted);
+    vocalsAudio.muted = isMuted;
     $('mute-btn').textContent = isMuted ? '🔇' : '🔊';
   });
 
