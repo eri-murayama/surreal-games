@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>しろたん愛してるよ！！！！！</title>
+  <meta name="description" content="しろたん（©クリエイティブヨーコ）の非公式ファン作品置き場。ミニゲームとイラストを楽しく集めました。※非営利のファン作品です。">
+  <meta property="og:title" content="しろたんファン置き場">
+  <meta property="og:description" content="しろたんの非公式ファンゲームとイラスト置き場です。※非営利のファン作品">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="../assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pink-50:#fff5f8;
+      --pink-100:#ffe3ee;
+      --pink-200:#ffc7db;
+      --pink-300:#ff9fc1;
+      --pink-500:#ff6ea3;
+      --blue-50:#eef8ff;
+      --blue-100:#d4ecff;
+      --blue-200:#a9d8ff;
+      --mint:#d4f5ea;
+      --cream:#fff9e8;
+      --ink:#5a4a55;
+      --ink-soft:#8b7c85;
+      --shadow:0 8px 24px rgba(255,158,191,.18);
+      --shadow-strong:0 14px 40px rgba(255,158,191,.28);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100%}
+    body{
+      font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;
+      color:var(--ink);
+      line-height:1.7;
+      background:
+        radial-gradient(ellipse at 20% 0%,#fff6fb 0%,transparent 50%),
+        radial-gradient(ellipse at 80% 100%,#eaf4ff 0%,transparent 50%),
+        linear-gradient(180deg,#fff 0%,var(--pink-50) 50%,var(--blue-50) 100%);
+      background-attachment:fixed;
+      overflow-x:hidden;
+    }
+
+    /* ===== 背景の浮遊パーティクル ===== */
+    .bg-particles{
+      position:fixed;inset:0;
+      pointer-events:none;
+      z-index:0;
+      overflow:hidden;
+    }
+    .particle{
+      position:absolute;
+      font-size:20px;
+      opacity:.6;
+      animation:float-up linear infinite;
+      will-change:transform;
+    }
+    @keyframes float-up{
+      0%{transform:translateY(110vh) translateX(0) rotate(0deg);opacity:0}
+      10%{opacity:.7}
+      90%{opacity:.5}
+      100%{transform:translateY(-10vh) translateX(40px) rotate(360deg);opacity:0}
+    }
+    /* ふわふわ雲 */
+    .cloud{
+      position:fixed;
+      background:rgba(255,255,255,.85);
+      border-radius:50%;
+      filter:blur(28px);
+      pointer-events:none;
+      z-index:0;
+    }
+    .cloud.c1{width:320px;height:140px;top:12%;left:-80px;animation:drift1 18s ease-in-out infinite alternate}
+    .cloud.c2{width:420px;height:200px;bottom:8%;right:-100px;animation:drift2 22s ease-in-out infinite alternate-reverse}
+    .cloud.c3{width:240px;height:120px;top:55%;left:40%;opacity:.6;animation:drift1 26s ease-in-out infinite}
+    @keyframes drift1{from{transform:translateX(0) translateY(0)}to{transform:translateX(60px) translateY(-10px)}}
+    @keyframes drift2{from{transform:translateX(0)}to{transform:translateX(-50px) translateY(8px)}}
+
+    .wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 20px}
+
+    /* ===== ヘッダー ===== */
+    header.site{
+      padding:20px 0 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .logo{
+      font-family:'Hachi Maru Pop',cursive;
+      font-size:1.55rem;
+      color:var(--pink-500);
+      text-decoration:none;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition:transform .3s;
+    }
+    .logo:hover{transform:rotate(-3deg) scale(1.05)}
+    .logo::before{content:"🐚";font-size:1.4rem;display:inline-block;animation:wiggle 2.5s ease-in-out infinite}
+    @keyframes wiggle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+    nav.site-nav{display:flex;gap:10px;font-size:.95rem;flex-wrap:wrap}
+    nav.site-nav a{
+      color:var(--ink-soft);
+      text-decoration:none;
+      padding:6px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.6);
+      transition:all .25s;
+    }
+    nav.site-nav a:hover{background:var(--pink-100);color:var(--pink-500);transform:translateY(-2px)}
+    nav.site-nav a.back-link{background:var(--pink-300);color:#fff}
+    nav.site-nav a.back-link:hover{background:var(--pink-500);color:#fff}
+
+    /* ===== ヒーロー ===== */
+    .hero{
+      text-align:center;
+      padding:30px 0 60px;
+      position:relative;
+    }
+    .hero h1{
+      font-family:'Hachi Maru Pop',cursive;
+      font-size:clamp(2rem,6vw,3.5rem);
+      color:var(--pink-500);
+      line-height:1.3;
+      margin-bottom:16px;
+      text-shadow:0 3px 0 #fff,0 6px 16px rgba(255,158,191,.3);
+      animation:pop-in .8s cubic-bezier(.3,1.6,.5,1) .2s both;
+    }
+    .hero h1 .sub{
+      display:block;
+      font-size:.4em;
+      color:var(--ink-soft);
+      margin-top:8px;
+      letter-spacing:.15em;
+    }
+    @keyframes pop-in{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+
+    .hero-visual{
+      width:230px;height:230px;
+      margin:10px auto 20px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 50% 35%,#fff 0%,var(--pink-100) 65%,var(--pink-200) 100%);
+      box-shadow:
+        0 20px 50px rgba(255,158,191,.35),
+        inset 0 -15px 30px rgba(255,199,219,.5);
+      display:flex;align-items:center;justify-content:center;
+      overflow:visible;
+      position:relative;
+      animation:bob 3.5s ease-in-out infinite;
+    }
+    .hero-visual::before{
+      /* 光の輪 */
+      content:"";
+      position:absolute;inset:-12px;
+      border-radius:50%;
+      border:2px dashed var(--pink-200);
+      animation:spin 20s linear infinite;
+      opacity:.6;
+    }
+    .hero-visual::after{
+      /* ほっぺ★ */
+      content:"";
+      position:absolute;
+      width:100%;height:100%;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 25% 85%,rgba(255,180,200,.6) 0%,transparent 10%),
+        radial-gradient(circle at 75% 85%,rgba(255,180,200,.6) 0%,transparent 10%);
+      pointer-events:none;
+    }
+    .hero-visual img{
+      width:78%;height:auto;
+      filter:drop-shadow(0 6px 8px rgba(0,0,0,.08));
+      animation:sway 4s ease-in-out infinite;
+      position:relative;z-index:1;
+    }
+    @keyframes bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+    @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ヒーロー周りのキラキラ */
+    .sparkle{
+      position:absolute;
+      pointer-events:none;
+      font-size:22px;
+      animation:twinkle 2s ease-in-out infinite;
+    }
+    .sparkle.s1{top:-10px;left:15%;animation-delay:0s}
+    .sparkle.s2{top:20%;right:10%;animation-delay:.5s;font-size:18px}
+    .sparkle.s3{bottom:30%;left:8%;animation-delay:1s;font-size:16px}
+    .sparkle.s4{bottom:10%;right:15%;animation-delay:1.5s}
+    @keyframes twinkle{
+      0%,100%{opacity:.3;transform:scale(.6) rotate(0deg)}
+      50%{opacity:1;transform:scale(1.2) rotate(20deg)}
+    }
+
+    .hero p.lead{
+      font-size:1.05rem;
+      color:var(--ink);
+      max-width:560px;
+      margin:10px auto 0;
+      animation:fade-up .8s ease .5s both;
+    }
+    @keyframes fade-up{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+    .notice-badge{
+      display:inline-block;
+      margin-top:20px;
+      padding:6px 18px;
+      background:#fff;
+      border:2px dashed var(--pink-200);
+      border-radius:999px;
+      font-size:.85rem;
+      color:var(--ink-soft);
+      animation:fade-up .8s ease .7s both;
+    }
+
+    /* ===== 波区切り ===== */
+    .wave-divider{
+      position:relative;
+      height:60px;
+      overflow:hidden;
+      z-index:1;
+    }
+    .wave-divider svg{
+      position:absolute;width:200%;height:100%;
+      animation:wave-slide 12s linear infinite;
+    }
+    @keyframes wave-slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* ===== セクション共通 ===== */
+    section{padding:60px 0;position:relative}
+    .section-title{
+      font-family:'Hachi Maru Pop',cursive;
+      font-size:2rem;
+      color:var(--pink-500);
+      text-align:center;
+      margin-bottom:8px;
+      position:relative;
+      display:inline-block;
+      left:50%;transform:translateX(-50%);
+    }
+    .section-title::before{content:"✦ ";display:inline-block;animation:twinkle 2s ease-in-out infinite}
+    .section-title::after{content:" ✦";display:inline-block;animation:twinkle 2s ease-in-out .7s infinite}
+    .section-desc{
+      text-align:center;
+      color:var(--ink-soft);
+      margin-bottom:34px;
+      font-size:.95rem;
+    }
+
+    /* 入場アニメ */
+    .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s,transform .8s cubic-bezier(.3,1.4,.6,1)}
+    .reveal.on{opacity:1;transform:translateY(0)}
+
+    /* ===== ゲームカード ===== */
+    .games-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:24px;
+    }
+    .game-card{
+      background:#fff;
+      border-radius:28px;
+      padding:28px 20px 24px;
+      text-decoration:none;
+      color:inherit;
+      box-shadow:var(--shadow);
+      transition:transform .3s cubic-bezier(.3,1.4,.5,1),box-shadow .3s;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      border:3px solid transparent;
+      position:relative;
+      overflow:hidden;
+    }
+    .game-card::before{
+      /* 上部のキラ */
+      content:"✧";
+      position:absolute;top:12px;right:16px;
+      color:var(--pink-200);
+      font-size:20px;
+      animation:twinkle 2.4s ease-in-out infinite;
+    }
+    .game-card::after{
+      /* ホバーで光がすーっと流れる */
+      content:"";
+      position:absolute;top:0;left:-60%;
+      width:50%;height:100%;
+      background:linear-gradient(120deg,transparent,rgba(255,255,255,.7),transparent);
+      transform:skewX(-20deg);
+      transition:left .8s;
+    }
+    .game-card:hover{
+      transform:translateY(-8px) rotate(-.5deg);
+      box-shadow:var(--shadow-strong);
+      border-color:var(--pink-100);
+    }
+    .game-card:hover::after{left:130%}
+    .game-card:hover .game-thumb{transform:rotate(-6deg) scale(1.05)}
+    .game-card:hover .game-thumb img{animation:hop .6s ease-in-out}
+    @keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+    .game-thumb{
+      width:150px;height:150px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 50% 30%,#fff 0%,var(--blue-100) 60%,var(--pink-100) 100%);
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:16px;
+      overflow:hidden;
+      transition:transform .35s cubic-bezier(.3,1.5,.5,1);
+      box-shadow:inset 0 -6px 12px rgba(0,0,0,.05);
+    }
+    .game-thumb img{width:88%;height:auto;transition:transform .3s}
+
+    .game-card h3{
+      font-family:'Hachi Maru Pop',cursive;
+      font-size:1.25rem;
+      color:var(--pink-500);
+      margin-bottom:6px;
+    }
+    .game-card p{
+      font-size:.9rem;
+      color:var(--ink-soft);
+      margin-bottom:16px;
+    }
+    .play-btn{
+      display:inline-block;
+      padding:9px 24px;
+      background:linear-gradient(135deg,var(--pink-300),var(--pink-500));
+      color:#fff;
+      border-radius:999px;
+      font-weight:700;
+      font-size:.9rem;
+      box-shadow:0 4px 12px rgba(255,110,163,.35);
+      position:relative;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .game-card:hover .play-btn{
+      transform:scale(1.08);
+      box-shadow:0 6px 18px rgba(255,110,163,.5);
+    }
+
+    /* ===== イラストギャラリー（サイズ統一） ===== */
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:20px;
+    }
+    .gallery-item{
+      background:#fff;
+      border-radius:24px;
+      padding:14px 14px 16px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      transition:transform .35s cubic-bezier(.3,1.5,.5,1),box-shadow .3s;
+      cursor:zoom-in;
+      position:relative;
+      border:2px solid transparent;
+      margin:0;
+    }
+    .gallery-item__frame{
+      aspect-ratio:1/1;
+      border-radius:16px;
+      background:radial-gradient(circle at 50% 30%,#fff 0%,var(--pink-50) 100%);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;
+      position:relative;
+    }
+    .gallery-item[data-color="pink"] .gallery-item__frame{background:radial-gradient(circle at 50% 30%,#fff 0%,var(--pink-100) 100%)}
+    .gallery-item[data-color="blue"] .gallery-item__frame{background:radial-gradient(circle at 50% 30%,#fff 0%,var(--blue-100) 100%)}
+    .gallery-item[data-color="mint"] .gallery-item__frame{background:radial-gradient(circle at 50% 30%,#fff 0%,var(--mint) 100%)}
+    .gallery-item[data-color="cream"] .gallery-item__frame{background:radial-gradient(circle at 50% 30%,#fff 0%,var(--cream) 100%)}
+    .gallery-item::after{
+      content:"♡";
+      position:absolute;top:18px;right:20px;
+      color:rgba(255,255,255,.9);
+      font-size:18px;
+      opacity:0;
+      transform:scale(.5);
+      transition:all .3s;
+      z-index:2;
+    }
+    .gallery-item:hover{
+      transform:translateY(-6px) rotate(-1deg) scale(1.03);
+      box-shadow:var(--shadow-strong);
+      border-color:var(--pink-200);
+    }
+    .gallery-item:hover::after{opacity:1;transform:scale(1.1) rotate(-10deg)}
+    .gallery-item__frame img{
+      max-width:88%;
+      max-height:88%;
+      width:auto;height:auto;
+      object-fit:contain;
+      transition:transform .3s;
+      filter:drop-shadow(0 4px 8px rgba(0,0,0,.06));
+    }
+    .gallery-item:hover .gallery-item__frame img{animation:hop .6s ease-in-out}
+    .gallery-item__title{
+      margin:12px 6px 2px;
+      text-align:center;
+      font-family:'Hachi Maru Pop',cursive;
+      color:var(--pink-500);
+      font-size:1rem;
+      line-height:1.3;
+    }
+    .gallery-item__desc{
+      margin:4px 8px 0;
+      text-align:center;
+      color:var(--ink-soft);
+      font-size:.78rem;
+      line-height:1.5;
+    }
+
+    /* ===== ライトボックス ===== */
+    .lightbox{
+      position:fixed;inset:0;
+      background:rgba(90,74,85,.85);
+      display:none;
+      align-items:center;justify-content:center;
+      z-index:100;
+      padding:20px;
+      cursor:zoom-out;
+      backdrop-filter:blur(4px);
+      animation:fade-in .3s ease;
+    }
+    @keyframes fade-in{from{opacity:0}to{opacity:1}}
+    .lightbox.on{display:flex}
+    .lightbox__inner{
+      display:flex;flex-direction:column;align-items:center;gap:14px;
+      max-width:min(96vw,1000px);
+      max-height:94vh;
+      animation:pop-in .4s cubic-bezier(.3,1.5,.5,1);
+    }
+    .lightbox img{
+      max-width:100%;
+      max-height:76vh;
+      border-radius:20px;
+      box-shadow:0 20px 60px rgba(0,0,0,.4);
+      background:#fff;
+    }
+    .lightbox__caption{
+      color:#fff;
+      text-align:center;
+      max-width:720px;
+    }
+    .lightbox__title{
+      font-family:'Hachi Maru Pop',cursive;
+      font-size:1.4rem;
+      color:#ffe0ec;
+      margin-bottom:6px;
+    }
+    .lightbox__desc{
+      font-size:.95rem;
+      line-height:1.7;
+      color:rgba(255,255,255,.9);
+    }
+    .lightbox__title:empty,.lightbox__desc:empty{display:none}
+
+    /* ===== Aboutカード ===== */
+    .about-card{
+      background:#fff;
+      border-radius:32px;
+      padding:36px 30px;
+      box-shadow:var(--shadow);
+      max-width:720px;
+      margin:0 auto;
+      text-align:center;
+      position:relative;
+    }
+    .about-card::before,.about-card::after{
+      content:"🐚";
+      position:absolute;
+      font-size:28px;
+      opacity:.5;
+    }
+    .about-card::before{top:12px;left:16px;transform:rotate(-20deg)}
+    .about-card::after{bottom:12px;right:16px;transform:rotate(20deg)}
+    .about-card h3{
+      font-family:'Hachi Maru Pop',cursive;
+      color:var(--pink-500);
+      margin-bottom:14px;
+      font-size:1.35rem;
+    }
+    .about-card p{margin-bottom:12px;font-size:.95rem}
+    .about-card p:last-child{margin-bottom:0;color:var(--ink-soft);font-size:.85rem;line-height:1.9}
+    .about-card a{color:var(--pink-500);font-weight:700}
+
+    /* ===== フッター ===== */
+    footer.site{
+      text-align:center;
+      padding:50px 20px 40px;
+      color:var(--ink-soft);
+      font-size:.82rem;
+      line-height:1.9;
+      position:relative;
+      z-index:2;
+    }
+    footer.site .heart{
+      display:inline-block;
+      color:var(--pink-300);
+      animation:pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+    @media(max-width:600px){
+      .section-title{font-size:1.6rem}
+      nav.site-nav{font-size:.82rem;gap:6px}
+      nav.site-nav a{padding:5px 10px}
+      .hero-visual{width:190px;height:190px}
+      .gallery{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+      .game-thumb{width:130px;height:130px}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景パーティクル -->
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="bg-particles" id="bg-particles"></div>
+
+  <div class="wrap">
+    <header class="site">
+      <a href="#top" class="logo">しろたん♡</a>
+      <nav class="site-nav">
+        <a href="#games">ゲーム</a>
+        <a href="#gallery">イラスト</a>
+        <a href="#about">このサイトについて</a>
+        <a href="../index.html" class="back-link">← シュールゲームス</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero-visual">
+        <span class="sparkle s1">✨</span>
+        <span class="sparkle s2">🫧</span>
+        <span class="sparkle s3">💗</span>
+        <span class="sparkle s4">✨</span>
+        <img src="assets/hero.png" alt="しろたんイラスト">
+      </div>
+      <h1>
+        しろたん愛してるよ！！！！！
+        <span class="sub">SHIROTAN FAN WORKS</span>
+      </h1>
+      <div class="notice-badge">※非公式・非営利のファン作品です</div>
+    </section>
+  </div>
+
+  <!-- 波区切り -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 Q150,10 300,30 T600,30 T900,30 T1200,30 L1200,60 L0,60 Z" fill="rgba(255,199,219,.35)"/>
+      <path d="M0,40 Q150,20 300,40 T600,40 T900,40 T1200,40 L1200,60 L0,60 Z" fill="rgba(255,199,219,.55)"/>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <section id="games" class="reveal">
+      <h2 class="section-title">ミニゲーム</h2>
+      <p class="section-desc">現在作成中</p>
+
+      <div class="games-grid">
+        <a href="../games/shirotan-care/index.html" class="game-card">
+          <div class="game-thumb"><img src="../games/shirotan-care/assets/shirotan1.png" alt=""></div>
+          <h3>しろたん育成日記</h3>
+          <p>ごはん・なでなで・おふろでなかよくなろう</p>
+          <span class="play-btn">あそぶ →</span>
+        </a>
+
+        <a href="../games/shirotan-dressup/index.html" class="game-card">
+          <div class="game-thumb"><img src="../games/shirotan-dressup/assets/shirotan-base.png" alt=""></div>
+          <h3>しろたんお着替え</h3>
+          <p>りぼんやかばんでおめかししよう</p>
+          <span class="play-btn">あそぶ →</span>
+        </a>
+
+        <a href="../games/shirotan-love/index.html" class="game-card">
+          <div class="game-thumb"><img src="../games/shirotan-love/assets/shirotan2.png" alt=""></div>
+          <h3>しろたんLOVE</h3>
+          <p>しろたんとのほんわかエピソード</p>
+          <span class="play-btn">あそぶ →</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="gallery" class="reveal">
+      <h2 class="section-title">イラスト</h2>
+      <p class="section-desc">きゃわわしろたん</p>
+
+      <div class="gallery">
+        <figure class="gallery-item" data-color="pink" data-title="食べ放題" data-desc="バイキングのルールを知らない、おおはしゃぎの現時点大満足しろたん。">
+          <div class="gallery-item__frame"><img src="assets/buffet.png" alt="食べ放題"></div>
+          <figcaption class="gallery-item__title">食べ放題</figcaption>
+          <p class="gallery-item__desc">バイキングのルールを知らない、おおはしゃぎの現時点大満足しろたん。</p>
+        </figure>
+
+        <figure class="gallery-item" data-color="mint" data-title="天才物理学者しろたん" data-desc="世紀の大発見「めがねをかけると賢くみえる」">
+          <div class="gallery-item__frame"><img src="assets/physicist.png" alt="天才物理学者しろたん"></div>
+          <figcaption class="gallery-item__title">天才物理学者しろたん</figcaption>
+          <p class="gallery-item__desc">世紀の大発見「めがねをかけると賢くみえる」</p>
+        </figure>
+
+        <figure class="gallery-item" data-color="cream" data-title="お買い物" data-desc="想定外の困難に直面するしろたん。クレバーな判断で事なきを得る。">
+          <div class="gallery-item__frame"><img src="../games/shirotan-care/assets/shirotan-comic.png" alt="お買い物"></div>
+          <figcaption class="gallery-item__title">お買い物</figcaption>
+          <p class="gallery-item__desc">想定外の困難に直面するしろたん。クレバーな判断で事なきを得る。</p>
+        </figure>
+
+        <figure class="gallery-item" data-color="pink" data-title="リバーシ" data-desc="しろたんはこの日初めて、敗北を知った。ごまみたい、とも思った。">
+          <div class="gallery-item__frame"><img src="../games/shirotan-care/assets/shirotan4.png" alt="リバーシ"></div>
+          <figcaption class="gallery-item__title">リバーシ</figcaption>
+          <p class="gallery-item__desc">しろたんはこの日初めて、敗北を知った。ごまみたい、とも思った。</p>
+        </figure>
+
+        <figure class="gallery-item" data-color="blue" data-title="しろたん雲">
+          <div class="gallery-item__frame"><img src="../games/shirotan-care/assets/shirotan3.png" alt="しろたん雲"></div>
+          <figcaption class="gallery-item__title">しろたん雲</figcaption>
+        </figure>
+
+        <figure class="gallery-item" data-color="blue" data-title="永遠推しろたん">
+          <div class="gallery-item__frame"><img src="../games/shirotan-care/assets/shirotan1.png" alt="永遠推しろたん"></div>
+          <figcaption class="gallery-item__title">永遠推しろたん</figcaption>
+        </figure>
+
+        <figure class="gallery-item" data-color="mint" data-title="しろたん">
+          <div class="gallery-item__frame"><img src="../games/shirotan-care/assets/shirotan2.png" alt="しろたん"></div>
+          <figcaption class="gallery-item__title">しろたん</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="about" class="reveal">
+      <div class="about-card">
+        <h3>このサイトについて</h3>
+        <p>「しろたん」は株式会社クリエイティブヨーコのキャラクターです。本サイトは<strong>非公式・非営利のファン作品</strong>であり、公式とは一切関係ありません。<a href="https://www.creativeyoko.co.jp/terms/" target="_blank" rel="noopener">公式ガイドライン</a>に沿って、個人で楽しむ範囲で運営しています。権利者様からのご指摘があれば速やかに対応します。</p>
+      </div>
+    </section>
+  </div>
+
+  <footer class="site">
+    <p>🐚 しろたん愛してるよ！！！！！ ・ Made with <span class="heart">♡</span> for fans.</p>
+    <p><a href="../index.html">← シュールゲームスに戻る</a></p>
+    <p>© Shirotan is a character of Creative Yoko Co., Ltd.<br>This site is an unofficial, non-commercial fan project.</p>
+  </footer>
+
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox__inner">
+      <img id="lightbox-img" src="" alt="">
+      <div class="lightbox__caption">
+        <div class="lightbox__title" id="lightbox-title"></div>
+        <div class="lightbox__desc" id="lightbox-desc"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === 背景パーティクル生成 ===
+    const emojis = ['🫧','✨','💗','🌸','⭐','🫧','✨'];
+    const pArea = document.getElementById('bg-particles');
+    const spawn = ()=>{
+      const p = document.createElement('span');
+      p.className = 'particle';
+      p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      p.style.left = Math.random()*100 + '%';
+      const dur = 14 + Math.random()*10;
+      p.style.animationDuration = dur + 's';
+      p.style.fontSize = (14 + Math.random()*14) + 'px';
+      p.style.opacity = (.4 + Math.random()*.4);
+      pArea.appendChild(p);
+      setTimeout(()=>p.remove(), dur*1000 + 500);
+    };
+    // 初期配置 + 継続生成
+    for(let i=0;i<8;i++){
+      setTimeout(()=>{
+        spawn();
+        const last = pArea.lastChild;
+        if(last) last.style.animationDelay = (-Math.random()*14) + 's';
+      }, i*200);
+    }
+    setInterval(spawn, 1800);
+
+    // === スクロールで入場アニメ ===
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}});
+    },{threshold:.15});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    // === ギャラリー ライトボックス ===
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbTitle = document.getElementById('lightbox-title');
+    const lbDesc = document.getElementById('lightbox-desc');
+    const openLb = (src,title,desc)=>{
+      lbImg.src=src;
+      lbTitle.textContent=title||'';
+      lbDesc.textContent=desc||'';
+      lb.classList.add('on');
+    };
+    document.querySelectorAll('.gallery-item').forEach(item=>{
+      item.addEventListener('click',()=>{
+        const img = item.querySelector('img');
+        if(img) openLb(img.src, item.dataset.title, item.dataset.desc);
+      });
+    });
+    lb.addEventListener('click',()=>lb.classList.remove('on'));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('on')});
+
+    // === クリックでハートが飛ぶ ===
+    document.addEventListener('click',(e)=>{
+      if(e.target.closest('a,button,.gallery-item,.comic-featured img')) return;
+      const heart = document.createElement('span');
+      heart.textContent = ['♡','💗','✨','🫧'][Math.floor(Math.random()*4)];
+      heart.style.cssText = `position:fixed;left:${e.clientX-12}px;top:${e.clientY-12}px;
+        font-size:22px;pointer-events:none;z-index:99;
+        animation:heart-pop 1s ease-out forwards`;
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(),1000);
+    });
+    // ハート飛びアニメ（動的に追加）
+    const style = document.createElement('style');
+    style.textContent = `@keyframes heart-pop{
+      0%{transform:scale(.5) translateY(0);opacity:1}
+      100%{transform:scale(1.4) translateY(-60px);opacity:0}
+    }`;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
