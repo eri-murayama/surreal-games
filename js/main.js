@@ -386,6 +386,7 @@ if (logo) {
 
   // フォールバック用データ（fetchが失敗した場合に使用）
   var fallbackNews = [
+    { date: '2026.04.23', tag: 'new', tagLabel: '新ページ', text: 'しろたんだいちゅきちゅき', url: 'shirotan-fan/index.html' },
     { date: '2026.04.13', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「漆黒のリバーシ」を公開しました！吾輩の番だが？', url: 'games/reversi/index.html' },
     { date: '2026.04.11', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「シュール進化論」を公開しました！無限にやっちゃう〜。', url: 'games/puzzle-2048/index.html' },
     { date: '2026.04.06', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「かいだんマインスイーパー」を公開しました！ちびるなよ小童ども！', url: 'games/minesweeper/index.html' },
