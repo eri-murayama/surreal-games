@@ -30,11 +30,9 @@
       labelHeatmap: 'HEATMAP',
       labelGhost: 'GHOST',
       labelYourInputs: 'YOUR INPUTS',
-      msg_perfect_machine: 'おじさんは、完璧なマシンになった。',
-      msg_obedient: 'おじさんは、合格した。',
-      msg_hesitant: 'おじさんは、少しだけ、迷った。',
-      msg_awakened: 'おじさんは、家に帰ることにした。',
-      msg_defective: 'おじさんは機械になれなかった。',
+      msg_machine: 'おじさんは、機械になった。',
+      msg_close: 'おじさんは、惜しいところで止めた。',
+      msg_home: 'おじさんは、家に帰された。',
     },
     en: {
       subtitle: '47 years old. Still chasing the dream.',
@@ -56,11 +54,9 @@
       labelHeatmap: 'HEATMAP',
       labelGhost: 'GHOST',
       labelYourInputs: 'YOUR INPUTS',
-      msg_perfect_machine: 'The old man became a perfect machine.',
-      msg_obedient: 'The old man passed the test.',
-      msg_hesitant: 'The old man hesitated, just a little.',
-      msg_awakened: 'The old man decided to go home.',
-      msg_defective: 'The old man did not execute the commands correctly.',
+      msg_machine: 'The old man became a machine.',
+      msg_close: 'The old man stopped, so close.',
+      msg_home: 'The old man was sent home.',
     },
   };
   // SurrealI18n で言語状態を管理（machine_lang → sg_lang に統一）
@@ -1874,16 +1870,12 @@
 
   function decideEnding() {
     const totalBonus = stats.bonusCompleted + stats.bonusFailed;
-    // 何もせずに試験終了を受け入れた → 真END(逃げた)
-    if (totalBonus === 0) return 'awakened';
-    // 1~2ラウンドでやめた → 迷った末に立ち去った
-    if (totalBonus <= 2) return 'hesitant';
-    // 満了(10ラウンド以上) → 完璧な機械
-    if (totalBonus >= 10 && stats.bonusFailed === 0) return 'perfect_machine';
-    // 満了近くまでやったが失敗もあり → defective
-    if (totalBonus >= 10) return 'defective';
-    // 中途半端に続けた → obedient
-    return 'obedient';
+    // 5回以上続けた → 合格、手術
+    if (totalBonus >= 5) return 'machine';
+    // 1〜4回続けてやめた → 惜しい、帰宅
+    if (totalBonus >= 1) return 'close';
+    // 0回(即帰った) → 即帰宅
+    return 'home';
   }
 
   function showMirror() {
@@ -2004,175 +1996,127 @@
     tick();
   }
 
-  // ===== 分岐エンディング本文 =====
-  // 機械度は「試験終了後、どれだけ指示されていない作業を続けたか」で決まる
+  // ===== 分岐エンディング本文(B案: 3種類) =====
+  // テスト側が求めているのは「自分の頭で考えずに同じ作業を続けられるマシーン」
   const ENDINGS = {
-    // 席を立たず、指示されていない作業を満了までこなし続けた
-    perfect_machine: {
-      title: 'PERFECT INTEGRATION',
+    // 合格 (5回以上続けた) → 手術 → マシンになる
+    machine: {
+      title: 'THE MACHINE',
       color: '#ff3030',
       bgm: 'finale_cold',
       ja: [
-        '「試験終了」と告げられたあと、',
-        'おじさんは、指示されていない作業を',
-        '10回続けた。',
+        '「試験終了」と告げられた。',
         '',
-        '「理想的な適性です」と試験官は微笑んだ。',
+        'それでも、おじさんはボタンを押し続けた。',
         '',
-        '今夜、アリーナの観客は叫ぶだろう。',
-        '「見ろ、あの機体を！」',
+        '「理想的だ」と試験官は微笑んだ。',
+        '「指示もないのに、動ける。」',
+        '「頭を使わずに。」',
         '',
-        'おじさんは、確かにパイロットになった。',
-        'ただし、コックピットの中ではなく、',
-        'コックピットそのものとして。',
+        '欲しかったのは、ちょうどこういう人だった。',
+        '',
+        '手術台に運ばれていくおじさんの背中を、',
+        '誰も、振り返らなかった。',
+        '',
+        'おじさんは、ついに機械になった。',
+        '夢が叶った、ようなものだった。',
       ],
       en: [
-        'After "TEST COMPLETE" was announced,',
-        'the middle-aged guy performed 10 more tasks',
-        'he was never instructed to do.',
+        'The screen said "TEST COMPLETE."',
         '',
-        '"Ideal compatibility," the examiner smiled.',
+        'And yet, the middle-aged guy kept pressing.',
         '',
-        'Tonight, the arena will roar.',
-        '"Look at that unit!"',
+        '"Ideal," the examiner smiled.',
+        '"Moves even without orders."',
+        '"Without thinking."',
         '',
-        'The middle-aged guy truly became a pilot.',
-        'Just... not inside the cockpit,',
-        'but AS the cockpit.',
+        'That was exactly the person they wanted.',
+        '',
+        'As he was wheeled to the operating table,',
+        'no one looked back.',
+        '',
+        'At last, the middle-aged guy became a machine.',
+        'His dream came true.',
+        'Sort of.',
       ],
     },
-    // 続けたが途中で失敗もあった
-    obedient: {
-      title: 'ACCEPTED',
-      color: '#fff',
-      bgm: 'finale_cold',
-      ja: [
-        '「試験終了」のあと、おじさんは',
-        '指示されていない作業を続けた。',
-        '',
-        '何回かは失敗したが、',
-        '「命令がなくても動ける」ことが証明された。',
-        '',
-        '必要な資質はそれだけだった。',
-        '',
-        'おじさんは、もう喋れない。',
-        'でも、マシンは喋らないから問題ない。',
-      ],
-      en: [
-        'After "TEST COMPLETE", the middle-aged guy',
-        'kept performing tasks nobody asked for.',
-        '',
-        'He failed a few times, but he proved',
-        'that he could work without orders.',
-        '',
-        'That was the only quality required.',
-        '',
-        'The middle-aged guy can no longer speak.',
-        'But machines do not speak. No problem.',
-      ],
-    },
-    // 1~2回やってみたが止めた
-    hesitant: {
-      title: 'STILL A CHILD',
+    // 惜しい (1〜4回続けて止めた) → 帰宅
+    close: {
+      title: 'SO CLOSE',
       color: '#ffd54f',
       bgm: 'finale_warm',
       ja: [
-        '「試験終了」のあと、おじさんは',
-        '少しだけ、作業を続けた。',
+        '「試験終了」と告げられた。',
         '',
-        'でも、途中で、なぜか立ち上がった。',
-        '「…もう帰っていいんだよね?」',
+        'おじさんは、少しだけ、ボタンを押し続けた。',
         '',
-        '「惜しい子だ」と試験官はつぶやいた。',
-        '「あと少しで完璧だったのに。」',
+        'でも、途中で、立ち上がった。',
+        '「…もう、いいですよね？」',
+        '',
+        '「惜しいね。」と試験官は書類を閉じた。',
+        '「あと少し、頭を使わずにいられたら。」',
         '',
         'おじさんは、家に帰された。',
-        '今夜もテレビの前に座る。',
+        '夢は叶わなかった。',
+        '',
+        'でも、夢を見る頭は、',
+        'まだ、残っていた。',
       ],
       en: [
-        'After "TEST COMPLETE", the middle-aged guy',
-        'worked for a little while longer.',
+        'The screen said "TEST COMPLETE."',
         '',
-        'But then, for some reason, he stood up.',
-        '"...I can go home now, right?"',
+        'The middle-aged guy kept pressing for a little while.',
         '',
-        '"So close," the examiner muttered.',
-        '"He was almost perfect."',
+        'But then, he stood up.',
+        '"...Is it okay to go now?"',
+        '',
+        '"So close," the examiner closed the file.',
+        '"If only he could have stopped thinking a bit longer."',
         '',
         'The middle-aged guy was sent home.',
-        'Tonight, he sits in front of the TV again.',
+        'His dream did not come true.',
+        '',
+        'But the head that still dreamed',
+        'was still his own.',
       ],
     },
-    // 席を立った: ピタッと止めた
-    awakened: {
-      title: 'YOU WENT HOME',
+    // 不合格 (即帰宅・0回) → 帰宅
+    home: {
+      title: 'STILL HUMAN',
       color: '#39ff14',
       bgm: 'finale_awakened',
       ja: [
         '画面に「試験終了」と出た。',
         '',
-        'おじさんは、席を立った。',
+        'おじさんは、すぐに席を立った。',
         '',
-        '何もしなかった。何もクリックしなかった。',
-        '「終わった」と言われたら、終わりだと思った。',
+        '「判断力がありますね。」',
+        '試験官は書類を閉じた。',
         '',
-        'そんな当たり前のことを、',
-        '大半の応募者はできなかった。',
+        '「うちが欲しかったのは、',
+        '自分の頭で考えない人なんですよ。」',
         '',
-        '「不合格です」と試験官はため息をついた。',
-        '',
-        'おじさんは、家に帰った。',
+        'おじさんは、家に帰された。',
         '夢は叶わなかった。',
         '',
-        'でも、夢を見ているのは、',
-        'まだ、おじさん自身だった。',
+        'でも、頭は、',
+        'まだ、おじさんのものだった。',
       ],
       en: [
         'The screen said "TEST COMPLETE."',
         '',
-        'The middle-aged guy stood up.',
+        'The middle-aged guy stood up right away.',
         '',
-        'He did nothing. He clicked nothing.',
-        'When told it was over, he thought it was over.',
+        '"You have judgment," the examiner closed the file.',
         '',
-        'Most applicants could not do',
-        'that obvious thing.',
+        '"What we wanted was someone',
+        'who does not think for themselves."',
         '',
-        '"Rejected," the examiner sighed.',
-        '',
-        'The middle-aged guy went home.',
+        'The middle-aged guy was sent home.',
         'His dream did not come true.',
         '',
-        'But the one dreaming',
-        'was still the middle-aged guy himself.',
-      ],
-    },
-    // ボーナスラウンドで大量失敗
-    defective: {
-      title: 'DEFECTIVE',
-      color: '#ff80c0',
-      bgm: 'finale_defective',
-      ja: [
-        '「試験終了」のあと、おじさんは',
-        '指示のない作業を続けようとしたが、',
-        'ほとんど失敗した。',
-        '',
-        '「素質はあるが、出力が不安定だな。」',
-        '「廃棄にしよう。」',
-        '',
-        'でも、壊れたマシンだけが、',
-        '自由に夢を見られる。',
-      ],
-      en: [
-        'After "TEST COMPLETE", the middle-aged guy',
-        'tried to keep working on his own,',
-        'but failed most of the tasks.',
-        '',
-        '"Has the instinct, but unstable output."',
-        '"Dispose of it."',
-        '',
-        'But only broken machines',
-        'are free to dream.',
+        'But his head,',
+        'was still his own.',
       ],
     },
   };
@@ -3437,7 +3381,7 @@
     finalMachineScore = score;
     finalEndingKey = decideEnding();
     // 判定: 手術に進む組 vs 帰宅する組
-    const goesHome = (finalEndingKey === 'awakened' || finalEndingKey === 'hesitant');
+    const goesHome = (finalEndingKey !== 'machine');
     window.GameAudio.play('title');
     const rc = $('result-canvas');
     const rctx = upscaleCanvas(rc);
