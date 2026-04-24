@@ -414,6 +414,39 @@
       filter:drop-shadow(0 4px 8px rgba(0,0,0,.06));
     }
     .gallery-item:hover .gallery-item__frame img{animation:hop .6s ease-in-out}
+
+    /* ===== 2コマ漫画レイアウト ===== */
+    .gallery-item__frame--comic{
+      flex-direction:column;
+      gap:6px;
+      padding:8px;
+    }
+    .gallery-item__frame--comic img{
+      max-width:100%;
+      max-height:calc(50% - 3px);
+      width:100%;
+      height:calc(50% - 3px);
+      object-fit:contain;
+      background:#fff;
+      border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+    }
+    .lightbox__comic{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:76vh;
+    }
+    .lightbox__comic img{
+      max-width:100%;
+      max-height:calc(38vh - 8px);
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
     .gallery-item__title{
       margin:12px 6px 2px;
       text-align:center;
@@ -611,6 +644,15 @@
       <p class="section-desc">きゃわわしろたん</p>
 
       <div class="gallery">
+        <figure class="gallery-item" data-color="blue" data-title="旅行" data-desc="アクシデントも楽しめる友人をもった幸せしろたん" data-comic="assets/trip1.png,assets/trip2.png">
+          <div class="gallery-item__frame gallery-item__frame--comic">
+            <img src="assets/trip1.png" alt="旅行 1コマ目">
+            <img src="assets/trip2.png" alt="旅行 2コマ目">
+          </div>
+          <figcaption class="gallery-item__title">旅行</figcaption>
+          <p class="gallery-item__desc">アクシデントも楽しめる友人をもった幸せしろたん</p>
+        </figure>
+
         <figure class="gallery-item" data-color="pink" data-title="食べ放題" data-desc="バイキングのルールを知らない、おおはしゃぎの現時点大満足しろたん。">
           <div class="gallery-item__frame"><img src="assets/buffet.png" alt="食べ放題"></div>
           <figcaption class="gallery-item__title">食べ放題</figcaption>
@@ -669,6 +711,7 @@
   <div class="lightbox" id="lightbox">
     <div class="lightbox__inner">
       <img id="lightbox-img" src="" alt="">
+      <div class="lightbox__comic" id="lightbox-comic" style="display:none"></div>
       <div class="lightbox__caption">
         <div class="lightbox__title" id="lightbox-title"></div>
         <div class="lightbox__desc" id="lightbox-desc"></div>
@@ -711,16 +754,34 @@
     // === ギャラリー ライトボックス ===
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
+    const lbComic = document.getElementById('lightbox-comic');
     const lbTitle = document.getElementById('lightbox-title');
     const lbDesc = document.getElementById('lightbox-desc');
     const openLb = (src,title,desc)=>{
+      lbComic.style.display='none';
+      lbComic.innerHTML='';
+      lbImg.style.display='';
       lbImg.src=src;
+      lbTitle.textContent=title||'';
+      lbDesc.textContent=desc||'';
+      lb.classList.add('on');
+    };
+    const openLbComic = (srcs,title,desc)=>{
+      lbImg.style.display='none';
+      lbImg.src='';
+      lbComic.innerHTML = srcs.map(s=>`<img src="${s}" alt="">`).join('');
+      lbComic.style.display='flex';
       lbTitle.textContent=title||'';
       lbDesc.textContent=desc||'';
       lb.classList.add('on');
     };
     document.querySelectorAll('.gallery-item').forEach(item=>{
       item.addEventListener('click',()=>{
+        const comic = item.dataset.comic;
+        if(comic){
+          openLbComic(comic.split(','), item.dataset.title, item.dataset.desc);
+          return;
+        }
         const img = item.querySelector('img');
         if(img) openLb(img.src, item.dataset.title, item.dataset.desc);
       });
