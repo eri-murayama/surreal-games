@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>THE MACHINE - カバー画像作成</title>
+<style>
+  body { margin:0; padding:20px; background:#222; color:#fff; font-family:sans-serif; }
+  h1 { font-size:18px; }
+  canvas { border:2px solid #555; display:block; margin:20px 0; background:#000; }
+  button { background:#ff3030; color:#fff; border:none; padding:10px 18px; font-size:14px; cursor:pointer; margin-right:8px; }
+  button:hover { background:#c0332f; }
+  .controls { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+  label { font-size:13px; }
+  input[type="range"] { width:200px; }
+  .info { font-size:12px; color:#aaa; margin-top:8px; }
+</style>
+</head>
+<body>
+<h1>🎨 THE MACHINE カバー画像メーカー (630×500 itch.io用)</h1>
+<div class="controls">
+  <label>顔のZOOM <input type="range" id="zoom" min="0.8" max="3" step="0.05" value="1.6"></label>
+  <label>X位置 <input type="range" id="ox" min="-300" max="300" step="5" value="0"></label>
+  <label>Y位置 <input type="range" id="oy" min="-300" max="300" step="5" value="-50"></label>
+  <button id="dl-cover">⬇ 630×500 ダウンロード</button>
+  <button id="dl-square">⬇ 1200×630 (OG用)</button>
+  <button id="dl-thumb">⬇ 400×400 (アイコン)</button>
+</div>
+<canvas id="preview" width="630" height="500"></canvas>
+<p class="info">主人公の顔アップ＋タイトル「THE MACHINE」「47歳。まだ夢、諦めてない。」を合成。</p>
+<p class="info">スライダーで顔の位置とサイズを調整 → ダウンロード。</p>
+
+<script>
+const canvas = document.getElementById('preview');
+const ctx = canvas.getContext('2d');
+const img = new Image();
+img.src = 'assets/protagonist.png';
+
+function draw(W, H) {
+  canvas.width = W;
+  canvas.height = H;
+  // 背景: 暖色グラデ(レトロアーケード風)
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#1a0530');
+  grad.addColorStop(0.6, '#3a0a20');
+  grad.addColorStop(1, '#0a0000');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  // スキャンライン
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  for (let y = 0; y < H; y += 3) ctx.fillRect(0, y, W, 1);
+  // 中央スポットライト
+  const spot = ctx.createRadialGradient(W/2, H*0.45, 30, W/2, H*0.45, W*0.7);
+  spot.addColorStop(0, 'rgba(255,200,100,0.25)');
+  spot.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = spot;
+  ctx.fillRect(0, 0, W, H);
+  // 主人公画像
+  if (img.complete && img.naturalWidth > 0) {
+    const zoom = parseFloat(document.getElementById('zoom').value);
+    const ox = parseFloat(document.getElementById('ox').value) * (W / 630);
+    const oy = parseFloat(document.getElementById('oy').value) * (H / 500);
+    const iw = img.naturalWidth * zoom * (H / 500);
+    const ih = img.naturalHeight * zoom * (H / 500);
+    ctx.drawImage(img, W/2 - iw/2 + ox, H/2 - ih/2 + oy, iw, ih);
+  }
+  // タイトル「THE MACHINE」
+  ctx.save();
+  ctx.translate(W/2, H * 0.18);
+  ctx.fillStyle = '#fff';
+  ctx.strokeStyle = '#ff3030';
+  ctx.lineWidth = 6;
+  ctx.font = `bold ${Math.round(W/8)}px "Press Start 2P", monospace`;
+  ctx.textAlign = 'center';
+  ctx.shadowColor = '#ff3030';
+  ctx.shadowBlur = 16;
+  ctx.strokeText('THE MACHINE', 0, 0);
+  ctx.fillText('THE MACHINE', 0, 0);
+  ctx.restore();
+  // サブタイトル下
+  ctx.save();
+  ctx.translate(W/2, H * 0.92);
+  ctx.fillStyle = '#fff5b0';
+  ctx.font = `bold ${Math.round(W/35)}px "Zen Maru Gothic", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.shadowColor = '#000';
+  ctx.shadowBlur = 8;
+  ctx.fillText('47歳。まだ夢、諦めてない。', 0, 0);
+  ctx.restore();
+  // ジャムタグ
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.font = `${Math.round(W/55)}px monospace`;
+  ctx.textAlign = 'right';
+  ctx.fillText('Gamedev.js Jam 2026', W - 12, H - 8);
+  ctx.textAlign = 'left';
+  ctx.fillText('Theme: Machines', 12, H - 8);
+}
+
+function refresh() { draw(630, 500); }
+['zoom','ox','oy'].forEach(id => {
+  document.getElementById(id).addEventListener('input', refresh);
+});
+img.onload = refresh;
+
+function downloadCanvas(filename, W, H) {
+  draw(W, H);
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = filename;
+  a.click();
+  refresh(); // プレビューを630×500に戻す
+}
+
+document.getElementById('dl-cover').addEventListener('click', () => downloadCanvas('the-machine-cover-630x500.png', 630, 500));
+document.getElementById('dl-square').addEventListener('click', () => downloadCanvas('the-machine-og-1200x630.png', 1200, 630));
+document.getElementById('dl-thumb').addEventListener('click', () => downloadCanvas('the-machine-thumb-400x400.png', 400, 400));
+</script>
+</body>
+</html>

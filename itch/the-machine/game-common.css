@@ -1,0 +1,427 @@
+/* ===== シュールゲームス 共通スタイル ===== */
+
+/* --- 共通CSS変数 --- */
+:root {
+  /* ブランドカラー */
+  --sg-brand-pink: #ff6ec7;
+  --sg-brand-cyan: #00fff7;
+  --sg-brand-green: #39ff14;
+  --sg-brand-yellow: #ffff00;
+
+  /* 共通ダークテーマ */
+  --sg-bg-dark: #0d0221;
+  --sg-bg-deep: #1a0a3e;
+  --sg-text-light: #f0f0f0;
+  --sg-text-muted: #b0a8c8;
+
+  /* 共通フォント */
+  --sg-font-heading: 'Hachi Maru Pop', cursive;
+  --sg-font-body: 'Zen Maru Gothic', 'Zen Kaku Gothic New', sans-serif;
+
+  /* 共通レイアウト */
+  --sg-game-max-width: 500px;
+  --sg-radius-sm: 8px;
+  --sg-radius-md: 12px;
+  --sg-radius-lg: 16px;
+  --sg-radius-pill: 999px;
+  --sg-safe-top: env(safe-area-inset-top, 0px);
+  --sg-safe-right: env(safe-area-inset-right, 0px);
+  --sg-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sg-safe-left: env(safe-area-inset-left, 0px);
+  --sg-ui-top: calc(12px + var(--sg-safe-top));
+  --sg-ui-right: calc(12px + var(--sg-safe-right));
+  --sg-ui-left: calc(12px + var(--sg-safe-left));
+
+  /* ブレークポイント（参照用: CSS変数はmedia queryに使えないためコメント）
+     スマホ:   480px 以下
+     タブレット: 768px 以下
+     PC:       769px 以上
+  */
+}
+
+/* --- ユニバーサルリセット --- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- タップハイライト無効化 & ズーム防止 --- */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  touch-action: manipulation;
+}
+
+/* --- ユーティリティ --- */
+.hidden {
+  display: none !important;
+}
+
+/* --- z-index 階層設計 ---
+   コンテンツ:    1-100
+   ナビゲーション: 500-999
+   固定UI:       5000-5999
+   通知:         6000
+   ----------------------------- */
+
+/* --- サウンドトグル --- */
+.sg-sound-toggle {
+  position: fixed;
+  bottom: calc(16px + var(--sg-safe-bottom));
+  left: calc(16px + var(--sg-safe-left));
+  z-index: 5000;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: transform 0.15s, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.sg-sound-toggle:hover {
+  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* --- おすすめゲーム導線 --- */
+.sg-recommend {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  text-align: center;
+}
+.sg-recommend-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+.sg-recommend-cards {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.sg-recommend-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  width: calc(33.33% - 6px);
+  min-width: 90px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  text-decoration: none;
+  color: #fff;
+  transition: transform 0.15s, background 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.sg-recommend-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2);
+}
+.sg-recommend-emoji {
+  font-size: 1.6rem;
+}
+.sg-recommend-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+.sg-recommend-genre {
+  font-size: 0.6rem;
+  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+/* --- 実績通知 --- */
+.sg-achievement-notification {
+  position: fixed;
+  top: calc(60px + var(--sg-safe-top));
+  right: calc(-320px - var(--sg-safe-right));
+  z-index: 6000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  min-width: 260px;
+  max-width: 320px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+  color: #fff;
+  transition: right 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Zen Maru Gothic', 'M PLUS Rounded 1c', sans-serif;
+}
+.sg-achievement-notification.sg-achievement-show {
+  right: calc(16px + var(--sg-safe-right));
+}
+.sg-achievement-notification.sg-achievement-hide {
+  right: calc(-320px - var(--sg-safe-right));
+  transition: right 0.4s ease-in;
+}
+.sg-achievement-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  animation: sg-achievement-bounce 0.6s ease-out;
+}
+.sg-achievement-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}
+.sg-achievement-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.sg-achievement-desc {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+@keyframes sg-achievement-bounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* --- ハイスコア表示ラベル --- */
+.sg-highscore-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #f5af19, #f12711);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 6px 0;
+  animation: sg-highscore-glow 2s ease-in-out infinite alternate;
+}
+.sg-highscore-badge::before {
+  content: '👑';
+}
+
+.sg-new-record {
+  display: inline-block;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 8px 0;
+  animation: sg-new-record-pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes sg-highscore-glow {
+  from { box-shadow: 0 0 4px rgba(245, 175, 25, 0.4); }
+  to { box-shadow: 0 0 12px rgba(245, 175, 25, 0.8); }
+}
+
+@keyframes sg-new-record-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* --- リザルト画面のスクロール対応 --- */
+#result-screen,
+#gameover-screen,
+#ending-screen,
+#victory-screen {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* overlay がリザルトを含む場合もスクロール対応 */
+.overlay:has(#result-screen:not(.hidden)),
+.overlay:has(#gameover-screen:not(.hidden)) {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  align-items: flex-start;
+  padding: 20px 0;
+}
+/* screen.active のリザルト画面もスクロール対応 */
+.screen.active {
+  overflow-y: auto;
+}
+
+/* --- 固定アスペクト比スケーリング --- */
+/* data-sg-scale 付きの #game-wrapper は JS で absolute + transform 配置される。
+   body はスクロール不要になるので overflow: hidden にする。 */
+#game-wrapper[data-sg-scale] {
+  box-sizing: border-box;
+}
+
+.back-to-top-link.sg-safe-back-link {
+  margin-top: var(--sg-back-safe-top, 0px);
+  margin-right: var(--sg-back-safe-right, 0px);
+  margin-bottom: var(--sg-back-safe-bottom, 0px);
+  margin-left: var(--sg-back-safe-left, 0px);
+}
+
+#lang-switch {
+  position: fixed !important;
+  top: var(--sg-ui-top) !important;
+  right: var(--sg-ui-right) !important;
+  left: auto !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 5000 !important;
+}
+
+/* --- レスポンシブ（スマホ） --- */
+@media (max-width: 480px) {
+  .sg-recommend {
+    padding: 12px 8px;
+  }
+  .sg-recommend-card {
+    padding: 8px 4px;
+    min-width: 80px;
+  }
+  .sg-recommend-name {
+    font-size: 0.65rem;
+  }
+  .sg-achievement-notification {
+    min-width: 220px;
+    max-width: 280px;
+    padding: 10px 12px;
+  }
+
+  .sg-lang-toggle {
+    top: calc(12px + var(--sg-safe-top));
+    right: calc(12px + var(--sg-safe-right));
+    gap: 3px;
+  }
+
+  #lang-switch {
+    top: var(--sg-ui-top) !important;
+    right: var(--sg-ui-right) !important;
+    gap: 3px;
+  }
+
+  .sg-lang-toggle .sg-lang-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  #lang-switch .lang-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+/* --- Xシェアボタン（固定・右下） --- */
+.sg-share-btn {
+  position: fixed;
+  bottom: calc(16px + var(--sg-safe-bottom));
+  right: calc(16px + var(--sg-safe-right));
+  z-index: 5000;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: transform 0.15s, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  text-decoration: none;
+}
+.sg-share-btn:hover {
+  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* --- 言語切り替え（固定・右上） --- */
+.sg-lang-toggle {
+  position: fixed;
+  top: calc(10px + var(--sg-safe-top));
+  right: calc(10px + var(--sg-safe-right));
+  z-index: 5000;
+  display: flex;
+  gap: 4px;
+}
+.sg-lang-toggle .sg-lang-btn {
+  padding: 6px 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s, border-color 0.2s;
+}
+.sg-lang-toggle .sg-lang-btn:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+.sg-lang-toggle .sg-lang-btn.active {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+
+/* --- リザルト画面内シェアボタン --- */
+.sg-result-share-btn {
+  display: inline-block;
+  margin: 10px auto 12px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 700;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #1da1f2, #0d8bd9);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(29, 161, 242, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.sg-result-share-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(29, 161, 242, 0.5);
+}
+
+/* --- アクセシビリティ: アニメーション低減 --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

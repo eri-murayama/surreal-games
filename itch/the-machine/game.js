@@ -677,10 +677,11 @@
       name: 'CATCH LEAF', act: 2, duration: 3500, jingle: 'leaf',
       init: (s) => {
         s.leaves = [];
+        // 6枚に増やし、スポーン位置を画面に近く・落下速度を上げる
         for (let i = 0; i < 6; i++) {
           s.leaves.push({
             x: 50 + Math.random()*400,
-            y: -20 - i * 30 - Math.random() * 40,
+            y: -20 - i * 30 - Math.random() * 40, // 画面のすぐ上から段階的にスタート
             vy: 1.8 + Math.random() * 1.5,
             sway: Math.random() * Math.PI * 2,
             caught: false,
@@ -2231,6 +2232,7 @@
         dctx.translate(x, d.y);
         dctx.rotate(d.rot + Math.sin(d.sway) * 0.1);
         dctx.fillStyle = d.color;
+        // 英語は文字幅が広いので、日本語より小さめに
         const fontSize = curLang === 'en' ? d.size * 0.6 : d.size;
         dctx.font = `bold ${fontSize}px "Zen Maru Gothic", "Press Start 2P", sans-serif`;
         dctx.textAlign = 'center';
@@ -3530,11 +3532,13 @@
 
     function drawBoy() {
       const bx = 250, by = 300;
+      // 肌色(イラストに合わせて少しピンクっぽく)
       const skin = '#f5d4be';
       // 体 (白タンクトップ→素体)
       if (phase < 3) {
         rvctx.fillStyle = '#ffffff';
         rvctx.fillRect(bx - 30, by - 15, 60, 60);
+        // タンクトップの肩紐の隙間(肌が見える)
         rvctx.fillStyle = skin;
         rvctx.fillRect(bx - 18, by - 15, 8, 12);
         rvctx.fillRect(bx + 10, by - 15, 8, 12);
@@ -3546,20 +3550,20 @@
       rvctx.beginPath();
       rvctx.arc(bx, by - 55, 28, 0, Math.PI * 2);
       rvctx.fill();
-      // 眉(髪は無し)
+      // 眉(ぱっつん) - 髪は無し、眉だけ
       if (phase < 2) {
         rvctx.fillStyle = '#2a1a08';
         rvctx.fillRect(bx - 18, by - 67, 12, 3);
         rvctx.fillRect(bx + 6, by - 67, 12, 3);
       }
-      // 閉じた目
+      // 閉じた目 (麻酔中)
       rvctx.strokeStyle = '#000';
       rvctx.lineWidth = 2;
       rvctx.beginPath();
       rvctx.moveTo(bx - 16, by - 55); rvctx.lineTo(bx - 8, by - 55);
       rvctx.moveTo(bx + 8, by - 55); rvctx.lineTo(bx + 16, by - 55);
       rvctx.stroke();
-      // 腕
+      // 腕 (素体)
       if (phase < 4) {
         rvctx.fillStyle = skin;
         rvctx.fillRect(bx - 55, by - 10, 20, 55);
@@ -3567,12 +3571,15 @@
       }
       // 脚 (青ショーパン+白ソックス+黄色シューズ)
       if (phase < 5) {
+        // 青ショーパン(短い)
         rvctx.fillStyle = '#3a6fc9';
         rvctx.fillRect(bx - 26, by + 45, 22, 32);
         rvctx.fillRect(bx + 4, by + 45, 22, 32);
+        // 白ソックス
         rvctx.fillStyle = '#ffffff';
         rvctx.fillRect(bx - 26, by + 77, 22, 28);
         rvctx.fillRect(bx + 4, by + 77, 22, 28);
+        // 黄色シューズ
         rvctx.fillStyle = '#ffd54f';
         rvctx.fillRect(bx - 28, by + 105, 26, 10);
         rvctx.fillRect(bx + 2, by + 105, 26, 10);
@@ -3784,7 +3791,8 @@
 
   $('retry-btn').addEventListener('click', () => location.reload());
   $('title-btn').addEventListener('click', () => location.reload());
-  $('other-btn').addEventListener('click', () => { location.href = '../../index.html'; });
+  // other-btn はitch版では削除済み
+  if ($('other-btn')) $('other-btn').addEventListener('click', () => { location.href = '../../index.html'; });
   $('share-btn').addEventListener('click', () => {
     const pct = finalMachineScore || 0;
     const endName = ENDINGS[finalEndingKey] ? ENDINGS[finalEndingKey].title : '';
