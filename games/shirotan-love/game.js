@@ -32,16 +32,26 @@
   }
 
   // ============ シナリオ ============
-  // scene: { bg, char, emo, lines: [{ who, text }], choices: [{ text, love, next }] }
+  // scene: { bg, char, lines: [{ who, text, emo, face }], choices: [{ text, love, next }] }
+  // face: 行ごとに表情を上書き（未指定はsceneのcharを使う）
+  var FACE = {
+    arrival: 'assets/shirotan-arrival.png', // 登場・遠目シルエット
+    main:    'assets/shirotan-main.png',    // メイン
+    smile:   'assets/shirotan-smile.png',   // 嬉しい
+    blush:   'assets/shirotan-blush.png',   // 照れ
+    calm:    'assets/shirotan-calm.png',    // 和み
+    brave:   'assets/shirotan-brave.png'    // 男気
+  };
+
   var SCENARIO = {
     ja: [
       { // 0: 海辺の出会い
-        bg: 'scene-beach', char: 'assets/shirotan4.png',
+        bg: 'scene-beach', char: FACE.main,
         lines: [
-          { who: 'narrator', text: '夏のおわりかけ、わたしはひとりで海辺を歩いていた。' },
-          { who: 'narrator', text: '足元にまるい、しろいものが…。' },
-          { who: 'shirotan', text: 'ぷくぅ…。', emo: '❓' },
-          { who: 'you', text: 'えっ、あざらしの赤ちゃん？こんなところに…？' }
+          { who: 'narrator', text: '夏のおわりかけ、わたしはひとりで海辺を歩いていた。', face: FACE.arrival },
+          { who: 'narrator', text: '足元にまるい、しろいものが…。', face: FACE.arrival },
+          { who: 'shirotan', text: 'ぷくぅ…。', emo: '❓', face: FACE.main },
+          { who: 'you', text: 'えっ、あざらしの赤ちゃん？こんなところに…？', face: FACE.main }
         ],
         choices: [
           { text: '「どうしたの？迷子？」やさしく話しかける', love: 3, next: 1 },
@@ -50,12 +60,12 @@
         ]
       },
       { // 1: 会話
-        bg: 'scene-beach', char: 'assets/shirotan1.png',
+        bg: 'scene-beach', char: FACE.smile,
         lines: [
-          { who: 'shirotan', text: 'ぷくっ…ぼく、まいごじゃないよ。きみをまってたんだ。', emo: '💫' },
-          { who: 'you', text: 'えっ、わたしを…？' },
-          { who: 'shirotan', text: 'うん。きみ、きょう、なんだかしょんぼりしてるでしょ？', emo: '🍀' },
-          { who: 'narrator', text: '見透かされてしまった。たしかに、朝からずっと気持ちが沈んでいた。' }
+          { who: 'shirotan', text: 'ぷくっ…ぼく、まいごじゃないよ。きみをまってたんだ。', emo: '💫', face: FACE.smile },
+          { who: 'you', text: 'えっ、わたしを…？', face: FACE.main },
+          { who: 'shirotan', text: 'うん。きみ、きょう、なんだかしょんぼりしてるでしょ？', emo: '🍀', face: FACE.calm },
+          { who: 'narrator', text: '見透かされてしまった。たしかに、朝からずっと気持ちが沈んでいた。', face: FACE.calm }
         ],
         choices: [
           { text: '「うん、ちょっと疲れちゃって…」素直に話す', love: 4, next: 2 },
@@ -64,12 +74,12 @@
         ]
       },
       { // 2: 夕焼け
-        bg: 'scene-sunset', char: 'assets/shirotan2.png',
+        bg: 'scene-sunset', char: FACE.blush,
         lines: [
-          { who: 'narrator', text: '気がつくと、空はやさしい夕焼け色になっていた。' },
-          { who: 'shirotan', text: 'ねえ、いっしょにゆうやけ、みようよ。', emo: '💗' },
-          { who: 'shirotan', text: 'まいにちがんばってるきみに、ごほうびの じかん。', emo: '' },
-          { who: 'you', text: '…ありがとう。' }
+          { who: 'narrator', text: '気がつくと、空はやさしい夕焼け色になっていた。', face: FACE.calm },
+          { who: 'shirotan', text: 'ねえ、いっしょにゆうやけ、みようよ。', emo: '💗', face: FACE.blush },
+          { who: 'shirotan', text: 'まいにちがんばってるきみに、ごほうびの じかん。', emo: '', face: FACE.smile },
+          { who: 'you', text: '…ありがとう。', face: FACE.blush }
         ],
         choices: [
           { text: 'そっと隣にすわって、肩を寄せる', love: 5, next: 3 },
@@ -78,12 +88,12 @@
         ]
       },
       { // 3: カフェ（翌日）
-        bg: 'scene-cafe', char: 'assets/shirotan1.png',
+        bg: 'scene-cafe', char: FACE.calm,
         lines: [
-          { who: 'narrator', text: 'つぎの日、わたしは海辺の小さなカフェにしろたんを連れてきた。' },
-          { who: 'shirotan', text: 'ここ、あったかい〜。ぷくぷく。', emo: '☕' },
-          { who: 'you', text: '店員さんがすごい顔で見てる…。' },
-          { who: 'shirotan', text: 'きみとのじかん、ずっとおぼえていたいな。', emo: '💗' }
+          { who: 'narrator', text: 'つぎの日、わたしは海辺の小さなカフェにしろたんを連れてきた。', face: FACE.calm },
+          { who: 'shirotan', text: 'ここ、あったかい〜。ぷくぷく。', emo: '☕', face: FACE.smile },
+          { who: 'you', text: '店員さんがすごい顔で見てる…。', face: FACE.calm },
+          { who: 'shirotan', text: 'きみとのじかん、ずっとおぼえていたいな。', emo: '💗', face: FACE.blush }
         ],
         choices: [
           { text: '「わたしも」と手を添える', love: 6, next: 4 },
@@ -92,11 +102,11 @@
         ]
       },
       { // 4: 雨
-        bg: 'scene-rain', char: 'assets/shirotan4.png',
+        bg: 'scene-rain', char: FACE.brave,
         lines: [
-          { who: 'narrator', text: '急に、雨がふりはじめた。' },
-          { who: 'shirotan', text: 'あ…あめだ。ぼく、ぬれるのはへいきだけど…。', emo: '💧' },
-          { who: 'shirotan', text: 'きみは、かぜひいちゃうよ。', emo: '' }
+          { who: 'narrator', text: '急に、雨がふりはじめた。', face: FACE.main },
+          { who: 'shirotan', text: 'あ…あめだ。ぼく、ぬれるのはへいきだけど…。', emo: '💧', face: FACE.main },
+          { who: 'shirotan', text: 'きみは、かぜひいちゃうよ。', emo: '', face: FACE.brave }
         ],
         choices: [
           { text: 'しろたんを抱きかかえて、屋根の下へ走る', love: 5, next: 5 },
@@ -105,13 +115,13 @@
         ]
       },
       { // 5: 夜の浜辺（分岐）
-        bg: 'scene-night', char: 'assets/shirotan2.png',
+        bg: 'scene-night', char: FACE.main,
         lines: [
-          { who: 'narrator', text: '夜、星が降るような浜辺で、しろたんはぽつりと言った。' },
-          { who: 'shirotan', text: 'ぼくね、ほんとうはうみのむこうからきたんだ。', emo: '✨' },
-          { who: 'shirotan', text: 'あしたには、かえらなきゃいけないの。', emo: '🌙' },
-          { who: 'you', text: 'そんな…。' },
-          { who: 'shirotan', text: 'ねえ、さいごに。きみのきもちを、きかせて。', emo: '💗' }
+          { who: 'narrator', text: '夜、星が降るような浜辺で、しろたんはぽつりと言った。', face: FACE.calm },
+          { who: 'shirotan', text: 'ぼくね、ほんとうはうみのむこうからきたんだ。', emo: '✨', face: FACE.calm },
+          { who: 'shirotan', text: 'あしたには、かえらなきゃいけないの。', emo: '🌙', face: FACE.main },
+          { who: 'you', text: 'そんな…。', face: FACE.main },
+          { who: 'shirotan', text: 'ねえ、さいごに。きみのきもちを、きかせて。', emo: '💗', face: FACE.blush }
         ],
         choices: [
           { text: '「ずっといっしょにいたい」', love: 10, next: -1 },
@@ -122,12 +132,12 @@
     ],
     en: [
       {
-        bg: 'scene-beach', char: 'assets/shirotan4.png',
+        bg: 'scene-beach', char: FACE.main,
         lines: [
-          { who: 'narrator', text: 'At the end of summer, I was walking alone on the beach.' },
-          { who: 'narrator', text: 'Something small and white lay at my feet...' },
-          { who: 'shirotan', text: 'Puku...', emo: '❓' },
-          { who: 'you', text: 'A baby seal? In a place like this?' }
+          { who: 'narrator', text: 'At the end of summer, I was walking alone on the beach.', face: FACE.arrival },
+          { who: 'narrator', text: 'Something small and white lay at my feet...', face: FACE.arrival },
+          { who: 'shirotan', text: 'Puku...', emo: '❓', face: FACE.main },
+          { who: 'you', text: 'A baby seal? In a place like this?', face: FACE.main }
         ],
         choices: [
           { text: '"Are you lost?" Speak gently', love: 3, next: 1 },
@@ -136,12 +146,12 @@
         ]
       },
       {
-        bg: 'scene-beach', char: 'assets/shirotan1.png',
+        bg: 'scene-beach', char: FACE.smile,
         lines: [
-          { who: 'shirotan', text: "I'm not lost. I was waiting for you.", emo: '💫' },
-          { who: 'you', text: 'For... me?' },
-          { who: 'shirotan', text: "You look a little sad today, don't you?", emo: '🍀' },
-          { who: 'narrator', text: 'How did they know?' }
+          { who: 'shirotan', text: "I'm not lost. I was waiting for you.", emo: '💫', face: FACE.smile },
+          { who: 'you', text: 'For... me?', face: FACE.main },
+          { who: 'shirotan', text: "You look a little sad today, don't you?", emo: '🍀', face: FACE.calm },
+          { who: 'narrator', text: 'How did they know?', face: FACE.calm }
         ],
         choices: [
           { text: '"Yeah, I\'m a bit tired..." Honest', love: 4, next: 2 },
@@ -150,12 +160,12 @@
         ]
       },
       {
-        bg: 'scene-sunset', char: 'assets/shirotan2.png',
+        bg: 'scene-sunset', char: FACE.blush,
         lines: [
-          { who: 'narrator', text: 'The sky turned a gentle sunset color.' },
-          { who: 'shirotan', text: "Let's watch the sunset together.", emo: '💗' },
-          { who: 'shirotan', text: "A reward-time for you who work so hard.", emo: '' },
-          { who: 'you', text: '...thank you.' }
+          { who: 'narrator', text: 'The sky turned a gentle sunset color.', face: FACE.calm },
+          { who: 'shirotan', text: "Let's watch the sunset together.", emo: '💗', face: FACE.blush },
+          { who: 'shirotan', text: "A reward-time for you who work so hard.", emo: '', face: FACE.smile },
+          { who: 'you', text: '...thank you.', face: FACE.blush }
         ],
         choices: [
           { text: 'Sit beside them quietly', love: 5, next: 3 },
@@ -164,12 +174,12 @@
         ]
       },
       {
-        bg: 'scene-cafe', char: 'assets/shirotan1.png',
+        bg: 'scene-cafe', char: FACE.calm,
         lines: [
-          { who: 'narrator', text: 'The next day, I brought Shirotan to a little seaside cafe.' },
-          { who: 'shirotan', text: "It's so warm here~", emo: '☕' },
-          { who: 'you', text: 'The staff is giving us a strange look...' },
-          { who: 'shirotan', text: "I want to remember this time with you forever.", emo: '💗' }
+          { who: 'narrator', text: 'The next day, I brought Shirotan to a little seaside cafe.', face: FACE.calm },
+          { who: 'shirotan', text: "It's so warm here~", emo: '☕', face: FACE.smile },
+          { who: 'you', text: 'The staff is giving us a strange look...', face: FACE.calm },
+          { who: 'shirotan', text: "I want to remember this time with you forever.", emo: '💗', face: FACE.blush }
         ],
         choices: [
           { text: '"Me too" and touch their paw', love: 6, next: 4 },
@@ -178,11 +188,11 @@
         ]
       },
       {
-        bg: 'scene-rain', char: 'assets/shirotan4.png',
+        bg: 'scene-rain', char: FACE.brave,
         lines: [
-          { who: 'narrator', text: 'It suddenly started to rain.' },
-          { who: 'shirotan', text: "Rain... I don't mind getting wet, but...", emo: '💧' },
-          { who: 'shirotan', text: "You'll catch a cold.", emo: '' }
+          { who: 'narrator', text: 'It suddenly started to rain.', face: FACE.main },
+          { who: 'shirotan', text: "Rain... I don't mind getting wet, but...", emo: '💧', face: FACE.main },
+          { who: 'shirotan', text: "You'll catch a cold.", emo: '', face: FACE.brave }
         ],
         choices: [
           { text: 'Carry Shirotan under the roof', love: 5, next: 5 },
@@ -191,13 +201,13 @@
         ]
       },
       {
-        bg: 'scene-night', char: 'assets/shirotan2.png',
+        bg: 'scene-night', char: FACE.main,
         lines: [
-          { who: 'narrator', text: 'On a starry beach at night, Shirotan spoke quietly.' },
-          { who: 'shirotan', text: "I'm actually from across the sea.", emo: '✨' },
-          { who: 'shirotan', text: "Tomorrow, I have to go back.", emo: '🌙' },
-          { who: 'you', text: 'No way...' },
-          { who: 'shirotan', text: 'At the end... tell me how you feel.', emo: '💗' }
+          { who: 'narrator', text: 'On a starry beach at night, Shirotan spoke quietly.', face: FACE.calm },
+          { who: 'shirotan', text: "I'm actually from across the sea.", emo: '✨', face: FACE.calm },
+          { who: 'shirotan', text: "Tomorrow, I have to go back.", emo: '🌙', face: FACE.main },
+          { who: 'you', text: 'No way...', face: FACE.main },
+          { who: 'shirotan', text: 'At the end... tell me how you feel.', emo: '💗', face: FACE.blush }
         ],
         choices: [
           { text: '"I want to stay with you forever"', love: 10, next: -1 },
@@ -390,6 +400,14 @@
       document.getElementById('next-hint').classList.remove('hidden');
     };
 
+    // キャラ画像切替（face指定があれば差し替え）
+    if (line.face) {
+      var charImg = document.getElementById('char-img');
+      if (charImg.getAttribute('src') !== line.face) {
+        charImg.setAttribute('src', line.face);
+      }
+    }
+
     // キャラ表情切替
     var emo = document.getElementById('char-emo');
     emo.classList.remove('show');
@@ -502,20 +520,20 @@
     var title, text, img;
     if (state.love >= 22) {
       title = t('endLove');
-      img = 'assets/shirotan2.png';
+      img = FACE.blush;
       text = LANG === 'ja'
         ? 'しろたんは海のむこうへ帰った。でも毎年、夏のおわりに、きみに会いに戻ってくる。星がふる浜辺で、しろたんはきみの手をじっと見つめて、ぷくっと笑った。'
         : 'Shirotan went back across the sea — but every summer, they return to meet you. On a starry beach, they look at your hand and smile a tiny "puku".';
       rainHearts();
     } else if (state.love >= 10) {
       title = t('endFriend');
-      img = 'assets/shirotan1.png';
+      img = FACE.smile;
       text = LANG === 'ja'
         ? 'しろたんはさよならを告げて旅立った。きみのポケットには、きらきらひかる小さな貝がらがひとつ。「またね」の約束だけが、ずっと胸に残った。'
         : 'Shirotan said goodbye and left. In your pocket — a tiny shining shell. Only the promise of "see you again" remained in your heart.';
     } else {
       title = t('endLonely');
-      img = 'assets/shirotan3.png';
+      img = FACE.arrival;
       text = LANG === 'ja'
         ? 'しろたんは静かに消えていった。夕焼けのにおい、雨の音、あの会話。ぜんぶ、夢だったのかもしれない…でも、なぜかきみは、少しだけ優しくなれた気がした。'
         : 'Shirotan quietly disappeared. The scent of sunset, the sound of rain, those words... maybe it was all a dream. But somehow, you feel a little kinder now.';
