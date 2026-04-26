@@ -3784,7 +3784,7 @@
 
   $('retry-btn').addEventListener('click', () => location.reload());
   $('title-btn').addEventListener('click', () => location.reload());
-  $('other-btn').addEventListener('click', () => { location.href = '../../index.html'; });
+  if ($('other-btn')) $('other-btn').addEventListener('click', () => { location.href = '../../index.html'; });
   $('share-btn').addEventListener('click', () => {
     const pct = finalMachineScore || 0;
     const endName = ENDINGS[finalEndingKey] ? ENDINGS[finalEndingKey].title : '';

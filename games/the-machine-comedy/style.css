@@ -39,9 +39,9 @@ body {
 .screen {
   display: none;
   width: 100%;
-  max-width: 500px;
+  max-width: 720px;
   height: 100vh;
-  max-height: 700px;
+  max-height: 960px;
   position: relative;
   flex-direction: column;
   align-items: center;
@@ -245,8 +245,8 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  max-width: 500px;
-  max-height: 700px;
+  max-width: 720px;
+  max-height: 960px;
   margin: auto;
 }
 .tc-overlay { pointer-events: auto; cursor: pointer; }
@@ -254,7 +254,7 @@ body {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 500px;
+  max-width: 720px;
   padding: 20px;
   text-align: center;
   margin-top: auto;
@@ -341,7 +341,7 @@ body {
 #game-screen { background: #111; }
 .game-hud {
   width: 100%;
-  max-width: 500px;
+  max-width: 720px;
   padding: 12px 16px;
   background: #000;
   border-bottom: 1px solid #333;
@@ -375,7 +375,7 @@ body {
   display: block;
   background: #1a1a1a;
   width: 100%;
-  max-width: 500px;
+  max-width: 720px;
   height: auto;
   aspect-ratio: 1;
   cursor: crosshair;
@@ -496,34 +496,3 @@ body {
   letter-spacing: 1px;
   min-height: 200px;
 }
-
-/* ===== BGM試聴パネル(プロト専用) ===== */
-#bgm-panel {
-  position: fixed;
-  right: 8px;
-  bottom: 8px;
-  background: rgba(0,0,0,0.85);
-  border: 1px solid #444;
-  padding: 10px;
-  z-index: 999;
-  max-width: 200px;
-}
-.bgm-panel-title {
-  font-size: 11px;
-  color: #aaa;
-  margin-bottom: 6px;
-}
-.bgm-btn {
-  display: block;
-  width: 100%;
-  font-size: 11px;
-  padding: 6px;
-  margin-bottom: 4px;
-  background: #222;
-  color: #fff;
-  border: 1px solid #444;
-  cursor: pointer;
-  text-align: left;
-}
-.bgm-btn:hover { background: #333; }
-.bgm-btn.bgm-stop { background: #501010; }
