@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>シュール進化論</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1 class="game-title">シュール進化論</h1>
+    <p class="game-subtitle">～合体せよ、その先の未知へ～</p>
+
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+      <div id="title-emoji"></div>
+      <div id="title-catchphrase">「すべてはかにかにから始まる...」</div>
+      <div id="highscore-display"></div>
+      <button id="start-btn">進化を始める</button>
+      <button id="continue-btn" class="hidden">続きから</button>
+      <p id="title-hint">矢印キー / WASD / スワイプでスライド<br>同じ生物を合体させて進化させよう</p>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-screen" class="hidden">
+      <div id="game-hud">
+        <div id="hud-score">スコア: 0</div>
+        <div id="hud-best">ベスト: 0</div>
+      </div>
+      <div id="hud-evolution"><span id="hud-evo-label">最高進化</span>: <span id="hud-max-evo">🫧</span></div>
+      <div id="board-container">
+        <div id="board"></div>
+      </div>
+      <div id="game-comment"></div>
+      <div id="game-buttons">
+        <button id="undo-btn">↩ 戻す</button>
+        <button id="restart-btn">🔄 やり直す</button>
+      </div>
+    </div>
+
+    <!-- ゲームオーバー画面 -->
+    <div id="gameover-screen" class="hidden">
+      <div id="gameover-title">進化の袋小路...</div>
+      <div id="gameover-stats"></div>
+      <div id="gameover-comment"></div>
+      <button id="retry-btn">もう一度進化する</button>
+    </div>
+
+    <!-- カットイン演出 -->
+    <div id="cutin-overlay" class="hidden">
+      <div id="cutin-char"></div>
+      <div id="cutin-name"></div>
+    </div>
+
+  </div>
+
+  <!-- 音量トグル -->
+  <button id="sound-toggle" style="position:fixed;bottom:16px;left:16px;z-index:9999;width:40px;height:40px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;min-width:0;letter-spacing:0;box-shadow:none;">🔊</button>
+
+  <script src="game.js"></script>
+  <script>
+    // 音量トグル: sg.sound.enabled を切り替え
+    (function(){
+      const btn = document.getElementById('sound-toggle');
+      if(!btn) return;
+      btn.addEventListener('click', function(){
+        if(!window.__sgSound) return;
+        window.__sgSound.enabled = !window.__sgSound.enabled;
+        btn.textContent = window.__sgSound.enabled ? '🔊' : '🔇';
+        if(window.__sgBGM){
+          if(window.__sgSound.enabled) window.__sgBGM.start();
+          else window.__sgBGM.stop();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
