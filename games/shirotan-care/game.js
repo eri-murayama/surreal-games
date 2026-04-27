@@ -65,6 +65,8 @@
     sleeping: false
   };
   var state = loadState();
+  var feeding = false;
+  var feedTimer = null;
 
   function loadState() {
     try {
@@ -267,9 +269,10 @@
     var dl = document.getElementById('dirt-layer');
     dl.classList.toggle('show', state.clean < 40);
 
-    // しろたん画像をなつき度で切替
+    // しろたん画像をなつき度で切替（ごはん中は専用画像）
     var img = document.getElementById('shirotan');
-    if (state.love >= 80) img.src = 'assets/shirotan2.png'; // はーと
+    if (feeding) img.src = 'assets/shirotan-feed.png';
+    else if (state.love >= 80) img.src = 'assets/shirotan2.png'; // はーと
     else if (state.love >= 40) img.src = 'assets/shirotan1.png'; // 尊
     else img.src = 'assets/shirotan4.png'; // プレーン
 
@@ -345,7 +348,13 @@
     }
     switch (action) {
       case 'feed':
-        if (state.hunger >= 95) { speak('fed'); return; }
+        feeding = true;
+        clearTimeout(feedTimer);
+        feedTimer = setTimeout(function () {
+          feeding = false;
+          render();
+        }, 1800);
+        if (state.hunger >= 95) { speak('fed'); render(); return; }
         state.hunger = clamp(state.hunger + 30);
         state.happy = clamp(state.happy + 5);
         addLove(3);
