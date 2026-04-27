@@ -14,14 +14,63 @@
     { face: '👽', color: '#7bed9f' },
   ];
 
-  // ===== ステージ設定 =====
+  // ===== ステージ設定（全50ステージ・後半ほど難度up・時々スパイク） =====
   const STAGES = [
+    // 1〜10: チュートリアル〜イージー
     { rows: 4, cols: 4, pairs: 2 },
     { rows: 4, cols: 4, pairs: 3 },
     { rows: 5, cols: 5, pairs: 3 },
     { rows: 5, cols: 5, pairs: 4 },
     { rows: 6, cols: 5, pairs: 4 },
     { rows: 6, cols: 6, pairs: 5 },
+    { rows: 6, cols: 6, pairs: 4 },
+    { rows: 6, cols: 6, pairs: 6 },   // スパイク: 多ペア
+    { rows: 7, cols: 6, pairs: 4 },
+    { rows: 7, cols: 6, pairs: 5 },
+    // 11〜20: ミディアム
+    { rows: 7, cols: 7, pairs: 4 },
+    { rows: 7, cols: 7, pairs: 5 },
+    { rows: 7, cols: 7, pairs: 6 },
+    { rows: 7, cols: 7, pairs: 7 },   // スパイク
+    { rows: 8, cols: 6, pairs: 5 },
+    { rows: 8, cols: 7, pairs: 5 },
+    { rows: 8, cols: 7, pairs: 6 },
+    { rows: 8, cols: 7, pairs: 7 },
+    { rows: 8, cols: 8, pairs: 5 },   // スパイク: 大マップ少ペア(長セグメント)
+    { rows: 8, cols: 8, pairs: 6 },
+    // 21〜30: ハード
+    { rows: 8, cols: 8, pairs: 7 },
+    { rows: 8, cols: 8, pairs: 6 },
+    { rows: 8, cols: 8, pairs: 8 },   // スパイク
+    { rows: 9, cols: 7, pairs: 6 },
+    { rows: 9, cols: 7, pairs: 7 },
+    { rows: 9, cols: 8, pairs: 6 },
+    { rows: 9, cols: 8, pairs: 7 },
+    { rows: 9, cols: 8, pairs: 8 },   // スパイク
+    { rows: 8, cols: 8, pairs: 8 },   // スパイク
+    { rows: 9, cols: 8, pairs: 7 },
+    // 31〜40: ベリーハード
+    { rows: 9, cols: 9, pairs: 6 },
+    { rows: 9, cols: 9, pairs: 7 },
+    { rows: 9, cols: 9, pairs: 8 },   // スパイク
+    { rows: 9, cols: 9, pairs: 7 },
+    { rows: 9, cols: 8, pairs: 8 },
+    { rows: 9, cols: 9, pairs: 7 },
+    { rows: 9, cols: 9, pairs: 8 },   // スパイク
+    { rows: 9, cols: 9, pairs: 6 },
+    { rows: 9, cols: 9, pairs: 8 },   // スパイク
+    { rows: 9, cols: 9, pairs: 7 },
+    // 41〜50: エクストリーム
+    { rows: 9, cols: 9, pairs: 8 },
+    { rows: 9, cols: 9, pairs: 7 },
+    { rows: 9, cols: 9, pairs: 8 },
+    { rows: 9, cols: 9, pairs: 5 },   // スパイク: 究極の長セグメント
+    { rows: 9, cols: 9, pairs: 8 },
+    { rows: 9, cols: 9, pairs: 8 },
+    { rows: 9, cols: 9, pairs: 6 },   // 長セグメント
+    { rows: 9, cols: 9, pairs: 8 },
+    { rows: 9, cols: 9, pairs: 8 },
+    { rows: 9, cols: 9, pairs: 8 },   // ラスボス
   ];
 
   // ===== i18n =====
@@ -136,7 +185,8 @@
     const startR = Math.floor(Math.random() * R);
     const startC = Math.floor(Math.random() * C);
     let steps = 0;
-    const maxSteps = 200000;
+    // 大きいグリッドほど探索回数が増えるので比例させる
+    const maxSteps = Math.max(200000, total * total * 200);
 
     function dfs(r, c) {
       if (steps++ > maxSteps) return false;
@@ -230,6 +280,10 @@
     gridEl.innerHTML = '';
     gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     gridEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    // 9x9などセルが小さくなるグリッドでは顔絵文字を縮小して見切れ防止
+    const maxDim = Math.max(rows, cols);
+    const soulScale = maxDim >= 9 ? 0.75 : maxDim >= 8 ? 0.85 : maxDim >= 7 ? 0.95 : 1;
+    gridEl.style.setProperty('--soul-scale', soulScale);
 
     for (let r = 0; r < rows; r++) {
       ownerGrid[r] = [];
