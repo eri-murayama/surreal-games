@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STUDIO ICONA | 家族写真とマタニティのフォトスタジオ</title>
+  <meta name="description" content="STUDIO ICONA は、家族写真・マタニティ・ニューボーンを撮影するフォトスタジオサンプルサイトです。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K8QFB33PX7');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="STUDIO ICONA | フォトスタジオ">
+  <meta property="og:description" content="家族写真・マタニティのフォトスタジオサンプルサイト。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --mocha: #a89888;
+      --mocha-deep: #7d6d5e;
+      --rose-gold: #d4a59a;
+      --cream: #f6f1ea;
+      --beige: #ebe1d3;
+      --text: #4a3f35;
+      --muted: #998a7a;
+    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif; color: var(--text); line-height: 1.85;
+      background: var(--cream); overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 32px;
+      background: rgba(246, 241, 234, 0.92); backdrop-filter: blur(12px);
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; letter-spacing: 0.2em; color: var(--mocha-deep); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 0.82rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .nav-links a:hover { color: var(--mocha-deep); }
+    .nav-cta {
+      padding: 0.6rem 1.2rem; border: 1.5px solid var(--mocha-deep);
+      color: var(--mocha-deep); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em;
+    }
+
+    .hero {
+      padding: 120px 0 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-inner {
+      max-width: 1180px; margin: 0 auto; padding: 0 32px;
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: center;
+    }
+    .hero-eyebrow {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--rose-gold); font-size: 1.1rem; letter-spacing: 0.1em;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif; font-weight: 400;
+      font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.1;
+      margin: 16px 0 18px; letter-spacing: 0.02em;
+    }
+    .hero h1 em { font-style: italic; }
+    .hero-lead { color: var(--muted); max-width: 440px; font-size: 0.95rem; }
+    .hero-actions { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      display: inline-flex; align-items: center; padding: 1rem 1.8rem;
+      font-weight: 700; font-size: 0.86rem; letter-spacing: 0.12em;
+      text-transform: uppercase; transition: all .25s;
+    }
+    .btn-primary { background: var(--mocha-deep); color: #fff; }
+    .btn-secondary { border: 1.5px solid var(--mocha-deep); color: var(--mocha-deep); }
+    .btn-primary:hover { background: var(--text); }
+    .btn-secondary:hover { background: var(--mocha-deep); color: #fff; }
+    .hero-image-stack { position: relative; height: 560px; }
+    .hero-image-stack img { position: absolute; object-fit: cover; }
+    .hero-image-stack img:nth-child(1) { width: 65%; aspect-ratio: 4/5; top: 0; left: 0; }
+    .hero-image-stack img:nth-child(2) { width: 50%; aspect-ratio: 1/1; bottom: 0; right: 0; }
+
+    .section { padding: 90px 32px; max-width: 1180px; margin: 0 auto; }
+    .section-head { text-align: center; margin-bottom: 50px; }
+    .section-head .eyebrow {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--rose-gold); font-size: 1.1rem;
+    }
+    .section-head h2 {
+      font-family: 'Cormorant Garamond', serif; font-weight: 400;
+      font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin: 8px 0 12px;
+    }
+    .section-head p { color: var(--muted); max-width: 540px; margin: 0 auto; font-size: 0.92rem; }
+
+    .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .plan {
+      padding: 36px 30px; background: #fff; border: 1px solid rgba(125, 109, 94, 0.12);
+      transition: transform .3s, box-shadow .3s;
+    }
+    .plan:hover { transform: translateY(-6px); box-shadow: 0 24px 40px rgba(125, 109, 94, 0.12); }
+    .plan-tag {
+      display: inline-block; font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--rose-gold); font-size: 1.1rem; margin-bottom: 12px;
+    }
+    .plan h3 { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 1.6rem; margin-bottom: 12px; }
+    .plan p { font-size: 0.88rem; color: var(--muted); margin-bottom: 18px; min-height: 60px; }
+    .plan ul { list-style: none; margin-bottom: 24px; }
+    .plan ul li { font-size: 0.88rem; padding: 6px 0; border-bottom: 1px solid rgba(125, 109, 94, 0.1); }
+    .plan ul li::before { content: '▸ '; color: var(--rose-gold); }
+    .plan .price { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--mocha-deep); }
+
+    .gallery-section { padding: 90px 0; background: var(--beige); }
+    .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 1320px; margin: 0 auto; padding: 0 16px; }
+    .gallery img { aspect-ratio: 1/1; object-fit: cover; transition: opacity .3s; }
+    .gallery img:hover { opacity: 0.82; }
+
+    .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .flow-step { text-align: center; padding: 24px 18px; }
+    .flow-num {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--rose-gold); font-size: 2rem; margin-bottom: 8px;
+    }
+    .flow-step h3 { font-size: 1rem; margin-bottom: 6px; }
+    .flow-step p { font-size: 0.85rem; color: var(--muted); }
+
+    .cta-section {
+      padding: 100px 32px; background: var(--mocha-deep); color: #fff; text-align: center;
+    }
+    .cta-section h2 { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: clamp(1.8rem, 3.5vw, 2.6rem); margin-bottom: 14px; }
+    .cta-section p { color: rgba(255, 255, 255, 0.78); margin-bottom: 30px; font-size: 0.92rem; }
+    .cta-section .btn-primary { background: #fff; color: var(--mocha-deep); }
+
+    .footer { padding: 50px 32px; text-align: center; color: var(--muted); font-size: 0.84rem; letter-spacing: 0.1em; }
+
+    @media (max-width: 880px) {
+      .nav { padding: 14px 18px; }
+      .nav-links { display: none; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-image-stack { height: 480px; }
+      .plan-grid { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+      .flow { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">写真スタジオ・カメラマンの相談はこのサンプルが見本になります。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="nav-logo">ICONA</a>
+    <ul class="nav-links">
+      <li><a href="#plan">Plan</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#flow">Flow</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Reserve</a>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="hero-eyebrow">— Family Photo Studio</span>
+        <h1>Your<br><em>everyday</em><br>moments.</h1>
+        <p class="hero-lead">家族写真・マタニティ・ニューボーン・お宮参り・七五三。何気ない日常を、丁寧に切り取るプライベートスタジオです。</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Book a session</a>
+          <a href="#gallery" class="btn-secondary">View Gallery</a>
+        </div>
+      </div>
+      <div class="hero-image-stack">
+        <img src="https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?w=600&h=750&fit=crop" alt="" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1564429097439-e4d20367a6c0?w=400&h=400&fit=crop" alt="" loading="lazy">
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="plan">
+    <div class="section-head">
+      <span class="eyebrow">— Plan</span>
+      <h2>撮影プラン</h2>
+      <p>シーンに合わせて選べる3つのプランをご用意しています。データ納品込み。</p>
+    </div>
+    <div class="plan-grid">
+      <article class="plan">
+        <span class="plan-tag">Family</span>
+        <h3>Family Plan</h3>
+        <p>ご家族での記念撮影。背景セット2種類・データ20枚以上を納品します。</p>
+        <ul>
+          <li>撮影60分</li>
+          <li>データ20枚〜</li>
+          <li>背景2種類</li>
+          <li>衣装お持込OK</li>
+        </ul>
+        <div class="price">¥22,000</div>
+      </article>
+      <article class="plan" style="background: var(--mocha-deep); color: #fff;">
+        <span class="plan-tag" style="color: #f0c8b4;">Maternity</span>
+        <h3 style="color: #fff;">Maternity Plan</h3>
+        <p style="color: rgba(255,255,255,0.72);">マタニティフォト。落ち着いた光と柔らかいトーンで、母になる瞬間を残します。</p>
+        <ul>
+          <li>撮影90分</li>
+          <li>データ30枚〜</li>
+          <li>パートナー・お子さま同伴OK</li>
+          <li>衣装レンタル含む</li>
+        </ul>
+        <div class="price" style="color: #f0c8b4;">¥32,000</div>
+      </article>
+      <article class="plan">
+        <span class="plan-tag">Newborn</span>
+        <h3>Newborn Plan</h3>
+        <p>生後2週間〜1ヶ月のニューボーンフォト。ご自宅出張も可能です。</p>
+        <ul>
+          <li>撮影2〜3時間</li>
+          <li>データ40枚〜</li>
+          <li>小物・衣装込み</li>
+          <li>ご自宅出張可</li>
+        </ul>
+        <div class="price">¥38,000</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="gallery-section" id="gallery">
+    <div class="section-head" style="margin-bottom: 50px;">
+      <span class="eyebrow">— Gallery</span>
+      <h2>Recent Works</h2>
+      <p>最近の撮影作品から選んでご紹介しています。</p>
+    </div>
+    <div class="gallery">
+      <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500&h=500&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=500&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=500&h=500&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=500&h=500&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1455587734955-081b22074882?w=500&h=500&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1518997554305-5eea2f04e384?w=500&h=500&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1574518855089-cf02bf6f8d18?w=500&h=500&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1551836022-b06985bceb24?w=500&h=500&fit=crop" alt="" loading="lazy">
+    </div>
+  </section>
+
+  <section class="section" id="flow">
+    <div class="section-head">
+      <span class="eyebrow">— Flow</span>
+      <h2>ご予約から納品まで</h2>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <h3>お問い合わせ</h3>
+        <p>フォームから日程候補をご相談ください。</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <h3>事前打合せ</h3>
+        <p>撮影内容・衣装・小物を一緒に決めます。</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <h3>撮影当日</h3>
+        <p>リラックスした空間でゆっくり撮影します。</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <h3>納品</h3>
+        <p>2週間ほどで現像データをお届けします。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="contact">
+    <h2>Book a session</h2>
+    <p>撮影日のご相談はメールフォームまたはInstagramのDMから。お気軽にどうぞ。</p>
+    <a href="#" class="btn-primary">Contact us</a>
+  </section>
+
+  <section class="project-brief" style="--portfolio-accent:#7d6d5e; --portfolio-heading:#4a3f35; --portfolio-muted:#998a7a; --portfolio-card-bg:#fff; --portfolio-card-border:rgba(125,109,94,0.18); --portfolio-shadow:rgba(125,109,94,0.1); --portfolio-metric-bg:#f6f1ea;">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">フォトスタジオの依頼イメージ</h2>
+        <p class="project-brief__lead">作品ギャラリーが命のサイトです。撮影プランの整理から一緒に進められます。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>1ページ完結のスタジオサイト。プラン・ギャラリー・予約フォームを含む構成。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>料金</span><strong>15〜24万円</strong></div>
+              <div class="project-brief__metric"><span>期間</span><strong>3〜4週間</strong></div>
+              <div class="project-brief__metric"><span>素材</span><strong>作品写真12〜20枚</strong></div>
+              <div class="project-brief__metric"><span>ゴール</span><strong>撮影予約UP</strong></div>
+            </div>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>あると進めやすいもの</h3>
+          <ul class="project-brief__list">
+            <li>得意ジャンル別の作品20枚前後</li>
+            <li>プラン構成と料金</li>
+            <li>スタジオの内装写真</li>
+            <li>予約フォーム or 連絡先</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">&copy; 2026 STUDIO ICONA — Sample Site</footer>
+</body>
+</html>

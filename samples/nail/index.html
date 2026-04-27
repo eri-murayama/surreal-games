@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumière Nails | 大人のためのプライベートネイルサロン</title>
+  <meta name="description" content="Lumière Nails（ルミエールネイル）は完全予約制のプライベートネイルサロンサンプルサイトです。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K8QFB33PX7');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="Lumière Nails | プライベートネイルサロン">
+  <meta property="og:description" content="完全予約制ネイルサロンのサンプルサイト。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --rose: #c97e7e;
+      --rose-deep: #a85d5d;
+      --rose-soft: #f3e0d9;
+      --nude: #e8d5c4;
+      --beige: #faf3ed;
+      --text: #4a3838;
+      --muted: #93817d;
+    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      color: var(--text); line-height: 1.85;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(243, 224, 217, 0.6), transparent 35%),
+        radial-gradient(circle at 100% 100%, rgba(232, 213, 196, 0.4), transparent 35%),
+        var(--beige);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 32px;
+      background: rgba(250, 243, 237, 0.9); backdrop-filter: blur(12px);
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; letter-spacing: 0.1em; color: var(--rose-deep); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 0.84rem; color: var(--muted); letter-spacing: 0.08em; }
+    .nav-links a:hover { color: var(--rose); }
+    .nav-cta {
+      padding: 0.6rem 1.2rem; border-radius: 999px;
+      background: var(--rose-deep); color: #fff; font-size: 0.82rem; font-weight: 700;
+    }
+
+    .hero {
+      padding: 130px 32px 70px;
+      max-width: 1180px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center;
+    }
+    .hero-eyebrow {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--rose-deep); font-size: 1.1rem; letter-spacing: 0.08em;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 5.5vw, 4.4rem);
+      font-weight: 400; line-height: 1.15; margin: 14px 0 18px;
+    }
+    .hero h1 em { font-style: italic; color: var(--rose); }
+    .hero-lead { color: var(--muted); max-width: 460px; font-size: 0.95rem; }
+    .hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.95rem 1.7rem; border-radius: 999px; font-weight: 700; font-size: 0.9rem;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .btn-primary { background: var(--rose-deep); color: #fff; box-shadow: 0 12px 24px rgba(168, 93, 93, 0.28); }
+    .btn-secondary { background: #fff; border: 1.5px solid var(--rose); color: var(--rose-deep); }
+    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px); }
+    .hero-image-wrap { position: relative; }
+    .hero-image-wrap img { aspect-ratio: 4/5; object-fit: cover; border-radius: 0 80px 0 80px; box-shadow: 0 28px 50px rgba(168, 93, 93, 0.2); }
+
+    .section { padding: 80px 32px; max-width: 1180px; margin: 0 auto; }
+    .section-head { text-align: center; margin-bottom: 50px; }
+    .section-head .eyebrow {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--rose); letter-spacing: 0.08em;
+    }
+    .section-head h2 {
+      font-family: 'Cormorant Garamond', serif; font-weight: 400;
+      font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+      margin: 8px 0 12px;
+    }
+    .section-head p { color: var(--muted); max-width: 520px; margin: 0 auto; font-size: 0.92rem; }
+
+    .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .gallery img { aspect-ratio: 1/1; object-fit: cover; border-radius: 16px; transition: transform .4s; }
+    .gallery img:hover { transform: scale(1.04); }
+
+    .menu-list { max-width: 720px; margin: 0 auto; }
+    .menu-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 20px;
+      padding: 22px 0;
+      border-bottom: 1px dashed rgba(168, 93, 93, 0.2);
+    }
+    .menu-row:last-child { border-bottom: none; }
+    .menu-row h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--text); }
+    .menu-row p { color: var(--muted); font-size: 0.86rem; margin-top: 4px; }
+    .menu-row .price { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--rose-deep); white-space: nowrap; }
+
+    .reservation {
+      background: linear-gradient(135deg, var(--rose-soft), #fff);
+      padding: 70px 32px; border-radius: 0;
+      text-align: center;
+    }
+    .reservation-inner { max-width: 720px; margin: 0 auto; }
+    .reservation h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 400; margin-bottom: 14px; }
+    .reservation p { color: var(--muted); margin-bottom: 28px; font-size: 0.92rem; }
+    .reservation .btn-primary { font-size: 1rem; padding: 1.1rem 2.4rem; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .info-grid img { aspect-ratio: 4/3; object-fit: cover; border-radius: 24px; }
+    .info dl { display: grid; grid-template-columns: 100px 1fr; gap: 12px 18px; margin-top: 18px; font-size: 0.92rem; }
+    .info dt { color: var(--rose-deep); font-weight: 700; }
+
+    .footer { padding: 50px 32px; text-align: center; color: var(--muted); font-size: 0.84rem; letter-spacing: 0.08em; }
+
+    @media (max-width: 880px) {
+      .nav { padding: 14px 18px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">ネイル・エステなど、デザインギャラリー型のサロンサイトはこのサンプルが見本になります。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="nav-logo">Lumière</a>
+    <ul class="nav-links">
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#reserve">Reserve</a></li>
+      <li><a href="#shop">Shop</a></li>
+    </ul>
+    <a href="#reserve" class="nav-cta">予約する</a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="hero-eyebrow">Private Nail Salon</span>
+      <h1>指先から、<br><em>わたしらしい</em>季節を。</h1>
+      <p class="hero-lead">完全予約制の小さなネイルサロン。落ち着ける空間で、トレンドと肌なじみのバランスを大切にしたデザインをご提案します。</p>
+      <div class="hero-actions">
+        <a href="#reserve" class="btn-primary">予約する</a>
+        <a href="#gallery" class="btn-secondary">デザインを見る</a>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&h=1000&fit=crop" alt="ネイルアート" loading="lazy">
+    </div>
+  </header>
+
+  <section class="section" id="gallery">
+    <div class="section-head">
+      <span class="eyebrow">Design Gallery</span>
+      <h2>Design Gallery</h2>
+      <p>シンプル、ニュアンス、フレンチ。お客さまに合わせて毎月新しいデザインをご用意しています。</p>
+    </div>
+    <div class="gallery">
+      <img src="https://images.unsplash.com/photo-1604654894611-6973b376cbde?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1599948128020-9a44505b58e6?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1606293459208-44a6cca1bdb1?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1632344004206-93b40066a8c0?w=400&h=400&fit=crop" alt="" loading="lazy">
+    </div>
+  </section>
+
+  <section class="section" id="menu">
+    <div class="section-head">
+      <span class="eyebrow">Menu &amp; Price</span>
+      <h2>メニュー</h2>
+      <p>すべてオフ込みの料金です。アート・ストーン追加分は当日ご相談ください。</p>
+    </div>
+    <div class="menu-list">
+      <div class="menu-row">
+        <div>
+          <h3>One Color</h3>
+          <p>ワンカラー（カラージェル1色 + ケア + オフ）</p>
+        </div>
+        <span class="price">¥6,800</span>
+      </div>
+      <div class="menu-row">
+        <div>
+          <h3>French / Gradient</h3>
+          <p>フレンチ・グラデーション・ニュアンス</p>
+        </div>
+        <span class="price">¥8,500</span>
+      </div>
+      <div class="menu-row">
+        <div>
+          <h3>Art Course</h3>
+          <p>アート全本込み（ストーン・パーツ別途）</p>
+        </div>
+        <span class="price">¥10,800</span>
+      </div>
+      <div class="menu-row">
+        <div>
+          <h3>Bridal Plan</h3>
+          <p>結婚式・前撮り用のスペシャルプラン</p>
+        </div>
+        <span class="price">¥13,000〜</span>
+      </div>
+      <div class="menu-row">
+        <div>
+          <h3>Foot Care</h3>
+          <p>フットケア + ワンカラー</p>
+        </div>
+        <span class="price">¥7,500</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="reservation" id="reserve">
+    <div class="reservation-inner">
+      <span class="hero-eyebrow">Reservation</span>
+      <h2>ご予約はこちら</h2>
+      <p>完全予約制です。LINEまたはInstagramのDMから、ご希望のデザイン・日時をお送りください。</p>
+      <a href="#" class="btn-primary">LINEで予約</a>
+    </div>
+  </section>
+
+  <section class="section" id="shop">
+    <div class="info-grid">
+      <img src="https://images.unsplash.com/photo-1519415943484-9fa1873496d4?w=800&h=600&fit=crop" alt="サロン内装" loading="lazy">
+      <div class="info">
+        <span class="hero-eyebrow">Shop Information</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:2rem;margin:14px 0;">Visit us</h2>
+        <p style="color:var(--muted);font-size:0.9rem;">隠れ家のような小さな一軒。お客さま1名ずつのプライベート空間です。</p>
+        <dl>
+          <dt>住所</dt><dd>東京都〇〇区△△ 4-5-6</dd>
+          <dt>営業時間</dt><dd>10:00 – 19:00（最終受付 17:30）</dd>
+          <dt>定休日</dt><dd>日曜・月曜</dd>
+          <dt>予約方法</dt><dd>LINE / Instagram DM</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="project-brief" style="--portfolio-accent:#a85d5d; --portfolio-heading:#4a3838; --portfolio-muted:#93817d; --portfolio-card-bg:#fff; --portfolio-card-border:rgba(168,93,93,0.18); --portfolio-shadow:rgba(168,93,93,0.1); --portfolio-metric-bg:#f3e0d9;">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">ネイルサロンとして依頼するときの目安</h2>
+        <p class="project-brief__lead">デザインギャラリーが命なので、撮影体制を最初に決めるのがおすすめです。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>1ページ完結のサロンサイト。デザインギャラリー・メニュー・予約導線を含む構成。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>料金</span><strong>13〜20万円</strong></div>
+              <div class="project-brief__metric"><span>期間</span><strong>2〜3週間</strong></div>
+              <div class="project-brief__metric"><span>素材</span><strong>ネイル写真8〜16枚</strong></div>
+              <div class="project-brief__metric"><span>ゴール</span><strong>新規予約UP</strong></div>
+            </div>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>あると進めやすいもの</h3>
+          <ul class="project-brief__list">
+            <li>正方形の作品写真（白背景or影なし）</li>
+            <li>サロン内装の写真2〜3枚</li>
+            <li>メニュー表（オフ込み価格）</li>
+            <li>LINE公式アカウントor予約フォーム</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">&copy; 2026 Lumière Nails — Sample Site</footer>
+</body>
+</html>

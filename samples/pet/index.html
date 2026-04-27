@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>もふもふ Trim | わんちゃんのトリミングサロン</title>
+  <meta name="description" content="もふもふ Trim はわんちゃん専用のトリミングサロンサンプルサイト。料金・コース・予約のご案内。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K8QFB33PX7');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="もふもふ Trim | トリミングサロン">
+  <meta property="og:description" content="わんちゃん専用トリミングサロンのサンプルサイト。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --yellow: #ffc857;
+      --yellow-deep: #f0a91a;
+      --orange: #ff8a65;
+      --orange-deep: #e76b4a;
+      --soft: #fff5dc;
+      --text: #4a3a2c;
+      --muted: #9b8775;
+    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif; color: var(--text); line-height: 1.85;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(255, 200, 87, 0.3), transparent 35%),
+        radial-gradient(circle at 100% 90%, rgba(255, 138, 101, 0.22), transparent 40%),
+        #fffaee;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 32px; background: rgba(255, 250, 238, 0.92); backdrop-filter: blur(12px);
+      border-bottom: 2px dashed rgba(255, 200, 87, 0.35);
+    }
+    .nav-logo { font-family: 'Fredoka', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--orange-deep); display: inline-flex; align-items: center; gap: 0.4rem; }
+    .nav-logo::before { content: '🐶'; }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { font-size: 0.86rem; color: var(--muted); font-weight: 500; }
+    .nav-links a:hover { color: var(--orange-deep); }
+    .nav-cta {
+      padding: 0.6rem 1.2rem; border-radius: 999px;
+      background: linear-gradient(135deg, var(--yellow), var(--orange));
+      color: #fff; font-weight: 700; font-size: 0.84rem;
+    }
+
+    .hero {
+      padding: 130px 32px 60px;
+      max-width: 1180px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      background: var(--soft); color: var(--orange-deep);
+      font-family: 'Fredoka', sans-serif; font-size: 0.82rem; font-weight: 600;
+    }
+    .hero h1 {
+      font-family: 'Fredoka', 'Zen Maru Gothic', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 700;
+      line-height: 1.25; margin: 14px 0 16px;
+      color: var(--text);
+    }
+    .hero h1 em { font-style: normal; color: var(--orange-deep); }
+    .hero-lead { color: var(--muted); max-width: 460px; font-size: 0.95rem; }
+    .hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.95rem 1.7rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
+      transition: transform .25s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--yellow), var(--orange));
+      color: #fff; box-shadow: 0 14px 28px rgba(231, 107, 74, 0.3);
+    }
+    .btn-primary::after { content: '🐾'; }
+    .btn-secondary { background: #fff; border: 2px solid var(--yellow); color: var(--orange-deep); }
+    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px) rotate(-1deg); }
+    .hero-image-wrap { position: relative; }
+    .hero-image-wrap img { aspect-ratio: 1/1; object-fit: cover; border-radius: 50%; box-shadow: 0 24px 48px rgba(231, 107, 74, 0.22); border: 8px solid #fff; }
+    .hero-image-wrap::after {
+      content: '🦴'; position: absolute; bottom: 10px; right: -10px;
+      width: 80px; height: 80px; background: #fff; border-radius: 50%;
+      display: grid; place-items: center; font-size: 2rem;
+      box-shadow: 0 12px 20px rgba(231, 107, 74, 0.18);
+    }
+
+    .section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
+    .section-head { text-align: center; margin-bottom: 40px; }
+    .section-head .eyebrow {
+      font-family: 'Fredoka', sans-serif; color: var(--orange-deep);
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em;
+    }
+    .section-head h2 { font-size: clamp(1.7rem, 3vw, 2.2rem); margin: 6px 0 10px; }
+    .section-head p { color: var(--muted); max-width: 520px; margin: 0 auto; font-size: 0.92rem; }
+
+    .course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .course-card {
+      padding: 28px 24px; border-radius: 28px; background: #fff;
+      border: 3px solid var(--soft); position: relative;
+      transition: transform .3s;
+    }
+    .course-card:nth-child(2) { border-color: #ffd9c9; }
+    .course-card:nth-child(3) { border-color: #ffe9b3; }
+    .course-card:hover { transform: translateY(-6px) rotate(-0.5deg); }
+    .course-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--yellow), var(--orange));
+      color: #fff; display: grid; place-items: center; font-size: 1.6rem; margin-bottom: 16px;
+    }
+    .course-card h3 { font-size: 1.15rem; margin-bottom: 8px; }
+    .course-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.85; margin-bottom: 16px; }
+    .course-card .price { font-family: 'Fredoka', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--orange-deep); }
+    .course-card .price small { font-size: 0.85rem; color: var(--muted); margin-left: 4px; }
+
+    .price-table {
+      max-width: 720px; margin: 0 auto; background: #fff;
+      border-radius: 28px; border: 3px solid var(--soft);
+      padding: 30px 36px;
+    }
+    .price-row { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; padding: 14px 0; border-bottom: 1px dashed rgba(255, 200, 87, 0.3); }
+    .price-row:last-child { border: 0; }
+    .price-row strong { font-weight: 700; }
+    .price-row span { color: var(--muted); }
+    .price-row b { color: var(--orange-deep); font-family: 'Fredoka', sans-serif; }
+
+    .gallery-section {
+      background: linear-gradient(135deg, var(--soft), #fff);
+      padding: 70px 32px;
+    }
+    .gallery-section .section { padding: 0; }
+    .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 1180px; margin: 0 auto; }
+    .gallery img { aspect-ratio: 1/1; object-fit: cover; border-radius: 24px; transition: transform .3s; }
+    .gallery img:hover { transform: scale(1.05) rotate(-1deg); }
+
+    .info-section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .info-grid img { aspect-ratio: 4/3; object-fit: cover; border-radius: 28px; }
+    .info dl { display: grid; grid-template-columns: 100px 1fr; gap: 12px 18px; margin-top: 18px; font-size: 0.92rem; }
+    .info dt { color: var(--orange-deep); font-weight: 700; }
+
+    .footer { padding: 50px 32px; text-align: center; color: var(--muted); font-size: 0.84rem; }
+    .footer::before { content: '🐾  🐾  🐾'; display: block; margin-bottom: 12px; letter-spacing: 0.4em; }
+
+    @media (max-width: 880px) {
+      .nav { padding: 14px 18px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .course-grid { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">ペット関連（トリミング・動物病院・ペットホテル）の相談はこのサンプルが見本になります。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="nav-logo">もふもふTrim</a>
+    <ul class="nav-links">
+      <li><a href="#course">コース</a></li>
+      <li><a href="#price">料金表</a></li>
+      <li><a href="#gallery">ギャラリー</a></li>
+      <li><a href="#info">店舗</a></li>
+    </ul>
+    <a href="#course" class="nav-cta">予約する</a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="hero-eyebrow">🐾 Trimming Salon</span>
+      <h1>うちの子の<br><em>もふもふ</em>を、<br>もっとかわいく。</h1>
+      <p class="hero-lead">経験豊富なトリマーが、わんちゃん一頭ずつに合わせて丁寧にカット。広いケージとリラックス空間で、はじめてのコでも安心です。</p>
+      <div class="hero-actions">
+        <a href="#course" class="btn-primary">コースを選ぶ</a>
+        <a href="#info" class="btn-secondary">アクセス</a>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <img src="https://images.unsplash.com/photo-1591946614720-90a587da4a36?w=800&h=800&fit=crop" alt="トリミング中のわんちゃん" loading="lazy">
+    </div>
+  </header>
+
+  <section class="section" id="course">
+    <div class="section-head">
+      <span class="eyebrow">Course</span>
+      <h2>選べる3つのコース</h2>
+      <p>体型・毛量・ご希望に合わせて、ぴったりのコースをご用意しています。</p>
+    </div>
+    <div class="course-grid">
+      <article class="course-card">
+        <div class="course-icon">🛁</div>
+        <h3>シャンプーコース</h3>
+        <p>シャンプー＋ブロー＋耳掃除＋爪切り＋肛門腺ケア。月1ペースのお手入れに。</p>
+        <div class="price">¥4,500<small>〜</small></div>
+      </article>
+      <article class="course-card">
+        <div class="course-icon">✂️</div>
+        <h3>カットコース</h3>
+        <p>シャンプーコース＋全身カット。ご希望のスタイルでオーダーOK。</p>
+        <div class="price">¥7,800<small>〜</small></div>
+      </article>
+      <article class="course-card">
+        <div class="course-icon">💖</div>
+        <h3>スペシャル</h3>
+        <p>カットコース＋オーガニックスパ＋肉球ケア。記念日や撮影前にも。</p>
+        <div class="price">¥12,000<small>〜</small></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="price">
+    <div class="section-head">
+      <span class="eyebrow">Price List</span>
+      <h2>犬種別料金</h2>
+      <p>シャンプーコースの目安です（毛量・サイズで前後あり）。</p>
+    </div>
+    <div class="price-table">
+      <div class="price-row"><strong>トイ・プードル</strong><span>毛量多め</span><b>¥5,500〜</b></div>
+      <div class="price-row"><strong>チワワ</strong><span>小型</span><b>¥4,500〜</b></div>
+      <div class="price-row"><strong>ポメラニアン</strong><span>毛量多め</span><b>¥5,800〜</b></div>
+      <div class="price-row"><strong>ミニチュアダックス</strong><span>小型</span><b>¥5,000〜</b></div>
+      <div class="price-row"><strong>柴犬</strong><span>中型</span><b>¥6,800〜</b></div>
+      <div class="price-row"><strong>シーズー</strong><span>毛量多め</span><b>¥6,000〜</b></div>
+    </div>
+  </section>
+
+  <section class="gallery-section" id="gallery">
+    <div class="section-head" style="margin-bottom:30px;">
+      <span class="eyebrow">Gallery</span>
+      <h2>もふもふギャラリー</h2>
+      <p>当店ご利用のかわいいわんちゃんたちです。</p>
+    </div>
+    <div class="gallery">
+      <img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1518155317743-a8ff43ea6a5f?w=400&h=400&fit=crop" alt="" loading="lazy">
+    </div>
+  </section>
+
+  <section class="info-section" id="info">
+    <div class="info-grid">
+      <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=600&fit=crop" alt="店舗" loading="lazy">
+      <div class="info">
+        <span class="hero-eyebrow">🏠 Shop</span>
+        <h2 style="font-family:'Fredoka',sans-serif;font-size:2rem;margin:14px 0;">店舗情報</h2>
+        <p style="color:var(--muted);font-size:0.9rem;">ゆったり広めのケージと、おやつタイム付き。お預かり中もメッセージで様子をお送りします。</p>
+        <dl>
+          <dt>住所</dt><dd>東京都〇〇区△△ 7-8-9</dd>
+          <dt>営業時間</dt><dd>10:00 – 18:00</dd>
+          <dt>定休日</dt><dd>水曜・第3木曜</dd>
+          <dt>TEL</dt><dd>03-0000-0000</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="project-brief" style="--portfolio-accent:#e76b4a; --portfolio-heading:#4a3a2c; --portfolio-muted:#9b8775; --portfolio-card-bg:#fff; --portfolio-card-border:rgba(255,200,87,0.3); --portfolio-shadow:rgba(231,107,74,0.12); --portfolio-metric-bg:#fff5dc;">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">ペット関連サイトの依頼イメージ</h2>
+        <p class="project-brief__lead">わんちゃんの可愛さが伝わる写真と、料金がぱっと見えることが大切です。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>1ページ完結のサロンサイト。コース・料金表・ギャラリー・予約導線を含む構成。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>料金</span><strong>13〜20万円</strong></div>
+              <div class="project-brief__metric"><span>期間</span><strong>2〜3週間</strong></div>
+              <div class="project-brief__metric"><span>素材</span><strong>わんちゃん写真8〜12枚</strong></div>
+              <div class="project-brief__metric"><span>ゴール</span><strong>新規予約UP</strong></div>
+            </div>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>あると進めやすいもの</h3>
+          <ul class="project-brief__list">
+            <li>施術ビフォー・アフター写真</li>
+            <li>店舗（ケージ・スペース）の写真</li>
+            <li>犬種別料金表</li>
+            <li>予約方法（LINE・電話・フォーム）</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">&copy; 2026 もふもふ Trim — Sample Site</footer>
+</body>
+</html>

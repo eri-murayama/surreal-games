@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まなびの森 | 一人ひとりに寄り添う個別指導塾</title>
+  <meta name="description" content="まなびの森は小学生・中学生向けの個別指導塾サンプルサイトです。コース・料金・体験申込のご案内。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K8QFB33PX7');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="まなびの森 | 個別指導塾">
+  <meta property="og:description" content="個別指導塾のサンプルサイト。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --mint: #7fc8b8;
+      --mint-deep: #4ea99a;
+      --sky: #92c5dd;
+      --sky-deep: #5fa3c4;
+      --soft: #e6f5f1;
+      --cream: #fefcf5;
+      --text: #3d4a4d;
+      --muted: #7d8a8d;
+    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif; color: var(--text); line-height: 1.85;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(127, 200, 184, 0.18), transparent 35%),
+        radial-gradient(circle at 100% 100%, rgba(146, 197, 221, 0.18), transparent 35%),
+        var(--cream);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 32px;
+      background: rgba(254, 252, 245, 0.94); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(127, 200, 184, 0.18);
+    }
+    .nav-logo { font-family: 'Fredoka', 'Zen Maru Gothic', sans-serif; font-weight: 600; font-size: 1.4rem; color: var(--mint-deep); display: inline-flex; align-items: center; gap: 0.4rem; }
+    .nav-logo::before { content: '🌱'; }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { font-size: 0.86rem; color: var(--muted); font-weight: 500; }
+    .nav-links a:hover { color: var(--mint-deep); }
+    .nav-cta {
+      padding: 0.6rem 1.2rem; border-radius: 999px;
+      background: linear-gradient(135deg, var(--mint), var(--mint-deep));
+      color: #fff; font-weight: 700; font-size: 0.84rem;
+    }
+
+    .hero {
+      padding: 130px 32px 70px;
+      max-width: 1180px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      background: var(--soft); color: var(--mint-deep);
+      font-family: 'Fredoka', sans-serif; font-size: 0.82rem; font-weight: 600;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 4.6vw, 3.6rem); font-weight: 700; line-height: 1.4;
+      margin: 16px 0 18px; letter-spacing: -0.005em;
+    }
+    .hero h1 em { font-style: normal; color: var(--mint-deep); position: relative; }
+    .hero h1 em::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 6px; background: rgba(127, 200, 184, 0.32); border-radius: 4px; z-index: -1; }
+    .hero-lead { color: var(--muted); max-width: 460px; font-size: 0.96rem; }
+    .hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.95rem 1.6rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
+      transition: transform .25s;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--mint), var(--mint-deep)); color: #fff; box-shadow: 0 12px 24px rgba(78, 169, 154, 0.28); }
+    .btn-secondary { background: #fff; border: 2px solid var(--mint); color: var(--mint-deep); }
+    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px); }
+    .hero-image-wrap img { aspect-ratio: 4/5; object-fit: cover; border-radius: 36px; box-shadow: 0 24px 44px rgba(78, 169, 154, 0.18); }
+
+    .section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
+    .section-head { text-align: center; margin-bottom: 40px; }
+    .section-head .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.32rem 0.85rem; border-radius: 999px;
+      background: var(--soft); color: var(--mint-deep);
+      font-family: 'Fredoka', sans-serif; font-size: 0.78rem; font-weight: 600;
+    }
+    .section-head .eyebrow::before { content: '✿'; }
+    .section-head h2 { font-size: clamp(1.7rem, 3vw, 2.2rem); margin: 12px 0 10px; }
+    .section-head p { color: var(--muted); max-width: 540px; margin: 0 auto; font-size: 0.92rem; }
+
+    .point-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .point {
+      padding: 32px 26px; border-radius: 28px; background: #fff;
+      border: 2px solid var(--soft); position: relative;
+    }
+    .point:nth-child(2) { border-color: rgba(146, 197, 221, 0.3); }
+    .point:nth-child(3) { border-color: #fff0c4; }
+    .point-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--mint), var(--mint-deep));
+      color: #fff; display: grid; place-items: center;
+      font-family: 'Fredoka', sans-serif; font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .point:nth-child(2) .point-num { background: linear-gradient(135deg, var(--sky), var(--sky-deep)); }
+    .point:nth-child(3) .point-num { background: linear-gradient(135deg, #ffd166, #ffb84a); }
+    .point h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .point p { font-size: 0.9rem; color: var(--muted); line-height: 1.85; }
+
+    .course-section { background: linear-gradient(135deg, #fff, var(--soft)); padding: 70px 32px; }
+    .course-section .section { padding: 0; }
+    .course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .course {
+      padding: 30px 26px; background: #fff; border-radius: 28px;
+      border: 2px solid #fff;
+    }
+    .course-badge {
+      display: inline-block; padding: 0.36rem 0.85rem; border-radius: 999px;
+      background: var(--mint); color: #fff;
+      font-family: 'Fredoka', sans-serif; font-size: 0.78rem; font-weight: 600;
+    }
+    .course:nth-child(2) .course-badge { background: var(--sky-deep); }
+    .course:nth-child(3) .course-badge { background: #f5a623; }
+    .course h3 { font-size: 1.2rem; margin: 14px 0 8px; }
+    .course p { font-size: 0.9rem; color: var(--muted); margin-bottom: 18px; }
+    .course-price {
+      display: flex; align-items: baseline; gap: 8px;
+      padding-top: 16px; border-top: 1px dashed rgba(78, 169, 154, 0.2);
+    }
+    .course-price strong { font-family: 'Fredoka', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--mint-deep); }
+    .course-price span { font-size: 0.84rem; color: var(--muted); }
+
+    .voice-section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
+    .voice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .voice {
+      padding: 30px 26px; background: #fff; border-radius: 28px;
+      border: 2px solid var(--soft);
+    }
+    .voice-quote { font-size: 0.92rem; color: var(--text); line-height: 1.95; margin-bottom: 16px; }
+    .voice-quote::before { content: '"'; font-family: 'Fredoka', serif; font-size: 3rem; color: var(--mint); display: block; line-height: 0.5; margin-bottom: 4px; }
+    .voice-name { display: flex; align-items: center; gap: 12px; font-size: 0.86rem; color: var(--muted); }
+    .voice-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; }
+    .voice-name strong { color: var(--text); }
+
+    .cta-section {
+      padding: 80px 32px; margin: 50px 24px;
+      border-radius: 36px; max-width: 1120px;
+      margin-left: auto; margin-right: auto;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(127, 200, 184, 0.4), transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(146, 197, 221, 0.4), transparent 50%),
+        #fff;
+      text-align: center; border: 2px solid #fff;
+      box-shadow: 0 24px 50px rgba(78, 169, 154, 0.14);
+    }
+    .cta-section h2 { font-size: clamp(1.7rem, 3vw, 2.2rem); margin-bottom: 12px; }
+    .cta-section p { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+
+    .footer { padding: 50px 32px; text-align: center; color: var(--muted); font-size: 0.84rem; }
+    .footer::before { content: '🌱  🌱  🌱'; display: block; margin-bottom: 10px; letter-spacing: 0.4em; }
+
+    @media (max-width: 880px) {
+      .nav { padding: 14px 18px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .point-grid, .course-grid, .voice-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">学習塾・スクール（保護者向けの安心感が必要なサイト）はこのサンプルが見本になります。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="nav-logo">まなびの森</a>
+    <ul class="nav-links">
+      <li><a href="#point">特長</a></li>
+      <li><a href="#course">コース</a></li>
+      <li><a href="#voice">生徒の声</a></li>
+      <li><a href="#contact">無料体験</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">無料体験</a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="hero-eyebrow">🌱 Learning together</span>
+      <h1>「<em>わかった</em>」を、<br>毎日のよろこびに。</h1>
+      <p class="hero-lead">小学生・中学生向けの個別指導塾。一人ひとりのペースに合わせて、わかるまで何度でも一緒に進めます。</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">無料体験を申し込む</a>
+        <a href="#course" class="btn-secondary">コースを見る</a>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=1000&fit=crop" alt="勉強する子ども" loading="lazy">
+    </div>
+  </header>
+
+  <section class="section" id="point">
+    <div class="section-head">
+      <span class="eyebrow">3 Points</span>
+      <h2>まなびの森のとくちょう</h2>
+      <p>「ついていけない」を「わかった！」に変えるための3つの工夫。</p>
+    </div>
+    <div class="point-grid">
+      <article class="point">
+        <div class="point-num">01</div>
+        <h3>講師1人に生徒2人まで</h3>
+        <p>つきっきりに近い形でゆっくり進めるので、質問しやすく集中できます。</p>
+      </article>
+      <article class="point">
+        <div class="point-num">02</div>
+        <h3>授業の振替が無料</h3>
+        <p>習い事や体調不良で休んでも、別日に振替できるので無駄になりません。</p>
+      </article>
+      <article class="point">
+        <div class="point-num">03</div>
+        <h3>定期面談で安心</h3>
+        <p>毎月の学習報告と保護者面談で、お子さまの様子をきちんとお伝えします。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="course-section" id="course">
+    <div class="section-head" style="margin-bottom: 40px;">
+      <span class="eyebrow">Course</span>
+      <h2>コース・料金</h2>
+      <p>学年・目的に合わせて選べる3つのコース。週回数で柔軟に組めます。</p>
+    </div>
+    <div class="course-grid">
+      <article class="course">
+        <span class="course-badge">小学生</span>
+        <h3>基礎学力コース</h3>
+        <p>算数・国語を中心に、勉強の習慣づくりからサポートします。</p>
+        <div class="course-price">
+          <strong>¥12,800</strong><span>/月（週1回・60分）</span>
+        </div>
+      </article>
+      <article class="course">
+        <span class="course-badge">中学生</span>
+        <h3>定期テスト対策</h3>
+        <p>5教科対応。テスト2週間前は無料の補講も受けられます。</p>
+        <div class="course-price">
+          <strong>¥18,800</strong><span>/月（週2回・80分）</span>
+        </div>
+      </article>
+      <article class="course">
+        <span class="course-badge">受験対策</span>
+        <h3>高校受験コース</h3>
+        <p>志望校に合わせたカリキュラム。過去問演習＋面接練習まで。</p>
+        <div class="course-price">
+          <strong>¥26,800</strong><span>/月（週2回・90分）</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="voice-section" id="voice">
+    <div class="section-head">
+      <span class="eyebrow">Voice</span>
+      <h2>生徒・保護者の声</h2>
+    </div>
+    <div class="voice-grid">
+      <article class="voice">
+        <p class="voice-quote">先生がやさしくて、わからないところを何回でも聞けるから安心です。テストの点数も少しずつ上がってきました。</p>
+        <div class="voice-name">
+          <div class="voice-avatar">😊</div>
+          <div><strong>K.Sさん</strong>（中学2年）</div>
+        </div>
+      </article>
+      <article class="voice">
+        <p class="voice-quote">本人が「行きたい」と言って通っているのが何よりです。家での勉強時間も自然に増えました。</p>
+        <div class="voice-name">
+          <div class="voice-avatar">🌷</div>
+          <div><strong>保護者の方</strong>（小学5年）</div>
+        </div>
+      </article>
+      <article class="voice">
+        <p class="voice-quote">志望校に合格できました！受験前の不安な時期も先生が声をかけてくれて、最後まで頑張れました。</p>
+        <div class="voice-name">
+          <div class="voice-avatar">🌸</div>
+          <div><strong>M.Tさん</strong>（卒業生）</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="cta-section" id="contact">
+    <span class="hero-eyebrow">Free Trial</span>
+    <h2 style="margin-top: 14px;">まずは無料体験から</h2>
+    <p>授業の雰囲気・先生との相性を、実際の授業1回でお試しください。<br>しつこい勧誘などはありませんので、安心してお越しください。</p>
+    <a href="#" class="btn-primary">無料体験を申し込む</a>
+  </section>
+
+  <section class="project-brief" style="--portfolio-accent:#4ea99a; --portfolio-heading:#3d4a4d; --portfolio-muted:#7d8a8d; --portfolio-card-bg:#fff; --portfolio-card-border:rgba(78,169,154,0.18); --portfolio-shadow:rgba(78,169,154,0.1); --portfolio-metric-bg:#e6f5f1;">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">学習塾・スクールの依頼イメージ</h2>
+        <p class="project-brief__lead">保護者目線で「安心して通わせられそう」と思える情報設計が大切です。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>1ページ完結の塾サイト。特長・コース・料金・体験申込を含む構成。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>料金</span><strong>15〜25万円</strong></div>
+              <div class="project-brief__metric"><span>期間</span><strong>3〜4週間</strong></div>
+              <div class="project-brief__metric"><span>素材</span><strong>教室写真・講師写真</strong></div>
+              <div class="project-brief__metric"><span>ゴール</span><strong>体験申込UP</strong></div>
+            </div>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>あると進めやすいもの</h3>
+          <ul class="project-brief__list">
+            <li>教室の内観・授業中の写真</li>
+            <li>コース構成と料金（学年別）</li>
+            <li>合格実績や生徒の声</li>
+            <li>体験申込フォーム or LINE</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">&copy; 2026 まなびの森 — Sample Site</footer>
+</body>
+</html>

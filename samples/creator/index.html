@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mio illustration | フリーランスイラストレーター</title>
+  <meta name="description" content="mio illustration はフリーランスイラストレーターのポートフォリオサンプルサイト。お仕事の相談・実績・SNSのご案内。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K8QFB33PX7');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="mio illustration | フリーランスイラストレーター">
+  <meta property="og:description" content="フリーランスイラストレーターのポートフォリオサンプルサイト。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --lavender: #b59ee5;
+      --lavender-deep: #8c75d4;
+      --pink: #ffb0d3;
+      --pink-deep: #f08aba;
+      --soft: #f3edff;
+      --cream: #fffaf6;
+      --text: #4a3d5e;
+      --muted: #8b819b;
+    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif; color: var(--text); line-height: 1.85;
+      background:
+        radial-gradient(circle at 0% 10%, rgba(181, 158, 229, 0.22), transparent 35%),
+        radial-gradient(circle at 100% 90%, rgba(255, 176, 211, 0.22), transparent 35%),
+        var(--cream);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 32px;
+      background: rgba(255, 250, 246, 0.92); backdrop-filter: blur(12px);
+    }
+    .nav-logo { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 1.4rem; color: var(--lavender-deep); display: inline-flex; align-items: center; gap: 0.4rem; }
+    .nav-logo::before { content: '✿'; color: var(--pink-deep); }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { font-size: 0.86rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--lavender-deep); }
+    .nav-cta {
+      padding: 0.6rem 1.2rem; border-radius: 999px;
+      background: linear-gradient(135deg, var(--lavender), var(--pink));
+      color: #fff; font-weight: 700; font-size: 0.84rem;
+    }
+
+    .hero {
+      padding: 130px 32px 60px;
+      max-width: 1180px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center;
+    }
+    .hero-eyebrow {
+      font-family: 'Fredoka', sans-serif; color: var(--pink-deep);
+      font-size: 1rem; font-weight: 500; letter-spacing: 0.08em;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.2;
+      font-weight: 700; margin: 14px 0 16px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(120deg, var(--lavender-deep), var(--pink-deep));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero-lead { color: var(--muted); max-width: 460px; font-size: 0.96rem; }
+    .hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.95rem 1.7rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
+      transition: transform .25s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--lavender), var(--pink));
+      color: #fff; box-shadow: 0 12px 24px rgba(181, 158, 229, 0.35);
+    }
+    .btn-primary::after { content: '✦'; }
+    .btn-secondary { background: #fff; border: 2px solid var(--lavender); color: var(--lavender-deep); }
+    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px) rotate(-1deg); }
+    .hero-image-wrap { position: relative; display: grid; place-items: center; }
+    .hero-image-wrap .blob {
+      position: absolute; width: 100%; max-width: 480px; aspect-ratio: 1/1; z-index: -1;
+      background: linear-gradient(135deg, var(--lavender), var(--pink));
+      border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+      animation: float 8s ease-in-out infinite;
+    }
+    @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-12px) rotate(4deg); } }
+    .hero-image-wrap img { width: 78%; max-width: 380px; aspect-ratio: 1/1; object-fit: cover; border-radius: 50%; border: 8px solid #fff; box-shadow: 0 24px 44px rgba(140, 117, 212, 0.25); }
+
+    .section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
+    .section-head { text-align: center; margin-bottom: 44px; }
+    .section-head .eyebrow { font-family: 'Fredoka', sans-serif; color: var(--pink-deep); font-size: 0.85rem; letter-spacing: 0.08em; font-weight: 600; }
+    .section-head h2 { font-size: clamp(1.7rem, 3vw, 2.2rem); margin: 8px 0 10px; }
+    .section-head p { color: var(--muted); max-width: 520px; margin: 0 auto; font-size: 0.92rem; }
+
+    .works-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    }
+    .work {
+      position: relative; aspect-ratio: 1/1; overflow: hidden; border-radius: 28px;
+      background: var(--soft);
+    }
+    .work img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .work:hover img { transform: scale(1.06); }
+    .work-tag {
+      position: absolute; top: 16px; left: 16px;
+      padding: 0.36rem 0.85rem; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92); color: var(--lavender-deep);
+      font-family: 'Fredoka', sans-serif; font-size: 0.74rem; font-weight: 600;
+    }
+    .work-overlay {
+      position: absolute; inset: 0; padding: 22px;
+      background: linear-gradient(180deg, transparent 50%, rgba(74, 61, 94, 0.78) 100%);
+      display: flex; align-items: end; color: #fff;
+      opacity: 0; transition: opacity .3s;
+    }
+    .work:hover .work-overlay { opacity: 1; }
+    .work-overlay h3 { font-size: 1rem; margin: 0; }
+
+    .skill-section {
+      background: linear-gradient(135deg, var(--soft), #fff);
+      padding: 70px 32px; border-radius: 0;
+    }
+    .skill-section .section { padding: 0; }
+    .skill-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .skill {
+      padding: 24px 18px; background: #fff; border-radius: 24px;
+      border: 2px solid var(--soft); text-align: center;
+    }
+    .skill-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .skill h3 { font-size: 0.95rem; margin-bottom: 4px; }
+    .skill p { font-size: 0.84rem; color: var(--muted); }
+
+    .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .price-card {
+      padding: 30px 26px; background: #fff; border-radius: 28px;
+      border: 2px solid var(--soft);
+    }
+    .price-card:nth-child(2) { border-color: var(--lavender); }
+    .price-card h3 { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; margin-bottom: 10px; }
+    .price-card .price { font-family: 'Fredoka', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--lavender-deep); margin-bottom: 16px; }
+    .price-card ul { list-style: none; padding: 0; }
+    .price-card li { font-size: 0.88rem; color: var(--text); padding: 6px 0; padding-left: 1.4rem; position: relative; }
+    .price-card li::before { content: '♡'; position: absolute; left: 0; color: var(--pink-deep); }
+
+    .contact-section {
+      padding: 80px 32px; margin: 50px 24px;
+      border-radius: 36px; max-width: 1120px;
+      margin-left: auto; margin-right: auto;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(181, 158, 229, 0.32), transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(255, 176, 211, 0.32), transparent 50%),
+        #fff;
+      text-align: center; border: 2px solid #fff;
+      box-shadow: 0 24px 50px rgba(140, 117, 212, 0.16);
+    }
+    .contact-section h2 { font-size: clamp(1.7rem, 3vw, 2.2rem); margin-bottom: 12px; }
+    .contact-section p { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+    .sns-links { display: flex; justify-content: center; gap: 14px; margin-top: 18px; }
+    .sns-links a {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: #fff; border: 2px solid var(--soft);
+      display: grid; place-items: center; color: var(--lavender-deep);
+      transition: transform .25s;
+    }
+    .sns-links a:hover { transform: translateY(-3px); }
+
+    .footer { padding: 50px 32px; text-align: center; color: var(--muted); font-size: 0.84rem; }
+    .footer::before { content: '✦  ✿  ✦'; display: block; margin-bottom: 10px; letter-spacing: 0.6em; color: var(--lavender); }
+
+    @media (max-width: 880px) {
+      .nav { padding: 14px 18px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .works-grid { grid-template-columns: repeat(2, 1fr); }
+      .skill-grid { grid-template-columns: repeat(2, 1fr); }
+      .price-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">作家・クリエイター・フリーランス向けポートフォリオはこのサンプルが見本になります。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="nav-logo">mio</a>
+    <ul class="nav-links">
+      <li><a href="#works">Works</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#price">Price</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Contact</a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="hero-eyebrow">★ Illustrator / Designer</span>
+      <h1>やわらかい絵で、<br><em>ちいさな物語</em>を。</h1>
+      <p class="hero-lead">書籍挿絵・キャラクターデザイン・パッケージなど、ふんわりした世界観のイラストを描いています。お仕事のご相談はお気軽に。</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">お仕事のご相談</a>
+        <a href="#works" class="btn-secondary">作品を見る</a>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <div class="blob"></div>
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop" alt="プロフィール" loading="lazy">
+    </div>
+  </header>
+
+  <section class="section" id="works">
+    <div class="section-head">
+      <span class="eyebrow">★ Works</span>
+      <h2>作品ギャラリー</h2>
+      <p>これまでに描いてきた作品の一部です。色々なテイストでご相談いただけます。</p>
+    </div>
+    <div class="works-grid">
+      <a href="#" class="work">
+        <span class="work-tag">Book</span>
+        <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=600&h=600&fit=crop" alt="" loading="lazy">
+        <div class="work-overlay"><h3>絵本「ねこのおさんぽ」装画</h3></div>
+      </a>
+      <a href="#" class="work">
+        <span class="work-tag">Character</span>
+        <img src="https://images.unsplash.com/photo-1582391055046-67d345d29800?w=600&h=600&fit=crop" alt="" loading="lazy">
+        <div class="work-overlay"><h3>カフェのキャラクターデザイン</h3></div>
+      </a>
+      <a href="#" class="work">
+        <span class="work-tag">Package</span>
+        <img src="https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&h=600&fit=crop" alt="" loading="lazy">
+        <div class="work-overlay"><h3>焼き菓子ブランドのパッケージ</h3></div>
+      </a>
+      <a href="#" class="work">
+        <span class="work-tag">Web</span>
+        <img src="https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=600&h=600&fit=crop" alt="" loading="lazy">
+        <div class="work-overlay"><h3>WebメディアのKVイラスト</h3></div>
+      </a>
+      <a href="#" class="work">
+        <span class="work-tag">Editorial</span>
+        <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600&h=600&fit=crop" alt="" loading="lazy">
+        <div class="work-overlay"><h3>女性誌のエッセイ挿絵</h3></div>
+      </a>
+      <a href="#" class="work">
+        <span class="work-tag">Goods</span>
+        <img src="https://images.unsplash.com/photo-1582719188393-bb71ca45dbb9?w=600&h=600&fit=crop" alt="" loading="lazy">
+        <div class="work-overlay"><h3>オリジナルグッズ「お花のシリーズ」</h3></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="skill-section" id="about">
+    <div class="section-head" style="margin-bottom: 36px;">
+      <span class="eyebrow">★ About</span>
+      <h2>得意なお仕事</h2>
+    </div>
+    <div class="skill-grid">
+      <div class="skill"><div class="skill-icon">📖</div><h3>書籍・装画</h3><p>絵本・小説</p></div>
+      <div class="skill"><div class="skill-icon">🎀</div><h3>キャラクター</h3><p>マスコット制作</p></div>
+      <div class="skill"><div class="skill-icon">🎁</div><h3>パッケージ</h3><p>商品ラベル</p></div>
+      <div class="skill"><div class="skill-icon">🌷</div><h3>Web・SNS</h3><p>KV・バナー</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="price">
+    <div class="section-head">
+      <span class="eyebrow">★ Price</span>
+      <h2>料金の目安</h2>
+      <p>用途と納期によって変動します。お気軽にご相談ください。</p>
+    </div>
+    <div class="price-grid">
+      <article class="price-card">
+        <h3>Single Cut</h3>
+        <div class="price">¥15,000〜</div>
+        <ul>
+          <li>カット1点</li>
+          <li>ラフ1案</li>
+          <li>修正2回まで</li>
+          <li>SNS・Web使用</li>
+        </ul>
+      </article>
+      <article class="price-card">
+        <h3>Character</h3>
+        <div class="price">¥40,000〜</div>
+        <ul>
+          <li>キャラクター1体</li>
+          <li>ラフ3案</li>
+          <li>カラーバリエ2種</li>
+          <li>商用利用OK</li>
+        </ul>
+      </article>
+      <article class="price-card">
+        <h3>Package</h3>
+        <div class="price">¥80,000〜</div>
+        <ul>
+          <li>パッケージ1点</li>
+          <li>ラフ2案</li>
+          <li>背景・小物込み</li>
+          <li>商用利用OK</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="contact-section" id="contact">
+    <span class="hero-eyebrow">★ Contact</span>
+    <h2 style="margin-top: 14px;">お仕事のご相談</h2>
+    <p>挿絵・キャラクター・パッケージ等、ふんわりしたイラストのご依頼お待ちしています。<br>まずはX(Twitter)のDMからお気軽にどうぞ。</p>
+    <a href="#" class="btn-primary">メールで相談</a>
+    <div class="sns-links">
+      <a href="#" aria-label="X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+      <a href="#" aria-label="pixiv"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.999 0C5.373 0 0 5.372 0 12c0 6.627 5.373 12 12 12 6.626 0 12-5.373 12-12 0-6.628-5.374-12-12.001-12zm.706 16.708h-1.413v3.704h-1.471v-9.412h2.884c2.072 0 3.589.94 3.589 2.823 0 1.881-1.518 2.885-3.589 2.885z"/></svg></a>
+    </div>
+  </section>
+
+  <section class="project-brief" style="--portfolio-accent:#8c75d4; --portfolio-heading:#4a3d5e; --portfolio-muted:#8b819b; --portfolio-card-bg:#fff; --portfolio-card-border:rgba(181,158,229,0.22); --portfolio-shadow:rgba(140,117,212,0.12); --portfolio-metric-bg:#f3edff;">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">クリエイター・作家ポートフォリオの依頼イメージ</h2>
+        <p class="project-brief__lead">作品が主役なので、ギャラリーと依頼導線がきれいに見える設計を意識します。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>1ページ完結のポートフォリオ。プロフィール・作品・料金・連絡先を含む構成。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>料金</span><strong>10〜18万円</strong></div>
+              <div class="project-brief__metric"><span>期間</span><strong>2〜3週間</strong></div>
+              <div class="project-brief__metric"><span>素材</span><strong>作品6〜12点</strong></div>
+              <div class="project-brief__metric"><span>ゴール</span><strong>仕事依頼UP</strong></div>
+            </div>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>あると進めやすいもの</h3>
+          <ul class="project-brief__list">
+            <li>掲載したい作品（正方形 or 縦横揃えると◎）</li>
+            <li>得意なジャンル・実績の文章</li>
+            <li>料金の目安</li>
+            <li>SNSリンク・連絡フォーム</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">&copy; 2026 mio illustration — Sample Site</footer>
+</body>
+</html>

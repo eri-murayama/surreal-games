@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pâtisserie fleur | 季節のスイーツが並ぶ小さな焼き菓子店</title>
+  <meta name="description" content="Pâtisserie fleur（パティスリーフルール）は季節のフルーツを使ったケーキと焼き菓子のサンプルサイトです。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-K8QFB33PX7');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/portfolio-detail.css">
+  <meta property="og:title" content="Pâtisserie fleur | 季節のスイーツの小さな焼き菓子店">
+  <meta property="og:description" content="季節のフルーツを使ったケーキと焼き菓子のサンプルサイト。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --pink: #ff8fb1;
+      --pink-deep: #e26a93;
+      --pink-soft: #ffe1eb;
+      --cream: #fff5e6;
+      --cream-deep: #ffe8c9;
+      --text: #5a3d4d;
+      --muted: #9b8190;
+    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      color: var(--text);
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 10% 0%, var(--pink-soft), transparent 35%),
+        radial-gradient(circle at 90% 100%, var(--cream-deep), transparent 40%),
+        #fffaf3;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 32px;
+      background: rgba(255, 250, 243, 0.86);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px dashed rgba(255, 154, 188, 0.35);
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-style: italic; color: var(--pink-deep); }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { font-size: 0.84rem; color: var(--muted); transition: color .25s; }
+    .nav-links a:hover { color: var(--pink-deep); }
+
+    .hero {
+      padding: 130px 32px 60px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+      max-width: 1180px; margin: 0 auto; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      background: #fff; border: 2px solid var(--pink-soft);
+      color: var(--pink-deep);
+      font-size: 0.78rem; font-weight: 700;
+    }
+    .hero-eyebrow::before { content: '✿'; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.6rem, 5vw, 4rem); line-height: 1.1; color: var(--text); margin: 18px 0 12px; font-style: italic; }
+    .hero h1 span { display: block; font-family: 'Zen Maru Gothic', sans-serif; font-style: normal; font-size: 0.9rem; letter-spacing: 0.2em; color: var(--pink-deep); margin-top: 12px; }
+    .hero p { color: var(--muted); font-size: 0.96rem; max-width: 480px; }
+    .hero-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.9rem 1.6rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
+      transition: transform .25s ease;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--pink), var(--pink-deep)); color: #fff; box-shadow: 0 12px 24px rgba(226, 106, 147, 0.3); }
+    .btn-secondary { background: #fff; border: 2px solid var(--pink-soft); color: var(--pink-deep); }
+    .btn-primary::after { content: '♡'; }
+    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px) rotate(-1deg); }
+    .hero-image { position: relative; }
+    .hero-image img { border-radius: 32px; aspect-ratio: 4/5; object-fit: cover; box-shadow: 0 24px 48px rgba(226, 106, 147, 0.22); }
+    .hero-image::before {
+      content: ''; position: absolute; top: -20px; right: -20px; width: 120px; height: 120px;
+      background: var(--cream-deep); border-radius: 50%; z-index: -1;
+    }
+
+    .section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
+    .section-head { text-align: center; margin-bottom: 40px; }
+    .section-head .eyebrow { color: var(--pink-deep); font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; }
+    .section-head h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin: 6px 0 10px; }
+    .section-head p { color: var(--muted); max-width: 520px; margin: 0 auto; font-size: 0.92rem; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .menu-card {
+      background: #fff; border-radius: 28px; overflow: hidden;
+      border: 2px solid var(--pink-soft);
+      box-shadow: 0 10px 28px rgba(255, 154, 188, 0.16);
+      transition: transform .3s, box-shadow .3s;
+    }
+    .menu-card:hover { transform: translateY(-6px) rotate(-0.5deg); box-shadow: 0 18px 36px rgba(226, 106, 147, 0.22); }
+    .menu-card img { aspect-ratio: 1/1; object-fit: cover; width: 100%; }
+    .menu-card-body { padding: 20px 22px 24px; text-align: center; }
+    .menu-card-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.3rem; color: var(--text); }
+    .menu-card-desc { font-size: 0.85rem; color: var(--muted); margin: 6px 0 12px; line-height: 1.7; }
+    .menu-card-price { font-weight: 700; color: var(--pink-deep); }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
+    .feature {
+      padding: 28px 22px; border-radius: 26px; background: #fff;
+      border: 2px solid var(--pink-soft); text-align: center;
+    }
+    .feature:nth-child(2) { border-color: var(--cream-deep); }
+    .feature:nth-child(3) { border-color: #ffd5d5; }
+    .feature-icon { font-size: 2rem; margin-bottom: 12px; }
+    .feature h3 { font-size: 1rem; margin-bottom: 8px; }
+    .feature p { font-size: 0.86rem; color: var(--muted); line-height: 1.85; }
+
+    .info-section {
+      background: linear-gradient(135deg, #fff 0%, var(--pink-soft) 100%);
+      padding: 60px 32px; margin: 60px 24px; border-radius: 36px;
+      max-width: 1120px; margin-left: auto; margin-right: auto;
+    }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .info-grid img { border-radius: 28px; aspect-ratio: 4/3; object-fit: cover; }
+    .info dl { display: grid; grid-template-columns: 100px 1fr; gap: 12px 18px; margin-top: 18px; font-size: 0.92rem; }
+    .info dt { color: var(--pink-deep); font-weight: 700; }
+    .info dd { color: var(--text); }
+
+    .footer { padding: 50px 32px; text-align: center; color: var(--muted); font-size: 0.84rem; }
+    .footer::before { content: '✿  ✿  ✿'; display: block; color: var(--pink); letter-spacing: 0.6em; margin-bottom: 12px; }
+
+    @media (max-width: 880px) {
+      .nav { padding: 14px 18px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding-top: 100px; gap: 30px; }
+      .hero-image::before { display: none; }
+      .menu-grid, .feature-grid, .info-grid { grid-template-columns: 1fr; }
+      .info-section { margin: 40px 16px; padding: 40px 22px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-to-portfolio">&larr; 一覧へ戻る</a>
+  <div class="sample-badge">SAMPLE SITE</div>
+  <div class="portfolio-cta">
+    <p class="portfolio-cta__copy">スイーツ店・ベーカリーの相談はこのサンプルが見本になります。</p>
+    <a href="https://x.com/tadanosyuhuda" class="portfolio-cta__link" target="_blank" rel="noopener noreferrer">このテイストで相談する</a>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="nav-logo">fleur</a>
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#feature">About</a></li>
+      <li><a href="#info">Shop</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="hero-eyebrow">Pâtisserie since 2024</span>
+      <h1>Sweet little<br>moments<span>季節のフルーツと、小さなしあわせ。</span></h1>
+      <p>季節ごとのフルーツを主役にしたケーキと焼き菓子の小さなお店。今日のおやつや、誰かへの贈り物に。</p>
+      <div class="hero-actions">
+        <a href="#menu" class="btn-primary">メニューを見る</a>
+        <a href="#info" class="btn-secondary">店舗情報</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=1000&fit=crop" alt="ピンクのケーキ" loading="lazy">
+    </div>
+  </header>
+
+  <section class="section" id="menu">
+    <div class="section-head">
+      <span class="eyebrow">Today's Selection</span>
+      <h2>本日のおすすめ</h2>
+      <p>朝に焼き上げた、その日いちばんおいしいスイーツをご紹介します。</p>
+    </div>
+    <div class="menu-grid">
+      <article class="menu-card">
+        <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&h=500&fit=crop" alt="苺のショートケーキ" loading="lazy">
+        <div class="menu-card-body">
+          <div class="menu-card-name">Fraise Shortcake</div>
+          <div class="menu-card-desc">あまおうと生クリームの王道</div>
+          <div class="menu-card-price">¥780</div>
+        </div>
+      </article>
+      <article class="menu-card">
+        <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=500&h=500&fit=crop" alt="ピスタチオタルト" loading="lazy">
+        <div class="menu-card-body">
+          <div class="menu-card-name">Pistache Tart</div>
+          <div class="menu-card-desc">ピスタチオと木苺のタルト</div>
+          <div class="menu-card-price">¥820</div>
+        </div>
+      </article>
+      <article class="menu-card">
+        <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=500&h=500&fit=crop" alt="マカロン" loading="lazy">
+        <div class="menu-card-body">
+          <div class="menu-card-name">Macaron Box</div>
+          <div class="menu-card-desc">季節の6種詰め合わせ</div>
+          <div class="menu-card-price">¥1,800</div>
+        </div>
+      </article>
+      <article class="menu-card">
+        <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=500&h=500&fit=crop" alt="モンブラン" loading="lazy">
+        <div class="menu-card-body">
+          <div class="menu-card-name">Mont Blanc</div>
+          <div class="menu-card-desc">和栗のモンブラン（季節限定）</div>
+          <div class="menu-card-price">¥860</div>
+        </div>
+      </article>
+      <article class="menu-card">
+        <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=500&h=500&fit=crop" alt="フィナンシェ" loading="lazy">
+        <div class="menu-card-body">
+          <div class="menu-card-name">Financier</div>
+          <div class="menu-card-desc">焦がしバターのフィナンシェ</div>
+          <div class="menu-card-price">¥260</div>
+        </div>
+      </article>
+      <article class="menu-card">
+        <img src="https://images.unsplash.com/photo-1519869325930-281384150729?w=500&h=500&fit=crop" alt="ガトーショコラ" loading="lazy">
+        <div class="menu-card-body">
+          <div class="menu-card-name">Gâteau Chocolat</div>
+          <div class="menu-card-desc">濃厚ガトーショコラ</div>
+          <div class="menu-card-price">¥680</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="feature">
+    <div class="section-head">
+      <span class="eyebrow">Our Promise</span>
+      <h2>fleurのこだわり</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-icon">🍓</div>
+        <h3>季節のフルーツ</h3>
+        <p>その時期にいちばんおいしい果物だけを使います。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🥐</div>
+        <h3>毎朝、店内で焼く</h3>
+        <p>朝6時から仕込み。焼きたてが並ぶ毎日です。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎁</div>
+        <h3>かわいい包装</h3>
+        <p>贈り物にぴったりの包装で大切にお渡しします。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-section" id="info">
+    <div class="info-grid">
+      <img src="https://images.unsplash.com/photo-1559054663-e8d23213f55c?w=800&h=600&fit=crop" alt="店内の様子" loading="lazy">
+      <div class="info">
+        <span class="hero-eyebrow">Shop Info</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2rem;margin:14px 0;">Visit us</h2>
+        <p style="color:var(--muted);font-size:0.9rem;">小さなお店ですが、いつでもおいしいスイーツをご用意してお待ちしています。</p>
+        <dl>
+          <dt>住所</dt><dd>東京都〇〇区△△ 1-2-3</dd>
+          <dt>営業時間</dt><dd>11:00 – 19:00（売切次第閉店）</dd>
+          <dt>定休日</dt><dd>火曜・水曜</dd>
+          <dt>TEL</dt><dd>03-0000-0000</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="project-brief" id="brief" style="--portfolio-accent:#e26a93; --portfolio-heading:#5a3d4d; --portfolio-muted:#9b8190; --portfolio-card-bg:#fff; --portfolio-card-border:rgba(255,154,188,0.28); --portfolio-shadow:rgba(226,106,147,0.14); --portfolio-metric-bg:#ffe1eb;">
+    <div class="project-brief__inner">
+      <div class="project-brief__header">
+        <span class="project-brief__eyebrow">Project Note</span>
+        <h2 class="project-brief__title">スイーツ店として依頼するときの目安</h2>
+        <p class="project-brief__lead">商品写真がいちばん大事なので、撮影プランの相談から始めるとスムーズです。</p>
+      </div>
+      <div class="project-brief__layout">
+        <div class="project-brief__stack">
+          <article class="project-brief__card">
+            <h3>想定する依頼内容</h3>
+            <p>1ページ完結の店舗サイト。商品ギャラリー・店舗情報・SNS導線を含む構成。</p>
+            <div class="project-brief__meta">
+              <div class="project-brief__metric"><span>料金</span><strong>12〜18万円</strong></div>
+              <div class="project-brief__metric"><span>期間</span><strong>2〜3週間</strong></div>
+              <div class="project-brief__metric"><span>素材</span><strong>商品写真6〜10枚</strong></div>
+              <div class="project-brief__metric"><span>ゴール</span><strong>来店・予約UP</strong></div>
+            </div>
+          </article>
+        </div>
+        <article class="project-brief__card">
+          <h3>あると進めやすいもの</h3>
+          <ul class="project-brief__list">
+            <li>看板商品3〜6種類のリスト</li>
+            <li>商品の正方形写真（白背景or店舗内）</li>
+            <li>店内の雰囲気がわかる写真1〜2枚</li>
+            <li>InstagramなどのSNSアカウント</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    &copy; 2026 Pâtisserie fleur — Sample Site
+  </footer>
+</body>
+</html>
