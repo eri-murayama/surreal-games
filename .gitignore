@@ -1,1 +1,12 @@
 node_modules
+
+# 一時ファイル・作業用フォルダ
+tmp-progress/
+tmp-audit/
+videos/
+*.log
+
+# 配布用zip（itch/plicyのzipはローカル生成のみ）
+itch/*.zip
+plicy/*.zip
+drafts/*.zip
