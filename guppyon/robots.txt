@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://eri-murayama.github.io/gerogero-gakuen/sitemap.xml
