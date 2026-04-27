@@ -16,7 +16,7 @@
   function getStoredAge() {
     try {
       return localStorage.getItem('gero-age');
-    } catch (e) {
+    } catch (error) {
       return null;
     }
   }
@@ -24,25 +24,36 @@
   function setStoredAge(age) {
     try {
       localStorage.setItem('gero-age', age);
-    } catch (e) {}
+    } catch (error) {}
   }
 
   function clearStoredAge() {
     try {
       localStorage.removeItem('gero-age');
-    } catch (e) {}
+    } catch (error) {}
+  }
+
+  function getActiveSubject() {
+    return document.querySelector('.filter-btn.active')?.dataset.subject || 'all';
+  }
+
+  function notifyCatalogUpdate(age) {
+    document.documentElement.dataset.geroAge = age;
+    document.dispatchEvent(new CustomEvent('gero:catalog-updated', {
+      detail: {
+        age,
+        subject: getActiveSubject()
+      }
+    }));
   }
 
   function filterByAge(age) {
     const cards = document.querySelectorAll('.game-card');
-    const activeSubject = document.querySelector('.filter-btn.active');
-    const subject = activeSubject ? activeSubject.dataset.subject : 'all';
+    const subject = getActiveSubject();
 
     cards.forEach((card) => {
-      const cardAge = card.dataset.age;
-      const cardSubject = card.dataset.subject;
-      const matchSubject = subject === 'all' || cardSubject === subject;
-      const matchAge = age === 'all' || cardAge === age;
+      const matchSubject = subject === 'all' || card.dataset.subject === subject;
+      const matchAge = age === 'all' || card.dataset.age === age;
 
       if (matchSubject && matchAge) {
         card.style.display = '';
@@ -51,17 +62,23 @@
         card.style.display = 'none';
       }
     });
+
+    notifyCatalogUpdate(age);
   }
 
   function updateAgeButton(age) {
-    const btn = document.getElementById('ageChangeBtn');
-    const info = ageLabels[age] || ageLabels.all;
-    if (!btn) return;
+    const button = document.getElementById('ageChangeBtn');
+    if (!button) return;
 
-    document.getElementById('ageBtnEmoji').textContent = info.emoji;
-    document.getElementById('ageBtnLabel').textContent = info.label;
-    btn.style.display = 'flex';
-    btn.setAttribute('aria-label', 'ねんれいをかえる: ' + info.label);
+    const info = ageLabels[age] || ageLabels.all;
+    const emoji = document.getElementById('ageBtnEmoji');
+    const label = document.getElementById('ageBtnLabel');
+
+    if (emoji) emoji.textContent = info.emoji;
+    if (label) label.textContent = info.label;
+
+    button.style.display = 'flex';
+    button.setAttribute('aria-label', `ねんれいを かえる ${info.label}`);
   }
 
   function syncSoundButton() {
@@ -71,41 +88,50 @@
     const isMuted = !!window.geroAudio.isMuted;
     soundToggle.textContent = isMuted ? '🔇' : '🔊';
     soundToggle.setAttribute('aria-pressed', isMuted ? 'true' : 'false');
-    soundToggle.setAttribute('aria-label', isMuted ? 'おとをオンにする' : 'おとをオフにする');
+    soundToggle.setAttribute('aria-label', isMuted ? 'おとを オンにする' : 'おとを オフにする');
   }
 
   function enterSite(age) {
     if (window.geroAudio) {
-      geroAudio.init();
-      geroAudio.playCelebration();
+      window.geroAudio.init();
+      window.geroAudio.playCelebration();
     }
 
     setStoredAge(age);
 
     const entrance = document.getElementById('entrance');
-    entrance.classList.add('hide');
-    setTimeout(() => {
-      entrance.style.display = 'none';
-      entrance.setAttribute('aria-hidden', 'true');
-    }, 800);
+    if (entrance) {
+      entrance.classList.add('hide');
+      setTimeout(() => {
+        entrance.style.display = 'none';
+        entrance.setAttribute('aria-hidden', 'true');
+      }, 800);
+    }
 
     filterByAge(age);
     updateAgeButton(age);
 
     if (window.geroAudio && !window.geroAudio.isMuted) {
       setTimeout(() => {
-        geroAudio.startBGM(100, 'C');
+        window.geroAudio.startBGM(100, 'C');
       }, 1000);
     }
   }
 
   function reopenAgeGate() {
     clearStoredAge();
+
     const entrance = document.getElementById('entrance');
-    entrance.style.display = '';
-    entrance.classList.remove('hide');
-    entrance.setAttribute('aria-hidden', 'false');
-    document.getElementById('ageChangeBtn').style.display = 'none';
+    if (entrance) {
+      entrance.style.display = '';
+      entrance.classList.remove('hide');
+      entrance.setAttribute('aria-hidden', 'false');
+    }
+
+    const ageChangeButton = document.getElementById('ageChangeBtn');
+    if (ageChangeButton) {
+      ageChangeButton.style.display = 'none';
+    }
 
     document.querySelectorAll('.game-card').forEach((card) => {
       card.style.display = '';
@@ -113,25 +139,30 @@
       card.style.order = '0';
     });
 
+    notifyCatalogUpdate('all');
+
     if (window.geroAudio) {
-      geroAudio.stopBGM();
+      window.geroAudio.stopBGM();
     }
   }
 
   function bindAgeButtons() {
-    document.querySelectorAll('.age-btn[data-age]').forEach((btn) => {
-      btn.addEventListener('click', () => enterSite(btn.dataset.age));
+    document.querySelectorAll('.age-btn[data-age]').forEach((button) => {
+      button.addEventListener('click', () => enterSite(button.dataset.age));
     });
 
-    const ageChangeBtn = document.getElementById('ageChangeBtn');
-    if (ageChangeBtn) {
-      ageChangeBtn.addEventListener('click', reopenAgeGate);
+    const ageChangeButton = document.getElementById('ageChangeBtn');
+    if (ageChangeButton) {
+      ageChangeButton.addEventListener('click', reopenAgeGate);
     }
   }
 
   function initSavedAge() {
     const savedAge = getStoredAge();
-    if (!savedAge) return;
+    if (!savedAge) {
+      notifyCatalogUpdate('all');
+      return;
+    }
 
     const entrance = document.getElementById('entrance');
     if (entrance) {
@@ -150,8 +181,8 @@
     syncSoundButton();
 
     soundToggle.addEventListener('click', () => {
-      geroAudio.init();
-      geroAudio.toggleMute();
+      window.geroAudio.init();
+      window.geroAudio.toggleMute();
       syncSoundButton();
     });
   }

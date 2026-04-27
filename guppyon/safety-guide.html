@@ -127,6 +127,31 @@
       line-height: 1.7;
       color: #777;
     }
+    .quick-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 28px;
+    }
+    .summary-card {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f7fffd);
+      border: 2px solid #dff3f1;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .summary-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #2bbbad;
+      font-size: 0.95rem;
+    }
+    .summary-card span {
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #666;
+    }
     .faq { margin-top: 10px; }
     .faq-item { margin-bottom: 12px; }
     .faq-q {
@@ -177,6 +202,21 @@
         <strong>🎮 ゲーム一覧</strong>
         <span>年齢にあわせてゲームを選びたいときはこちらです。</span>
       </a>
+    </div>
+
+    <div class="quick-summary" aria-label="要点まとめ">
+      <div class="summary-card">
+        <strong>最初に見ること</strong>
+        <span>ホーム画面追加と音量設定を先に確認すると、子どもが遊びやすくなります。</span>
+      </div>
+      <div class="summary-card">
+        <strong>見守りのコツ</strong>
+        <span>1回の時間を決めて、遊ぶ前に終わりの声かけをしておくと切り替えやすいです。</span>
+      </div>
+      <div class="summary-card">
+        <strong>困ったとき</strong>
+        <span>安全ガイドとプライバシーを見れば、使い方と情報の扱いを短く確認できます。</span>
+      </div>
     </div>
 
     <!-- PWA Section -->

@@ -95,6 +95,31 @@
       line-height: 1.7;
       color: #777;
     }
+    .quick-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 28px;
+    }
+    .summary-card {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f7fffd);
+      border: 2px solid #dff3f1;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .summary-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #2bbbad;
+      font-size: 0.95rem;
+    }
+    .summary-card span {
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #666;
+    }
     .update-date {
       text-align: center; font-size: 0.8rem; color: #999; margin-top: 20px;
     }
@@ -135,6 +160,21 @@
         <strong>🎮 ゲーム一覧</strong>
         <span>年齢にあわせてゲームを選びたいときはこちらです。</span>
       </a>
+    </div>
+
+    <div class="quick-summary" aria-label="要点まとめ">
+      <div class="summary-card">
+        <strong>保存するもの</strong>
+        <span>音のオン/オフなど、遊びやすくする設定だけを端末に保存します。</span>
+      </div>
+      <div class="summary-card">
+        <strong>保存しないもの</strong>
+        <span>名前、メール、位置情報、広告用の追跡情報は保存しません。</span>
+      </div>
+      <div class="summary-card">
+        <strong>シェアの前</strong>
+        <span>外部サイトへ進む前に、保護者向けの確認画面をはさみます。</span>
+      </div>
     </div>
 
     <div class="policy-section">

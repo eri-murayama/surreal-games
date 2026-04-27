@@ -6,31 +6,15 @@
 (function() {
   'use strict';
 
-  // ゲーム一覧（導線用）
-  const GAME_LIST = [
-    { id: 'counting-frogs', title: 'かぞえてぴょん！', emoji: '🐸', age: 'toddler' },
-    { id: 'rhythm-lights', title: 'ぴかぴかリズム', emoji: '🎼', age: 'kid' },
-    { id: 'pop-bubbles', title: 'ぽんぽんタッチ', emoji: '🫧', age: 'baby' },
-    { id: 'animal-sounds', title: 'どうぶつのこえ', emoji: '🐕', age: 'baby' },
-    { id: 'color-touch', title: 'いろいろタッチ', emoji: '🎨', age: 'baby' },
-    { id: 'peekaboo', title: 'いないいないばあ！', emoji: '🙈', age: 'baby' },
-    { id: 'music-maker', title: 'おとであそぼ', emoji: '🎹', age: 'baby' },
-    { id: 'memory-cards', title: 'きおくカード', emoji: '🃏', age: 'toddler' },
-    { id: 'shape-puzzle', title: 'かたちパズル', emoji: '🔷', age: 'toddler' },
-    { id: 'math-battle', title: 'さんすうバトル', emoji: '⚔️', age: 'kid' },
-    { id: 'hiragana-touch', title: 'ひらがなタッチ', emoji: 'あ', age: 'kid' },
-    { id: 'english-words', title: 'えいごでGO!', emoji: '🍎', age: 'kid' },
-    { id: 'kanji-quiz', title: '漢字クイズ', emoji: '漢', age: 'kid' },
-    { id: 'prefecture-master', title: '都道府県マスター', emoji: '🗾', age: 'kid' },
-    { id: 'speed-calc', title: '脳トレ計算', emoji: '🧮', age: 'adult' },
-    { id: 'kanji-reading', title: '難読漢字チャレンジ', emoji: '📖', age: 'adult' },
-  ];
+  // ゲーム一覧はGeroUtilsから取得（1箇所で管理）
+  const GAME_LIST = (window.GeroUtils && window.GeroUtils.GAME_LIST) || [];
 
   // 現在のゲームIDをパスから取得
   function getCurrentGameId() {
-    const path = window.location.pathname;
-    const match = path.match(/games\/([^/]+)/);
-    return match ? match[1] : null;
+    return (window.GeroUtils && window.GeroUtils.getCurrentGameId()) || (function() {
+      const match = window.location.pathname.match(/games\/([^/]+)/);
+      return match ? match[1] : null;
+    })();
   }
 
   // 年齢カテゴリを取得
@@ -51,7 +35,7 @@
   function getRecommendedGames() {
     const currentId = getCurrentGameId();
     const age = getAgeCategory();
-    const candidates = GAME_LIST.filter(g => g.id !== currentId && g.age !== 'baby');
+    const candidates = GAME_LIST.filter(g => g.id !== currentId);
     // 同じ年齢帯を優先
     const sameAge = candidates.filter(g => g.age === age);
     const others = candidates.filter(g => g.age !== age);
