@@ -139,6 +139,7 @@ h1 {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   width: min(95vw, 500px);
+  min-width: min-content;
   background: #0d0d18;
   border: 2px solid #2a2a3a;
   border-radius: 6px;
@@ -1007,7 +1008,12 @@ function renderBoard() {
   }
 
   const totalW = cols * (cellSize + 1) + 6;
-  document.getElementById('statusBar').style.width = Math.min(totalW, availW) + 'px';
+  const statusBarEl = document.getElementById('statusBar');
+  // いったん min-content で描画してコンテンツ必要幅を計測
+  statusBarEl.style.width = 'min-content';
+  const contentMinW = statusBarEl.offsetWidth;
+  const desiredW = Math.min(availW, Math.max(totalW, contentMinW));
+  statusBarEl.style.width = desiredW + 'px';
 }
 
 function onMouseDown(e) {
