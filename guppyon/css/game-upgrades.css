@@ -1,0 +1,166 @@
+/* ============================================
+   ゲロゲーロ学園 - ゲームアップグレード スタイル
+   game-upgrades.js から分離
+   ============================================ */
+
+.gero-upgrade-floating {
+  position: fixed;
+  left: 12px;
+  z-index: 190;
+  width: min(220px, calc(100vw - 24px));
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #2b2b4f;
+  box-shadow: 0 10px 24px rgba(20, 20, 50, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.gero-upgrade-floating-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #6c63a7;
+  margin-bottom: 4px;
+}
+
+.gero-upgrade-floating-value {
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.gero-upgrade-floating-best,
+.gero-upgrade-floating-note {
+  font-size: 0.78rem;
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+.gero-upgrade-stack {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 360px);
+  margin: 18px auto 0;
+}
+
+.gero-upgrade-card {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  text-align: center;
+}
+
+.gero-upgrade-card-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 6px;
+}
+
+.gero-upgrade-card-value {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.gero-upgrade-result {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 18px;
+}
+
+.gero-upgrade-banner {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255,213,79,0.18), rgba(255,255,255,0.08));
+  border: 1px solid rgba(255,213,79,0.28);
+  text-align: center;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.gero-upgrade-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gero-upgrade-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.14);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.gero-upgrade-toast-root {
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, calc(env(safe-area-inset-bottom) + 8px));
+  transform: translateX(-50%);
+  display: grid;
+  gap: 8px;
+  z-index: 240;
+  pointer-events: none;
+}
+
+.gero-upgrade-toast {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(46, 39, 89, 0.92);
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(20, 20, 50, 0.22);
+  animation: geroToastUp 1.8s ease forwards;
+}
+
+.gero-upgrade-toast.soft {
+  background: rgba(75, 63, 133, 0.92);
+}
+
+.gero-upgrade-presets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px auto 0;
+}
+
+.gero-upgrade-mini-btn {
+  border: none;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  color: inherit;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@keyframes geroToastUp {
+  0% { opacity: 0; transform: translateY(12px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+
+@media (max-width: 640px) {
+  .gero-upgrade-floating {
+    width: min(200px, calc(100vw - 24px));
+    padding: 8px 10px;
+  }
+
+  .gero-upgrade-card-value {
+    font-size: 0.88rem;
+  }
+
+  .gero-upgrade-mini-btn {
+    font-size: 0.74rem;
+  }
+}

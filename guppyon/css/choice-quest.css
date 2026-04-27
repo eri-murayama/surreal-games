@@ -1,0 +1,613 @@
+.choice-quest-body {
+  --quest-page-bg: linear-gradient(180deg, #eefaf5, #d8f4ea 42%, #bfe5ff);
+  --quest-panel-bg: rgba(255, 255, 255, 0.86);
+  --quest-shell-bg: rgba(255, 255, 255, 0.72);
+  --quest-card-bg: rgba(255, 255, 255, 0.94);
+  --quest-accent: #2aa66d;
+  --quest-accent-2: #ffd35f;
+  --quest-soft: rgba(42, 166, 109, 0.12);
+  --quest-text: #18372f;
+  --quest-muted: #4c6a60;
+  --quest-shadow: 0 22px 42px rgba(20, 69, 56, 0.16);
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--quest-text);
+  background: var(--quest-page-bg);
+  overflow-x: hidden;
+}
+
+.choice-quest-body::before,
+.choice-quest-body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.choice-quest-body::before {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.78) 0 26px, transparent 27px),
+    radial-gradient(circle at 84% 22%, rgba(255, 255, 255, 0.64) 0 18px, transparent 19px),
+    radial-gradient(circle at 12% 88%, rgba(255, 255, 255, 0.35) 0 72px, transparent 73px);
+}
+
+.choice-quest-body::after {
+  background:
+    radial-gradient(circle at 15% 86%, rgba(255, 211, 95, 0.2) 0 80px, transparent 81px),
+    radial-gradient(circle at 88% 14%, rgba(42, 166, 109, 0.16) 0 110px, transparent 111px);
+}
+
+.quest-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.quest-top,
+.quest-hud,
+.quest-panel {
+  background: var(--quest-shell-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 28px;
+  box-shadow: var(--quest-shadow);
+}
+
+.quest-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.quest-back,
+.quest-sound,
+.quest-mode,
+.quest-choice,
+.quest-result-btn {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.quest-back,
+.quest-sound {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: var(--quest-soft);
+  color: var(--quest-text);
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.quest-heading {
+  flex: 1;
+  text-align: center;
+}
+
+.quest-heading strong {
+  display: block;
+  font: 700 clamp(1.1rem, 4vw, 1.7rem) 'Hachi Maru Pop', cursive;
+  color: var(--quest-text);
+}
+
+.quest-heading span {
+  display: block;
+  margin-top: 3px;
+  color: var(--quest-muted);
+  font-size: 0.86rem;
+}
+
+.quest-hud {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px;
+}
+
+.quest-pill {
+  padding: 12px;
+  text-align: center;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.65);
+  font-weight: 700;
+}
+
+.quest-pill strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--quest-text);
+  font-size: 1.05rem;
+}
+
+.quest-pill.accent {
+  background: linear-gradient(135deg, var(--quest-accent-2), rgba(255, 255, 255, 0.86));
+}
+
+.quest-screen {
+  display: none;
+  margin-top: 16px;
+}
+
+.quest-screen.active {
+  display: block;
+}
+
+.quest-panel {
+  padding: 22px;
+}
+
+.quest-start-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+}
+
+.quest-hero {
+  text-align: center;
+  font-size: clamp(4rem, 12vw, 6rem);
+}
+
+.quest-start-title {
+  margin: 8px 0;
+  text-align: center;
+  font: 700 clamp(1.9rem, 5.8vw, 2.8rem) 'Hachi Maru Pop', cursive;
+  color: var(--quest-text);
+}
+
+.quest-start-copy {
+  max-width: 32rem;
+  margin: 0 auto 18px;
+  text-align: center;
+  line-height: 1.85;
+  color: var(--quest-muted);
+}
+
+.quest-chip-row,
+.quest-result-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.quest-chip {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+  color: var(--quest-text);
+}
+
+.quest-mode-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.quest-mode {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 24px;
+  color: white;
+  text-align: left;
+  box-shadow: 0 16px 28px rgba(24, 82, 66, 0.18);
+}
+
+.quest-mode strong,
+.quest-mode span {
+  display: block;
+}
+
+.quest-mode span {
+  margin-top: 4px;
+  opacity: 0.94;
+  line-height: 1.7;
+}
+
+.quest-mode.easy {
+  background: linear-gradient(135deg, var(--quest-accent), color-mix(in srgb, var(--quest-accent) 58%, #203d94));
+}
+
+.quest-mode.hard {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--quest-accent-2) 76%, #ff7a59), color-mix(in srgb, var(--quest-accent) 74%, #2e42a8));
+}
+
+.quest-guide,
+.quest-best {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.56));
+}
+
+.quest-guide strong,
+.quest-best strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.quest-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.quest-prompt {
+  flex: 1;
+  padding: 16px 18px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.76), color-mix(in srgb, var(--quest-soft) 85%, white));
+}
+
+.quest-prompt strong {
+  display: block;
+  font-size: clamp(1.18rem, 4vw, 1.55rem);
+  color: var(--quest-text);
+}
+
+.quest-prompt span {
+  display: block;
+  margin-top: 6px;
+  color: var(--quest-muted);
+  line-height: 1.7;
+}
+
+.quest-badge {
+  min-width: 120px;
+  padding: 12px 16px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 900;
+  color: #6a4a00;
+  background: linear-gradient(135deg, var(--quest-accent-2), rgba(255, 255, 255, 0.84));
+}
+
+.quest-scene {
+  margin-bottom: 16px;
+  padding: 22px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.68));
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  box-shadow: inset 0 -10px 24px rgba(255, 255, 255, 0.35);
+}
+
+.quest-scene-inner {
+  width: 100%;
+}
+
+.quest-scene-art {
+  font-size: clamp(3.8rem, 12vw, 5.4rem);
+  line-height: 1.05;
+}
+
+.quest-scene-art.silhouette {
+  filter: brightness(0) saturate(0) opacity(0.84);
+}
+
+.quest-scene-title {
+  margin-top: 10px;
+  font: 700 clamp(1.2rem, 4vw, 1.5rem) 'Hachi Maru Pop', cursive;
+  color: var(--quest-text);
+}
+
+.quest-scene-text {
+  margin-top: 8px;
+  color: var(--quest-muted);
+  line-height: 1.8;
+}
+
+.quest-token-row {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quest-token {
+  min-width: 64px;
+  padding: 12px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: clamp(1.6rem, 4vw, 2rem);
+}
+
+.quest-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.quest-choice {
+  min-height: 108px;
+  padding: 16px 14px;
+  border-radius: 24px;
+  background: var(--quest-card-bg);
+  color: var(--quest-text);
+  box-shadow: 0 14px 24px rgba(20, 69, 56, 0.12);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.quest-choice:hover,
+.quest-back:hover,
+.quest-sound:hover,
+.quest-mode:hover,
+.quest-result-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.02);
+}
+
+.quest-choice[disabled] {
+  cursor: default;
+}
+
+.quest-choice.correct {
+  background: linear-gradient(135deg, var(--quest-accent), color-mix(in srgb, var(--quest-accent) 58%, #2d7f52));
+  color: white;
+}
+
+.quest-choice.wrong {
+  background: linear-gradient(135deg, #ffb9b9, #ff7d7d);
+  color: #5f1919;
+}
+
+.choice-emoji {
+  display: block;
+  line-height: 1;
+  font-size: clamp(2rem, 6vw, 2.6rem);
+}
+
+.choice-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.choice-hint {
+  display: block;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.quest-feedback {
+  min-height: 62px;
+  display: grid;
+  place-items: center;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 22px;
+  text-align: center;
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.quest-feedback.good {
+  background: linear-gradient(135deg, rgba(77, 217, 142, 0.22), rgba(255, 255, 255, 0.86));
+  color: #15583f;
+}
+
+.quest-feedback.bad {
+  background: linear-gradient(135deg, rgba(255, 168, 168, 0.25), rgba(255, 255, 255, 0.86));
+  color: #7a2020;
+}
+
+.quest-result {
+  text-align: center;
+}
+
+.quest-result-emoji {
+  font-size: clamp(3.8rem, 11vw, 5.6rem);
+}
+
+.quest-result h2 {
+  margin: 8px 0;
+  font: 700 clamp(1.7rem, 5vw, 2.4rem) 'Hachi Maru Pop', cursive;
+  color: var(--quest-text);
+}
+
+.quest-result p {
+  max-width: 32rem;
+  margin: 0 auto 16px;
+  color: var(--quest-muted);
+  line-height: 1.85;
+}
+
+.quest-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #5c4200;
+  background: linear-gradient(135deg, var(--quest-accent-2), rgba(255, 255, 255, 0.84));
+  margin-bottom: 16px;
+}
+
+.quest-stars {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.quest-stars span {
+  filter: saturate(0.25);
+  transform: scale(0.96);
+}
+
+.quest-stars span.on {
+  filter: none;
+  transform: scale(1);
+}
+
+.quest-banner {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  font-weight: 900;
+  color: #5e4400;
+  background: linear-gradient(135deg, rgba(255, 211, 95, 0.56), rgba(255, 255, 255, 0.88));
+}
+
+.quest-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.quest-stat {
+  padding: 14px 12px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.quest-stat strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--quest-text);
+  font-size: 1.05rem;
+}
+
+.quest-result-btn {
+  min-width: 190px;
+  padding: 14px 20px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 900;
+  color: white;
+  background: linear-gradient(135deg, var(--quest-accent), color-mix(in srgb, var(--quest-accent) 58%, #203d94));
+}
+
+.quest-result-btn.alt {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--quest-accent-2) 72%, #ff8d6b), color-mix(in srgb, var(--quest-accent) 74%, #334baf));
+}
+
+.quest-clock-face {
+  position: relative;
+  width: min(240px, 58vw);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  margin: 0 auto;
+  background: radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.74));
+  border: 8px solid rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 30px rgba(20, 69, 56, 0.14);
+}
+
+.quest-clock-hand,
+.quest-clock-center,
+.quest-clock-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.quest-clock-hand {
+  transform-origin: 50% 100%;
+  border-radius: 999px;
+}
+
+.quest-clock-hand.hour {
+  width: 10px;
+  height: 68px;
+  margin-left: -5px;
+  margin-top: -68px;
+  background: var(--quest-text);
+}
+
+.quest-clock-hand.minute {
+  width: 6px;
+  height: 92px;
+  margin-left: -3px;
+  margin-top: -92px;
+  background: color-mix(in srgb, var(--quest-accent) 72%, #18372f);
+}
+
+.quest-clock-center {
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--quest-accent);
+}
+
+.quest-clock-mark {
+  transform: rotate(var(--angle)) translateY(calc(-1 * min(104px, 25vw))) rotate(calc(-1 * var(--angle)));
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: var(--quest-text);
+}
+
+.quest-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.84);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.choice-stack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1.1;
+  font-size: clamp(1.55rem, 4vw, 1.95rem);
+}
+
+@media (max-width: 820px) {
+  .quest-start-grid,
+  .quest-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .quest-shell {
+    padding: 12px;
+  }
+
+  .quest-hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quest-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .choice-quest-body *,
+  .choice-quest-body *::before,
+  .choice-quest-body *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
