@@ -58,33 +58,98 @@
     }
 
     .hero {
-      padding: 130px 32px 70px;
+      position: relative;
+      padding: 110px 32px 60px;
       max-width: 1180px; margin: 0 auto;
-      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center;
+      text-align: center;
+      overflow: hidden;
     }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.4rem 1rem; border-radius: 999px;
-      background: var(--soft); color: var(--mint-deep);
-      font-family: 'Fredoka', sans-serif; font-size: 0.82rem; font-weight: 600;
+    .hero::before, .hero::after {
+      content: ''; position: absolute; pointer-events: none; opacity: 0.7;
     }
+    .hero::before {
+      left: -20px; top: 180px; width: 200px; height: 200px;
+      background:
+        radial-gradient(circle, var(--soft) 30%, transparent 31%) 0 0/40px 40px;
+    }
+    .hero::after {
+      right: -20px; top: 220px; width: 200px; height: 200px;
+      background:
+        radial-gradient(circle, rgba(146, 197, 221, 0.4) 30%, transparent 31%) 0 0/40px 40px;
+    }
+    .hero-doodle {
+      position: absolute;
+      font-size: 4rem; pointer-events: none;
+    }
+    .hero-doodle.tree-l { top: 200px; left: 60px; transform: rotate(-8deg); }
+    .hero-doodle.tree-r { top: 220px; right: 60px; transform: rotate(8deg); }
+    .hero-doodle.pencil { bottom: 80px; left: 8%; font-size: 2.4rem; transform: rotate(-25deg); opacity: 0.7; }
+    .hero-doodle.book { bottom: 80px; right: 8%; font-size: 2.4rem; transform: rotate(15deg); opacity: 0.7; }
+
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1.2rem; border-radius: 999px;
+      background: #fff; border: 2px dashed var(--mint);
+      color: var(--mint-deep);
+      font-family: 'Fredoka', sans-serif; font-size: 0.86rem; font-weight: 600;
+      box-shadow: 0 6px 14px rgba(78, 169, 154, 0.14);
+      position: relative; z-index: 2;
+    }
+    .hero-kicker::before { content: '🌱'; }
+
     .hero h1 {
-      font-size: clamp(2.2rem, 4.6vw, 3.6rem); font-weight: 700; line-height: 1.4;
-      margin: 16px 0 18px; letter-spacing: -0.005em;
+      position: relative; z-index: 2;
+      font-size: clamp(2.2rem, 5.2vw, 4.2rem);
+      font-weight: 700; line-height: 1.45;
+      margin: 26px 0 18px;
+      letter-spacing: -0.005em;
     }
-    .hero h1 em { font-style: normal; color: var(--mint-deep); position: relative; }
-    .hero h1 em::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 6px; background: rgba(127, 200, 184, 0.32); border-radius: 4px; z-index: -1; }
-    .hero-lead { color: var(--muted); max-width: 460px; font-size: 0.96rem; }
-    .hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .hero h1 em { font-style: normal; color: var(--mint-deep); position: relative; padding: 0 0.18em; }
+    .hero h1 em::before {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 6px; height: 14px;
+      background: rgba(127, 200, 184, 0.42); border-radius: 4px; z-index: -1;
+      transform: skew(-6deg);
+    }
+    .hero h1 em.sky { color: var(--sky-deep); }
+    .hero h1 em.sky::before { background: rgba(146, 197, 221, 0.42); }
+
+    .hero-lead {
+      color: var(--muted); font-size: 1rem; max-width: 580px; margin: 0 auto;
+      position: relative; z-index: 2;
+    }
+
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; max-width: 880px; margin: 40px auto 0;
+      position: relative; z-index: 2;
+    }
+    .stat-card {
+      padding: 22px 16px; border-radius: 22px; background: #fff;
+      border: 2px solid var(--soft);
+      box-shadow: 0 8px 18px rgba(78, 169, 154, 0.1);
+    }
+    .stat-card:nth-child(2) { border-color: rgba(146, 197, 221, 0.4); }
+    .stat-card:nth-child(3) { border-color: #ffe9b3; }
+    .stat-card:nth-child(4) { border-color: #ffd9e3; }
+    .stat-card .num {
+      font-family: 'Fredoka', sans-serif; font-size: 2rem; font-weight: 700;
+      color: var(--mint-deep); line-height: 1;
+    }
+    .stat-card:nth-child(2) .num { color: var(--sky-deep); }
+    .stat-card:nth-child(3) .num { color: #d49a1a; }
+    .stat-card:nth-child(4) .num { color: #d4669a; }
+    .stat-card .num small { font-size: 0.9rem; margin-left: 2px; }
+    .stat-card .label { font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+
+    .hero-actions { display: inline-flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 2; }
     .btn-primary, .btn-secondary {
       display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.95rem 1.6rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
+      padding: 0.95rem 1.7rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
       transition: transform .25s;
     }
     .btn-primary { background: linear-gradient(135deg, var(--mint), var(--mint-deep)); color: #fff; box-shadow: 0 12px 24px rgba(78, 169, 154, 0.28); }
     .btn-secondary { background: #fff; border: 2px solid var(--mint); color: var(--mint-deep); }
     .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px); }
-    .hero-image-wrap img { aspect-ratio: 4/5; object-fit: cover; border-radius: 36px; box-shadow: 0 24px 44px rgba(78, 169, 154, 0.18); }
 
     .section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
     .section-head { text-align: center; margin-bottom: 40px; }
@@ -172,7 +237,13 @@
     @media (max-width: 880px) {
       .nav { padding: 14px 18px; }
       .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .hero { padding: 100px 22px 50px; }
+      .hero-doodle.tree-l, .hero-doodle.tree-r { font-size: 2.4rem; top: 130px; }
+      .hero-doodle.tree-l { left: 8px; }
+      .hero-doodle.tree-r { right: 8px; }
+      .hero-doodle.pencil, .hero-doodle.book { font-size: 1.6rem; }
+      .hero::before, .hero::after { display: none; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
       .point-grid, .course-grid, .voice-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -197,17 +268,25 @@
   </nav>
 
   <header class="hero">
-    <div>
-      <span class="hero-eyebrow">🌱 Learning together</span>
-      <h1>「<em>わかった</em>」を、<br>毎日のよろこびに。</h1>
-      <p class="hero-lead">小学生・中学生向けの個別指導塾。一人ひとりのペースに合わせて、わかるまで何度でも一緒に進めます。</p>
-      <div class="hero-actions">
-        <a href="#contact" class="btn-primary">無料体験を申し込む</a>
-        <a href="#course" class="btn-secondary">コースを見る</a>
-      </div>
+    <span class="hero-doodle tree-l" aria-hidden="true">🌳</span>
+    <span class="hero-doodle tree-r" aria-hidden="true">🌲</span>
+    <span class="hero-doodle pencil" aria-hidden="true">✏️</span>
+    <span class="hero-doodle book" aria-hidden="true">📖</span>
+
+    <span class="hero-kicker">小・中学生のための個別指導</span>
+    <h1>「<em>わかった！</em>」を、<br>毎日の<em class="sky">よろこび</em>にする塾。</h1>
+    <p class="hero-lead">一人ひとりのペースに合わせて、わかるまで何度でも一緒に進めます。</p>
+
+    <div class="hero-stats">
+      <div class="stat-card"><div class="num">15<small>年</small></div><div class="label">地域での実績</div></div>
+      <div class="stat-card"><div class="num">98<small>%</small></div><div class="label">第一志望合格率</div></div>
+      <div class="stat-card"><div class="num">1<small>:</small>2</div><div class="label">少人数制</div></div>
+      <div class="stat-card"><div class="num">320<small>名</small></div><div class="label">在籍生徒数</div></div>
     </div>
-    <div class="hero-image-wrap">
-      <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=1000&fit=crop" alt="勉強する子ども" loading="lazy">
+
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">無料体験を申し込む</a>
+      <a href="#course" class="btn-secondary">コースを見る</a>
     </div>
   </header>
 

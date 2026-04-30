@@ -56,25 +56,77 @@
     }
 
     .hero {
-      padding: 130px 32px 60px;
+      position: relative;
+      padding: 110px 32px 80px;
       max-width: 1180px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;
+      text-align: center;
+      overflow: visible;
     }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.4rem 1rem; border-radius: 999px;
-      background: var(--soft); color: var(--orange-deep);
-      font-family: 'Fredoka', sans-serif; font-size: 0.82rem; font-weight: 600;
+    .hero-sun {
+      position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+      width: 580px; height: 580px; border-radius: 50%;
+      background: radial-gradient(circle, var(--soft) 0%, rgba(255, 245, 220, 0.4) 50%, transparent 75%);
+      pointer-events: none;
+      z-index: 0;
     }
+    .hero-sun::before {
+      content: ''; position: absolute; inset: -40px; border-radius: 50%;
+      background:
+        repeating-conic-gradient(from 0deg, transparent 0deg 20deg, rgba(255, 200, 87, 0.18) 20deg 24deg);
+      mask: radial-gradient(circle, transparent 36%, black 50%);
+      animation: spin 60s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hero-photo {
+      position: relative; z-index: 2;
+      width: 360px; height: 360px; margin: 30px auto 0;
+      border-radius: 50%; overflow: hidden;
+      border: 10px solid #fff;
+      box-shadow: 0 28px 50px rgba(231, 107, 74, 0.28);
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .hero-bubble {
+      position: absolute; z-index: 3;
+      background: #fff;
+      padding: 14px 22px; border-radius: 26px;
+      box-shadow: 0 12px 24px rgba(231, 107, 74, 0.18);
+      font-family: 'Fredoka', 'Zen Maru Gothic', sans-serif;
+      font-weight: 600;
+    }
+    .hero-bubble::after {
+      content: ''; position: absolute;
+      width: 18px; height: 18px;
+      background: #fff; transform: rotate(45deg);
+    }
+    .hero-bubble-1 { top: 110px; left: 14%; font-size: 0.9rem; color: var(--orange-deep); transform: rotate(-4deg); }
+    .hero-bubble-1::after { bottom: -6px; right: 30px; }
+    .hero-bubble-2 { top: 80px; right: 12%; font-size: 0.9rem; color: var(--yellow-deep); transform: rotate(3deg); }
+    .hero-bubble-2::after { bottom: -6px; left: 30px; }
+    .hero-bubble-3 { bottom: -10px; left: 18%; font-size: 0.85rem; color: var(--text); transform: rotate(-3deg); }
+    .hero-bubble-3::after { top: -6px; right: 30px; }
+    .hero-paw {
+      position: absolute; font-size: 2rem; opacity: 0.5;
+    }
+    .hero-paw-1 { top: 220px; left: 8%; transform: rotate(-15deg); }
+    .hero-paw-2 { top: 300px; right: 9%; transform: rotate(20deg); }
+    .hero-paw-3 { bottom: 50px; right: 22%; transform: rotate(-10deg); }
+
+    .hero-title-wrap { position: relative; z-index: 2; margin-top: 40px; }
     .hero h1 {
       font-family: 'Fredoka', 'Zen Maru Gothic', sans-serif;
-      font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 700;
-      line-height: 1.25; margin: 14px 0 16px;
-      color: var(--text);
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem); font-weight: 700;
+      line-height: 1.2; color: var(--text);
+      display: inline-block;
+      background: #fff;
+      padding: 16px 36px;
+      border-radius: 60px;
+      box-shadow: 0 16px 32px rgba(231, 107, 74, 0.16);
     }
     .hero h1 em { font-style: normal; color: var(--orange-deep); }
-    .hero-lead { color: var(--muted); max-width: 460px; font-size: 0.95rem; }
-    .hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .hero-lead { color: var(--muted); max-width: 540px; margin: 22px auto 0; font-size: 0.95rem; position: relative; z-index: 2; }
+    .hero-actions { display: inline-flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 2; }
     .btn-primary, .btn-secondary {
       display: inline-flex; align-items: center; gap: 0.4rem;
       padding: 0.95rem 1.7rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
@@ -86,14 +138,11 @@
     }
     .btn-primary::after { content: '🐾'; }
     .btn-secondary { background: #fff; border: 2px solid var(--yellow); color: var(--orange-deep); }
-    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px) rotate(-1deg); }
-    .hero-image-wrap { position: relative; }
-    .hero-image-wrap img { aspect-ratio: 1/1; object-fit: cover; border-radius: 50%; box-shadow: 0 24px 48px rgba(231, 107, 74, 0.22); border: 8px solid #fff; }
-    .hero-image-wrap::after {
-      content: '🦴'; position: absolute; bottom: 10px; right: -10px;
-      width: 80px; height: 80px; background: #fff; border-radius: 50%;
-      display: grid; place-items: center; font-size: 2rem;
-      box-shadow: 0 12px 20px rgba(231, 107, 74, 0.18);
+    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px) rotate(-2deg); }
+
+    .wave-divider {
+      width: 100%; height: 60px; display: block;
+      fill: var(--soft);
     }
 
     .section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
@@ -156,7 +205,14 @@
     @media (max-width: 880px) {
       .nav { padding: 14px 18px; }
       .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .hero { padding-top: 100px; }
+      .hero-sun { width: 380px; height: 380px; top: 100px; }
+      .hero-photo { width: 240px; height: 240px; border-width: 6px; }
+      .hero-bubble-1 { left: 4%; font-size: 0.78rem; padding: 10px 14px; top: 130px; }
+      .hero-bubble-2 { right: 4%; font-size: 0.78rem; padding: 10px 14px; top: 100px; }
+      .hero-bubble-3 { font-size: 0.74rem; left: 8%; }
+      .hero-paw { font-size: 1.4rem; }
+      .hero h1 { font-size: 1.8rem; padding: 12px 22px; }
       .course-grid { grid-template-columns: 1fr; }
       .gallery { grid-template-columns: repeat(2, 1fr); }
       .info-grid { grid-template-columns: 1fr; }
@@ -183,19 +239,28 @@
   </nav>
 
   <header class="hero">
-    <div>
-      <span class="hero-eyebrow">🐾 Trimming Salon</span>
-      <h1>うちの子の<br><em>もふもふ</em>を、<br>もっとかわいく。</h1>
-      <p class="hero-lead">経験豊富なトリマーが、わんちゃん一頭ずつに合わせて丁寧にカット。広いケージとリラックス空間で、はじめてのコでも安心です。</p>
-      <div class="hero-actions">
-        <a href="#course" class="btn-primary">コースを選ぶ</a>
-        <a href="#info" class="btn-secondary">アクセス</a>
-      </div>
-    </div>
-    <div class="hero-image-wrap">
+    <div class="hero-sun"></div>
+    <span class="hero-bubble hero-bubble-1">🐶 はじめてさん大歓迎！</span>
+    <span class="hero-bubble hero-bubble-2">✂️ 当日予約OK</span>
+    <span class="hero-bubble hero-bubble-3">🦴 おやつ付き</span>
+    <span class="hero-paw hero-paw-1">🐾</span>
+    <span class="hero-paw hero-paw-2">🐾</span>
+    <span class="hero-paw hero-paw-3">🐾</span>
+    <div class="hero-photo">
       <img src="https://images.unsplash.com/photo-1591946614720-90a587da4a36?w=800&h=800&fit=crop" alt="トリミング中のわんちゃん" loading="lazy">
     </div>
+    <div class="hero-title-wrap">
+      <h1>うちの子の <em>もふもふ</em>、もっと かわいく。</h1>
+    </div>
+    <p class="hero-lead">経験豊富なトリマーが、わんちゃん一頭ずつに合わせて丁寧にカット。広いケージとリラックス空間で、はじめてのコでも安心です。</p>
+    <div class="hero-actions">
+      <a href="#course" class="btn-primary">コースを選ぶ</a>
+      <a href="#info" class="btn-secondary">アクセス</a>
+    </div>
   </header>
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,30 Q180,60 360,30 T720,30 T1080,30 T1440,30 V60 H0 Z"/>
+  </svg>
 
   <section class="section" id="course">
     <div class="section-head">

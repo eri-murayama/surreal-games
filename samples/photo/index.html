@@ -50,38 +50,84 @@
     }
 
     .hero {
-      padding: 120px 0 80px;
-      position: relative; overflow: hidden;
+      position: relative;
+      padding: 92px 0 0;
+      overflow: hidden;
     }
-    .hero-inner {
-      max-width: 1180px; margin: 0 auto; padding: 0 32px;
-      display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: center;
-    }
-    .hero-eyebrow {
+    .hero-rail {
+      position: absolute; left: 32px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left top;
       font-family: 'Cormorant Garamond', serif; font-style: italic;
-      color: var(--rose-gold); font-size: 1.1rem; letter-spacing: 0.1em;
+      letter-spacing: 0.4em; color: var(--mocha-deep); font-size: 0.78rem;
+      white-space: nowrap;
+      z-index: 5;
     }
-    .hero h1 {
+    .hero-meta-right {
+      position: absolute; right: 32px; top: 120px;
+      font-family: 'Cormorant Garamond', serif;
+      letter-spacing: 0.3em; font-size: 0.74rem; color: var(--muted);
+      text-align: right; line-height: 2;
+      z-index: 5;
+    }
+    .hero-meta-right strong { display: block; font-style: italic; color: var(--mocha-deep); font-size: 0.9rem; }
+
+    .hero-track {
+      display: flex; gap: 14px;
+      padding: 0 80px;
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .hero-track::-webkit-scrollbar { display: none; }
+    .hero-track > .frame {
+      flex: 0 0 auto;
+      scroll-snap-align: center;
+      width: 480px; height: 600px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-track > .frame img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-track > .frame:nth-child(2) { width: 360px; }
+    .hero-track > .frame:nth-child(4) { width: 360px; }
+    .hero-track > .frame .frame-cap {
+      position: absolute; bottom: 12px; left: 14px;
+      color: #fff; font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 0.84rem; letter-spacing: 0.1em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
+
+    .hero-title-wrap {
+      max-width: 1180px; margin: -120px auto 0; padding: 0 80px;
+      position: relative; z-index: 4;
+    }
+    .hero-title-wrap h1 {
       font-family: 'Cormorant Garamond', serif; font-weight: 400;
-      font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.1;
-      margin: 16px 0 18px; letter-spacing: 0.02em;
+      font-size: clamp(3rem, 8vw, 6.4rem); line-height: 0.95;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      mix-blend-mode: difference; color: #fff;
     }
-    .hero h1 em { font-style: italic; }
-    .hero-lead { color: var(--muted); max-width: 440px; font-size: 0.95rem; }
-    .hero-actions { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+    .hero-title-wrap h1 em { font-style: italic; }
+    .hero-bottom {
+      max-width: 1180px; margin: 30px auto 60px; padding: 0 80px;
+      display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end;
+    }
+    .hero-tagline { color: var(--muted); font-size: 0.92rem; max-width: 460px; line-height: 1.95; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
     .btn-primary, .btn-secondary {
       display: inline-flex; align-items: center; padding: 1rem 1.8rem;
-      font-weight: 700; font-size: 0.86rem; letter-spacing: 0.12em;
+      font-weight: 700; font-size: 0.84rem; letter-spacing: 0.18em;
       text-transform: uppercase; transition: all .25s;
     }
     .btn-primary { background: var(--mocha-deep); color: #fff; }
-    .btn-secondary { border: 1.5px solid var(--mocha-deep); color: var(--mocha-deep); }
+    .btn-secondary { border: 1px solid var(--mocha-deep); color: var(--mocha-deep); }
     .btn-primary:hover { background: var(--text); }
     .btn-secondary:hover { background: var(--mocha-deep); color: #fff; }
-    .hero-image-stack { position: relative; height: 560px; }
-    .hero-image-stack img { position: absolute; object-fit: cover; }
-    .hero-image-stack img:nth-child(1) { width: 65%; aspect-ratio: 4/5; top: 0; left: 0; }
-    .hero-image-stack img:nth-child(2) { width: 50%; aspect-ratio: 1/1; bottom: 0; right: 0; }
+    .scroll-hint {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--muted); font-size: 0.82rem; letter-spacing: 0.2em;
+      margin-top: 12px;
+    }
+    .scroll-hint::before { content: '←'; color: var(--rose-gold); }
 
     .section { padding: 90px 32px; max-width: 1180px; margin: 0 auto; }
     .section-head { text-align: center; margin-bottom: 50px; }
@@ -138,8 +184,13 @@
     @media (max-width: 880px) {
       .nav { padding: 14px 18px; }
       .nav-links { display: none; }
-      .hero-inner { grid-template-columns: 1fr; }
-      .hero-image-stack { height: 480px; }
+      .hero-rail { display: none; }
+      .hero-meta-right { font-size: 0.66rem; right: 16px; top: 90px; }
+      .hero-track { padding: 0 16px; }
+      .hero-track > .frame { width: 280px !important; height: 380px; }
+      .hero-track > .frame:nth-child(2), .hero-track > .frame:nth-child(4) { width: 220px !important; }
+      .hero-title-wrap { margin-top: -70px; padding: 0 22px; }
+      .hero-bottom { grid-template-columns: 1fr; padding: 0 22px; }
       .plan-grid { grid-template-columns: 1fr; }
       .gallery { grid-template-columns: repeat(2, 1fr); }
       .flow { grid-template-columns: repeat(2, 1fr); }
@@ -165,19 +216,41 @@
   </nav>
 
   <header class="hero">
-    <div class="hero-inner">
+    <div class="hero-rail">EST. 2018 — Family Photo Studio</div>
+    <div class="hero-meta-right"><strong>STUDIO ICONA</strong>NO.014<br>SPRING 2026</div>
+    <div class="hero-track">
+      <figure class="frame">
+        <img src="https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?w=900&h=1200&fit=crop" alt="" loading="lazy">
+        <figcaption class="frame-cap">— family</figcaption>
+      </figure>
+      <figure class="frame">
+        <img src="https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=700&h=900&fit=crop" alt="" loading="lazy">
+        <figcaption class="frame-cap">— maternity</figcaption>
+      </figure>
+      <figure class="frame">
+        <img src="https://images.unsplash.com/photo-1564429097439-e4d20367a6c0?w=900&h=1200&fit=crop" alt="" loading="lazy">
+        <figcaption class="frame-cap">— newborn</figcaption>
+      </figure>
+      <figure class="frame">
+        <img src="https://images.unsplash.com/photo-1542385262-d3aac6196ec0?w=700&h=900&fit=crop" alt="" loading="lazy">
+        <figcaption class="frame-cap">— shichigosan</figcaption>
+      </figure>
+      <figure class="frame">
+        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=900&h=1200&fit=crop" alt="" loading="lazy">
+        <figcaption class="frame-cap">— okuizome</figcaption>
+      </figure>
+    </div>
+    <div class="hero-title-wrap">
+      <h1>Your <em>everyday</em><br>moments.</h1>
+    </div>
+    <div class="hero-bottom">
       <div>
-        <span class="hero-eyebrow">— Family Photo Studio</span>
-        <h1>Your<br><em>everyday</em><br>moments.</h1>
-        <p class="hero-lead">家族写真・マタニティ・ニューボーン・お宮参り・七五三。何気ない日常を、丁寧に切り取るプライベートスタジオです。</p>
-        <div class="hero-actions">
-          <a href="#contact" class="btn-primary">Book a session</a>
-          <a href="#gallery" class="btn-secondary">View Gallery</a>
-        </div>
+        <p class="hero-tagline">家族写真・マタニティ・ニューボーン・お宮参り・七五三。何気ない日常を、丁寧に切り取るプライベートスタジオ。</p>
+        <span class="scroll-hint">SLIDE THE FRAMES</span>
       </div>
-      <div class="hero-image-stack">
-        <img src="https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?w=600&h=750&fit=crop" alt="" loading="lazy">
-        <img src="https://images.unsplash.com/photo-1564429097439-e4d20367a6c0?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Book a session</a>
+        <a href="#gallery" class="btn-secondary">View Gallery</a>
       </div>
     </div>
   </header>

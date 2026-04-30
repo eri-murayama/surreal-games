@@ -54,22 +54,44 @@
     .nav-links a:hover { color: var(--pink-deep); }
 
     .hero {
-      padding: 130px 32px 60px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
-      max-width: 1180px; margin: 0 auto; align-items: center;
+      position: relative;
+      padding: 140px 32px 80px;
+      max-width: 1180px; margin: 0 auto;
+      text-align: center;
+      min-height: 720px;
     }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.4rem 1rem; border-radius: 999px;
-      background: #fff; border: 2px solid var(--pink-soft);
+    .hero-issue {
+      display: inline-flex; gap: 16px; align-items: center;
+      font-family: 'Cormorant Garamond', serif;
+      letter-spacing: 0.3em; font-size: 0.78rem; color: var(--pink-deep);
+      margin-bottom: 24px;
+    }
+    .hero-issue::before, .hero-issue::after { content: '— — —'; opacity: 0.4; letter-spacing: 0.1em; }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(3.4rem, 9vw, 7rem);
+      line-height: 0.95;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      position: relative; z-index: 2;
+    }
+    .hero h1 span.brand-mark {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: normal; font-weight: 600;
+      font-size: 0.86rem; letter-spacing: 0.45em;
       color: var(--pink-deep);
-      font-size: 0.78rem; font-weight: 700;
+      margin-bottom: 18px;
     }
-    .hero-eyebrow::before { content: '✿'; }
-    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.6rem, 5vw, 4rem); line-height: 1.1; color: var(--text); margin: 18px 0 12px; font-style: italic; }
-    .hero h1 span { display: block; font-family: 'Zen Maru Gothic', sans-serif; font-style: normal; font-size: 0.9rem; letter-spacing: 0.2em; color: var(--pink-deep); margin-top: 12px; }
-    .hero p { color: var(--muted); font-size: 0.96rem; max-width: 480px; }
-    .hero-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+    .hero h1 span.brand-mark::before, .hero h1 span.brand-mark::after { content: '✿'; margin: 0 14px; }
+    .hero h1 .accent { display: block; font-style: normal; font-family: 'Zen Maru Gothic', sans-serif; font-size: 0.95rem; font-weight: 500; letter-spacing: 0.3em; color: var(--pink-deep); margin-top: 20px; }
+    .hero-tagline {
+      max-width: 480px; margin: 28px auto 0;
+      color: var(--muted); font-size: 0.95rem; line-height: 1.95;
+      position: relative; z-index: 2;
+    }
+    .hero-actions { display: inline-flex; gap: 12px; margin-top: 32px; position: relative; z-index: 2; }
     .btn-primary, .btn-secondary {
       display: inline-flex; align-items: center; gap: 0.4rem;
       padding: 0.9rem 1.6rem; border-radius: 999px; font-weight: 700; font-size: 0.92rem;
@@ -79,12 +101,34 @@
     .btn-secondary { background: #fff; border: 2px solid var(--pink-soft); color: var(--pink-deep); }
     .btn-primary::after { content: '♡'; }
     .btn-primary:hover, .btn-secondary:hover { transform: translateY(-3px) rotate(-1deg); }
-    .hero-image { position: relative; }
-    .hero-image img { border-radius: 32px; aspect-ratio: 4/5; object-fit: cover; box-shadow: 0 24px 48px rgba(226, 106, 147, 0.22); }
-    .hero-image::before {
-      content: ''; position: absolute; top: -20px; right: -20px; width: 120px; height: 120px;
-      background: var(--cream-deep); border-radius: 50%; z-index: -1;
+
+    .hero-collage { position: absolute; inset: 0; pointer-events: none; }
+    .hero-collage img {
+      position: absolute;
+      width: 200px; aspect-ratio: 1/1; object-fit: cover;
+      border: 8px solid #fff;
+      box-shadow: 0 18px 36px rgba(226, 106, 147, 0.18);
+      border-radius: 12px;
     }
+    .hero-collage img:nth-child(1) { top: 80px; left: 6%; transform: rotate(-8deg); }
+    .hero-collage img:nth-child(2) { top: 130px; right: 4%; transform: rotate(7deg); width: 180px; }
+    .hero-collage img:nth-child(3) { bottom: 80px; left: 10%; transform: rotate(5deg); width: 160px; }
+    .hero-collage img:nth-child(4) { bottom: 50px; right: 8%; transform: rotate(-6deg); width: 180px; }
+    .hero-collage .label {
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--pink-deep);
+      font-size: 0.84rem;
+      background: #fff;
+      padding: 4px 12px;
+      border-radius: 999px;
+      box-shadow: 0 4px 10px rgba(226, 106, 147, 0.18);
+    }
+    .hero-collage .label:nth-of-type(1) { top: 50px; left: 22%; transform: rotate(-5deg); }
+    .hero-collage .label:nth-of-type(2) { top: 90px; right: 20%; transform: rotate(4deg); }
+    .hero-collage .label:nth-of-type(3) { bottom: 200px; left: 18%; transform: rotate(3deg); }
+    .hero-collage .label:nth-of-type(4) { bottom: 240px; right: 14%; transform: rotate(-3deg); }
 
     .section { padding: 70px 32px; max-width: 1180px; margin: 0 auto; }
     .section-head { text-align: center; margin-bottom: 40px; }
@@ -134,8 +178,13 @@
     @media (max-width: 880px) {
       .nav { padding: 14px 18px; }
       .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; padding-top: 100px; gap: 30px; }
-      .hero-image::before { display: none; }
+      .hero { padding: 110px 22px 60px; min-height: auto; }
+      .hero-collage img { width: 90px !important; }
+      .hero-collage img:nth-child(1) { top: 90px; left: -10px; }
+      .hero-collage img:nth-child(2) { top: 100px; right: -10px; }
+      .hero-collage img:nth-child(3), .hero-collage img:nth-child(4) { display: none; }
+      .hero-collage .label { font-size: 0.7rem; padding: 2px 8px; }
+      .hero-collage .label:nth-of-type(3), .hero-collage .label:nth-of-type(4) { display: none; }
       .menu-grid, .feature-grid, .info-grid { grid-template-columns: 1fr; }
       .info-section { margin: 40px 16px; padding: 40px 22px; }
     }
@@ -159,17 +208,26 @@
   </nav>
 
   <header class="hero">
-    <div>
-      <span class="hero-eyebrow">Pâtisserie since 2024</span>
-      <h1>Sweet little<br>moments<span>季節のフルーツと、小さなしあわせ。</span></h1>
-      <p>季節ごとのフルーツを主役にしたケーキと焼き菓子の小さなお店。今日のおやつや、誰かへの贈り物に。</p>
-      <div class="hero-actions">
-        <a href="#menu" class="btn-primary">メニューを見る</a>
-        <a href="#info" class="btn-secondary">店舗情報</a>
-      </div>
+    <div class="hero-collage">
+      <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=400&h=400&fit=crop" alt="" loading="lazy">
+      <span class="label">No.04 — Spring</span>
+      <span class="label">Fraise ¥780</span>
+      <span class="label">Macaron ¥1,800</span>
+      <span class="label">焼きたて毎朝6時〜</span>
     </div>
-    <div class="hero-image">
-      <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=1000&fit=crop" alt="ピンクのケーキ" loading="lazy">
+    <div class="hero-issue">VOL. 04 / SPRING 2026</div>
+    <h1>
+      <span class="brand-mark">Pâtisserie fleur</span>
+      Sweet little<br>moments.
+      <span class="accent">季 節 と、 小 さ な し あ わ せ。</span>
+    </h1>
+    <p class="hero-tagline">季節のフルーツを主役にしたケーキと焼き菓子の小さなお店。今日のおやつや、誰かへの贈り物に。</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">メニューを見る</a>
+      <a href="#info" class="btn-secondary">店舗情報</a>
     </div>
   </header>
 
