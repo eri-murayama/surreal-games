@@ -138,7 +138,7 @@
       conversation: [
         { speaker: 'ヨシノリ', text: '博士はこれが\nいいマシンだと思うの？' },
         { speaker: '博士', text: 'お？…おお、いい色じゃし、\nエンジンもいいと思うがのお…' },
-        { speaker: 'ヨシノリ', text: '愚かだね。' },
+        { speaker: 'ヨシノリ', text: '愚かだね。\n　' },
         { speaker: '博士', text: 'ヨシノリ…？\nどうしたんじゃ…？' },
       ],
       yoshinoriLine: 'ヨシノリ<br>「お前が<br>　マシンになるんだよ。」',
@@ -194,7 +194,7 @@
       conversation: [
         { speaker: 'Yoshinori', text: 'You think this is\na good machine, Prof?' },
         { speaker: 'Prof', text: 'Hm?... Well, nice color,\nand the engine seems fine...' },
-        { speaker: 'Yoshinori', text: 'Foolish.' },
+        { speaker: 'Yoshinori', text: 'Foolish.\n　' },
         { speaker: 'Prof', text: 'Yoshinori...?\nWhat\'s wrong...?' },
       ],
       yoshinoriLine: 'Yoshinori<br>"YOU will<br>  become the machine."',
