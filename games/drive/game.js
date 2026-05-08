@@ -51,9 +51,10 @@
     { ja: 'おにぎり', en: 'Onigiri', emoji: '🍙', effect: 'shield' },
   ];
 
-  // ライバル名
-  const RIVAL_NAMES = ['ガンテツ', 'ヒロシ', 'マサオ'];
-  const RIVAL_COLORS = ['#cc3333', '#3333cc', '#33cc33'];
+  // ライバル名（中央レーンはプレイヤーと重なるため左右の2レーンのみ使用）
+  const RIVAL_NAMES = ['ガンテツ', 'マサオ'];
+  const RIVAL_COLORS = ['#cc3333', '#33cc33'];
+  const RIVAL_LANES = [0, 2];
 
   // --- 状態 ---
   let phase = 'title'; // title, slot, race, result
@@ -153,7 +154,7 @@
       hudPosition: (pos) => `順位: ${pos}`,
       backToTop: '← トップに戻る',
       seconds: '秒',
-      rivalNames: ['ガンテツ', 'ヒロシ', 'マサオ'],
+      rivalNames: ['ガンテツ', 'マサオ'],
       niceRun: 'ナイスラン！',
       finalLap: 'ファイナルラップ！',
       goal: 'GOAL!!',
@@ -209,7 +210,7 @@
       hudPosition: (pos) => `Position: ${pos}`,
       backToTop: '← Back to Top',
       seconds: 's',
-      rivalNames: ['Gantetsu', 'Hiroshi', 'Masao'],
+      rivalNames: ['Gantetsu', 'Masao'],
       niceRun: 'Nice Run!',
       finalLap: 'Final Lap!',
       goal: 'GOAL!!',
@@ -588,17 +589,20 @@
         spinTimer: 0,
         steerSpeed: 2.5 + playerStats.handling * 0.3,
       },
-      rivals: t('rivalNames').map((name, i) => ({
-        name,
-        color: RIVAL_COLORS[i],
-        x: ROAD_LEFT + LANE_W * i + LANE_W / 2,
-        lane: i,
-        speed: 2.8 + Math.random() * 1.5,
-        distance: 0,
-        lap: 1,
-        spinTimer: 0,
-        changeLaneTimer: 60 + Math.random() * 120,
-      })),
+      rivals: t('rivalNames').map((name, i) => {
+        const lane = RIVAL_LANES[i];
+        return {
+          name,
+          color: RIVAL_COLORS[i],
+          x: ROAD_LEFT + LANE_W * lane + LANE_W / 2,
+          lane,
+          speed: 2.8 + Math.random() * 1.5,
+          distance: 0,
+          lap: 1,
+          spinTimer: 0,
+          changeLaneTimer: 60 + Math.random() * 120,
+        };
+      }),
       obstacles: [],
       bananas: [],
       itemBoxes: [],
@@ -764,7 +768,7 @@
     if (p.distance >= LAPS * LAP_LENGTH && !rs.finished) {
       if (!lapEffect.active) lapEffect = { active: true, lap: 0, timer: 70 }; // ゴール演出
       if (!rs.finishOrder.includes('player')) rs.finishOrder.push('player');
-      if (rs.finishOrder.length >= 4 || rs.finishOrder.includes('player')) {
+      if (rs.finishOrder.length >= 3 || rs.finishOrder.includes('player')) {
         endRace();
         return;
       }
@@ -1249,7 +1253,7 @@
     if (rafId) cancelAnimationFrame(rafId);
 
     const pos = raceState.finishOrder.indexOf('player');
-    const position = pos === -1 ? 4 : pos + 1;
+    const position = pos === -1 ? 3 : pos + 1;
     const elapsed = raceState.elapsed;
     const sec = (elapsed / 1000).toFixed(2);
     const secNum = parseFloat(sec);
@@ -1337,29 +1341,52 @@
 
   // 博士に乗る→乗車完了演出→レース開始
   let mountTriggered = false;
-  mountScreen.addEventListener('click', () => {
-    if (phase === 'mount' && !mountTriggered) {
-      mountTriggered = true;
-      sg.sound.stopBgm();
-      sg.sound.play('dramatic');
+  document.getElementById('mount-hakase').addEventListener('click', (e) => {
+    if (phase !== 'mount' || mountTriggered) return;
 
-      // 乗車完了テキスト更新
-      document.getElementById('mount-text').textContent = t('mountComplete');
-      const subEl = document.getElementById('mount-subtext');
-      if (subEl) subEl.textContent = t('mountSub');
-
-      // シネマティック演出
-      createMountEffects();
-
-      const overlay = document.getElementById('mount-overlay');
-      overlay.classList.remove('hidden');
-
-      setTimeout(() => {
-        mountTriggered = false;
-        overlay.classList.add('hidden');
-        startRace();
-      }, 2500);
+    // 背中の位置だけタップ可能にする（object-fit: contain での画像表示エリアを計算）
+    const img = e.currentTarget;
+    const rect = img.getBoundingClientRect();
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    const cw = rect.width;
+    const ch = rect.height;
+    const nw = img.naturalWidth || 1;
+    const nh = img.naturalHeight || 1;
+    let dw, dh, ox, oy;
+    if (nw / nh > cw / ch) {
+      dw = cw; dh = cw * nh / nw;
+      ox = 0; oy = (ch - dh) / 2;
+    } else {
+      dh = ch; dw = ch * nw / nh;
+      ox = (cw - dw) / 2; oy = 0;
     }
+    const rx = (cx - ox) / dw;
+    const ry = (cy - oy) / dh;
+    // 背中の白衣部分の比率範囲
+    const inBack = rx >= 0.40 && rx <= 0.78 && ry >= 0.18 && ry <= 0.55;
+    if (!inBack) return;
+
+    mountTriggered = true;
+    sg.sound.stopBgm();
+    sg.sound.play('dramatic');
+
+    // 乗車完了テキスト更新
+    document.getElementById('mount-text').textContent = t('mountComplete');
+    const subEl = document.getElementById('mount-subtext');
+    if (subEl) subEl.textContent = t('mountSub');
+
+    // シネマティック演出
+    createMountEffects();
+
+    const overlay = document.getElementById('mount-overlay');
+    overlay.classList.remove('hidden');
+
+    setTimeout(() => {
+      mountTriggered = false;
+      overlay.classList.add('hidden');
+      startRace();
+    }, 2500);
   });
 
   // シェアボタン
