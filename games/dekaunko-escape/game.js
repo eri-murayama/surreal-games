@@ -349,36 +349,73 @@
     if (toilet) {
       const blink = toilet.life < 2 ? (0.5 + Math.sin(toilet.life * 12) * 0.5) : 1;
       ctx.globalAlpha = blink;
+      const tgrad = ctx.createRadialGradient(toilet.x, toilet.y, 0, toilet.x, toilet.y, toilet.r + 16);
+      tgrad.addColorStop(0, 'rgba(150, 230, 255, 0.55)');
+      tgrad.addColorStop(0.6, 'rgba(100, 220, 255, 0.2)');
+      tgrad.addColorStop(1, 'rgba(100, 220, 255, 0)');
+      ctx.fillStyle = tgrad;
       ctx.beginPath();
-      ctx.arc(toilet.x, toilet.y, toilet.r + 8, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(100, 220, 255, 0.15)';
+      ctx.arc(toilet.x, toilet.y, toilet.r + 16, 0, Math.PI * 2);
       ctx.fill();
-      ctx.font = (toilet.r * 1.6) + 'px sans-serif';
+      ctx.font = 'bold ' + (toilet.r * 1.9) + 'px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 2;
       ctx.fillText('🚽', toilet.x, toilet.y);
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
       ctx.globalAlpha = 1;
     }
 
     // 食べ物
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     foods.forEach(f => {
-      ctx.font = (f.r * 2) + 'px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      // 明るい円板（暗背景に絵文字を浮かび上がらせる土台）
+      const grad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 1.5);
+      grad.addColorStop(0, 'rgba(255, 250, 235, 0.98)');
+      grad.addColorStop(0.55, 'rgba(255, 240, 210, 0.85)');
+      grad.addColorStop(1, 'rgba(255, 230, 180, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.r * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      // 絵文字本体（白いグローでくっきり）
+      ctx.font = (f.r * 2.2) + 'px sans-serif';
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+      ctx.shadowBlur = 6;
+      ctx.fillText(f.emoji, f.x, f.y);
+      // 二重描きで色を濃くする
+      ctx.shadowBlur = 0;
       ctx.fillText(f.emoji, f.x, f.y);
     });
 
     // プレイヤー（うんこ）
     const pr = playerRadius(player.weight);
     // 影
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
     ctx.beginPath();
-    ctx.ellipse(player.x, player.y + pr * 0.8, pr * 0.8, pr * 0.25, 0, 0, Math.PI * 2);
+    ctx.ellipse(player.x, player.y + pr * 0.85, pr * 0.85, pr * 0.28, 0, 0, Math.PI * 2);
     ctx.fill();
-    // 本体
+    // 明るい円板で土台
+    const pgrad = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, pr * 1.35);
+    pgrad.addColorStop(0, 'rgba(255, 245, 220, 0.95)');
+    pgrad.addColorStop(0.55, 'rgba(255, 225, 175, 0.75)');
+    pgrad.addColorStop(1, 'rgba(255, 215, 150, 0)');
+    ctx.fillStyle = pgrad;
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, pr * 1.35, 0, Math.PI * 2);
+    ctx.fill();
+    // 本体（白いグローでくっきり）
     ctx.font = (pr * 2.2) + 'px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+    ctx.shadowBlur = 8;
+    ctx.fillText('💩', player.x, player.y);
+    ctx.shadowBlur = 0;
     ctx.fillText('💩', player.x, player.y);
 
     // でかくなりすぎ警告
