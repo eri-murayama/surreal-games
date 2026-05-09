@@ -644,26 +644,52 @@
         175, 0,   0,   0,   196, 0,   0,   0,
       ]
     },
-    // 怪談・ホラー系（かいだんマインスイーパー）— 三全音と長休符で不穏なドローン
+    // 怪談・ホラー系（かいだんマインスイーパー）— sawtoothドローン＋きしみ高音
+    // 実ゲームのBGMが「低音ドローン+不規則な高音きしみ」の恐怖アンビエントなのを再現
     horror: {
-      tempo: 68, key: 'Em', wave: 'triangle', volume: 0.10,
+      tempo: 56, key: 'Am', wave: 'sawtooth', volume: 0.06,
+      // 半音をゆっくり彷徨う不穏なきしみ（ホラーの「ヒイィ……」感）
       melody: [
-        330, 0,   311, 0,   277, 0,   311, 0,
-        330, 369, 0,   415, 0,   369, 330, 0,
-        277, 0,   261, 0,   247, 0,   261, 0,
-        277, 311, 0,   349, 311, 277, 247, 0,
+        880, 0,   0,   831, 0,   0,   784, 0,
+        0,   880, 0,   0,   932, 0,   831, 0,
+        784, 0,   0,   740, 0,   784, 0,   0,
+        831, 0,   880, 0,   932, 0,   831, 0,
       ],
+      // 低音ドローン（A2を基本に半音降りていく不安）
       bass: [
-        82, 82, 0,  0,  87, 87, 0,  0,
-        82, 82, 0,  87, 0,  82, 78, 0,
-        73, 73, 0,  0,  78, 78, 0,  0,
-        73, 73, 0,  78, 0,  73, 69, 0,
+        110, 110, 110, 110, 110, 110, 110, 110,
+        104, 104, 104, 104, 104, 104, 104, 104,
+        98,  98,  98,  98,  98,  98,  98,  98,
+        104, 104, 104, 104, 110, 110, 110, 110,
+      ]
+    },
+    // 宇宙アンビエント系（シュール進化論）— 実ゲームのBGMを忠実再現
+    // 持続するsine 4音和音パッドが Cmaj7→Dmaj7→Am(add9)→Ebmaj7 を巡り、
+    // その上に三角波のゆったりメロディが ぽつりぽつりと鳴る癒し系BGM
+    ambient: {
+      tempo: 50, key: 'C', wave: 'triangle', volume: 0.08,
+      // 1.2秒/拍 × 24拍 ≒ 28.8秒で1周。実ゲームのmelodyNotesと同一パターン
+      melody: [
+        523, 0,   659, 784, 0,   0,
+        880, 784, 0,   659, 0,   0,
+        784, 0,   1047,880, 0,   0,
+        659, 0,   523, 0,   0,   0,
       ],
-      swing: [
-        1.5, 0.5, 1.5, 0.5, 1.5, 0.5, 1.5, 0.5,
-        1.2, 0.8, 0.6, 1.4, 0.6, 1.0, 1.2, 0.8,
-        1.5, 0.5, 1.5, 0.5, 1.5, 0.5, 1.5, 0.5,
-        1.2, 0.8, 0.6, 1.4, 1.0, 1.0, 1.2, 0.8,
+      // 持続コードパッド（実ゲームのpadOscsと同じ4音和音 → 8拍ごとに次の和音へramp）
+      pad: [
+        [131, 165, 196, 247],   // Cmaj7  (C3, E3, G3, B3)
+        [147, 175, 220, 262],   // Dmaj7  (D3, F3, A3, C4) ※実ゲームと同じ
+        [110, 139, 165, 208],   // Am(add9)
+        [124, 156, 185, 233],   // Ebmaj7
+      ],
+      padWave: 'sine',
+      padVolume: 0.10,
+      // 星のきらめき（実ゲームの playChime 相当 — 高音ベルがぽつり鳴る）
+      sparkle: [
+        0,   1047,0,   0,   0,   0,
+        0,   0,   1175,0,   0,   0,
+        0,   0,   0,   1319,0,   0,
+        0,   0,   0,   0,   880, 0,
       ]
     },
     // バトル・対戦系（漆黒のリバーシ）— スタッカート＋跳躍＋brass で爽快バトル
@@ -778,9 +804,22 @@
       this.enabled = !this.enabled;
       localStorage.setItem('sg_sound_enabled', this.enabled);
       if (!this.enabled) {
-        this.stopBgm();
+        // ミュートでもプリセット情報は残しておく（解除時に同じBGMを再開できるように）
+        this._pauseBgmNodes();
+      } else if (this.currentBgmPreset) {
+        // ミュート解除時に現在のBGMを再開
+        this.playBgm(this.currentBgmPreset, this._lastPlayBgmOpts);
       }
       return this.enabled;
+    },
+
+    // 鳴っているBGMノードのみ停止（プリセット情報は残す）
+    _pauseBgmNodes() {
+      this.bgmPlaying = false;
+      this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+      this.bgmNodes = [];
+      this.bgmTimers.forEach(t => clearTimeout(t));
+      this.bgmTimers = [];
     },
 
     // AudioContext を遅延生成（ユーザー操作後なら安全に作れる）
@@ -810,6 +849,9 @@
 
     // BGMを再生
     playBgm(presetName, opts) {
+      // ミュート中でも「次にどのBGMを鳴らす予定か」を覚えておく（解除時の再開用）
+      this.currentBgmPreset = presetName;
+      this._lastPlayBgmOpts = opts || null;
       if (!this.enabled) return;
       this._ensureCtx();
       if (!this.ctx) {
@@ -820,13 +862,10 @@
       }
       const preset = BGM_PRESETS[presetName];
       if (!preset) return;
-      this.stopBgm();
-      // stopBgm() で速度倍率がリセットされた直後に opts.speed を適用
-      // （これをしないと最初のループが常に1.0倍速で再生される）
-      if (opts && typeof opts.speed === 'number') {
-        this.bgmSpeedMultiplier = opts.speed;
-      }
-      this.currentBgmPreset = presetName;
+      // 既存のノードのみ停止（プリセット情報は上で設定済み）
+      this._pauseBgmNodes();
+      // 速度倍率を適用（指定がなければ1.0にリセット）
+      this.bgmSpeedMultiplier = (opts && typeof opts.speed === 'number') ? opts.speed : 1.0;
       this.bgmPlaying = true;
       // contextが未稼働の場合、resume完了を待ってから再生開始
       if (this.ctx.state !== 'running') {
@@ -873,8 +912,8 @@
         this.bgmNodes.push(osc);
       });
 
-      // ベースライン
-      preset.bass.forEach((freq, i) => {
+      // ベースライン（無いプリセットもあるのでガード）
+      (preset.bass || []).forEach((freq, i) => {
         if (!freq) return;
         const noteDur = baseBeat * (swing ? swing[i] : 1);
         const osc = ctx.createOscillator();
@@ -1080,6 +1119,50 @@
         });
       }
 
+      // 和音パッド層（puzzle-2048のような持続コード）
+      // preset.pad = [[f1,f2,f3,f4], ...] を1ループ全体に分配して滑らかにモーフィング
+      if (preset.pad && preset.pad.length > 0) {
+        const chords = preset.pad;
+        const numNotes = chords[0].length;
+        const segDur = totalDur / chords.length;
+        const padVol = (preset.padVolume != null) ? preset.padVolume : vol * 0.45;
+        const padWave = preset.padWave || 'sine';
+        for (let n = 0; n < numNotes; n++) {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = padWave;
+          osc.frequency.setValueAtTime(chords[0][n], now);
+          // 立ち上がり（クリック防止）
+          g.gain.setValueAtTime(0, now);
+          g.gain.linearRampToValueAtTime(padVol, now + Math.min(0.6, segDur * 0.3));
+          // 各セグメント境界で次の和音音にramp（前半0.7区間で滑らかに移行）
+          for (let i = 1; i < chords.length; i++) {
+            const target = chords[i][n];
+            osc.frequency.linearRampToValueAtTime(target, now + i * segDur);
+          }
+          // 終端で減衰
+          g.gain.setValueAtTime(padVol, now + totalDur - 0.6);
+          g.gain.linearRampToValueAtTime(0, now + totalDur);
+          osc.connect(g);
+          g.connect(bgmDest);
+          osc.start(now);
+          osc.stop(now + totalDur + 0.05);
+          this.bgmNodes.push(osc);
+
+          // デチューンLFO（実puzzle-2048と同じく揺らぎ）
+          const lfo = ctx.createOscillator();
+          const lfoG = ctx.createGain();
+          lfo.type = 'sine';
+          lfo.frequency.value = 0.1 + Math.random() * 0.1;
+          lfoG.gain.value = chords[0][n] * 0.006;
+          lfo.connect(lfoG);
+          lfoG.connect(osc.frequency);
+          lfo.start(now);
+          lfo.stop(now + totalDur + 0.05);
+          this.bgmNodes.push(lfo);
+        }
+      }
+
       // ループ
       const timer = setTimeout(() => {
         if (this.bgmPlaying) this._loopBgm(preset);
@@ -1088,12 +1171,11 @@
     },
 
     stopBgm() {
-      this.bgmPlaying = false;
+      this._pauseBgmNodes();
       this.bgmSpeedMultiplier = 1.0;
-      this.bgmNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-      this.bgmNodes = [];
-      this.bgmTimers.forEach(t => clearTimeout(t));
-      this.bgmTimers = [];
+      // 完全停止: 次に再開する予定のBGMもクリア
+      this.currentBgmPreset = null;
+      this._lastPlayBgmOpts = null;
     },
 
     // BGMのテンポ倍率を変更（次のループから反映）

@@ -1195,6 +1195,61 @@ body:has(#game-screen.active) .sg-share-btn {
   letter-spacing: 6px;
 }
 
+/* ===== カウントダウン（READY→3→2→1→GO） ===== */
+#countdown-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none;
+  text-align: center;
+  z-index: 70;
+  font-family: var(--sg-font-title, sans-serif);
+  font-weight: 900;
+  font-size: 7rem;
+  line-height: 1;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(0, 255, 247, 0.8),
+    0 0 40px rgba(255, 110, 199, 0.6),
+    0 6px 16px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+}
+
+#countdown-overlay.tick {
+  animation: countdownTick 0.7s ease-out forwards;
+}
+
+#countdown-overlay.go {
+  animation: countdownGo 0.6s ease-out forwards;
+  font-size: 5.5rem;
+  background: linear-gradient(90deg, #ff6ec7, #ffd700, #00fff7);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes countdownTick {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
+  25%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+  85%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+}
+
+@keyframes countdownGo {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.4); }
+  60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
+}
+
+@media (max-height: 600px) {
+  #countdown-overlay { font-size: 5rem; }
+  #countdown-overlay.go { font-size: 4rem; }
+}
+
 /* ===== 共通オーバーレイ（イントロ・全クリア） ===== */
 .sb-overlay {
   position: absolute;
