@@ -80,7 +80,7 @@
       subtitle: '〜さまよえる顔を、おうちへ〜',
       rule1: '同じ顔のたましいを線でつなごう',
       rule2: '線は交差できない',
-      rule3: 'ぜんぶのマスを通せたら完璧！',
+      rule3: 'ぜんぶのマスを通したらクリア！',
       start: 'はじめる',
       level: 'レベル',
       connected: 'つながり',
@@ -102,7 +102,7 @@
       subtitle: '~ Guide the wandering faces home ~',
       rule1: 'Connect each pair of same-face souls',
       rule2: 'Lines cannot cross',
-      rule3: 'Fill every cell for a perfect!',
+      rule3: 'Fill every cell to clear!',
       start: 'Start',
       level: 'Level',
       connected: 'Linked',
@@ -145,6 +145,7 @@
   let endpointMap = new Map();
   let pairAssign = [];
   let paths = [];
+  let solutionPaths = [];
   let activePair = -1;
   let isDragging = false;
 
@@ -236,7 +237,11 @@
       for (let i = 0; i < sorted.length - 1; i++) {
         const s = sorted[i];
         const e = sorted[i + 1] - 1;
-        segments.push({ start: path[s], end: path[e] });
+        segments.push({
+          start: path[s],
+          end: path[e],
+          cells: path.slice(s, e + 1),
+        });
       }
       return { rows: R, cols: C, segments };
     }
@@ -264,6 +269,7 @@
     ownerGrid = [];
     endpointMap = new Map();
     paths = [];
+    solutionPaths = [];
     pairAssign = [];
     activePair = -1;
     isDragging = false;
@@ -274,6 +280,7 @@
       endpointMap.set(k(seg.start[0], seg.start[1]), pid);
       endpointMap.set(k(seg.end[0], seg.end[1]), pid);
       paths[pid] = [];
+      solutionPaths[pid] = seg.cells ? seg.cells.slice() : null;
     });
 
     const gridEl = document.getElementById('grid');
@@ -493,8 +500,8 @@
 
   function checkWin() {
     if (!allPairsConnected()) return;
-    const perfect = countFilledCells() === rows * cols;
-    setTimeout(() => showClear(perfect), 350);
+    if (countFilledCells() !== rows * cols) return;
+    setTimeout(() => showClear(true), 350);
   }
 
   function showClear(perfect) {
@@ -513,24 +520,89 @@
     document.getElementById(id).classList.add('active');
   }
 
-  // ===== ヒント =====
+  // ===== ヒント（未完成ペアを正解で自動連結） =====
+  function applyHint(i) {
+    const sol = solutionPaths[i];
+    if (!sol) return false;
+    const solSet = new Set(sol.map(([r, c]) => k(r, c)));
+
+    // 他ペアのパスが正解ルートとぶつかる場合、衝突点以降を削る
+    for (let j = 0; j < pairAssign.length; j++) {
+      if (j === i) continue;
+      const p = paths[j];
+      if (!p || p.length === 0) continue;
+      let conflictIdx = -1;
+      for (let idx = 0; idx < p.length; idx++) {
+        const [r, c] = p[idx];
+        if (solSet.has(k(r, c)) && !isEndpointOfPair(r, c, j)) {
+          conflictIdx = idx;
+          break;
+        }
+      }
+      if (conflictIdx >= 0) {
+        for (let idx = conflictIdx; idx < p.length; idx++) {
+          const [r, c] = p[idx];
+          if (!isEndpointOfPair(r, c, j)) ownerGrid[r][c] = -1;
+        }
+        paths[j] = p.slice(0, conflictIdx);
+      }
+    }
+
+    // このペアのパスを正解で置き換え
+    clearPathKeepEndpoints(i);
+    paths[i] = sol.slice();
+    for (const [r, c] of sol) {
+      ownerGrid[r][c] = i;
+    }
+    return true;
+  }
+
+  function flashEndpoints(pid) {
+    findEndpointsOfPair(pid).forEach(([r, c]) => {
+      const el = cellEls[r][c];
+      if (el && el.animate) {
+        el.animate(
+          [
+            { transform: 'scale(1)' },
+            { transform: 'scale(1.25)' },
+            { transform: 'scale(1)' },
+          ],
+          { duration: 600, iterations: 2 }
+        );
+      }
+    });
+  }
+
   function showHint() {
+    // 未完成ペアがあれば、最初のひとつを自動で解く
     for (let i = 0; i < pairAssign.length; i++) {
       if (isPairComplete(i)) continue;
-      findEndpointsOfPair(i).forEach(([r, c]) => {
-        const el = cellEls[r][c];
-        if (el && el.animate) {
-          el.animate(
-            [
-              { transform: 'scale(1)' },
-              { transform: 'scale(1.25)' },
-              { transform: 'scale(1)' },
-            ],
-            { duration: 600, iterations: 2 }
-          );
-        }
-      });
+      if (applyHint(i)) {
+        activePair = -1;
+        isDragging = false;
+        playSound('correct');
+        render();
+        updateHud();
+        checkWin();
+      } else {
+        flashEndpoints(i);
+      }
       return;
+    }
+    // 全ペア完成しているけど全マス埋まってない場合、まとめて再構築
+    if (countFilledCells() < rows * cols) {
+      let any = false;
+      for (let i = 0; i < pairAssign.length; i++) {
+        if (applyHint(i)) any = true;
+      }
+      if (any) {
+        activePair = -1;
+        isDragging = false;
+        playSound('correct');
+        render();
+        updateHud();
+        checkWin();
+      }
     }
   }
 
