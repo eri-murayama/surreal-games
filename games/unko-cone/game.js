@@ -35,13 +35,13 @@
         'これだからたまんねえよ！'
       ],
       heroMilestone: [
-        '５段！ひよっこうんコーン技師！',
-        '１０段！うんコーンバイトリーダー！',
-        '１５段！よっ、うんコーン部長！',
-        '２０段！イケメンうんコーン実業家！',
-        '２５段！うんコーンタワー建設！',
-        '３０段！神のうんコーン生誕！',
-        '３５段！宇宙を超えたうんコーン！'
+        '５段！\nひよっこうんコーン技師！',
+        '１０段！\nうんコーンバイトリーダー！',
+        '１５段！\nよっ、うんコーン部長！',
+        '２０段！\nイケメンうんコーン実業家！',
+        '２５段！\nうんコーンタワー建設！',
+        '３０段！\n神のうんコーン生誕！',
+        '３５段！\n宇宙を超えたうんコーン！'
       ],
       heroComments: {
         terrible: 'え…{stack}段？そっか…そうだよね、君みたいな人間にこんな難しいことできるわけないか…。僕こそごめんね…謝るよ。',
@@ -91,13 +91,13 @@
         "This is why I can't stop!"
       ],
       heroMilestone: [
-        '5 stack! Rookie Poopsicle Builder!',
-        '10 stack! Poopsicle Shift Leader!',
-        '15 stack! Poopsicle Manager!',
-        '20 stack! Poopsicle Entrepreneur!',
-        '25 stack! Poopsicle Tower!',
-        '30 stack! Divine Poopsicle!',
-        '35 stack! Cosmic Poopsicle!'
+        '5 stack!\nRookie Poopsicle Builder!',
+        '10 stack!\nPoopsicle Shift Leader!',
+        '15 stack!\nPoopsicle Manager!',
+        '20 stack!\nPoopsicle Entrepreneur!',
+        '25 stack!\nPoopsicle Tower!',
+        '30 stack!\nDivine Poopsicle!',
+        '35 stack!\nCosmic Poopsicle!'
       ],
       heroComments: {
         terrible: "Huh... {stack} stack? I see... I guess someone like you couldn't handle something this hard... I'm sorry.",
@@ -221,6 +221,7 @@
 
   // トイレの流れる音（Web Audio APIで生成）
   function playFlushSE() {
+    if (!sg.sound.enabled) return;
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
       const duration = 1.8;
