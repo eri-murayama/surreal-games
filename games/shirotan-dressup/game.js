@@ -50,7 +50,7 @@
   var state = { hat: '', outfit: '', cheek: '', back: '', bg: 'bg-sky' };
   var currentTab = 'hat';
 
-  // ============ BGM: ふわふわキラキラ系（C major ペンタトニック） ============
+  // ============ BGM: シャボン玉ふんわりお花畑（A major、ゆったり跳ねるオルゴール調） ============
   var audioCtx = null;
   var bgmNodes = [];
   var muted = localStorage.getItem('sg-muted-shirotan') === '1';
@@ -66,79 +66,145 @@
   function startBGM() {
     var ctx = getCtx(); if (!ctx || muted) return;
     stopBGM();
-    // ふわふわオルゴール風: C-D-E-G-A ペンタトニック、優しめテンポ
+
     var master = ctx.createGain();
     master.gain.value = 0.0;
-    master.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 0.8);
+    master.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.2);
     master.connect(ctx.destination);
     bgmNodes.push(master);
 
-    var scale = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66]; // C5-D-E-G-A-C6-D6
-    var melody = [0, 2, 4, 2, 5, 4, 2, 0,  1, 3, 5, 3, 6, 5, 3, 1];
+    // やわらかいローパスで角を取る（オルゴールっぽい音色）
+    var lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3200;
+    lp.Q.value = 0.5;
+    lp.connect(master);
+    bgmNodes.push(lp);
+
+    // A major ペンタトニック（A-B-C#-E-F#）+ オクターブ上で華やか
+    // テンポをやさしめに
     var bpm = 92;
     var beat = 60 / bpm;
+    var sub = beat / 2;
 
-    function playNote(freq, start, dur, vol) {
+    // メロディ（軽やかに上下、跳ねる感じ）
+    // A4=440, B4=493.88, C#5=554.37, E5=659.25, F#5=739.99, A5=880, B5=987.77, C#6=1108.73, E6=1318.51
+    var phrase1 = [
+      { n: 880.00, d: 0.5 }, // A5
+      { n: 987.77, d: 0.5 }, // B5
+      { n: 1108.73, d: 0.5 },// C#6
+      { n: 987.77, d: 0.5 }, // B5
+      { n: 880.00, d: 1.0 }, // A5
+      { n: 739.99, d: 0.5 }, // F#5
+      { n: 880.00, d: 1.5 }  // A5（伸ばす）
+    ];
+    var phrase2 = [
+      { n: 1108.73, d: 0.5 },// C#6
+      { n: 987.77, d: 0.5 }, // B5
+      { n: 880.00, d: 0.5 }, // A5
+      { n: 739.99, d: 0.5 }, // F#5
+      { n: 659.25, d: 1.0 }, // E5
+      { n: 739.99, d: 0.5 }, // F#5
+      { n: 880.00, d: 1.5 }  // A5
+    ];
+
+    // コード進行 A - F#m - D - E（ハッピーで明るい王道）
+    var chordProg = [
+      [110.00, 220.00, 277.18, 329.63], // A
+      [92.50,  185.00, 277.18, 369.99], // F#m
+      [73.42,  146.83, 220.00, 293.66], // D
+      [82.41,  164.81, 246.94, 329.63]  // E
+    ];
+
+    // メロディ：オルゴール風（sine + 三角波の倍音）
+    function playMel(freq, start, dur, vol) {
       var o = ctx.createOscillator();
       var g = ctx.createGain();
       o.type = 'sine';
       o.frequency.value = freq;
       var t0 = ctx.currentTime + start;
       g.gain.setValueAtTime(0, t0);
-      g.gain.linearRampToValueAtTime(vol, t0 + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-      o.connect(g); g.connect(master);
-      o.start(t0); o.stop(t0 + dur + 0.05);
+      g.gain.linearRampToValueAtTime(vol, t0 + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur * 0.9);
+      o.connect(g); g.connect(lp);
+      o.start(t0); o.stop(t0 + dur);
       bgmNodes.push(o, g);
 
-      // オクターブ上のキラキラ倍音
+      // オクターブ上のシャボン玉キラキラ（短く弾ける）
       var o2 = ctx.createOscillator();
       var g2 = ctx.createGain();
       o2.type = 'triangle';
       o2.frequency.value = freq * 2;
       g2.gain.setValueAtTime(0, t0);
-      g2.gain.linearRampToValueAtTime(vol * 0.3, t0 + 0.03);
-      g2.gain.exponentialRampToValueAtTime(0.001, t0 + dur * 0.8);
-      o2.connect(g2); g2.connect(master);
-      o2.start(t0); o2.stop(t0 + dur + 0.05);
+      g2.gain.linearRampToValueAtTime(vol * 0.25, t0 + 0.005);
+      g2.gain.exponentialRampToValueAtTime(0.001, t0 + dur * 0.4);
+      o2.connect(g2); g2.connect(lp);
+      o2.start(t0); o2.stop(t0 + dur);
       bgmNodes.push(o2, g2);
     }
 
-    function playChord(notes, start, dur, vol) {
-      notes.forEach(function (f) {
-        var o = ctx.createOscillator();
-        var g = ctx.createGain();
-        o.type = 'sine';
-        o.frequency.value = f;
-        var t0 = ctx.currentTime + start;
-        g.gain.setValueAtTime(0, t0);
-        g.gain.linearRampToValueAtTime(vol, t0 + 0.1);
-        g.gain.linearRampToValueAtTime(vol * 0.5, t0 + dur * 0.5);
-        g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-        o.connect(g); g.connect(master);
-        o.start(t0); o.stop(t0 + dur + 0.05);
-        bgmNodes.push(o, g);
-      });
+    // ピチカート風ベース（弾むリズム）
+    function playPluck(freq, start, dur, vol) {
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.type = 'triangle';
+      o.frequency.value = freq;
+      var t0 = ctx.currentTime + start;
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(vol, t0 + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+      o.connect(g); g.connect(lp);
+      o.start(t0); o.stop(t0 + dur + 0.05);
+      bgmNodes.push(o, g);
     }
 
-    var loopLen = melody.length * beat * 0.5;
-    function schedule(loopStart) {
-      // メロディ
-      for (var i = 0; i < melody.length; i++) {
-        playNote(scale[melody[i]], loopStart + i * beat * 0.5, beat * 0.45, 0.12);
+    // シャボン玉ぱちん（高音の短い音）
+    function playBubble(start) {
+      var freq = 1500 + Math.random() * 700;
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(freq, ctx.currentTime + start);
+      o.frequency.exponentialRampToValueAtTime(freq * 1.5, ctx.currentTime + start + 0.08);
+      g.gain.setValueAtTime(0, ctx.currentTime + start);
+      g.gain.linearRampToValueAtTime(0.04, ctx.currentTime + start + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + 0.15);
+      o.connect(g); g.connect(master);
+      o.start(ctx.currentTime + start); o.stop(ctx.currentTime + start + 0.2);
+      bgmNodes.push(o, g);
+    }
+
+    function schedule(start) {
+      // メロディ：phrase1（4拍）→phrase2（4拍）
+      var cur = start;
+      phrase1.forEach(function (n) {
+        playMel(n.n, cur, n.d * beat, 0.1);
+        cur += n.d * beat;
+      });
+      phrase2.forEach(function (n) {
+        playMel(n.n, cur, n.d * beat, 0.1);
+        cur += n.d * beat;
+      });
+
+      // 4コード × 2拍ずつ = 8拍
+      for (var i = 0; i < 4; i++) {
+        var s = start + i * 2 * beat;
+        var ch = chordProg[i];
+        // ベース（1拍目）
+        playPluck(ch[0], s, 0.4 * beat, 0.13);
+        // 跳ねるリズム（裏拍にコード音）
+        playPluck(ch[2], s + 0.75 * beat, 0.3 * beat, 0.06);
+        playPluck(ch[1], s + 1 * beat, 0.4 * beat, 0.08);
+        playPluck(ch[3], s + 1.75 * beat, 0.3 * beat, 0.06);
       }
-      // コード進行 C - Am - F - G
-      var chords = [
-        [261.63, 329.63, 392.00], // C
-        [220.00, 261.63, 329.63], // Am
-        [174.61, 220.00, 261.63], // F
-        [196.00, 246.94, 293.66]  // G
-      ];
-      chords.forEach(function (ch, i) {
-        playChord(ch, loopStart + i * beat * 2, beat * 2, 0.06);
-      });
+
+      // ぱちんとシャボン玉が弾ける（1ループに2-3回ランダム位置）
+      playBubble(start + 0.4);
+      playBubble(start + 3.2);
+      playBubble(start + 6.1);
     }
 
+    var loopLen = 8 * beat;
     schedule(0);
     var loopTimer = setInterval(function () {
       if (!audioCtx || muted) { clearInterval(loopTimer); return; }

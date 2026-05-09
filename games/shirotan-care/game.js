@@ -88,7 +88,7 @@
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {}
   }
 
-  // ============ BGM: ほのぼのワルツ（F major、3/4拍子） ============
+  // ============ BGM: ふわふわ雲の子守唄（D major、6/8拍子・ゆりかごテンポ） ============
   var audioCtx = null;
   var bgmNodes = [];
   var muted = localStorage.getItem('sg-muted-shirotan') === '1';
@@ -106,51 +106,79 @@
 
     var master = ctx.createGain();
     master.gain.value = 0.0;
-    master.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 1.0);
+    master.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
     master.connect(ctx.destination);
     bgmNodes.push(master);
 
-    // F major: F-G-A-Bb-C-D-E-F
-    // やさしいワルツメロディ
-    // 3拍子 ピアノ風＋弦っぽいパッド
-    var bpm = 82;
-    var beat = 60 / bpm;
+    // やわらかいローパス（角を取って眠たい音色に）
+    var lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 2400;
+    lp.Q.value = 0.4;
+    lp.connect(master);
+    bgmNodes.push(lp);
 
+    // D major: D-E-F#-G-A-B-C#-D
+    // 6/8拍子のゆれるリズム、子守唄調
+    var bpm = 56;
+    var beat = 60 / bpm;       // 1拍 = 4分音符
+    var sub  = beat / 2;       // 8分音符
+
+    // メロディ（D-F#-A の三和音ベースで、上下にゆらり）
     var melody = [
-      { n: 349.23, d: 1.5 }, // F
-      { n: 440.00, d: 0.5 }, // A
-      { n: 523.25, d: 1.0 }, // C
-      { n: 466.16, d: 1.0 }, // Bb
-      { n: 440.00, d: 1.0 }, // A
-      { n: 349.23, d: 1.5 }, // F
-      { n: 392.00, d: 0.5 }, // G
-      { n: 440.00, d: 1.0 }, // A
-      { n: 392.00, d: 2.0 }, // G
-      { n: 349.23, d: 1.0 }  // F
+      { n: 587.33, d: 1.5 }, // D5
+      { n: 739.99, d: 0.5 }, // F#5
+      { n: 880.00, d: 1.0 }, // A5
+      { n: 739.99, d: 1.0 }, // F#5
+      { n: 659.25, d: 0.5 }, // E5
+      { n: 587.33, d: 1.5 }, // D5
+      { n: 493.88, d: 1.0 }, // B4
+      { n: 587.33, d: 0.5 }, // D5
+      { n: 659.25, d: 0.5 }, // E5
+      { n: 739.99, d: 1.0 }, // F#5
+      { n: 587.33, d: 2.0 }  // D5（伸ばす）
     ];
 
+    // 4小節のコード進行（D - Bm - G - A）でゆりかご感
     var chordProg = [
-      [174.61, 220.00, 261.63], // F
-      [196.00, 246.94, 293.66], // Gm (approx)
-      [233.08, 293.66, 349.23], // Bb
-      [261.63, 329.63, 392.00]  // C
+      [146.83, 220.00, 293.66, 369.99], // D（D3-A3-D4-F#4）
+      [123.47, 246.94, 293.66, 349.23], // Bm
+      [98.00,  196.00, 246.94, 293.66], // G
+      [110.00, 220.00, 277.18, 329.63]  // A
     ];
 
     function playMel(freq, start, dur, vol) {
       var o = ctx.createOscillator();
       var g = ctx.createGain();
-      o.type = 'triangle';
+      o.type = 'sine';
       o.frequency.value = freq;
       var t0 = ctx.currentTime + start;
       g.gain.setValueAtTime(0, t0);
-      g.gain.linearRampToValueAtTime(vol, t0 + 0.04);
+      g.gain.linearRampToValueAtTime(vol, t0 + 0.12);
+      g.gain.linearRampToValueAtTime(vol * 0.7, t0 + dur * 0.5);
       g.gain.exponentialRampToValueAtTime(0.001, t0 + dur * 0.95);
-      o.connect(g); g.connect(master);
+      o.connect(g); g.connect(lp);
       o.start(t0); o.stop(t0 + dur);
       bgmNodes.push(o, g);
     }
 
-    function playChord(notes, start, dur, vol) {
+    // キラキラ星（高音のベル音）：時々だけ降る
+    function playStar(freq, start, vol) {
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = freq;
+      var t0 = ctx.currentTime + start;
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(vol, t0 + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + 1.2);
+      o.connect(g); g.connect(master);
+      o.start(t0); o.stop(t0 + 1.3);
+      bgmNodes.push(o, g);
+    }
+
+    // パッド（ふわっと包む和音）
+    function playPad(notes, start, dur, vol) {
       notes.forEach(function (f) {
         var o = ctx.createOscillator();
         var g = ctx.createGain();
@@ -158,48 +186,35 @@
         o.frequency.value = f;
         var t0 = ctx.currentTime + start;
         g.gain.setValueAtTime(0, t0);
-        g.gain.linearRampToValueAtTime(vol, t0 + 0.3);
-        g.gain.linearRampToValueAtTime(vol * 0.6, t0 + dur * 0.7);
+        g.gain.linearRampToValueAtTime(vol, t0 + 0.6);
+        g.gain.linearRampToValueAtTime(vol * 0.7, t0 + dur * 0.6);
         g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-        o.connect(g); g.connect(master);
-        o.start(t0); o.stop(t0 + dur + 0.05);
+        o.connect(g); g.connect(lp);
+        o.start(t0); o.stop(t0 + dur + 0.1);
         bgmNodes.push(o, g);
       });
     }
 
-    function playBass(freq, start, dur, vol) {
-      var o = ctx.createOscillator();
-      var g = ctx.createGain();
-      o.type = 'sine';
-      o.frequency.value = freq;
-      var t0 = ctx.currentTime + start;
-      g.gain.setValueAtTime(0, t0);
-      g.gain.linearRampToValueAtTime(vol, t0 + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-      o.connect(g); g.connect(master);
-      o.start(t0); o.stop(t0 + dur + 0.05);
-      bgmNodes.push(o, g);
-    }
-
     function schedule(start) {
-      // メロディ（ワルツ：3拍×4小節ぐらい）
+      // メロディ（合計約8拍）
       var cur = start;
       melody.forEach(function (n) {
-        playMel(n.n, cur, n.d * beat, 0.1);
-        cur += n.d * beat;
+        playMel(n.n, cur, n.d * sub, 0.08);
+        cur += n.d * sub;
       });
-      // コード（各小節ごと、3拍目で変える）
+
+      // 4小節のパッド（各2拍ずつ）
       for (var i = 0; i < 4; i++) {
-        playChord(chordProg[i], start + i * 3 * beat, 3 * beat, 0.04);
-        // オンピッチベース（1拍目）
-        playBass(chordProg[i][0] / 2, start + i * 3 * beat, 0.6 * beat, 0.12);
-        // ワルツ伴奏（2,3拍目はコード音）
-        playBass(chordProg[i][1], start + i * 3 * beat + beat, 0.5 * beat, 0.05);
-        playBass(chordProg[i][2], start + i * 3 * beat + 2 * beat, 0.5 * beat, 0.05);
+        var s = start + i * 2 * beat;
+        playPad(chordProg[i], s, 2 * beat, 0.035);
       }
+
+      // たまに鳴るキラキラ（4小節中2発くらい）
+      playStar(1318.51, start + 1.2, 0.05);  // E6
+      playStar(1760.00, start + 5.4, 0.04);  // A6
     }
 
-    var loopLen = 12 * beat;
+    var loopLen = 8 * beat;
     schedule(0);
     var timer = setInterval(function () {
       if (!audioCtx || muted) { clearInterval(timer); return; }

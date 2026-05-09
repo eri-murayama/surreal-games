@@ -143,6 +143,92 @@ body {
 .scene-meadow  { background: linear-gradient(180deg, #bfe7ff 0%, #d5f0c0 60%, #a5d890 100%); }
 .scene-cafe    { background: linear-gradient(180deg, #f5e4d0 0%, #e8c8a8 100%); }
 .scene-rain    { background: linear-gradient(180deg, #8a9aaa 0%, #b0c0d0 100%); }
+.scene-station { background: linear-gradient(180deg, #f8e0d0 0%, #d8c0a8 60%, #b8a08a 100%); }
+.scene-aquarium{ background: linear-gradient(180deg, #1a4a7a 0%, #2c6a9a 50%, #4a8ab8 100%); }
+.scene-ferris  { background: linear-gradient(180deg, #ff9ab0 0%, #ffc0c8 40%, #c8a8d8 80%, #5a4a8a 100%); }
+.scene-kitchen { background: linear-gradient(180deg, #fff5e0 0%, #ffe8c8 60%, #f8d8a8 100%); }
+.scene-bedroom { background: linear-gradient(180deg, #2a2a5a 0%, #4a3a6a 50%, #6a4a7a 100%); }
+.scene-home    { background: linear-gradient(180deg, #fff0e0 0%, #ffe0c8 50%, #ffc8a8 100%); }
+
+/* 水族館の泡 */
+.scene-aquarium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(3px 3px at 40px 200px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 120px 320px, rgba(255,255,255,0.4), transparent),
+    radial-gradient(4px 4px at 240px 180px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 320px 400px, rgba(255,255,255,0.4), transparent),
+    radial-gradient(3px 3px at 80px 500px, rgba(255,255,255,0.5), transparent);
+  animation: bubbleUp 6s ease-in-out infinite;
+}
+@keyframes bubbleUp {
+  from { transform: translateY(0); opacity: 0.7; }
+  to { transform: translateY(-30px); opacity: 1; }
+}
+
+/* ベッドルームの星 */
+.scene-bedroom::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1px 1px at 60px 80px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 200px 50px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 320px 100px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 100px 150px, rgba(255,255,255,0.4), transparent);
+}
+
+/* キッチンの湯気 */
+.scene-kitchen::before {
+  content: "";
+  position: absolute;
+  top: 30%; left: 30%;
+  width: 40%; height: 30%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.4) 0%, transparent 60%);
+  animation: steamRise 3s ease-in-out infinite;
+}
+@keyframes steamRise {
+  0% { transform: translateY(10px) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-5px) scale(1.05); opacity: 0.7; }
+  100% { transform: translateY(-15px) scale(1.1); opacity: 0; }
+}
+
+/* 観覧車の星空 */
+.scene-ferris::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 150px 90px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 280px 50px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 360px 110px, rgba(255,255,255,0.6), transparent);
+}
+
+/* 雨のしずく */
+.scene-rain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(180,200,220,0.2) 100%);
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+/* おうちの窓 */
+.scene-home::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  width: 100px; height: 80px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(200,220,240,0.2));
+  border: 4px solid rgba(255,200,180,0.5);
+  border-radius: 8px;
+}
 
 .scene-night::before {
   content: "";
@@ -366,40 +452,49 @@ body {
 .end-content {
   position: relative;
   text-align: center;
-  padding: 20px;
+  padding: 14px 16px;
   z-index: 2;
+  max-height: 100%;
+  overflow-y: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 .end-title {
   font-family: 'Hachi Maru Pop', sans-serif;
-  font-size: 32px;
+  font-size: 26px;
   color: #ff7ba0;
-  margin: 0 0 14px;
-  text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffc9dc;
+  margin: 0 0 8px;
+  text-shadow: 2px 2px 0 #fff, 3px 3px 0 #ffc9dc;
 }
 .end-char {
-  width: 180px;
-  height: 180px;
+  width: 140px;
+  height: 140px;
   object-fit: contain;
   filter: drop-shadow(0 6px 12px rgba(255,150,180,0.4));
   animation: titleFloat 3s ease-in-out infinite;
 }
 .end-text {
-  font-size: 14px;
+  font-size: 13px;
   color: #6a5a70;
-  max-width: 330px;
-  line-height: 1.7;
-  margin: 14px auto;
-  background: rgba(255,255,255,0.8);
-  padding: 12px 16px;
+  max-width: 340px;
+  line-height: 1.6;
+  margin: 10px auto;
+  background: rgba(255,255,255,0.85);
+  padding: 10px 14px;
   border-radius: 14px;
   border: 2px dashed #ffc9dc;
 }
 .end-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  margin-top: 14px;
+  margin-top: 8px;
+}
+.end-actions .primary-btn {
+  padding: 10px 32px;
+  font-size: 15px;
+  margin: 2px 0;
 }
 .nav-link {
   color: #7cb6e0;
@@ -407,6 +502,134 @@ body {
   text-decoration: none;
   font-weight: 700;
   margin-top: 4px;
+}
+
+/* ===== ストーリー選択画面 ===== */
+#story-select-screen {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+.story-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #ffe4ef 0%, #ffeef5 30%, #d8eef8 70%, #c2ecf5 100%);
+}
+.story-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,0.6) 0 5px, transparent 7px),
+    radial-gradient(circle at 80% 35%, rgba(255,255,255,0.5) 0 4px, transparent 6px),
+    radial-gradient(circle at 30% 75%, rgba(255,255,255,0.5) 0 3px, transparent 5px),
+    radial-gradient(circle at 70% 88%, rgba(255,255,255,0.6) 0 4px, transparent 6px);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+.story-select-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 14px 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.story-select-title {
+  font-family: 'Hachi Maru Pop', sans-serif;
+  font-size: 22px;
+  color: #ff7ba0;
+  margin: 4px 0 12px;
+  text-shadow: 2px 2px 0 #fff, 3px 3px 0 #ffc9dc;
+  text-align: center;
+}
+
+.story-grid {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding: 4px 6px 8px;
+  box-sizing: border-box;
+}
+.story-grid::-webkit-scrollbar { width: 6px; }
+.story-grid::-webkit-scrollbar-thumb {
+  background: #ffc9dc; border-radius: 3px;
+}
+
+.story-card {
+  background: rgba(255,255,255,0.95);
+  border: 3px solid #ffc9dc;
+  border-radius: 18px;
+  padding: 12px 14px 12px 70px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  box-shadow: 0 4px 0 #ffc9dc, 0 5px 12px rgba(255,160,190,0.2);
+  transition: transform 0.15s, box-shadow 0.15s;
+  min-height: 72px;
+}
+.story-card:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #ffc9dc, 0 3px 6px rgba(255,160,190,0.2);
+}
+.story-card:hover {
+  background: #fff5fa;
+}
+.story-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffe4ef, #c2ecf5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.06);
+}
+.story-title {
+  font-family: 'Hachi Maru Pop', sans-serif;
+  font-size: 16px;
+  color: #d05070;
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+.story-desc {
+  font-size: 11px;
+  color: #8a7a90;
+  line-height: 1.4;
+}
+
+.story-back-btn {
+  background: rgba(255,255,255,0.9);
+  border: 2px solid #ffc9dc;
+  color: #b58eb8;
+  padding: 6px 18px;
+  border-radius: 18px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 2px 0 #ffc9dc;
+}
+.story-back-btn:active { transform: translateY(2px); box-shadow: none; }
+
+.primary-btn.pick-another {
+  background: linear-gradient(180deg, #c8a8e0 0%, #9a7ac0 100%);
+  box-shadow: 0 4px 0 #6a5090;
 }
 
 .heart-rain {
