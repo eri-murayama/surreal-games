@@ -2407,6 +2407,9 @@
     $('hp-blue-fill').style.width = '100%';
     $('hp-red-fill').style.width = '100%';
 
+    // モバイル判定: 動的ライトと観客数を絞ってGPU負荷を下げる
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+      || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
     // Three.js セットアップ
     const container = $('opening-3d');
     container.innerHTML = '';
@@ -2416,9 +2419,9 @@
     const camera = new THREE.PerspectiveCamera(65, aspect, 0.1, 200);
     camera.position.set(0, 6, 14);
     camera.lookAt(0, 3, 2);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: false });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x1a1030);
     container.appendChild(renderer.domElement);
     // リサイズ対応
@@ -2437,12 +2440,23 @@
     // 上部全体照明
     const hemiLight = new THREE.HemisphereLight(0xaabbff, 0x444422, 1.0);
     scene.add(hemiLight);
-    const spot1 = new THREE.SpotLight(0x4fa3ff, 3, 60, 0.6, 0.3);
-    spot1.position.set(-6, 18, 5);
-    scene.add(spot1);
-    const spot2 = new THREE.SpotLight(0xff4444, 3, 60, 0.6, 0.3);
-    spot2.position.set(6, 18, 5);
-    scene.add(spot2);
+    // SpotLight はモバイルで重いので、軽量な指向性ライト/環境色で代替
+    if (!isMobile) {
+      const spot1 = new THREE.SpotLight(0x4fa3ff, 3, 60, 0.6, 0.3);
+      spot1.position.set(-6, 18, 5);
+      scene.add(spot1);
+      const spot2 = new THREE.SpotLight(0xff4444, 3, 60, 0.6, 0.3);
+      spot2.position.set(6, 18, 5);
+      scene.add(spot2);
+    } else {
+      // モバイルは色味だけ青/赤の DirectionalLight を弱めに
+      const blueDir = new THREE.DirectionalLight(0x4fa3ff, 0.4);
+      blueDir.position.set(-6, 18, 5);
+      scene.add(blueDir);
+      const redDir = new THREE.DirectionalLight(0xff4444, 0.4);
+      redDir.position.set(6, 18, 5);
+      scene.add(redDir);
+    }
     // 正面から白い光
     const frontLight = new THREE.DirectionalLight(0xffffff, 0.8);
     frontLight.position.set(0, 10, 15);
@@ -2467,7 +2481,11 @@
 
     // ===== 観客スタンド(360°囲む + 階段状 + 人型シルエット) =====
     const crowdColors = [0x334488, 0x884433, 0x338844, 0x885588, 0x666666, 0x448888];
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xddb896 });
+    // モバイルではライト計算を行わない MeshBasicMaterial に切り替えて GPU 負荷を大幅削減
+    const CrowdMat = isMobile ? THREE.MeshBasicMaterial : THREE.MeshStandardMaterial;
+    const skinMat = new CrowdMat({ color: 0xddb896 });
+    // モバイルでは1段あたりの人数を半減して描画コール数を削減
+    const personSpacing = isMobile ? 2.4 : 1.2;
     const crowdGroup = new THREE.Group();
     // 4方向にスタンド
     [0, 90, 180, 270].forEach(deg => {
@@ -2480,18 +2498,18 @@
         const rowY = 1 + row * 1.5;
         // 席台
         const seatGeo = new THREE.BoxGeometry(standW, 0.3, 1.8);
-        const seatMat = new THREE.MeshStandardMaterial({ color: 0x333344 });
+        const seatMat = new CrowdMat({ color: 0x333344 });
         const seat = new THREE.Mesh(seatGeo, seatMat);
         seat.position.set(Math.sin(rad) * rowDist, rowY, Math.cos(rad) * rowDist);
         seat.rotation.y = rad;
         crowdGroup.add(seat);
         // 人
-        const count = Math.floor(standW / 1.2);
+        const count = Math.floor(standW / personSpacing);
         for (let p = 0; p < count; p++) {
-          const px = (p - count / 2) * 1.2 + (Math.random() - 0.5) * 0.3;
+          const px = (p - count / 2) * personSpacing + (Math.random() - 0.5) * 0.3;
           const person = new THREE.Group();
           // 体(ランダム色)
-          const clothMat = new THREE.MeshStandardMaterial({ color: crowdColors[Math.floor(Math.random() * crowdColors.length)] });
+          const clothMat = new CrowdMat({ color: crowdColors[Math.floor(Math.random() * crowdColors.length)] });
           const body = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.8, 0.3), clothMat);
           body.position.y = 0.6;
           person.add(body);
@@ -2499,8 +2517,8 @@
           const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), skinMat);
           head.position.y = 1.2;
           person.add(head);
-          // たまに腕を上げている(応援ポーズ)
-          if (Math.random() < 0.3) {
+          // たまに腕を上げている(応援ポーズ) — モバイルでは省略
+          if (!isMobile && Math.random() < 0.3) {
             const arm = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.6, 0.1), skinMat);
             arm.position.set(Math.random() < 0.5 ? -0.3 : 0.3, 1.4, 0);
             arm.rotation.z = (Math.random() - 0.5) * 0.6;
@@ -2579,15 +2597,35 @@
       m.rotation.y = rad + Math.PI; // アリーナの方を向く
       scene.add(m);
     });
+    // ペンライト: 60個の動的 PointLight はスマホで致命的に重いため、
+    // モバイルではライトではなく MeshBasicMaterial の発光小箱で代替する
     const penLights = [];
-    for (let i = 0; i < 60; i++) {
-      const ang = Math.random() * Math.PI * 2;
-      const dist = 11 + Math.random() * 4;
-      const c = Math.random() < 0.5 ? 0x4fa3ff : 0xff4444;
-      const pl = new THREE.PointLight(c, 0.3, 5);
-      pl.position.set(Math.sin(ang) * dist, 2.5 + Math.random() * 3, Math.cos(ang) * dist);
-      scene.add(pl);
-      penLights.push(pl);
+    const penDots = [];
+    if (isMobile) {
+      const blueDotMat = new THREE.MeshBasicMaterial({ color: 0x4fa3ff });
+      const redDotMat = new THREE.MeshBasicMaterial({ color: 0xff4444 });
+      const dotGeo = new THREE.BoxGeometry(0.18, 0.5, 0.18);
+      for (let i = 0; i < 30; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const dist = 11 + Math.random() * 4;
+        const isBlue = Math.random() < 0.5;
+        const dot = new THREE.Mesh(dotGeo, isBlue ? blueDotMat : redDotMat);
+        const baseY = 2.5 + Math.random() * 3;
+        dot.position.set(Math.sin(ang) * dist, baseY, Math.cos(ang) * dist);
+        dot.userData.baseY = baseY;
+        scene.add(dot);
+        penDots.push(dot);
+      }
+    } else {
+      for (let i = 0; i < 60; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const dist = 11 + Math.random() * 4;
+        const c = Math.random() < 0.5 ? 0x4fa3ff : 0xff4444;
+        const pl = new THREE.PointLight(c, 0.3, 5);
+        pl.position.set(Math.sin(ang) * dist, 2.5 + Math.random() * 3, Math.cos(ang) * dist);
+        scene.add(pl);
+        penLights.push(pl);
+      }
     }
 
     // ===== パイロット(リモコンで操作してる人) =====
@@ -2629,10 +2667,12 @@
       ctrl.position.set(0, 0.9, 0.3);
       ctrl.rotation.x = -0.3;
       pilot.add(ctrl);
-      // コントローラの赤い光
-      const ctrlLight = new THREE.PointLight(teamColor, 0.5, 2);
-      ctrlLight.position.set(0, 1.0, 0.4);
-      pilot.add(ctrlLight);
+      // コントローラの赤い光 — モバイルでは PointLight を省略(動的ライト数を抑える)
+      if (!isMobile) {
+        const ctrlLight = new THREE.PointLight(teamColor, 0.5, 2);
+        ctrlLight.position.set(0, 1.0, 0.4);
+        pilot.add(ctrlLight);
+      }
       pilot.userData = { armL, armR, ctrl };
       return pilot;
     }
@@ -2807,6 +2847,10 @@
       // ペンライト揺れ
       penLights.forEach((pl, i) => {
         pl.intensity = 0.15 + Math.sin(t * 0.1 + i) * 0.15;
+      });
+      // モバイル用の発光小箱(ペンライト代替)を上下に揺らす
+      penDots.forEach((d, i) => {
+        d.position.y = d.userData.baseY + Math.sin(t * 0.1 + i) * 0.15;
       });
       // ===== カメラワーク(周回＋ドラマチック切替) =====
       const center = new THREE.Vector3(0, 3, 2);
