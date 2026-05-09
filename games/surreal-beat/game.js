@@ -9,7 +9,7 @@
   var translations = {
     ja: {
       gameTitle: 'シュールビート',
-      gameSubtitle: '8つのゲームのBGMでリズムをタップ！',
+      gameSubtitle: '9ゲームのBGMでリズムをタップ！',
       startBtn: 'スタート',
       keyHint: 'PC: D F J K キー / スマホ: タップ',
       stageSelectTitle: 'ステージ選択',
@@ -32,20 +32,24 @@
       stage6: 'きょうふの怪談',
       stage7: 'ひよこ進化論',
       stage8: '漆黒の対局',
+      stage9: 'おじさんマシーン',
       stage1detail: '脱出ゲーム / BPM 120 / 入門',
-      stage2detail: 'かにかに / BPM 130 / ポップ',
-      stage3detail: '経営分析 / BPM 138 / きらめき',
-      stage4detail: '黄金ドライバー / BPM 148 / レース',
-      stage5detail: 'うんコーン / BPM 158 / マーチ',
-      stage6detail: 'マインスイーパー / BPM 168 / ホラー',
-      stage7detail: 'シュール進化論 / BPM 180 / レトロ',
-      stage8detail: '漆黒のリバーシ / BPM 192 / ミステリー',
+      stage2detail: 'かにかに / BPM 160 / ポップ',
+      stage3detail: '経営分析 / BPM 115 / きらめき',
+      stage4detail: '黄金ドライバー / BPM 180 / レース',
+      stage5detail: 'うんコーン / BPM 140 / マーチ',
+      stage6detail: 'マインスイーパー / BPM 68 / ホラー',
+      stage7detail: 'シュール進化論 / BPM 110 / レトロ',
+      stage8detail: '漆黒のリバーシ / BPM 170 / バトル',
+      stage9detail: 'THE MACHINE / BPM 132 / 機械',
       modeNormal: '表',
       modeHard: '裏',
       hardLocked: '表クリアで解放',
       hardBadge: '裏',
       hardIntro: '★ 裏モード ★',
       hardClear: '裏モード制覇！',
+      introOk: '好きな曲を選ぶ！',
+      allClearOk: 'ありがとう！',
       shareText: function (score, stage, isHard) {
         var tag = isHard ? '【裏】' : '';
         return 'シュールビート' + tag + '「' + stage + '」で ' + score + '点！🎵\n#シュールゲームス #シュールビート';
@@ -53,7 +57,7 @@
     },
     en: {
       gameTitle: 'Surreal Beat',
-      gameSubtitle: '8 stages of game BGM rhythm!',
+      gameSubtitle: '9 stages of game BGM rhythm!',
       startBtn: 'START',
       keyHint: 'PC: D F J K keys / Mobile: Tap',
       stageSelectTitle: 'Stage Select',
@@ -76,20 +80,24 @@
       stage6: 'Stairway Horror',
       stage7: 'Chick Evolution',
       stage8: 'Pitch Black Match',
+      stage9: 'The Uncle Machine',
       stage1detail: 'Escape Room / BPM 120 / Intro',
-      stage2detail: 'Whack Crab / BPM 130 / Pop',
-      stage3detail: 'Business Analysis / BPM 138 / Sparkle',
-      stage4detail: 'Gold Driver / BPM 148 / Race',
-      stage5detail: 'Unko Cone / BPM 158 / March',
-      stage6detail: 'Minesweeper / BPM 168 / Horror',
-      stage7detail: 'Surreal Evolution / BPM 180 / Retro',
-      stage8detail: 'Black Reversi / BPM 192 / Mystery',
+      stage2detail: 'Whack Crab / BPM 160 / Pop',
+      stage3detail: 'Business Analysis / BPM 115 / Sparkle',
+      stage4detail: 'Gold Driver / BPM 180 / Race',
+      stage5detail: 'Unko Cone / BPM 140 / March',
+      stage6detail: 'Minesweeper / BPM 68 / Horror',
+      stage7detail: 'Surreal Evolution / BPM 110 / Retro',
+      stage8detail: 'Black Reversi / BPM 170 / Battle',
+      stage9detail: 'THE MACHINE / BPM 132 / Machine',
       modeNormal: 'NORMAL',
       modeHard: 'HARD',
       hardLocked: 'Clear normal to unlock',
       hardBadge: 'HARD',
       hardIntro: '★ HARD MODE ★',
       hardClear: 'HARD MODE CLEAR!',
+      introOk: 'Pick a song!',
+      allClearOk: 'Thank you!',
       shareText: function (score, stage, isHard) {
         var tag = isHard ? '[HARD] ' : '';
         return 'I scored ' + score + ' on ' + tag + '"' + stage + '" in Surreal Beat! 🎵\n#SurrealGames #SurrealBeat';
@@ -156,9 +164,9 @@
       sabiDensity: 0.28, sixteenthChance: 0.18
     },
     {
-      // Stage 6 - かいだんマインスイーパー（2026.04.06）
-      name: 'stage6', themeKey: 'kaidan', bpm: 168, duration: 35000,
-      bgm: 'ominous', emojis: ['👻', '💀', '🪦', '💣', '🕯'],
+      // Stage 6 - かいだんマインスイーパー（2026.04.06）— 専用horrorプリセット
+      name: 'stage6', themeKey: 'kaidan', bpm: 68, duration: 35000,
+      bgm: 'horror', emojis: ['👻', '💀', '🪦', '💣', '🕯'],
       colors: ['#b0bec5', '#607d8b', '#37474f'],
       bgGradient: 'radial-gradient(ellipse at top, rgba(96,125,139,0.3), transparent 60%), linear-gradient(180deg, #0a0e12 0%, #000308 100%)',
       offbeatChance: 0.38, skipChance: 0.08, doubleChance: 0.2,
@@ -166,7 +174,7 @@
     },
     {
       // Stage 7 - シュール進化論（2026.04.11）
-      name: 'stage7', themeKey: 'evo', bpm: 180, duration: 36000,
+      name: 'stage7', themeKey: 'evo', bpm: 110, duration: 36000,
       bgm: 'retro', emojis: ['🐣', '🥚', '🌟', '⭐', '🟡'],
       colors: ['#fff9c4', '#fff176', '#f9a825'],
       bgGradient: 'radial-gradient(ellipse at top, rgba(255,241,118,0.3), transparent 60%), linear-gradient(180deg, #2a2200 0%, #1a1500 100%)',
@@ -174,13 +182,22 @@
       sabiDensity: 0.32, sixteenthChance: 0.22
     },
     {
-      // Stage 8 - 漆黒のリバーシ（2026.04.13, 最新）
-      name: 'stage8', themeKey: 'reversi', bpm: 192, duration: 38000,
-      bgm: 'mystery', emojis: ['⚫', '⚪', '🔮', '💜', '✨'],
+      // Stage 8 - 漆黒のリバーシ（2026.04.13）— battleプリセット（実際のゲームBGM）
+      name: 'stage8', themeKey: 'reversi', bpm: 170, duration: 38000,
+      bgm: 'battle', emojis: ['⚫', '⚪', '🔮', '💜', '✨'],
       colors: ['#ce93d8', '#9c27b0', '#6a1b9a'],
       bgGradient: 'radial-gradient(ellipse at top, rgba(156,39,176,0.35), transparent 60%), linear-gradient(180deg, #1a0020 0%, #0a0010 100%)',
       offbeatChance: 0.48, skipChance: 0.04, doubleChance: 0.3,
       sabiDensity: 0.36, sixteenthChance: 0.28
+    },
+    {
+      // Stage 9 - THE MACHINE（2026.04.26, 最新）— 機械化したほのぼの
+      name: 'stage9', themeKey: 'machine', bpm: 132, duration: 38000,
+      bgm: 'machine', emojis: ['🤖', '⚙️', '🔩', '💡', '🦾'],
+      colors: ['#b3e5fc', '#03a9f4', '#01579b'],
+      bgGradient: 'radial-gradient(ellipse at top, rgba(3,169,244,0.3), transparent 60%), linear-gradient(180deg, #001a2e 0%, #000814 100%)',
+      offbeatChance: 0.52, skipChance: 0.03, doubleChance: 0.34,
+      sabiDensity: 0.40, sixteenthChance: 0.32
     },
   ];
 
@@ -237,6 +254,7 @@
   var animFrameId = null;
   var beatPulseTimer = null;
   var particles = [];
+  var stageSelectIntroShown = false; // ステージ選択の初回イントロ画像を表示済みか
 
   // ===== 進行度管理 =====
   function loadProgress() {
@@ -279,12 +297,45 @@
   var particleCanvas = document.getElementById('particle-canvas');
   var particleCtx = particleCanvas ? particleCanvas.getContext('2d') : null;
   var tapBtns = document.querySelectorAll('.tap-btn');
+  var stageSelectIntroEl = document.getElementById('stage-select-intro');
+  var stageSelectIntroCloseBtn = document.getElementById('stage-select-intro-close');
+  var allClearOverlayEl = document.getElementById('all-clear-overlay');
+  var allClearCloseBtn = document.getElementById('all-clear-close');
 
   // ===== 画面切り替え =====
   function showScreen(screenId) {
     var screens = [titleScreen, stageSelectScreen, gameScreen, clearScreen, resultScreen];
     screens.forEach(function (s) { s.classList.remove('active'); });
     document.getElementById(screenId).classList.add('active');
+  }
+
+  // ===== オーバーレイ表示 =====
+  // 初回ステージ選択時のイントロ画像（タップで消える）
+  function maybeShowStageSelectIntro() {
+    if (stageSelectIntroShown) return;
+    if (!stageSelectIntroEl) return;
+    stageSelectIntroShown = true;
+    stageSelectIntroEl.classList.remove('hidden');
+    stageSelectIntroEl.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideStageSelectIntro() {
+    if (!stageSelectIntroEl) return;
+    stageSelectIntroEl.classList.add('hidden');
+    stageSelectIntroEl.setAttribute('aria-hidden', 'true');
+  }
+
+  // 全ステージクリアのお祝いオーバーレイ
+  function showAllClearOverlay() {
+    if (!allClearOverlayEl) return;
+    allClearOverlayEl.classList.remove('hidden');
+    allClearOverlayEl.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideAllClearOverlay() {
+    if (!allClearOverlayEl) return;
+    allClearOverlayEl.classList.add('hidden');
+    allClearOverlayEl.setAttribute('aria-hidden', 'true');
   }
 
   // ===== ステージ選択画面描画 =====
@@ -382,7 +433,135 @@
   }
 
   // ===== 譜面自動生成 =====
+  // BGMプリセットの実際のメロディ拍位置（swing含む）に合わせてノートを配置。
+  // これによりノーツがBGMの音と一致するタイミングで落ちてくる。
   function generateChart(stageConfig) {
+    var emojis = stageConfig.emojis;
+    var presets = (window.SurrealGames && window.SurrealGames.BGM_PRESETS) || null;
+    var preset = presets ? presets[stageConfig.bgm] : null;
+
+    // BGMプリセットが取れない場合はフォールバック（旧来の等間隔生成）
+    if (!preset || !preset.melody) {
+      return generateChartFromBpm(stageConfig);
+    }
+
+    // 裏モードはBGM自体が速く鳴るので、譜面側もその倍率で時間を縮める
+    var bgmSpeed = (currentMode === 'hard') ? HARD_MULTIPLIER.bpmBoost : 1.0;
+    var baseBeat = 60000 / preset.tempo / bgmSpeed; // 1拍の実時間(ms)
+    var melody = preset.melody;
+    var swing = preset.swing;
+
+    // 各メロディ音の開始オフセット（_loopBgmと同じ計算）
+    var offsets = [];
+    var noteDur = [];
+    var t = 0;
+    for (var i = 0; i < melody.length; i++) {
+      var d = baseBeat * (swing ? swing[i] : 1);
+      offsets.push(t);
+      noteDur.push(d);
+      t += d;
+    }
+    var loopDur = t; // 1ループの長さ(ms)
+
+    // メロディ全体の最小/最大周波数を求めて相対マッピング
+    // （曲ごとの音域が違うため、絶対値だと音域が狭い曲は全部同じレーンに集中する）
+    var minF = Infinity, maxF = 0;
+    for (var mi = 0; mi < melody.length; mi++) {
+      if (melody[mi] > 0) {
+        if (melody[mi] < minF) minF = melody[mi];
+        if (melody[mi] > maxF) maxF = melody[mi];
+      }
+    }
+    var minLogF = Math.log(minF);
+    var rangeLogF = Math.log(maxF) - minLogF;
+
+    // 周波数→レーン: 曲のメロディ最低音=左、最高音=右
+    function freqToLane(freq) {
+      if (!freq || rangeLogF <= 0) return Math.floor(Math.random() * LANE_COUNT);
+      var ratio = (Math.log(freq) - minLogF) / rangeLogF;
+      ratio = Math.max(0, Math.min(0.999, ratio));
+      return Math.floor(ratio * LANE_COUNT);
+    }
+
+    var chart = [];
+    var lastLanes = [-1, -1];
+    var totalLoops = Math.ceil(stageConfig.duration / loopDur) + 1;
+
+    for (var loopIdx = 0; loopIdx < totalLoops; loopIdx++) {
+      for (var k = 0; k < melody.length; k++) {
+        var time = loopIdx * loopDur + offsets[k];
+        if (time >= stageConfig.duration) break;
+
+        var freq = melody[k];
+        var hasMelody = freq && freq > 0;
+        var beatPhase = k % 8;
+        var isStrong = (beatPhase === 0 || beatPhase === 2 || beatPhase === 4 || beatPhase === 6);
+        var isSabi = (time / stageConfig.duration) >= 0.6;
+
+        // 配置判定
+        // - メロディが鳴る強拍は基本配置
+        // - メロディが鳴る裏拍はoffbeatChanceで配置
+        // - 休符でもサビ中はsabiDensity確率で配置（盛り上げ）
+        var shouldPlace = false;
+        if (hasMelody && isStrong) shouldPlace = true;
+        else if (hasMelody && !isStrong && Math.random() < stageConfig.offbeatChance) shouldPlace = true;
+        else if (!hasMelody && isSabi && Math.random() < stageConfig.sabiDensity) shouldPlace = true;
+
+        // たまに抜いてリズムに余白を作る
+        if (shouldPlace && isStrong && Math.random() < stageConfig.skipChance) {
+          shouldPlace = false;
+        }
+
+        if (shouldPlace) {
+          var lane = hasMelody ? freqToLane(freq) : Math.floor(Math.random() * LANE_COUNT);
+          // 同レーン3連続を回避
+          if (lane === lastLanes[0] && lane === lastLanes[1]) {
+            lane = (lane + 1 + Math.floor(Math.random() * (LANE_COUNT - 1))) % LANE_COUNT;
+          }
+          lastLanes[1] = lastLanes[0];
+          lastLanes[0] = lane;
+
+          chart.push({
+            time: time,
+            lane: lane,
+            emoji: emojis[Math.floor(Math.random() * emojis.length)]
+          });
+
+          // 同時押し（サビ中は確率UP）
+          var doubleP = stageConfig.doubleChance * (isSabi ? 1.4 : 1);
+          if (doubleP > 0 && Math.random() < doubleP) {
+            var doubleLane;
+            do {
+              doubleLane = Math.floor(Math.random() * LANE_COUNT);
+            } while (doubleLane === lane);
+            chart.push({
+              time: time,
+              lane: doubleLane,
+              emoji: emojis[Math.floor(Math.random() * emojis.length)]
+            });
+          }
+        }
+
+        // 16ビート: そのメロディ音の長さの中間に追加（swing拍長に追従）
+        if (stageConfig.sixteenthChance > 0 && Math.random() < stageConfig.sixteenthChance) {
+          var subTime = time + noteDur[k] * 0.5;
+          if (subTime < stageConfig.duration) {
+            chart.push({
+              time: subTime,
+              lane: Math.floor(Math.random() * LANE_COUNT),
+              emoji: emojis[Math.floor(Math.random() * emojis.length)]
+            });
+          }
+        }
+      }
+    }
+
+    chart.sort(function (a, b) { return a.time - b.time; });
+    return chart;
+  }
+
+  // BGMプリセットが見つからない場合の旧来生成（フォールバック）
+  function generateChartFromBpm(stageConfig) {
     var chart = [];
     var beatInterval = 60000 / stageConfig.bpm;
     var totalBeats = Math.floor(stageConfig.duration / beatInterval);
@@ -391,88 +570,19 @@
 
     for (var i = 0; i < totalBeats; i++) {
       var beatPhase = i % 8;
-      var shouldPlace = false;
-
-      // 基本パターン: 8ビート（1, 3, 5, 7拍目）
-      if (beatPhase === 0 || beatPhase === 2 || beatPhase === 4 || beatPhase === 6) {
-        shouldPlace = true;
-      }
-
-      // 裏拍
-      if (!shouldPlace && Math.random() < stageConfig.offbeatChance) {
-        shouldPlace = true;
-      }
-
-      // 16ビート（拍間にノーツ追加）
-      if (stageConfig.sixteenthChance > 0 && Math.random() < stageConfig.sixteenthChance) {
-        var sixteenthTime = i * beatInterval + beatInterval * 0.5;
-        if (sixteenthTime < stageConfig.duration) {
-          var sixteenthLane = Math.floor(Math.random() * LANE_COUNT);
-          chart.push({
-            time: sixteenthTime,
-            lane: sixteenthLane,
-            emoji: emojis[Math.floor(Math.random() * emojis.length)]
-          });
-        }
-      }
-
-      // たまに拍を抜く
-      if (shouldPlace && Math.random() < stageConfig.skipChance) {
-        shouldPlace = false;
-      }
+      var shouldPlace = (beatPhase === 0 || beatPhase === 2 || beatPhase === 4 || beatPhase === 6);
+      if (!shouldPlace && Math.random() < stageConfig.offbeatChance) shouldPlace = true;
+      if (shouldPlace && Math.random() < stageConfig.skipChance) shouldPlace = false;
 
       if (shouldPlace) {
-        // レーン選択（連続回避）
         var lane;
-        var attempts = 0;
-        do {
-          lane = Math.floor(Math.random() * LANE_COUNT);
-          attempts++;
-        } while (attempts < 10 && (lane === lastLanes[0] && lane === lastLanes[1]));
-
+        do { lane = Math.floor(Math.random() * LANE_COUNT); }
+        while (lane === lastLanes[0] && lane === lastLanes[1]);
         lastLanes[1] = lastLanes[0];
         lastLanes[0] = lane;
-
-        chart.push({
-          time: i * beatInterval,
-          lane: lane,
-          emoji: emojis[Math.floor(Math.random() * emojis.length)]
-        });
-
-        // 同時押し
-        if (stageConfig.doubleChance > 0 && Math.random() < stageConfig.doubleChance) {
-          var doubleLane;
-          do {
-            doubleLane = Math.floor(Math.random() * LANE_COUNT);
-          } while (doubleLane === lane);
-          chart.push({
-            time: i * beatInterval,
-            lane: doubleLane,
-            emoji: emojis[Math.floor(Math.random() * emojis.length)]
-          });
-        }
+        chart.push({ time: i * beatInterval, lane: lane, emoji: emojis[Math.floor(Math.random() * emojis.length)] });
       }
     }
-
-    // サビ（後半60%以降）で密度UP
-    var sabiStart = Math.floor(totalBeats * 0.6);
-    for (var j = sabiStart; j < totalBeats; j++) {
-      if (Math.random() < stageConfig.sabiDensity) {
-        var extraLane = Math.floor(Math.random() * LANE_COUNT);
-        var time = j * beatInterval;
-        var conflict = chart.some(function (n) {
-          return Math.abs(n.time - time) < 50 && n.lane === extraLane;
-        });
-        if (!conflict) {
-          chart.push({
-            time: time,
-            lane: extraLane,
-            emoji: emojis[Math.floor(Math.random() * emojis.length)]
-          });
-        }
-      }
-    }
-
     chart.sort(function (a, b) { return a.time - b.time; });
     return chart;
   }
@@ -522,11 +632,9 @@
 
     showScreen('game-screen');
 
-    // BGMをステージに合わせて再生（裏モードは速度UP）
-    SoundSystem.playBgm(baseConfig.bgm);
-    if (SoundSystem.setBgmSpeed) {
-      SoundSystem.setBgmSpeed(currentMode === 'hard' ? HARD_MULTIPLIER.bpmBoost : 1.0);
-    }
+    // BGMをステージに合わせて再生（裏モードは最初のループから速度UP）
+    var bgmSpeed = (currentMode === 'hard') ? HARD_MULTIPLIER.bpmBoost : 1.0;
+    SoundSystem.playBgm(baseConfig.bgm, { speed: bgmSpeed });
 
     // パーティクルキャンバスサイズ
     resizeParticleCanvas();
@@ -534,8 +642,11 @@
     gameStartTime = performance.now();
     animFrameId = requestAnimationFrame(gameLoop);
 
-    // 背景パルス開始
-    startBeatPulse(stageConfig.bpm);
+    // 背景パルスはBGMの実テンポに合わせる（譜面と視覚演出をBGMで統一）
+    var bgmPresets = window.SurrealGames && window.SurrealGames.BGM_PRESETS;
+    var bgmPreset = bgmPresets ? bgmPresets[baseConfig.bgm] : null;
+    var pulseBpm = bgmPreset ? bgmPreset.tempo * bgmSpeed : stageConfig.bpm;
+    startBeatPulse(pulseBpm);
   }
 
   // ===== テーマ色適用 =====
@@ -946,6 +1057,9 @@
     if (cleared) {
       // クリア! 進行度を更新
       var progress = loadProgress();
+      // 更新前のクリア状況を覚えておく（全クリア演出の判定用）
+      var wasAllNormalCleared = progress.cleared.length >= STAGES.length;
+      var wasAllHardCleared = progress.hardCleared.length >= STAGES.length;
       if (isHard) {
         if (progress.hardCleared.indexOf(currentStageIndex) === -1) {
           progress.hardCleared.push(currentStageIndex);
@@ -959,6 +1073,10 @@
         }
       }
       saveProgress(progress);
+      // この一戦で初めて全ステージを制覇したか
+      var isFirstAllClear = isHard
+        ? (!wasAllHardCleared && progress.hardCleared.length >= STAGES.length)
+        : (!wasAllNormalCleared && progress.cleared.length >= STAGES.length);
 
       // クリア画面表示
       var modeBadge = isHard ? ' 【' + t('hardBadge') + '】' : '';
@@ -996,6 +1114,12 @@
       // クリア演出パーティクル（canvasがgame-screen内なので、clear-screen上にも一時的に見せる）
       // 代わりにDOM花火を生成
       spawnDomFireworks();
+
+      // 初めて全ステージ制覇したらお祝いオーバーレイを表示
+      if (isFirstAllClear) {
+        // クリア画面の演出と被らないよう少し遅延
+        setTimeout(showAllClearOverlay, 700);
+      }
 
     } else {
       // 失敗画面
@@ -1100,7 +1224,35 @@
   startBtn.addEventListener('click', function () {
     renderStageList();
     showScreen('stage-select-screen');
+    // 初回ステージ選択時のみイントロ画像を表示
+    maybeShowStageSelectIntro();
   });
+
+  // イントロ画像を閉じる（OKボタン or オーバーレイ自体タップ）
+  if (stageSelectIntroCloseBtn) {
+    stageSelectIntroCloseBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      hideStageSelectIntro();
+    });
+  }
+  if (stageSelectIntroEl) {
+    stageSelectIntroEl.addEventListener('click', function () {
+      hideStageSelectIntro();
+    });
+  }
+
+  // 全クリアオーバーレイを閉じる
+  if (allClearCloseBtn) {
+    allClearCloseBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      hideAllClearOverlay();
+    });
+  }
+  if (allClearOverlayEl) {
+    allClearOverlayEl.addEventListener('click', function () {
+      hideAllClearOverlay();
+    });
+  }
 
   backToTitleBtn.addEventListener('click', function () {
     showScreen('title-screen');

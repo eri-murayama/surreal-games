@@ -29,8 +29,8 @@
   <div id="title-screen" class="screen active">
     <div class="title-content">
       <h1 class="game-title" data-i18n="gameTitle">シュールビート</h1>
-      <p class="game-subtitle" data-i18n="gameSubtitle">8つのゲームのBGMでリズムをタップ！</p>
-      <div class="title-emojis">🚪🐣📊⚫👻💩🦀🚗</div>
+      <p class="game-subtitle" data-i18n="gameSubtitle">9ゲームのBGMでリズムをタップ！</p>
+      <div class="title-emojis">🚪🦀📊🚗💩👻🐣⚫🤖</div>
       <button id="start-btn" class="neon-btn" data-i18n="startBtn">スタート</button>
       <p class="key-hint" data-i18n="keyHint">PC: D F J K キー / スマホ: タップ</p>
     </div>
@@ -42,6 +42,13 @@
       <h2 class="stage-select-title" data-i18n="stageSelectTitle">ステージ選択</h2>
       <div id="stage-list" class="stage-list"></div>
       <button id="back-to-title-btn" class="neon-btn neon-btn-small" data-i18n="backToTitle">タイトルに戻る</button>
+    </div>
+    <!-- 初回ステージ選択時のイントロ画像 -->
+    <div id="stage-select-intro" class="sb-overlay hidden" aria-hidden="true">
+      <div class="sb-overlay-inner">
+        <img src="assets/stage-select-intro.png" alt="好きな曲を選ぶドン" class="sb-overlay-img">
+        <button id="stage-select-intro-close" class="neon-btn" data-i18n="introOk">好きな曲を選ぶ！</button>
+      </div>
     </div>
   </div>
 
@@ -113,6 +120,14 @@
         <button id="next-stage-btn" class="neon-btn" data-i18n="nextStage">次のステージへ</button>
         <button id="retry-stage-btn" class="neon-btn neon-btn-small" data-i18n="retry">もう一回</button>
         <button id="back-to-select-btn" class="neon-btn neon-btn-small" data-i18n="backToSelect">ステージ選択</button>
+      </div>
+    </div>
+    <!-- 全ステージクリア時のお祝いオーバーレイ -->
+    <div id="all-clear-overlay" class="sb-overlay hidden" aria-hidden="true">
+      <div class="sb-overlay-inner sb-overlay-celebrate">
+        <h2 class="sb-clear-title" data-i18n="allClear">全ステージクリア！</h2>
+        <img src="assets/all-clear-pianist.png" alt="天才！ピアニスト現る！！" class="sb-overlay-img">
+        <button id="all-clear-close" class="neon-btn" data-i18n="allClearOk">ありがとう！</button>
       </div>
     </div>
   </div>

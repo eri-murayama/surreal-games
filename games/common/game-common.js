@@ -628,6 +628,44 @@
         0.7, 0.7, 0.7, 1.4, 0.7, 0.7, 0.7, 1.4,
       ]
     },
+    // 機械音楽系（THE MACHINE）— 機械化したほのぼの（square wave + ステップ的ベース）
+    machine: {
+      tempo: 132, key: 'C', wave: 'square', volume: 0.09,
+      melody: [
+        523, 659, 784, 659, 698, 587, 523, 0,
+        392, 523, 659, 523, 587, 698, 659, 0,
+        523, 659, 784, 880, 784, 659, 523, 0,
+        440, 523, 659, 523, 392, 523, 587, 0,
+      ],
+      bass: [
+        131, 0,   0,   0,   196, 0,   0,   0,
+        175, 0,   0,   0,   196, 0,   0,   0,
+        131, 0,   0,   0,   196, 0,   0,   0,
+        175, 0,   0,   0,   196, 0,   0,   0,
+      ]
+    },
+    // 怪談・ホラー系（かいだんマインスイーパー）— 三全音と長休符で不穏なドローン
+    horror: {
+      tempo: 68, key: 'Em', wave: 'triangle', volume: 0.10,
+      melody: [
+        330, 0,   311, 0,   277, 0,   311, 0,
+        330, 369, 0,   415, 0,   369, 330, 0,
+        277, 0,   261, 0,   247, 0,   261, 0,
+        277, 311, 0,   349, 311, 277, 247, 0,
+      ],
+      bass: [
+        82, 82, 0,  0,  87, 87, 0,  0,
+        82, 82, 0,  87, 0,  82, 78, 0,
+        73, 73, 0,  0,  78, 78, 0,  0,
+        73, 73, 0,  78, 0,  73, 69, 0,
+      ],
+      swing: [
+        1.5, 0.5, 1.5, 0.5, 1.5, 0.5, 1.5, 0.5,
+        1.2, 0.8, 0.6, 1.4, 0.6, 1.0, 1.2, 0.8,
+        1.5, 0.5, 1.5, 0.5, 1.5, 0.5, 1.5, 0.5,
+        1.2, 0.8, 0.6, 1.4, 1.0, 1.0, 1.2, 0.8,
+      ]
+    },
     // バトル・対戦系（漆黒のリバーシ）— スタッカート＋跳躍＋brass で爽快バトル
     // 他プリセットとの差別化: 休符多め・5度跳躍・ルート-5th交互ベース・短-長ハネ
     battle: {
@@ -675,6 +713,8 @@
     'hashimoto': 'gameshow',
     'ireland': 'celtic',
     'magic-trick': 'magic',
+    'minesweeper': 'horror',
+    'the-machine-comedy': 'machine',
     'party-game': 'action',
     'pet': 'calm',
     // 'puzzle-2048': カスタムBGM使用（game.js内で独自実装）
@@ -721,8 +761,9 @@
 
         // ctx生成前に呼ばれたplayBgmを再実行
         if (this._pendingBgm && this.enabled) {
-          this.playBgm(this._pendingBgm);
+          this.playBgm(this._pendingBgm, this._pendingBgmOpts);
           this._pendingBgm = null;
+          this._pendingBgmOpts = null;
         }
       };
       document.addEventListener('click', initAudio);
@@ -768,17 +809,23 @@
     },
 
     // BGMを再生
-    playBgm(presetName) {
+    playBgm(presetName, opts) {
       if (!this.enabled) return;
       this._ensureCtx();
       if (!this.ctx) {
         // ctx未生成（ユーザー操作前）→ 保留して後で再生
         this._pendingBgm = presetName;
+        this._pendingBgmOpts = opts || null;
         return;
       }
       const preset = BGM_PRESETS[presetName];
       if (!preset) return;
       this.stopBgm();
+      // stopBgm() で速度倍率がリセットされた直後に opts.speed を適用
+      // （これをしないと最初のループが常に1.0倍速で再生される）
+      if (opts && typeof opts.speed === 'number') {
+        this.bgmSpeedMultiplier = opts.speed;
+      }
       this.currentBgmPreset = presetName;
       this.bgmPlaying = true;
       // contextが未稼働の場合、resume完了を待ってから再生開始
@@ -2746,7 +2793,7 @@
   // グローバルに公開
   window.SurrealGames = {
     init, GAME_CATALOG, RELEASED_IDS,
-    SoundSystem, HighScore, Stats, Achievements,
+    SoundSystem, BGM_PRESETS, HighScore, Stats, Achievements,
     DailyChallenge, StampCard, DeathDex, Titles,
     DEATH_DEX_DEFS, TITLE_DEFS,
     GA: SG_GA

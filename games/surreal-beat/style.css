@@ -1010,7 +1010,21 @@ body:has(#game-screen.active) .sg-share-btn {
   z-index: 1;
 }
 
-/* ===== ステージリストの高さ調整（8ステージ対応） ===== */
+/* 9) THE MACHINE: 青白い機械グリッド */
+#play-area.theme-machine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(3, 169, 244, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(3, 169, 244, 0.06) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 0%, rgba(3, 169, 244, 0.18), transparent 60%);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== ステージリストの高さ調整（9ステージ対応） ===== */
 .stage-list {
   max-height: calc(100dvh - 200px);
   overflow-y: auto;
@@ -1179,4 +1193,95 @@ body:has(#game-screen.active) .sg-share-btn {
 #game-screen.hard-mode #stage-banner .banner-num {
   color: #ff8844;
   letter-spacing: 6px;
+}
+
+/* ===== 共通オーバーレイ（イントロ・全クリア） ===== */
+.sb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  box-sizing: border-box;
+  animation: sbOverlayFadeIn 0.4s ease-out;
+}
+
+.sb-overlay.hidden {
+  display: none;
+}
+
+@keyframes sbOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sb-overlay-inner {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(250, 245, 240, 0.97));
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  max-width: 92%;
+  max-height: 92%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 0 40px rgba(0, 255, 247, 0.4), 0 12px 32px rgba(0, 0, 0, 0.6);
+  animation: sbOverlayPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes sbOverlayPop {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.sb-overlay-img {
+  max-width: 100%;
+  max-height: 60dvh;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  display: block;
+}
+
+.sb-overlay .neon-btn {
+  margin-top: 4px;
+}
+
+/* 全クリア専用の追加演出 */
+.sb-overlay-celebrate {
+  background: linear-gradient(135deg, rgba(255, 248, 220, 0.97), rgba(255, 235, 200, 0.97));
+  border: 3px solid #ffd700;
+  box-shadow:
+    0 0 60px rgba(255, 215, 0, 0.6),
+    0 0 30px rgba(255, 105, 199, 0.4),
+    0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+.sb-clear-title {
+  font-family: var(--sg-font-title, sans-serif);
+  font-size: 1.4rem;
+  margin: 0;
+  text-align: center;
+  background: linear-gradient(90deg, #ff6ec7, #ffd700, #00fff7, #ff6ec7);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sbClearTitleShine 3s linear infinite;
+}
+
+@keyframes sbClearTitleShine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@media (max-height: 600px) {
+  .sb-overlay-img { max-height: 48dvh; }
+  .sb-clear-title { font-size: 1.15rem; }
+  .sb-overlay-inner { padding: 12px 14px 12px; gap: 8px; }
 }
