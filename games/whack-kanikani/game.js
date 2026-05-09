@@ -357,7 +357,7 @@ function endGame() {
   else if (score >= 1) deathType = 'timeup';
   const { isNewHigh } = sg.onGameEnd(state.score, { maxCombo: state.maxCombo, deathType });
 
-  document.getElementById('result-score').textContent = t('resultScore')(score, maxCombo);
+  document.getElementById('result-score').textContent = t('resultScore', score, maxCombo);
   document.getElementById('result-rank').textContent = matched.rank;
   document.getElementById('result-comment').textContent = matched.comment;
 
