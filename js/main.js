@@ -30,25 +30,28 @@
 })();
 
 // スクロールフェードインアニメーション
+// スタガー(時差表示)は「同時に画面に入ったカード群」内のインデックスで決める。
+// ドキュメント全体の通し番号で振ると、後半のカードに数秒の遅延が乗ってしまい
+// スクロール中に画面が空になるため。
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const STAGGER_CAP = 8; // 1バッチで重ねるスタガー数の上限（最大遅延を約1秒に抑える）
 const observer = new IntersectionObserver(
   (entries) => {
+    let batchIndex = 0;
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+        const target = entry.target;
+        if (target.classList.contains('fade-in')) {
+          target.style.setProperty('--stagger', Math.min(batchIndex, STAGGER_CAP));
+          batchIndex++;
+        }
+        target.classList.add('visible');
+        observer.unobserve(target);
       }
     });
   },
   { threshold: 0.1 }
 );
-
-// スタガーインデックスを設定（カード・ギャラリー）
-document.querySelectorAll('.game-card.fade-in').forEach((el, i) => {
-  el.style.setProperty('--stagger', i);
-});
-document.querySelectorAll('.gallery-item.fade-in').forEach((el, i) => {
-  el.style.setProperty('--stagger', i);
-});
 
 document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
 
