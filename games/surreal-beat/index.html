@@ -31,7 +31,7 @@
   <div id="title-screen" class="screen active">
     <div class="title-content">
       <h1 class="game-title" data-i18n="gameTitle">シュールビート</h1>
-      <p class="game-subtitle" data-i18n="gameSubtitle">9ゲームのBGMでリズムをタップ！</p>
+      <p class="game-subtitle" data-i18n="gameSubtitle">リズムに乗れ！載れ！ノレ！</p>
       <div class="title-emojis">🚪🦀📊🚗💩👻🐣⚫🤖</div>
       <button id="start-btn" class="neon-btn" data-i18n="startBtn">スタート</button>
       <p class="key-hint" data-i18n="keyHint">PC: D F J K キー / スマホ: タップ</p>
@@ -50,6 +50,18 @@
       <div class="sb-overlay-inner">
         <img src="assets/stage-select-intro.png" alt="好きな曲を選ぶドン" class="sb-overlay-img">
         <button id="stage-select-intro-close" class="neon-btn" data-i18n="introOk">好きな曲を選ぶ！</button>
+      </div>
+    </div>
+    <!-- ステージ選択 → モード（表/裏）選択オーバーレイ -->
+    <div id="mode-select-overlay" class="sb-overlay hidden" aria-hidden="true">
+      <div class="sb-overlay-inner sb-mode-select-inner">
+        <div id="mode-select-stage-name" class="mode-select-stage-name"></div>
+        <div id="mode-select-chara" class="mode-select-chara"></div>
+        <div class="mode-select-buttons">
+          <button id="mode-select-normal" type="button" class="neon-btn mode-select-btn mode-select-btn--normal"></button>
+          <button id="mode-select-hard" type="button" class="neon-btn mode-select-btn mode-select-btn--hard"></button>
+        </div>
+        <button id="mode-select-close" type="button" class="neon-btn neon-btn-small mode-select-close-btn">とじる</button>
       </div>
     </div>
   </div>

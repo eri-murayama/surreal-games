@@ -1166,6 +1166,26 @@ footer {
   left: -60%;
 }
 
+/* --- シュールビート（ピアニスト＋大根） --- */
+.placeholder-art--surreal-beat {
+  background: linear-gradient(135deg, #0d0221, #ff6ec7, #00fff7);
+}
+.card-chara--surreal-beat {
+  width: 78%;
+  filter: drop-shadow(0 4px 12px rgba(255, 110, 199, 0.4));
+}
+/* 裏面: 抱えている大根を画面いっぱいに拡大 */
+.card-flip-back__img--surreal-beat {
+  width: 360%;
+  top: -310%;
+  left: -130%;
+}
+.surreal-beat-speech {
+  color: #c2185b;
+  box-shadow: 0 4px 20px rgba(255, 110, 199, 0.4);
+  border-color: #ff6ec7;
+}
+
 /* --- カブトムシ様 --- */
 .card-chara--kabutomushi { width: 75%; }
 .card-flip-back__img--kabutomushi {

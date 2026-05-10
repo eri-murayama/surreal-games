@@ -9,7 +9,7 @@
   var translations = {
     ja: {
       gameTitle: 'シュールビート',
-      gameSubtitle: '9ゲームのBGMでリズムをタップ！',
+      gameSubtitle: 'リズムに乗れ！載れ！ノレ！',
       startBtn: 'スタート',
       keyHint: 'PC: D F J K キー / スマホ: タップ',
       stageSelectTitle: 'ステージ選択',
@@ -57,7 +57,7 @@
     },
     en: {
       gameTitle: 'Surreal Beat',
-      gameSubtitle: '9 stages of game BGM rhythm!',
+      gameSubtitle: 'Get on the rhythm!',
       startBtn: 'START',
       keyHint: 'PC: D F J K keys / Mobile: Tap',
       stageSelectTitle: 'Stage Select',
@@ -201,6 +201,20 @@
     },
   ];
 
+  // ===== 各ステージのメインキャラ画像（モード選択オーバーレイで表示） =====
+  // 元ゲームの主人公画像を引っ張ってくる。画像がないステージは絵文字でフォールバック
+  var STAGE_CHARS = [
+    { img: '../escape-room/protagonist.png',                alt: 'かわいい部屋の主人公' },
+    { img: '../whack-kanikani/kanikani.png',                alt: 'かにかに' },
+    { img: '../business-analysis/atsushi.png',              alt: 'アツシ' },
+    { img: '../drive/yoshinori.png',                        alt: 'ヨシノリ' },
+    { img: '../unko-cone/character.png',                    alt: 'うんち' },
+    { emoji: '👻',                                           alt: '幽霊' },
+    { emoji: '🐣',                                           alt: 'ヒヨコ' },
+    { img: '../reversi/character.png',                      alt: 'リバーシキャラ' },
+    { img: '../the-machine-comedy/assets/protagonist.png',  alt: 'マシーンの主人公' },
+  ];
+
   // ===== 裏モード（ハード）の倍率 =====
   var HARD_MULTIPLIER = {
     bpmBoost: 1.18,         // BPM +18%
@@ -301,6 +315,13 @@
   var stageSelectIntroCloseBtn = document.getElementById('stage-select-intro-close');
   var allClearOverlayEl = document.getElementById('all-clear-overlay');
   var allClearCloseBtn = document.getElementById('all-clear-close');
+  var modeSelectOverlayEl = document.getElementById('mode-select-overlay');
+  var modeSelectStageNameEl = document.getElementById('mode-select-stage-name');
+  var modeSelectCharaEl = document.getElementById('mode-select-chara');
+  var modeSelectNormalBtn = document.getElementById('mode-select-normal');
+  var modeSelectHardBtn = document.getElementById('mode-select-hard');
+  var modeSelectCloseBtn = document.getElementById('mode-select-close');
+  var pendingStageIndex = -1; // モード選択中のステージインデックス
 
   // ===== 画面切り替え =====
   function showScreen(screenId) {
@@ -338,6 +359,79 @@
     allClearOverlayEl.setAttribute('aria-hidden', 'true');
   }
 
+  // ステージカードを押した時のモード（表/裏）選択オーバーレイ
+  function showModeSelectOverlay(stageIndex) {
+    if (!modeSelectOverlayEl) return;
+    var progress = loadProgress();
+    var isUnlocked = stageIndex < progress.unlocked;
+    if (!isUnlocked) return;
+    var isCleared = progress.cleared.indexOf(stageIndex) !== -1;
+    var isHardCleared = progress.hardCleared.indexOf(stageIndex) !== -1;
+    var t = window.SurrealI18n ? SurrealI18n.t.bind(SurrealI18n) : function (k) { return translations.ja[k] || k; };
+
+    pendingStageIndex = stageIndex;
+    var stage = STAGES[stageIndex];
+
+    // ステージ名
+    if (modeSelectStageNameEl) {
+      modeSelectStageNameEl.textContent = 'Stage ' + (stageIndex + 1) + ' - ' + t(stage.name);
+    }
+
+    // メインキャラ（画像が無い/読み込み失敗のときは絵文字フォールバック）
+    if (modeSelectCharaEl) {
+      modeSelectCharaEl.innerHTML = '';
+      var chara = STAGE_CHARS[stageIndex] || {};
+      var fallbackEmoji = chara.emoji || (stage.emojis && stage.emojis[0]) || '🎵';
+      if (chara.img) {
+        var img = document.createElement('img');
+        img.src = chara.img;
+        img.alt = chara.alt || '';
+        img.className = 'mode-select-chara-img';
+        img.onerror = function () {
+          modeSelectCharaEl.innerHTML = '';
+          var span = document.createElement('span');
+          span.className = 'mode-select-chara-emoji';
+          span.textContent = fallbackEmoji;
+          modeSelectCharaEl.appendChild(span);
+        };
+        modeSelectCharaEl.appendChild(img);
+      } else {
+        var span = document.createElement('span');
+        span.className = 'mode-select-chara-emoji';
+        span.textContent = fallbackEmoji;
+        modeSelectCharaEl.appendChild(span);
+      }
+    }
+
+    // 表ボタン
+    if (modeSelectNormalBtn) {
+      modeSelectNormalBtn.disabled = false;
+      modeSelectNormalBtn.textContent = (isCleared ? '⭐ ' : '▶ ') + t('modeNormal');
+    }
+    // 裏ボタン: 表クリアで解放
+    if (modeSelectHardBtn) {
+      if (isCleared) {
+        modeSelectHardBtn.disabled = false;
+        modeSelectHardBtn.textContent = (isHardCleared ? '⭐ ' : '🔥 ') + t('modeHard');
+        modeSelectHardBtn.title = '';
+      } else {
+        modeSelectHardBtn.disabled = true;
+        modeSelectHardBtn.textContent = '🔒 ' + t('modeHard');
+        modeSelectHardBtn.title = t('hardLocked');
+      }
+    }
+
+    modeSelectOverlayEl.classList.remove('hidden');
+    modeSelectOverlayEl.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideModeSelectOverlay() {
+    if (!modeSelectOverlayEl) return;
+    modeSelectOverlayEl.classList.add('hidden');
+    modeSelectOverlayEl.setAttribute('aria-hidden', 'true');
+    pendingStageIndex = -1;
+  }
+
   // ===== ステージ選択画面描画 =====
   function renderStageList() {
     var listEl = document.getElementById('stage-list');
@@ -350,19 +444,20 @@
       var stage = STAGES[i];
       var isUnlocked = i < progress.unlocked;
       var isCleared = progress.cleared.indexOf(i) !== -1;
-      var isHardUnlocked = isCleared;
       var isHardCleared = progress.hardCleared.indexOf(i) !== -1;
 
-      var card = document.createElement('div');
+      var card = document.createElement('button');
+      card.type = 'button';
       card.className = 'stage-card';
       card.setAttribute('data-stage', i);
       if (!isUnlocked) card.classList.add('stage-locked');
       if (isCleared) card.classList.add('stage-cleared');
       if (isHardCleared) card.classList.add('stage-hard-cleared');
+      if (!isUnlocked) card.disabled = true;
 
       var numEl = document.createElement('div');
       numEl.className = 'stage-number';
-      numEl.textContent = i + 1;
+      numEl.textContent = isUnlocked ? (i + 1) : '🔒';
 
       var infoEl = document.createElement('div');
       infoEl.className = 'stage-info';
@@ -378,55 +473,25 @@
       infoEl.appendChild(nameEl);
       infoEl.appendChild(detailEl);
 
-      // モードボタン（表 / 裏）
-      var modeEl = document.createElement('div');
-      modeEl.className = 'stage-modes';
-
-      var normalBtn = document.createElement('button');
-      normalBtn.className = 'mode-btn mode-btn--normal';
-      normalBtn.type = 'button';
-      normalBtn.innerHTML = (isCleared ? '⭐ ' : '▶ ') + t('modeNormal');
-      if (!isUnlocked) {
-        normalBtn.disabled = true;
-        normalBtn.innerHTML = '🔒';
-      }
-
-      var hardBtn = document.createElement('button');
-      hardBtn.className = 'mode-btn mode-btn--hard';
-      hardBtn.type = 'button';
-      if (!isHardUnlocked) {
-        hardBtn.disabled = true;
-        hardBtn.innerHTML = '🔒';
-        hardBtn.title = t('hardLocked');
-      } else {
-        hardBtn.innerHTML = (isHardCleared ? '⭐ ' : '🔥 ') + t('modeHard');
-      }
-
-      modeEl.appendChild(normalBtn);
-      modeEl.appendChild(hardBtn);
+      // クリア状態を示すちいさなバッジ（表⭐ / 裏⭐）
+      var statusEl = document.createElement('div');
+      statusEl.className = 'stage-status';
+      var statusText = '';
+      if (isCleared) statusText += '⭐';
+      if (isHardCleared) statusText += '🔥';
+      statusEl.textContent = statusText;
 
       card.appendChild(numEl);
       card.appendChild(infoEl);
-      card.appendChild(modeEl);
+      card.appendChild(statusEl);
 
-      (function (idx) {
-        if (isUnlocked) {
-          normalBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            currentStageIndex = idx;
-            currentMode = 'normal';
-            startGame();
+      (function (idx, unlocked) {
+        if (unlocked) {
+          card.addEventListener('click', function () {
+            showModeSelectOverlay(idx);
           });
         }
-        if (isHardUnlocked) {
-          hardBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            currentStageIndex = idx;
-            currentMode = 'hard';
-            startGame();
-          });
-        }
-      })(i);
+      })(i, isUnlocked);
 
       listEl.appendChild(card);
     }
@@ -1366,6 +1431,41 @@
   if (allClearOverlayEl) {
     allClearOverlayEl.addEventListener('click', function () {
       hideAllClearOverlay();
+    });
+  }
+
+  // モード選択（表/裏）オーバーレイ
+  if (modeSelectNormalBtn) {
+    modeSelectNormalBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (pendingStageIndex < 0) return;
+      currentStageIndex = pendingStageIndex;
+      currentMode = 'normal';
+      hideModeSelectOverlay();
+      startGame();
+    });
+  }
+  if (modeSelectHardBtn) {
+    modeSelectHardBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (pendingStageIndex < 0) return;
+      if (modeSelectHardBtn.disabled) return;
+      currentStageIndex = pendingStageIndex;
+      currentMode = 'hard';
+      hideModeSelectOverlay();
+      startGame();
+    });
+  }
+  if (modeSelectCloseBtn) {
+    modeSelectCloseBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      hideModeSelectOverlay();
+    });
+  }
+  if (modeSelectOverlayEl) {
+    // オーバーレイ背景タップで閉じる（中身タップは伝播停止）
+    modeSelectOverlayEl.addEventListener('click', function (e) {
+      if (e.target === modeSelectOverlayEl) hideModeSelectOverlay();
     });
   }
 
