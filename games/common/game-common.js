@@ -102,7 +102,7 @@
     { id: 'tower', title: 'シュールの塔', emoji: '🏰', genre: 'ローグライク', desc: '終わりなき階段の先へ。' },
     { id: 'trivia-king', title: '雑学キング決定戦', emoji: '👑', genre: 'クイズ', desc: '無駄な知識で天下を取れ！' },
     { id: 'unko-cone', title: 'うんコーンキャッチャー', emoji: '🦄', genre: 'アクション', desc: 'うんコーンを積み上げろ！' },
-    { id: 'solitaire', title: 'ソリティア', titleEn: 'Solitaire', emoji: '♠', genre: 'カード', genreEn: 'Card', desc: 'クラシックなクロンダイクソリティア。' },
+    { id: 'solitaire', title: '言葉ソリティア', titleEn: 'Word Solitaire', emoji: '🔤', genre: 'パズル', genreEn: 'Puzzle', desc: 'ひらがなカードから単語を作って消す全100ステージのパズル。' },
     { id: 'sudoku', title: '数独', titleEn: 'Sudoku', emoji: '🔢', genre: 'パズル', genreEn: 'Puzzle', desc: '3段階の難易度で遊べる本格数独。' },
     { id: 'minesweeper', title: 'かいだんマインスイーパー', titleEn: 'Kaidan Minesweeper', emoji: '👻', genre: 'パズル', genreEn: 'Puzzle', desc: '怪談を聞きながら地雷を探せ。' },
     { id: 'reversi', title: '漆黒のリバーシ', titleEn: 'Pitch-Black Reversi', emoji: '⚫', genre: 'ボード', genreEn: 'Board', desc: 'CPU対戦3段階。石をひっくり返せ。' },
@@ -120,6 +120,8 @@
     { id: 'kanikani-gurashi', title: 'かにかにぐらし', titleEn: 'Kani Kani Life', emoji: '🦀', genre: 'マージパズル', genreEn: 'Merge Puzzle', desc: '上京したかにかにの一人暮らしを応援！アイテムをマージして理想のお部屋を作ろう。' },
     { id: 'neko-cafe', title: 'ねこカフェ物語', titleEn: 'Neko Cafe Story', emoji: '🐱', genre: '経営シミュ', genreEn: 'Simulation', desc: 'かわいいねこカフェを経営して大きく育てよう。' },
     { id: 'dekaunko-escape', title: 'でかうんこ脱出', titleEn: 'Big Poop Escape', emoji: '💩', genre: 'アクション', genreEn: 'Action', desc: '食べ物を避けトイレで縮め！でかくなったうんこの脱出劇。' },
+    { id: 'coin-sort', title: 'シュールソート', titleEn: 'Surreal Sort', emoji: '🪙', genre: 'パズル', genreEn: 'Puzzle', desc: 'シュールなキャラコインを筒に積み分ける100ステージの並べ替えパズル。' },
+    { id: 'surreal-legend', title: 'シュール伝説', titleEn: 'Surreal Legend', emoji: '⚔️', genre: 'アクション', genreEn: 'Action', desc: 'うんこ勇者が魔王を倒す！鍵と剣のトップダウン2D冒険。' },
   ];
 
   // ===== 実績定義 =====

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8QFB33PX7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K8QFB33PX7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>シュールソート - シュールゲームス</title>
+  <meta name="description" content="シュールなキャラコインを筒に積み分ける、100レベルの並べ替えパズル。同じキャラだけが詰まった筒を作ろう！">
+  <!-- OGP -->
+  <meta property="og:title" content="シュールソート | シュールゲームス">
+  <meta property="og:description" content="シュールなキャラコインを筒に積み分ける、100レベルの並べ替えパズル。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/coin-sort/index.html">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@tadanosyuhuda">
+  <link rel="canonical" href="https://eri-murayama.github.io/surreal-games/games/coin-sort/">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <!-- スタイル -->
+  <link rel="stylesheet" href="../common/game-common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <div class="title-inner">
+        <div class="title-emoji">🪙</div>
+        <h1 class="game-title" data-i18n="title">シュールソート</h1>
+        <p class="game-subtitle" data-i18n="subtitle">～100段階のキャラ整理パズル～</p>
+        <div id="progress-display" class="progress-display"></div>
+        <button id="start-btn" class="btn-primary" data-i18n="startBtn">▶ つづきから</button>
+        <button id="select-btn" class="btn-secondary" data-i18n="selectBtn">ステージ選択</button>
+        <div class="controls-help">
+          <p class="help-title" data-i18n="howTitle">あそびかた</p>
+          <p data-i18n="how1">🪙 筒をタップ→他の筒をタップで一番上のコインを移動</p>
+          <p data-i18n="how2">📦 同じキャラだけが詰まった筒を作るとクリア！</p>
+          <p data-i18n="how3">⚠️ 移動先は「空の筒」か「同じキャラが上にある筒」だけ</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ステージ選択画面 -->
+    <div id="select-screen" class="screen">
+      <div class="select-header">
+        <button id="select-back" class="btn-icon" aria-label="戻る">←</button>
+        <h2 class="select-title" data-i18n="selectTitle">ステージ選択</h2>
+      </div>
+      <div id="stage-grid" class="stage-grid"></div>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-screen" class="screen">
+      <div class="game-hud">
+        <button id="hud-back" class="btn-icon" aria-label="戻る">←</button>
+        <div class="hud-center">
+          <div class="hud-stage">
+            <span class="hud-label" data-i18n="stage">ステージ</span>
+            <span id="hud-stage-no" class="hud-value">1</span>
+          </div>
+          <div class="hud-moves">
+            <span class="hud-label" data-i18n="moves">手数</span>
+            <span id="hud-moves" class="hud-value">0</span>
+          </div>
+        </div>
+        <div class="hud-actions">
+          <button id="undo-btn" class="btn-icon" aria-label="元に戻す">↩</button>
+          <button id="hint-btn" class="btn-icon" aria-label="ヒント">💡</button>
+          <button id="reset-btn" class="btn-icon" aria-label="やり直す">🔄</button>
+        </div>
+      </div>
+      <div id="board" class="board"></div>
+      <div id="effect-text" class="effect-text" aria-hidden="true"></div>
+    </div>
+
+    <!-- クリア画面 -->
+    <div id="clear-screen" class="screen">
+      <div class="clear-inner">
+        <div class="clear-burst">✨</div>
+        <h2 class="clear-title" data-i18n="clearTitle">ステージクリア！</h2>
+        <div class="clear-stats">
+          <div class="clear-row">
+            <span class="clear-label" data-i18n="clearStage">ステージ</span>
+            <span id="clear-stage-no" class="clear-value">1</span>
+          </div>
+          <div class="clear-row">
+            <span class="clear-label" data-i18n="clearMoves">手数</span>
+            <span id="clear-moves" class="clear-value">0</span>
+          </div>
+          <div id="clear-rank-row" class="clear-row clear-row--rank">
+            <span class="clear-label" data-i18n="clearRank">評価</span>
+            <span id="clear-rank" class="clear-value clear-rank">⭐⭐⭐</span>
+          </div>
+        </div>
+        <button id="next-btn" class="btn-primary" data-i18n="nextBtn">▶ 次のステージ</button>
+        <button id="replay-btn" class="btn-secondary" data-i18n="replayBtn">もう一度</button>
+        <button id="clear-back" class="btn-secondary" data-i18n="clearBack">ステージ選択</button>
+      </div>
+    </div>
+
+    <!-- 全ステージクリア画面 -->
+    <div id="all-clear-screen" class="screen">
+      <div class="clear-inner">
+        <div class="clear-burst">🏆</div>
+        <h2 class="clear-title" data-i18n="allClearTitle">全100ステージ制覇！</h2>
+        <p class="all-clear-msg" data-i18n="allClearMsg">あなたはシュールソートのカミ。整理の才能があふれている。</p>
+        <button id="all-clear-back" class="btn-primary" data-i18n="clearBack">ステージ選択</button>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="../../index.html" class="back-to-top-link" data-i18n="backToTop">← トップに戻る</a>
+
+  <script src="../common/i18n.js"></script>
+  <script src="../common/game-common.js"></script>
+  <script src="game.js"></script>
+  <script>
+    SurrealI18n.init({
+      ja: {
+        title: 'シュールソート',
+        subtitle: '～100段階のキャラ整理パズル～',
+        startBtn: '▶ つづきから',
+        startBtnNew: '▶ はじめから',
+        selectBtn: 'ステージ選択',
+        howTitle: 'あそびかた',
+        how1: '🪙 筒をタップ→他の筒をタップで一番上のコインを移動',
+        how2: '📦 同じキャラだけが詰まった筒を作るとクリア！',
+        how3: '⚠️ 移動先は「空の筒」か「同じキャラが上にある筒」だけ',
+        selectTitle: 'ステージ選択',
+        stage: 'ステージ',
+        moves: '手数',
+        clearTitle: 'ステージクリア！',
+        clearStage: 'ステージ',
+        clearMoves: '手数',
+        clearRank: '評価',
+        nextBtn: '▶ 次のステージ',
+        replayBtn: 'もう一度',
+        clearBack: 'ステージ選択',
+        allClearTitle: '全100ステージ制覇！',
+        allClearMsg: 'あなたはシュールソートのカミ。整理の才能があふれている。',
+        progressFmt: (n) => 'クリア: ' + n + ' / 100',
+        hintNone: '今は動かせる手があと無いみたい…',
+        hintFound: 'ヒント！',
+        notSolvable: '行き詰まり！リセットしよう',
+        invalidMove: 'そこには置けない！',
+      },
+      en: {
+        title: 'Surreal Sort',
+        subtitle: '~ 100-Stage Character Sorting Puzzle ~',
+        startBtn: '▶ Continue',
+        startBtnNew: '▶ Start',
+        selectBtn: 'Stage Select',
+        howTitle: 'How to Play',
+        how1: '🪙 Tap a tube, then tap another to move the top coin',
+        how2: '📦 Fill each tube with the same character to clear!',
+        how3: '⚠️ You can only stack onto an empty tube or the same top',
+        selectTitle: 'Stage Select',
+        stage: 'Stage',
+        moves: 'Moves',
+        clearTitle: 'Stage Clear!',
+        clearStage: 'Stage',
+        clearMoves: 'Moves',
+        clearRank: 'Rank',
+        nextBtn: '▶ Next Stage',
+        replayBtn: 'Retry',
+        clearBack: 'Stage Select',
+        allClearTitle: 'All 100 Stages Cleared!',
+        allClearMsg: 'You are the god of Surreal Sort. Pure organizational genius.',
+        progressFmt: (n) => 'Cleared: ' + n + ' / 100',
+        hintNone: 'No useful moves left...',
+        hintFound: 'Hint!',
+        notSolvable: 'Stuck! Try reset.',
+        invalidMove: "Can't place there!",
+      }
+    });
+    SurrealI18n.createLangToggle();
+  </script>
+  <script>
+    if (window.SurrealGames && SurrealGames.initShareAndFollow) { SurrealGames.initShareAndFollow('coin-sort'); }
+    else if (window.SurrealGames && SurrealGames.createShareButton) { SurrealGames.createShareButton('coin-sort'); }
+  </script>
+</body>
+</html>
