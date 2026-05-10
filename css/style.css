@@ -492,7 +492,7 @@ body {
   line-height: 1.7;
   border-right: 2px solid transparent;
   display: block;
-  max-width: 24ch;
+  max-width: max-content;
   margin-inline: auto;
 }
 
@@ -1685,13 +1685,6 @@ footer {
   opacity: 0.6;
 }
 
-.footer-policy-note {
-  margin-top: 1rem;
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  opacity: 0.8;
-}
-
 .footer-fanart-note {
   margin: 0.6rem auto 0;
   padding: 0.7rem 1rem;
@@ -1896,7 +1889,7 @@ footer {
     width: auto !important;
     white-space: normal;
     border-right: none !important;
-    max-width: 18ch;
+    max-width: max-content;
   }
 
   .tagline.typing {

@@ -198,11 +198,15 @@ if (logo) {
   var tagline = document.querySelector('.tagline');
   if (!tagline) return;
 
-  var fullText = tagline.textContent.trim();
+  var fullText = tagline.innerHTML.trim().replace(/<br\s*\/?>(\s*)/gi, '\n');
   var shouldAnimate = !prefersReducedMotion.matches && window.innerWidth > 768;
 
+  function render(text) {
+    tagline.innerHTML = text.replace(/\n/g, '<br>');
+  }
+
   if (!shouldAnimate) {
-    tagline.textContent = fullText;
+    render(fullText);
     tagline.style.borderRight = 'none';
     tagline.classList.remove('typing');
     return;
@@ -215,7 +219,7 @@ if (logo) {
     var i = 0;
     var interval = setInterval(function() {
       i++;
-      tagline.textContent = fullText.slice(0, i);
+      render(fullText.slice(0, i));
       if (i >= fullText.length) {
         clearInterval(interval);
         tagline.style.borderRight = 'none';
