@@ -2556,6 +2556,39 @@
     return section;
   }
 
+  // ===== 作者をフォロー導線（クリア後の応援セクション） =====
+  function createFollowSection() {
+    const isEn = (document.documentElement.lang || '').startsWith('en');
+    const section = document.createElement('div');
+    section.className = 'sg-follow';
+    section.innerHTML = `
+      <div class="sg-follow-title">${isEn ? '💌 Follow the creator' : '💌 作者をフォローして応援'}</div>
+      <div class="sg-follow-links">
+        <a class="sg-follow-link sg-follow-link--x" href="https://x.com/tadanosyuhuda" target="_blank" rel="noopener noreferrer">𝕏 ${isEn ? 'X' : 'X(Twitter)'}</a>
+        <a class="sg-follow-link sg-follow-link--youtube" href="https://www.youtube.com/@tadanosyuhuda" target="_blank" rel="noopener noreferrer">▶ YouTube</a>
+        <a class="sg-follow-link sg-follow-link--note" href="https://note.com/tadanosyuhuda" target="_blank" rel="noopener noreferrer">📝 note</a>
+      </div>
+    `;
+    return section;
+  }
+
+  // ===== シェア+応援セクションだけ独立で初期化（SurrealGames.init() を呼ばないゲーム用） =====
+  function initShareAndFollow(gameId) {
+    createShareButton(gameId);
+    function insertSections() {
+      const screens = document.querySelectorAll(
+        '#result-screen, #gameover-screen, #ending-screen, #victory-screen, .clear-overlay, #clear-overlay'
+      );
+      screens.forEach(screen => {
+        if (!screen.querySelector('.sg-recommend')) screen.appendChild(createRecommendSection(gameId));
+        if (!screen.querySelector('.sg-follow')) screen.appendChild(createFollowSection());
+      });
+    }
+    insertSections();
+    const observer = new MutationObserver(() => insertSections());
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
   // ===== サウンドトグルボタン =====
   function createSoundToggle() {
     const btn = document.createElement('button');
@@ -2650,7 +2683,7 @@
     btn.textContent = '𝕏';
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      var text = '【' + title + '】を遊んだよ！\n#シュールゲームス';
+      var text = '【' + title + '】を遊んだよ！\n#シュールゲームス @tadanosyuhuda';
       var url = window.location.href;
       SG_GA.trackEvent('share_click', { game_id: gameId });
       window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
@@ -2757,7 +2790,10 @@
       resultScreens.forEach(screen => {
         const existing = screen.querySelector('.sg-recommend');
         if (existing) existing.remove();
+        const existingFollow = screen.querySelector('.sg-follow');
+        if (existingFollow) existingFollow.remove();
         screen.appendChild(createRecommendSection(gameId));
+        screen.appendChild(createFollowSection());
       });
     }
 
@@ -2777,6 +2813,9 @@
           )) {
             if (!node.querySelector('.sg-recommend')) {
               node.appendChild(createRecommendSection(gameId));
+            }
+            if (!node.querySelector('.sg-follow')) {
+              node.appendChild(createFollowSection());
             }
           }
         }
@@ -2878,6 +2917,8 @@
     SoundSystem, BGM_PRESETS, HighScore, Stats, Achievements,
     DailyChallenge, StampCard, DeathDex, Titles,
     DEATH_DEX_DEFS, TITLE_DEFS,
-    GA: SG_GA
+    GA: SG_GA,
+    createShareButton, createLangToggle, createFollowSection, createRecommendSection,
+    initShareAndFollow
   };
 })();

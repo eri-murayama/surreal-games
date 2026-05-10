@@ -21,8 +21,10 @@
   <meta property="og:description" content="友達と連打バトル！パーティーゲーム。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/party-game/index.html">
-  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/games/party-game/ogp.png">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://eri-murayama.github.io/surreal-games/games/party-game/">
+  <meta name="twitter:site" content="@tadanosyuhuda">
   <!-- PeerJS - MIT License (https://github.com/peers/peerjs) -->
   <script src="../common/vendor/peerjs.min.js"></script>
 </head>
@@ -155,5 +157,8 @@
   <script src="../common/i18n.js"></script>
   <script src="../common/game-common.js"></script>
   <script src="game.js"></script>
+<script>
+  if (window.SurrealGames && SurrealGames.initShareAndFollow) { SurrealGames.initShareAndFollow('party-game'); } else if (window.SurrealGames && SurrealGames.createShareButton) { SurrealGames.createShareButton('party-game'); }
+</script>
 </body>
 </html>

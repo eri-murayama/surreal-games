@@ -230,6 +230,11 @@ body{
 #cutin-char{
   width:180px;height:180px;
 }
+/* Lv9 篤・Lv10 博士のカットインだけ大きめに */
+#cutin-char[data-level="9"],
+#cutin-char[data-level="10"]{
+  width:240px;height:240px;
+}
 #cutin-char img{
   width:100%;height:100%;object-fit:contain;
   animation:cutin-zoom 1.4s ease-out forwards;

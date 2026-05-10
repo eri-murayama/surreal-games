@@ -116,17 +116,52 @@ body {
 }
 
 .controls-help {
-  margin-top: 20px;
-  padding: 12px;
+  margin-top: 16px;
+  padding: 10px 12px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: var(--sg-radius-md, 12px);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.7);
 }
 .controls-help .help-title {
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: rgba(255, 255, 255, 0.9);
+}
+.controls-help p {
+  margin: 2px 0;
+}
+.help-tip {
+  margin-top: 6px !important;
+  color: #ffe066 !important;
+  font-weight: 700;
+}
+
+/* --- アイテム図鑑 --- */
+.items-help {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 200, 80, 0.10);
+  border: 1px solid rgba(255, 200, 80, 0.35);
+  border-radius: var(--sg-radius-md, 12px);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: left;
+}
+.items-help .help-title {
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #ffe066;
+  text-align: center;
+}
+.items-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.items-list li {
+  padding: 3px 0;
+  line-height: 1.4;
 }
 
 /* --- ゲーム画面 --- */
@@ -317,11 +352,26 @@ body {
     font-size: 1.8rem;
   }
   .title-icon {
-    font-size: 3rem;
+    font-size: 2.4rem;
+    margin-bottom: 4px;
+  }
+  .title-sub {
+    font-size: 0.82rem;
+    margin-bottom: 10px;
   }
   .btn-primary {
-    padding: 12px 32px;
-    font-size: 1.1rem;
+    padding: 10px 28px;
+    font-size: 1rem;
+  }
+  .controls-help,
+  .items-help {
+    padding: 8px 10px;
+    font-size: 0.72rem;
+    margin-top: 10px;
+  }
+  .items-list li {
+    padding: 2px 0;
+    line-height: 1.3;
   }
   .result-title {
     font-size: 1.5rem;
@@ -334,6 +384,18 @@ body {
   }
   .hud-value {
     font-size: 0.85rem;
+  }
+}
+
+@media (max-height: 720px) {
+  .title-icon {
+    font-size: 2.6rem;
+    margin-bottom: 4px;
+  }
+  .controls-help,
+  .items-help {
+    margin-top: 8px;
+    padding: 8px 10px;
   }
 }
 

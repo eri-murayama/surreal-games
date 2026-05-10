@@ -1,12 +1,12 @@
 # Kaidan Minesweeper
 
-A haunted twist on classic Minesweeper — with a real Japanese ghost story whispered in your ear while you play.
+Seriously, insanely terrifying Japanese kaidan Minesweeper. Can you sleep alone tonight!?
 
 ## Game Title
 Kaidan Minesweeper
 
 ## Short Tagline
-Classic Minesweeper, haunted by a Japanese ghost story.
+Seriously, insanely terrifying Japanese kaidan Minesweeper. Can you sleep alone tonight!?
 
 ## Description (for itch.io page)
 

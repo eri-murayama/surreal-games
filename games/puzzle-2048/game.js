@@ -450,6 +450,7 @@ function showCutIn(level){
   const lvClamped = Math.min(level,11);
   const evoNames = t('evoNames');
   const cutinSrc = CUTIN_IMAGES[lvClamped] || EVO_IMAGES[lvClamped];
+  dom.cutinChar.setAttribute('data-level', lvClamped);
   dom.cutinChar.innerHTML = '<img src="'+cutinSrc+'" alt="'+evoNames[lvClamped]+'">';
   dom.cutinName.textContent = evoNames[lvClamped] + (currentLang === 'ja' ? ' 解放！' : ' Unlocked!');
   dom.cutinOverlay.classList.remove('hidden');

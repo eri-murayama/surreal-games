@@ -9,11 +9,19 @@
   var translations = {
     ja: {
       gameTitle: 'シュールダッシュ',
-      gameSub: '8つのゲーム世界を駆け抜けろ！',
+      gameSub: '9つのゲーム世界を駆け抜けろ！',
       startBtn: '💩 タップでスタート 💩',
       controlsTitle: '操作方法',
       controlsPC: 'PC：スペースキーでジャンプ（2段ジャンプ可能）',
       controlsMobile: 'スマホ：画面タップでジャンプ',
+      controlsTip: '障害物にぶつからないようにジャンプして避けよう！',
+      itemsTitle: 'アイテム図鑑',
+      itemStar: '⭐ スター: 集めて+50点',
+      itemShield: '🛡️ シールド: 1回ダメージを防ぐ',
+      itemMagnet: '🧲 マグネット: 5秒スターを引き寄せ',
+      itemFire: '🔥 ファイア: 5秒敵を燃やして破壊',
+      itemBoss: '⚠ ボス: 各ゾーン最後に登場！',
+      itemCombo: '✨ コンボ: スター連続取得で得点UP',
       scoreLabel: 'スコア',
       distLabel: '距離',
       zoneLabel: 'ゾーン',
@@ -38,6 +46,7 @@
       zone6: 'マインスイーパー',
       zone7: 'シュール進化論',
       zone8: '漆黒のリバーシ',
+      zone9: 'THE MACHINE',
       zoneBanner1: 'ZONE 1 - かわいい部屋',
       zoneBanner2: 'ZONE 2 - かにかに',
       zoneBanner3: 'ZONE 3 - 経営分析',
@@ -46,16 +55,27 @@
       zoneBanner6: 'ZONE 6 - マインスイーパー',
       zoneBanner7: 'ZONE 7 - シュール進化論',
       zoneBanner8: 'ZONE 8 - 漆黒のリバーシ',
+      zoneBanner9: 'ZONE 9 - THE MACHINE',
+      zoneClear: 'ZONE CLEAR! +200',
+      comboText: function (n) { return 'COMBO x' + n + '!'; },
       bossWarning: '⚠ BOSS ⚠',
       shareText: function (score, dist) { return 'シュールダッシュで' + score + '点、' + dist + 'm走ったよ！💩💨 #シュールゲームス'; },
     },
     en: {
       gameTitle: 'Surreal Dash',
-      gameSub: 'Run through 8 game worlds!',
+      gameSub: 'Run through 9 game worlds!',
       startBtn: '💩 Tap to Start 💩',
       controlsTitle: 'Controls',
       controlsPC: 'PC: Space to jump (double jump OK)',
       controlsMobile: 'Mobile: Tap to jump',
+      controlsTip: 'Jump to dodge obstacles!',
+      itemsTitle: 'Item Guide',
+      itemStar: '⭐ Star: +50 points each',
+      itemShield: '🛡️ Shield: Blocks 1 hit',
+      itemMagnet: '🧲 Magnet: Pulls stars (5s)',
+      itemFire: '🔥 Fire: Burns enemies (5s)',
+      itemBoss: '⚠ Boss: Appears each zone!',
+      itemCombo: '✨ Combo: Chain stars for big bonus',
       scoreLabel: 'Score',
       distLabel: 'Dist',
       zoneLabel: 'Zone',
@@ -80,6 +100,7 @@
       zone6: 'Minesweeper',
       zone7: 'Evolution',
       zone8: 'Black Reversi',
+      zone9: 'THE MACHINE',
       zoneBanner1: 'ZONE 1 - CUTE ROOM',
       zoneBanner2: 'ZONE 2 - CRAB PANIC',
       zoneBanner3: 'ZONE 3 - BUSINESS',
@@ -88,6 +109,9 @@
       zoneBanner6: 'ZONE 6 - MINESWEEPER',
       zoneBanner7: 'ZONE 7 - EVOLUTION',
       zoneBanner8: 'ZONE 8 - BLACK REVERSI',
+      zoneBanner9: 'ZONE 9 - THE MACHINE',
+      zoneClear: 'ZONE CLEAR! +200',
+      comboText: function (n) { return 'COMBO x' + n + '!'; },
       bossWarning: '⚠ BOSS ⚠',
       shareText: function (score, dist) { return 'I scored ' + score + ' pts and ran ' + dist + 'm in Surreal Dash! 💩💨 #SurrealGames'; },
     }
@@ -233,12 +257,22 @@
     {
       // ZONE 8 - 漆黒のリバーシ
       id: 8, nameKey: 'zone8', bannerKey: 'zoneBanner8',
-      distStart: 19600, distEnd: Infinity,
+      distStart: 19600, distEnd: 22800,
       bgTop: '#1a0020', bgBot: '#2a0038',
       groundColor: '#0a0010', groundLine: '#b060ff',
       enemies: ['blackdisc', 'whitedisc', 'crystal'],
       bgm: 'mystery',
       parallaxColors: ['rgba(180,100,255,0.25)', 'rgba(200,200,200,0.15)']
+    },
+    {
+      // ZONE 9 - THE MACHINE（機械世界）
+      id: 9, nameKey: 'zone9', bannerKey: 'zoneBanner9',
+      distStart: 22800, distEnd: Infinity,
+      bgTop: '#0a0a18', bgBot: '#1a1a3a',
+      groundColor: '#0a0a18', groundLine: '#00ddff',
+      enemies: ['robot', 'wrench', 'bolt'],
+      bgm: 'mystery',
+      parallaxColors: ['rgba(0,200,255,0.22)', 'rgba(120,80,255,0.18)']
     }
   ];
 
@@ -275,7 +309,11 @@
     // Zone 8 - 漆黒のリバーシ
     blackdisc:  { emoji: '⚫', w: 36, h: 36, ground: true },
     whitedisc:  { emoji: '⚪', w: 36, h: 36, ground: false },
-    crystal:    { emoji: '🔮', w: 36, h: 36, ground: false }
+    crystal:    { emoji: '🔮', w: 36, h: 36, ground: false },
+    // Zone 9 - THE MACHINE
+    robot:      { emoji: '🤖', w: 40, h: 42, ground: true },
+    wrench:     { emoji: '🔧', w: 34, h: 34, ground: false },
+    bolt:       { emoji: '⚡', w: 32, h: 36, ground: false }
   };
 
   // ボス定義（各ゾーン末尾付近で出現）
@@ -287,7 +325,8 @@
     { emoji: '🍦', w: 110, h: 130, type: 'jumper' },     // Zone 5 - 巨大コーン
     { emoji: '💣', w: 130, h: 120, type: 'duckuner' },   // Zone 6 - 浮遊爆弾
     { emoji: '🐓', w: 130, h: 120, type: 'jumper' },     // Zone 7 - 巨大鶏
-    { emoji: '🔮', w: 140, h: 130, type: 'duckuner' }    // Zone 8 - 浮遊水晶玉
+    { emoji: '🔮', w: 140, h: 130, type: 'duckuner' },   // Zone 8 - 浮遊水晶玉
+    { emoji: '🤖', w: 150, h: 140, type: 'jumper' }      // Zone 9 - 巨大ロボ GOLIATH
   ];
 
   // パワーアップ定義
@@ -344,7 +383,17 @@
     parallaxLayers: [],
     // 虹色用
     rainbowHue: 0,
+    // コンボ
+    comboCount: 0,
+    comboTimer: 0,
+    maxCombo: 0,
+    // クリア済みゾーン記録（ボーナス用）
+    clearedZones: [],
+    // ボーナス累計（コンボ・ボス・ファイア破壊・ゾーンクリア）
+    bonusScore: 0,
   };
+
+  var COMBO_WINDOW = 2.0;
 
   // ===== キャンバスサイズ設定 =====
   var scale = 1;
@@ -858,6 +907,38 @@
       }
     }
 
+    // コンボバッジ（現在カウント）
+    if (state.comboCount >= 3) {
+      var comboAlpha = Math.min(state.comboTimer / 0.5, 1);
+      ctx.globalAlpha = comboAlpha;
+      var bx = DESIGN_W - 90;
+      var by = 70;
+      ctx.fillStyle = 'rgba(255,200,0,0.9)';
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      var rectW = 80, rectH = 32;
+      var rx = bx, ry = by - rectH / 2;
+      ctx.moveTo(rx + 6, ry);
+      ctx.lineTo(rx + rectW - 6, ry);
+      ctx.quadraticCurveTo(rx + rectW, ry, rx + rectW, ry + 6);
+      ctx.lineTo(rx + rectW, ry + rectH - 6);
+      ctx.quadraticCurveTo(rx + rectW, ry + rectH, rx + rectW - 6, ry + rectH);
+      ctx.lineTo(rx + 6, ry + rectH);
+      ctx.quadraticCurveTo(rx, ry + rectH, rx, ry + rectH - 6);
+      ctx.lineTo(rx, ry + 6);
+      ctx.quadraticCurveTo(rx, ry, rx + 6, ry);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.font = 'bold 18px Zen Maru Gothic, sans-serif';
+      ctx.fillStyle = '#5a2a00';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('x' + state.comboCount, bx + rectW / 2, by);
+      ctx.globalAlpha = 1;
+    }
+
     // ゾーンバナー
     if (state.zoneBannerTimer > 0) {
       drawZoneBanner();
@@ -1034,6 +1115,12 @@
         groundColor: prevZone.groundColor,
         groundLine: prevZone.groundLine
       };
+      // ゾーンクリアボーナス（初回のみ）
+      if (state.clearedZones.indexOf(prevZone.id) === -1) {
+        state.clearedZones.push(prevZone.id);
+        state.bonusScore += 200;
+        addScorePopup(DESIGN_W / 2, DESIGN_H / 2 - 80, t('zoneClear'));
+      }
       state.currentZone = newZoneIdx;
       state.bgFade = 1.0;
       state.zoneBanner = t(ZONES[newZoneIdx].bannerKey);
@@ -1121,8 +1208,16 @@
       }
     }
 
-    // 距離スコア加算
-    state.score = Math.floor(state.distance / 10) + state.starsCollected * 50;
+    // 距離スコア + スター基本点 + 各種ボーナス
+    state.score = Math.floor(state.distance / 10) + state.starsCollected * 50 + state.bonusScore;
+
+    // コンボタイマー（取り損ねたらリセット）
+    if (state.comboCount > 0) {
+      state.comboTimer -= dt;
+      if (state.comboTimer <= 0) {
+        state.comboCount = 0;
+      }
+    }
 
     // 障害物スポーン
     state.nextObstacleTime -= dt;
@@ -1160,7 +1255,7 @@
         if (ob.isBoss) {
           state.boss = null;
           addScorePopup(p.x, p.y - 20, '+500');
-          state.score += 500;
+          state.bonusScore += 500;
         }
       }
 
@@ -1181,7 +1276,7 @@
             });
           }
           addScorePopup(ob.x, ob.y, '+100');
-          state.score += 100;
+          state.bonusScore += 100;
           state.obstacles.splice(i, 1);
           if (GameManager) GameManager.sound.play('correct');
           continue;
@@ -1239,8 +1334,23 @@
       if (!st.collected && collides(p, st)) {
         st.collected = true;
         state.starsCollected++;
+        // コンボ加算
+        state.comboCount++;
+        state.comboTimer = COMBO_WINDOW;
+        if (state.comboCount > state.maxCombo) state.maxCombo = state.comboCount;
+        // コンボ倍率: x2(3連続)、x3(5連続)、x5(8連続)
+        var mult = 1;
+        if (state.comboCount >= 8) mult = 5;
+        else if (state.comboCount >= 5) mult = 3;
+        else if (state.comboCount >= 3) mult = 2;
+        // 基本+50は starsCollected*50 で計上済み。倍率分(mult-1)*50だけ加算
+        var bonus = 50 * mult;
+        state.bonusScore += (mult - 1) * 50;
         spawnStarParticles(st.x + st.w / 2, st.y + st.h / 2);
-        addScorePopup(st.x, st.y, '+50');
+        addScorePopup(st.x, st.y, '+' + bonus);
+        if (state.comboCount >= 3) {
+          addScorePopup(p.x + p.w / 2, p.y - 36, t('comboText', state.comboCount));
+        }
         if (GameManager) GameManager.sound.play('correct');
       }
 
@@ -1355,6 +1465,11 @@
     state.bossSpawned = [];
     state.bossWarningTimer = 0;
     state.rainbowHue = 0;
+    state.comboCount = 0;
+    state.comboTimer = 0;
+    state.maxCombo = 0;
+    state.clearedZones = [];
+    state.bonusScore = 0;
 
     showScreen(gameScreen);
 

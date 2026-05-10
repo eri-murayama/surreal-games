@@ -21,8 +21,10 @@
   <meta property="og:description" content="右手に大砲、左手にフック。最強の戦士が挑むのは…家事！?">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://eri-murayama.github.io/surreal-games/games/awkward-uncle/index.html">
-  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/games/awkward-uncle/og.png">
+  <meta property="og:image" content="https://eri-murayama.github.io/surreal-games/assets/images/ogp.png">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://eri-murayama.github.io/surreal-games/games/awkward-uncle/">
+  <meta name="twitter:site" content="@tadanosyuhuda">
   <link rel="stylesheet" href="../common/game-common.css">
   <link rel="stylesheet" href="style.css">
   <script src="../common/vendor/three.min.js"></script>
@@ -126,5 +128,18 @@
 
   <script src="../common/i18n.js"></script>
   <script src="game.js"></script>
+  <a href="#" class="sg-share-btn" id="awkward-share-btn" aria-label="Xでシェア">𝕏</a>
+  <script>
+    (function () {
+      var btn = document.getElementById('awkward-share-btn');
+      if (!btn) return;
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var text = '【不器用なおじさん】を遊んだよ！\n#シュールゲームス @tadanosyuhuda';
+        var url = window.location.href;
+        window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
+      });
+    })();
+  </script>
 </body>
 </html>

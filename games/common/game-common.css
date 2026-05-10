@@ -153,6 +153,52 @@ html, body {
   border-radius: 8px;
 }
 
+/* --- 作者をフォロー導線（クリア後の応援セクション） --- */
+.sg-follow {
+  width: 100%;
+  max-width: 400px;
+  margin: 12px auto 16px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sg-follow-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+  opacity: 0.95;
+}
+.sg-follow-links {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.sg-follow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.15s, background 0.2s;
+}
+.sg-follow-link:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.22);
+}
+.sg-follow-link--x { background: rgba(0, 0, 0, 0.55); }
+.sg-follow-link--youtube { background: rgba(255, 0, 0, 0.55); }
+.sg-follow-link--note { background: rgba(58, 191, 156, 0.55); }
+
 /* --- 実績通知 --- */
 .sg-achievement-notification {
   position: fixed;

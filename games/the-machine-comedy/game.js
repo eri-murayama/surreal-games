@@ -2105,8 +2105,11 @@
   };
 
   // エンディング用の歌(MP3)を事前ロード
+  // plicy/itch.io等で外部MP3が配信されない環境でも、catchで握り潰してゲーム自体は進行する設計
   const vocalsAudio = new Audio('assets/vocals.mp3');
+  vocalsAudio.preload = 'auto';
   vocalsAudio.volume = 0.9;
+  vocalsAudio.addEventListener('error', () => {});
 
   $('mirror-next').addEventListener('click', () => {
     cancelAnimationFrame(ghostRaf);
