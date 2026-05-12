@@ -47,7 +47,9 @@
     smile:   'assets/shirotan-smile.png',   // 嬉しい
     blush:   'assets/shirotan-blush.png',   // 照れ
     calm:    'assets/shirotan-calm.png',    // 和み
-    brave:   'assets/shirotan-brave.png'    // 男気
+    brave:   'assets/shirotan-brave.png',   // 男気
+    omurice: 'assets/shirotan-omurice.png', // オムライスを食べてる
+    beachy:  'assets/shirotan-beach.png'    // 海で遊ぶ
   };
 
   // ============ ストーリー一覧 ============
@@ -393,6 +395,116 @@
           friend: { img: FACE.smile, text: 'お散歩には行かなかった。でも、おうちのなかで、ふたりはたくさんのお話をした。雨の日って、わるくない。' },
           lonely: { img: FACE.calm, text: 'しろたんはひとりで毛布にくるまって、テレビを見ていた。きみが帰ってきたとき、しろたんはちょっとだけ、寂しそうな顔をしていた。' }
         }
+      },
+
+      // ---------- ⑥ きょだいオムライス編 ----------
+      {
+        id: 'omurice',
+        title: 'きょだいオムライス編',
+        desc: 'しろたんがふしぎな おおきなオムライスを…！',
+        icon: '🍳',
+        scenes: [
+          {
+            bg: 'scene-kitchen', char: FACE.brave,
+            lines: [
+              { who: 'narrator', text: 'おひるどき。キッチンから、しろたんの きあいの声が きこえる。', face: FACE.calm },
+              { who: 'shirotan', text: 'きょうは、きみのために とっておきの りょうりを つくったよ！', emo: '✨', face: FACE.brave },
+              { who: 'you', text: 'えっ、しろたんが？うれしい〜！なにをつくってくれたの？', face: FACE.smile },
+              { who: 'shirotan', text: 'ふっふっふ…。とびらをあけて、たまげるがよい。', emo: '💪', face: FACE.brave }
+            ],
+            choices: [
+              { text: 'わくわくしながら扉をあける', love: 5, next: 1 },
+              { text: '「いいにおい〜」と鼻をひくひくさせる', love: 3, next: 1 },
+              { text: '「だいじょうぶ…？」少しこわごわ', love: 1, next: 1 }
+            ]
+          },
+          {
+            bg: 'scene-omurice', char: FACE.omurice,
+            lines: [
+              { who: 'narrator', text: 'テーブルのうえに、しろたんよりも おおきい オムライスが ででん！と のっていた。', face: FACE.calm },
+              { who: 'you', text: 'えええっ！？オムライスがでかい！？しろたんとおなじくらい…！', face: FACE.main },
+              { who: 'shirotan', text: 'ぷくぅ〜！あいじょう こめて、まきまきしたら こうなったの。', emo: '🍳', face: FACE.omurice },
+              { who: 'shirotan', text: 'いっしょに たべよ？はんぶんこ、しよ？', emo: '💗', face: FACE.omurice }
+            ],
+            choices: [
+              { text: '「もちろん！いただきます！」一緒にかぶりつく', love: 8, next: 2 },
+              { text: '「すごい…ありがとう」目をうるませる', love: 6, next: 2 },
+              { text: '写真を撮ってから食べる', love: 2, next: 2 }
+            ]
+          },
+          {
+            bg: 'scene-omurice', char: FACE.blush,
+            lines: [
+              { who: 'narrator', text: 'ふたりとも、ほっぺに ケチャップを ちょっとつけて、おなかいっぱい。', face: FACE.calm },
+              { who: 'shirotan', text: 'えへへ…。きみが「おいしい」って いってくれるの、ぼく、いちばん うれしい。', emo: '💗', face: FACE.blush },
+              { who: 'shirotan', text: 'これからも、まいにち つくってあげたいな。', emo: '', face: FACE.smile }
+            ],
+            choices: [
+              { text: '「じゃあ、毎日いっしょに食べよ」', love: 10, next: -1 },
+              { text: '「ありがとう、しろたんのごはん大好き」', love: 6, next: -1 },
+              { text: '「次はわたしも手伝うね」', love: 3, next: -1 }
+            ]
+          }
+        ],
+        endings: {
+          love: { img: FACE.blush, text: 'それからふたりは、毎日のお昼を いっしょに たべるようになった。きょだいオムライスは、ふたりだけの あいことば。' },
+          friend: { img: FACE.smile, text: 'しろたんの りょうりは、ちょっとずつ ふつうのサイズに もどっていった。でも、こころは ぎゅっと あったかいまま。' },
+          lonely: { img: FACE.calm, text: 'のこったオムライスは、ラップにつつまれて、れいぞうこへ。しろたんは あした、また つくるって きめた。' }
+        }
+      },
+
+      // ---------- ⑦ なつのうみ編 ----------
+      {
+        id: 'beach2',
+        title: 'なつのうみ編',
+        desc: '青い海と白い砂、しろたんと夏のひととき。',
+        icon: '🏖️',
+        scenes: [
+          {
+            bg: 'scene-beach-real', char: FACE.beachy,
+            lines: [
+              { who: 'narrator', text: '夏まっさかり。とおく まで つづく まっしろな すなはまに、しろたんが ぴょこんと たっていた。', face: FACE.calm },
+              { who: 'shirotan', text: 'うみだー！うみー！きみ、はやくはやく〜！', emo: '🌊', face: FACE.beachy },
+              { who: 'you', text: 'もうしろたん、まちきれないんだから〜', face: FACE.smile }
+            ],
+            choices: [
+              { text: '靴をぬいで、しろたんと一緒にかけだす', love: 6, next: 1 },
+              { text: '「日焼け止め塗ってあげる」よびとめる', love: 4, next: 1 },
+              { text: '日陰でゆっくりしたい、と提案する', love: 1, next: 1 }
+            ]
+          },
+          {
+            bg: 'scene-beach-real', char: FACE.beachy,
+            lines: [
+              { who: 'narrator', text: 'なみうちぎわで、しろたんが ばしゃばしゃと はねている。', face: FACE.calm },
+              { who: 'shirotan', text: 'ぷくっ！うみのみずって、しょっぱいんだね！', emo: '💦', face: FACE.beachy },
+              { who: 'shirotan', text: 'ねえ、きみも はいって！てを つないで、いっしょに ジャンプしよ？', emo: '✨', face: FACE.beachy }
+            ],
+            choices: [
+              { text: 'しろたんと手をつないで波にとびこむ', love: 8, next: 2 },
+              { text: '「冷たいっ！」と笑いながら追いかける', love: 5, next: 2 },
+              { text: 'すなはまから水をかけ合う', love: 4, next: 2 }
+            ]
+          },
+          {
+            bg: 'scene-sunset', char: FACE.blush,
+            lines: [
+              { who: 'narrator', text: 'ひがしずんで、うみが オレンジに そまっていく。', face: FACE.calm },
+              { who: 'shirotan', text: 'きょう、すっごく たのしかった。きみと いっしょの なつ、ずっと わすれない。', emo: '💗', face: FACE.blush },
+              { who: 'shirotan', text: 'らいねんも、さらいねんも…ずっと いっしょに、うみ こようね？', emo: '', face: FACE.blush }
+            ],
+            choices: [
+              { text: '「うん、毎年いっしょに来ようね」', love: 10, next: -1 },
+              { text: '「忘れない夏になったね」', love: 6, next: -1 },
+              { text: '「写真、いっぱい撮ろう」', love: 3, next: -1 }
+            ]
+          }
+        ],
+        endings: {
+          love: { img: FACE.blush, text: 'まいとし、なつのおわりに、ふたりは あの すなはまへ かえってくる。やくそくの ばしょは、ふたりだけの たからもの。' },
+          friend: { img: FACE.smile, text: 'たくさん あそんで、たくさん わらった なつ。しろたんと きみの アルバムには、まっしろな すなと、まっさおな うみが いっぱい。' },
+          lonely: { img: FACE.calm, text: '波の音だけが残った。ひとり ひろった ちいさな かいがらを、しろたんは そっと ポケットに しまった。' }
+        }
       }
     ],
     en: [
@@ -734,6 +846,116 @@
           love: { img: FACE.blush, text: 'In place of rain, warm hours piled up between you. Tiny droplets on the window glass shimmered like jewels.' },
           friend: { img: FACE.smile, text: 'You didn\'t go for a walk. But indoors, the two of you talked about so many things. Rainy days aren\'t bad.' },
           lonely: { img: FACE.calm, text: 'Shirotan stayed bundled in the blanket alone, watching TV. When you came back, their face looked... a little wistful.' }
+        }
+      },
+
+      // ---------- ⑥ Giant Omurice ----------
+      {
+        id: 'omurice',
+        title: 'Giant Omurice',
+        desc: 'Shirotan made you a mysteriously huge omurice...!',
+        icon: '🍳',
+        scenes: [
+          {
+            bg: 'scene-kitchen', char: FACE.brave,
+            lines: [
+              { who: 'narrator', text: 'Lunchtime. A spirited voice rang out from the kitchen.', face: FACE.calm },
+              { who: 'shirotan', text: 'I made you a SPECIAL dish today!', emo: '✨', face: FACE.brave },
+              { who: 'you', text: 'Really? I can\'t wait — what is it?', face: FACE.smile },
+              { who: 'shirotan', text: 'Heh heh... open the door and be amazed.', emo: '💪', face: FACE.brave }
+            ],
+            choices: [
+              { text: 'Open the door, excited', love: 5, next: 1 },
+              { text: '"Smells good!" Sniff the air', love: 3, next: 1 },
+              { text: '"Are you... okay?" A little wary', love: 1, next: 1 }
+            ]
+          },
+          {
+            bg: 'scene-omurice', char: FACE.omurice,
+            lines: [
+              { who: 'narrator', text: 'On the table sat an omurice bigger than Shirotan themselves.', face: FACE.calm },
+              { who: 'you', text: 'Whoa! It\'s as big as you are!', face: FACE.main },
+              { who: 'shirotan', text: 'Puku~! I rolled it with all my love and it ended up huge!', emo: '🍳', face: FACE.omurice },
+              { who: 'shirotan', text: 'Let\'s share it, okay? Half and half.', emo: '💗', face: FACE.omurice }
+            ],
+            choices: [
+              { text: '"Let\'s dig in!" Eat together', love: 8, next: 2 },
+              { text: '"Amazing... thank you" Tear up', love: 6, next: 2 },
+              { text: 'Take photos first', love: 2, next: 2 }
+            ]
+          },
+          {
+            bg: 'scene-omurice', char: FACE.blush,
+            lines: [
+              { who: 'narrator', text: 'Both your cheeks dotted with ketchup, bellies full.', face: FACE.calm },
+              { who: 'shirotan', text: 'Hearing you say "yummy" makes me the happiest.', emo: '💗', face: FACE.blush },
+              { who: 'shirotan', text: 'I want to cook for you every single day.', emo: '', face: FACE.smile }
+            ],
+            choices: [
+              { text: '"Then let\'s eat together every day"', love: 10, next: -1 },
+              { text: '"Thanks, I love your cooking"', love: 6, next: -1 },
+              { text: '"I\'ll help next time"', love: 3, next: -1 }
+            ]
+          }
+        ],
+        endings: {
+          love: { img: FACE.blush, text: 'After that, you ate lunch together every day. Giant omurice became your secret password.' },
+          friend: { img: FACE.smile, text: 'Shirotan\'s dishes slowly returned to normal size — but the warmth stayed.' },
+          lonely: { img: FACE.calm, text: 'The leftovers went into the fridge, wrapped tight. Shirotan vowed to try again tomorrow.' }
+        }
+      },
+
+      // ---------- ⑦ Summer Beach ----------
+      {
+        id: 'beach2',
+        title: 'Summer Beach',
+        desc: 'Blue sea, white sand, a summer afternoon.',
+        icon: '🏖️',
+        scenes: [
+          {
+            bg: 'scene-beach-real', char: FACE.beachy,
+            lines: [
+              { who: 'narrator', text: 'Peak summer. Shirotan stood waiting on the endless white sand.', face: FACE.calm },
+              { who: 'shirotan', text: 'The SEA! Come on, hurry hurry!', emo: '🌊', face: FACE.beachy },
+              { who: 'you', text: 'Geez, you couldn\'t wait, could you~', face: FACE.smile }
+            ],
+            choices: [
+              { text: 'Kick off shoes and run together', love: 6, next: 1 },
+              { text: '"Let me put sunscreen on you"', love: 4, next: 1 },
+              { text: 'Suggest resting in the shade first', love: 1, next: 1 }
+            ]
+          },
+          {
+            bg: 'scene-beach-real', char: FACE.beachy,
+            lines: [
+              { who: 'narrator', text: 'Shirotan splashed at the water\'s edge.', face: FACE.calm },
+              { who: 'shirotan', text: 'Puku! Seawater is SALTY!', emo: '💦', face: FACE.beachy },
+              { who: 'shirotan', text: 'Come in too — let\'s hold hands and jump the waves!', emo: '✨', face: FACE.beachy }
+            ],
+            choices: [
+              { text: 'Hold hands and jump into the waves', love: 8, next: 2 },
+              { text: '"It\'s cold!" Chase them laughing', love: 5, next: 2 },
+              { text: 'Splash water from the sand', love: 4, next: 2 }
+            ]
+          },
+          {
+            bg: 'scene-sunset', char: FACE.blush,
+            lines: [
+              { who: 'narrator', text: 'The sun sank low, dyeing the sea orange.', face: FACE.calm },
+              { who: 'shirotan', text: 'Today was so fun. I\'ll never forget this summer with you.', emo: '💗', face: FACE.blush },
+              { who: 'shirotan', text: 'Next year, the year after... let\'s always come to the sea together?', emo: '', face: FACE.blush }
+            ],
+            choices: [
+              { text: '"Yeah, every year together"', love: 10, next: -1 },
+              { text: '"It\'s a summer I\'ll never forget"', love: 6, next: -1 },
+              { text: '"Let\'s take lots of photos"', love: 3, next: -1 }
+            ]
+          }
+        ],
+        endings: {
+          love: { img: FACE.blush, text: 'Each summer\'s end, you return to that beach together. Your secret treasure of a promised place.' },
+          friend: { img: FACE.smile, text: 'A summer of laughter and play. Your album fills with white sand and bluest sea.' },
+          lonely: { img: FACE.calm, text: 'Only the sound of waves remained. Shirotan slipped a small shell into a pocket.' }
         }
       }
     ]

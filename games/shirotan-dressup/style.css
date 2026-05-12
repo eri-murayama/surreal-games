@@ -76,6 +76,9 @@ body {
 .bg-meadow   { background: linear-gradient(180deg, #bfe8a8 0%, #fff2b8 100%); }
 .bg-ocean    { background: linear-gradient(180deg, #7dc7e0 0%, #c2ecf5 100%); }
 .bg-sakura   { background: linear-gradient(180deg, #ffd1e1 0%, #fff4f8 100%); }
+.bg-beach    { background: url('assets/bg-beach.png') center/cover no-repeat; }
+.bg-beach::before, .bg-beach::after { display: none; }
+.pal-item.bg-beach { background-image: url('assets/bg-beach.png'); }
 
 .bg-layer::before, .bg-layer::after {
   content: "";

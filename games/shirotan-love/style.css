@@ -149,6 +149,21 @@ body {
 .scene-kitchen { background: linear-gradient(180deg, #fff5e0 0%, #ffe8c8 60%, #f8d8a8 100%); }
 .scene-bedroom { background: linear-gradient(180deg, #2a2a5a 0%, #4a3a6a 50%, #6a4a7a 100%); }
 .scene-home    { background: linear-gradient(180deg, #fff0e0 0%, #ffe0c8 50%, #ffc8a8 100%); }
+.scene-beach-real { background: url('assets/bg-beach-real.png') center/cover no-repeat; }
+.scene-omurice { background: linear-gradient(180deg, #fff5e0 0%, #ffe8c8 60%, #f8d8a8 100%); }
+.scene-omurice::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('assets/omurice.png') center 62%/auto 65% no-repeat;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 14px rgba(200, 140, 60, 0.4));
+  animation: omuFloat 2.4s ease-in-out infinite;
+}
+@keyframes omuFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
 
 /* 水族館の泡 */
 .scene-aquarium::before {

@@ -44,7 +44,7 @@
   };
   function isImgItem(v) { return v && typeof v === 'object' && v.img; }
   function itemKey(v) { return isImgItem(v) ? 'img:' + v.img : (v || ''); }
-  var BGS = ['bg-sky','bg-sunset','bg-night','bg-meadow','bg-ocean','bg-sakura'];
+  var BGS = ['bg-sky','bg-sunset','bg-night','bg-meadow','bg-ocean','bg-sakura','bg-beach'];
 
   // ============ 状態 ============
   var state = { hat: '', outfit: '', cheek: '', back: '', bg: 'bg-sky' };
