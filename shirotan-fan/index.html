@@ -234,6 +234,21 @@
       color:var(--ink-soft);
       animation:fade-up .8s ease .7s both;
     }
+    .recruit-note{
+      display:block;
+      max-width:640px;
+      margin:16px auto 0;
+      padding:14px 22px;
+      background:rgba(255,255,255,.85);
+      border-radius:20px;
+      font-size:1rem;
+      color:var(--ink);
+      line-height:1.8;
+      animation:fade-up .8s ease .9s both;
+    }
+    @media(max-width:560px){
+      .recruit-note{font-size:.92rem;padding:12px 16px}
+    }
 
     /* ===== 波区切り ===== */
     .wave-divider{
@@ -659,6 +674,7 @@
         <span class="sub">SHIROTAN FAN WORKS</span>
       </h1>
       <div class="notice-badge">※非公式・非営利のファン作品です</div>
+      <p class="recruit-note">しろたんゲーム・アニメーション・漫画などをつくっています。アナログでしか描いてこなかったのでド素人ですが勉強していきます。</p>
     </section>
   </div>
 
