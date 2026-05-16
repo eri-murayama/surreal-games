@@ -469,6 +469,59 @@
       line-height:1.5;
     }
 
+    /* ===== アニメーション ===== */
+    .animation-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:20px;
+    }
+    .animation-item{
+      background:#fff;
+      border-radius:24px;
+      padding:14px 14px 16px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      margin:0;
+      border:2px solid transparent;
+      transition:transform .35s cubic-bezier(.3,1.5,.5,1),box-shadow .3s;
+    }
+    .animation-item:hover{
+      transform:translateY(-6px) rotate(-1deg) scale(1.02);
+      box-shadow:var(--shadow-strong);
+      border-color:var(--blue-100);
+    }
+    .animation-item__frame{
+      aspect-ratio:1/1;
+      border-radius:16px;
+      background:radial-gradient(circle at 50% 30%,#fff 0%,var(--blue-100) 100%);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;
+    }
+    .animation-item__frame video{
+      max-width:100%;
+      max-height:100%;
+      width:auto;height:auto;
+      object-fit:contain;
+      filter:drop-shadow(0 4px 8px rgba(0,0,0,.06));
+    }
+    .animation-item__title{
+      margin:12px 6px 2px;
+      text-align:center;
+      font-family:'Hachi Maru Pop',cursive;
+      color:var(--pink-500);
+      font-size:1rem;
+      line-height:1.3;
+    }
+    .animation-item__desc{
+      margin:4px 8px 0;
+      text-align:center;
+      color:var(--ink-soft);
+      font-size:.78rem;
+      line-height:1.5;
+    }
+
     /* ===== ライトボックス ===== */
     .lightbox{
       position:fixed;inset:0;
@@ -587,6 +640,7 @@
       <nav class="site-nav">
         <a href="#games">ゲーム</a>
         <a href="#gallery">イラスト</a>
+        <a href="#animation">アニメ</a>
         <a href="#about">このサイトについて</a>
         <a href="../index.html" class="back-link">← シュールゲームス</a>
       </nav>
@@ -650,6 +704,30 @@
       <p class="section-desc">きゃわわしろたん</p>
 
       <div class="gallery">
+        <figure class="gallery-item" data-color="mint" data-title="コンビニ" data-desc="公式から最高の供給。名札がかわいすぎるのでしろたんサイト見に行ってくれ">
+          <div class="gallery-item__frame"><img src="assets/convenience.png" alt="コンビニ"></div>
+          <figcaption class="gallery-item__title">コンビニ</figcaption>
+          <p class="gallery-item__desc">公式から最高の供給。名札がかわいすぎるのでしろたんサイト見に行ってくれ</p>
+        </figure>
+
+        <figure class="gallery-item" data-color="pink" data-title="国民の義務" data-desc="絶対にしろたんが一位！！！">
+          <div class="gallery-item__frame"><img src="assets/kokumin-no-gimu.png" alt="国民の義務"></div>
+          <figcaption class="gallery-item__title">国民の義務</figcaption>
+          <p class="gallery-item__desc">絶対にしろたんが一位！！！</p>
+        </figure>
+
+        <figure class="gallery-item" data-color="blue" data-title="おそろ" data-desc="公式さんはよお揃いコーデください…">
+          <div class="gallery-item__frame"><img src="assets/osoro.png" alt="おそろ"></div>
+          <figcaption class="gallery-item__title">おそろ</figcaption>
+          <p class="gallery-item__desc">公式さんはよお揃いコーデください…</p>
+        </figure>
+
+        <figure class="gallery-item" data-color="cream" data-title="踏み絵" data-desc="君はしろたにすとか？">
+          <div class="gallery-item__frame"><img src="assets/fumie.png" alt="踏み絵"></div>
+          <figcaption class="gallery-item__title">踏み絵</figcaption>
+          <p class="gallery-item__desc">君はしろたにすとか？</p>
+        </figure>
+
         <figure class="gallery-item" data-color="cream" data-title="多忙を極める" data-desc="忙しいまっしろたち">
           <div class="gallery-item__frame"><img src="assets/tabou-wo-kiwameru.png" alt="多忙を極める"></div>
           <figcaption class="gallery-item__title">多忙を極める</figcaption>
@@ -726,6 +804,21 @@
         <figure class="gallery-item" data-color="mint" data-title="しろたん">
           <div class="gallery-item__frame"><img src="assets/shirotan-wordart.png" alt="しろたん"></div>
           <figcaption class="gallery-item__title">しろたん</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="animation" class="reveal">
+      <h2 class="section-title">アニメーション</h2>
+      <p class="section-desc">動くしろたん</p>
+
+      <div class="animation-grid">
+        <figure class="animation-item">
+          <div class="animation-item__frame">
+            <video src="assets/moguru-animation.mp4" autoplay loop muted playsinline></video>
+          </div>
+          <figcaption class="animation-item__title">もぐる</figcaption>
+          <p class="animation-item__desc">深海へ泳ぐしろたん</p>
         </figure>
       </div>
     </section>
