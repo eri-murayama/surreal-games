@@ -435,61 +435,55 @@ body {
   // img: 透過PNGファイル名（あれば画像で重ねる、なければ絵文字で表示）
   var CATEGORIES = [
     {
-      id: 'underwear',
-      name: '着るもの',
-      emoji: '👙',
+      id: 'underwear', name: '着るもの', nameEn: 'Outfit', emoji: '👙',
       choices: [
-        { label: 'ブリーフ', emoji: '🩲', img: 'ブリーフ.png' },
-        { label: 'ボクサーパンツ', emoji: '🩳', img: 'ボクサーパンツ.png' },
-        { label: 'トランクス', emoji: '🩱', img: 'トランクス.png' },
-        { label: '解き放つ', emoji: '🌀', img: 'はかない.png' }
+        { label: 'ブリーフ', labelEn: 'Briefs', emoji: '🩲', img: 'ブリーフ.png' },
+        { label: 'ボクサーパンツ', labelEn: 'Boxer Briefs', emoji: '🩳', img: 'ボクサーパンツ.png' },
+        { label: 'トランクス', labelEn: 'Boxers', emoji: '🩱', img: 'トランクス.png' },
+        { label: '解き放つ', labelEn: 'Unleash', emoji: '🌀', img: 'はかない.png' }
       ]
     },
     {
-      id: 'hair',
-      name: '髪型',
-      emoji: '💇',
+      id: 'hair', name: '髪型', nameEn: 'Hairstyle', emoji: '💇',
       choices: [
-        { label: 'リーゼント', emoji: '🦁', img: 'リーゼント.png' },
-        { label: '襟足', emoji: '🦊', img: '襟足.png' },
-        { label: '耳毛', emoji: '🐑', img: '耳毛.png' },
-        { label: 'カイワレ大根', emoji: '🌱', img: 'カイワレ大根.png' }
+        { label: 'リーゼント', labelEn: 'Pompadour', emoji: '🦁', img: 'リーゼント.png' },
+        { label: '襟足', labelEn: 'Mullet', emoji: '🦊', img: '襟足.png' },
+        { label: '耳毛', labelEn: 'Ear Hair', emoji: '🐑', img: '耳毛.png' },
+        { label: 'カイワレ大根', labelEn: 'Daikon Sprouts', emoji: '🌱', img: 'カイワレ大根.png' }
       ]
     },
     {
-      id: 'bag',
-      name: 'バッグ',
-      emoji: '👜',
+      id: 'bag', name: 'バッグ', nameEn: 'Bag', emoji: '👜',
       choices: [
-        { label: 'L○uis Vuitt○n', emoji: '👜', img: 'ルイヴィトン.png' },
-        { label: 'MIU○MIU', emoji: '👛', img: 'みゅう.png' },
-        { label: 'Di○r', emoji: '💼', img: 'doa.png' },
-        { label: 'しま○ら', emoji: '🛍️', img: 'しまむら.png' }
+        { label: 'L○uis Vuitt○n', labelEn: 'L○uis Vuitt○n', emoji: '👜', img: 'ルイヴィトン.png' },
+        { label: 'MIU○MIU', labelEn: 'MIU○MIU', emoji: '👛', img: 'みゅう.png' },
+        { label: 'Di○r', labelEn: 'Di○r', emoji: '💼', img: 'doa.png' },
+        { label: 'しま○ら', labelEn: 'Shima○ura', emoji: '🛍️', img: 'しまむら.png' }
       ]
     },
     {
-      id: 'bug',
-      name: '虫',
-      emoji: '🐛',
+      id: 'bug', name: '虫', nameEn: 'Bug', emoji: '🐛',
       choices: [
-        { label: 'クワガタ', emoji: '🪲', img: 'くわがた.png' },
-        { label: 'チョウバエ', emoji: '🪰', img: 'はえ.png' },
-        { label: 'セミ', emoji: '🦗', img: 'せみ.png' },
-        { label: '殺虫剤', emoji: '🧴', img: '殺虫剤.png' }
+        { label: 'クワガタ', labelEn: 'Stag Beetle', emoji: '🪲', img: 'くわがた.png' },
+        { label: 'チョウバエ', labelEn: 'Drain Fly', emoji: '🪰', img: 'はえ.png' },
+        { label: 'セミ', labelEn: 'Cicada', emoji: '🦗', img: 'せみ.png' },
+        { label: '殺虫剤', labelEn: 'Insecticide', emoji: '🧴', img: '殺虫剤.png' }
       ]
     },
     {
-      id: 'action',
-      name: '行動',
-      emoji: '⚡',
+      id: 'action', name: '行動', nameEn: 'Action', emoji: '⚡',
       choices: [
-        { label: '整形', emoji: '💉', img: '整形.png' },
-        { label: '生誕', emoji: '🎂', img: '生誕.png' },
-        { label: '請求', emoji: '💸', img: '請求.png' },
-        { label: '整体', emoji: '💆', img: '整体.png' }
+        { label: '整形', labelEn: 'Plastic Surgery', emoji: '💉', img: '整形.png' },
+        { label: '生誕', labelEn: 'Birthday', emoji: '🎂', img: '生誕.png' },
+        { label: '請求', labelEn: 'Invoice', emoji: '💸', img: '請求.png' },
+        { label: '整体', labelEn: 'Massage', emoji: '💆', img: '整体.png' }
       ]
     }
   ];
+
+  function isEn() { return typeof SurrealI18n !== 'undefined' && SurrealI18n.currentLang === 'en'; }
+  function catName(cat) { return isEn() ? cat.nameEn : cat.name; }
+  function choiceLabel(c) { return isEn() ? c.labelEn : c.label; }
 
   // ===== ゲーム状態 =====
   var currentStep = 0;
@@ -518,7 +512,8 @@ body {
     currentStep = step;
     var cat = CATEGORIES[step];
     stepLabel.textContent = (step + 1) + ' / ' + CATEGORIES.length;
-    categoryLabel.textContent = cat.emoji + ' ' + cat.name + 'を選べ';
+    categoryLabel.textContent = cat.emoji + ' ' +
+      (isEn() ? 'Choose ' + cat.nameEn : cat.name + 'を選べ');
 
     // 装備済みアイテム表示
     updateEquipped(equippedLayer, selections);
@@ -529,7 +524,7 @@ body {
       var btn = document.createElement('button');
       btn.className = 'choice-btn';
       btn.innerHTML = '<span class="choice-emoji">' + choice.emoji + '</span>' +
-                      '<span class="choice-label">' + choice.label + '</span>';
+                      '<span class="choice-label">' + choiceLabel(choice) + '</span>';
       btn.addEventListener('click', function() {
         if (typeof SurrealGames !== 'undefined') SurrealGames.SoundSystem.play('tap');
         selections[step] = { category: cat, choice: choice };
@@ -601,25 +596,34 @@ body {
     selections.forEach(function(sel) {
       var row = document.createElement('div');
       row.className = 'result-choice-row';
-      row.innerHTML = '<span class="cat">' + sel.category.emoji + ' ' + sel.category.name + '</span>' +
-                      '<span class="val">' + sel.choice.emoji + ' ' + sel.choice.label + '</span>';
+      row.innerHTML = '<span class="cat">' + sel.category.emoji + ' ' + catName(sel.category) + '</span>' +
+                      '<span class="val">' + sel.choice.emoji + ' ' + choiceLabel(sel.choice) + '</span>';
       choicesDiv.appendChild(row);
     });
 
     // サブタイトル
-    var subtitles = [
+    var subtitlesJa = [
       '唯一無二の存在が誕生した…',
       'これが…カブトムシ様の真の姿…！',
       '神々しい…圧倒的オーラ…！',
       'ファッション界に激震が走った',
       'パリコレが嫉妬するレベル'
     ];
+    var subtitlesEn = [
+      'A one-of-a-kind being is born…',
+      'Behold… the true form of Lord Beetle…!',
+      'Divine… overwhelming aura…!',
+      'The fashion world is shaken',
+      'Even Paris Fashion Week is jealous'
+    ];
+    var subtitles = isEn() ? subtitlesEn : subtitlesJa;
     document.getElementById('result-subtitle').textContent =
       subtitles[Math.floor(Math.random() * subtitles.length)];
 
     // 最後のコメント
-    document.getElementById('result-comment').textContent =
-      'これが世界に一人だけの、あなただけのカブトムシ様です。どうか末永くお可愛がりくださいませ。';
+    document.getElementById('result-comment').textContent = isEn()
+      ? 'Behold your one and only Lord Beetle. Please cherish him forever.'
+      : 'これが世界に一人だけの、あなただけのカブトムシ様です。どうか末永くお可愛がりくださいませ。';
 
     showScreen(resultScreen);
 
@@ -674,23 +678,59 @@ body {
 
   // ===== イベント =====
   document.getElementById('start-btn').addEventListener('click', function() {
-    if (typeof SurrealGames !== 'undefined') SurrealGames.SoundSystem.play('start');
+    if (typeof SurrealGames !== 'undefined') {
+      SurrealGames.SoundSystem.play('start');
+      SurrealGames.SoundSystem.playBgm('paris');
+    }
     selections = [];
     showStep(0);
   });
 
   document.getElementById('retry-btn').addEventListener('click', function() {
-    if (typeof SurrealGames !== 'undefined') SurrealGames.SoundSystem.play('start');
+    if (typeof SurrealGames !== 'undefined') {
+      SurrealGames.SoundSystem.play('start');
+      SurrealGames.SoundSystem.playBgm('paris');
+    }
     selections = [];
     showStep(0);
   });
 
   document.getElementById('share-btn').addEventListener('click', function() {
-    var items = selections.map(function(s) { return s.choice.label; }).join('、');
-    var text = 'カブトムシ様を着せ替えた！\n' + items + '\n#シュールゲームス #カブトムシ様のお着換えあそばせ';
+    var sep = isEn() ? ', ' : '、';
+    var items = selections.map(function(s) { return choiceLabel(s.choice); }).join(sep);
+    var text = isEn()
+      ? 'I dressed up Lord Beetle!\n' + items + '\n#SurrealGames #DressUpLordBeetle'
+      : 'カブトムシ様を着せ替えた！\n' + items + '\n#シュールゲームス #カブトムシ様のお着換えあそばせ';
     var url = 'https://eri-murayama.github.io/surreal-games/games/emoji-catcher/index.html';
     window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url));
   });
+
+  // 言語切替時に現在表示中の画面を再描画（効果音・スコアは再発火させない）
+  if (typeof SurrealI18n !== 'undefined' && SurrealI18n.onLangChange) {
+    SurrealI18n.onLangChange(function() {
+      if (selectScreen.classList.contains('active')) {
+        var cat = CATEGORIES[currentStep];
+        categoryLabel.textContent = cat.emoji + ' ' +
+          (isEn() ? 'Choose ' + cat.nameEn : cat.name + 'を選べ');
+        choiceGrid.querySelectorAll('.choice-btn').forEach(function(btn, idx) {
+          btn.querySelector('.choice-label').textContent = choiceLabel(cat.choices[idx]);
+        });
+      } else if (resultScreen.classList.contains('active') && selections.length === CATEGORIES.length) {
+        var choicesDiv = document.getElementById('result-choices');
+        choicesDiv.innerHTML = '';
+        selections.forEach(function(sel) {
+          var row = document.createElement('div');
+          row.className = 'result-choice-row';
+          row.innerHTML = '<span class="cat">' + sel.category.emoji + ' ' + catName(sel.category) + '</span>' +
+                          '<span class="val">' + sel.choice.emoji + ' ' + choiceLabel(sel.choice) + '</span>';
+          choicesDiv.appendChild(row);
+        });
+        document.getElementById('result-comment').textContent = isEn()
+          ? 'Behold your one and only Lord Beetle. Please cherish him forever.'
+          : 'これが世界に一人だけの、あなただけのカブトムシ様です。どうか末永くお可愛がりくださいませ。';
+      }
+    });
+  }
 })();
 </script>
 <script src="../common/i18n.js"></script>
