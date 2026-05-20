@@ -39,9 +39,9 @@
     else if (n <= 50)  { colors = 8;  capacity = 5; empty = 2; } // 10
     else if (n <= 60)  { colors = 9;  capacity = 5; empty = 2; } // 11
     else if (n <= 70)  { colors = 10; capacity = 5; empty = 2; } // 12
-    else if (n <= 80)  { colors = 10; capacity = 5; empty = 1; } // 11（空きが減って難化）
-    else if (n <= 90)  { colors = 11; capacity = 5; empty = 1; } // 12
-    else                { colors = 12; capacity = 5; empty = 1; } // 13（最高難度）
+    else if (n <= 80)  { colors = 11; capacity = 5; empty = 2; } // 13
+    else if (n <= 90)  { colors = 12; capacity = 5; empty = 2; } // 14
+    else                { colors = 12; capacity = 6; empty = 2; } // 14（最高難度・容量UP）
     colors = Math.min(colors, COIN_TYPES.length);
     return { colors, capacity, empty, tubes: colors + empty };
   }
@@ -319,49 +319,69 @@
     loadStage(State.currentStage);
   }
 
-  // ===== ヒント（1手だけ提案） =====
-  function findHint() {
-    // 「相手の筒に同色を積み上げる」手を優先
-    // 1. 同色グループを完成させる手 (相手の筒の上が同色 & 自分のtopも同色)
-    // 2. 同色を1つ積めるだけの手
-    // 3. 空筒へ移動する手
-    const tubes = State.tubes;
-    const cap = State.capacity;
-    const candidates = [];
-    for (let from = 0; from < tubes.length; from++) {
-      if (tubes[from].length === 0) continue;
-      // 既に完成済みの筒は動かさない
-      if (isTubeComplete(tubes[from])) continue;
-      const top = tubes[from][tubes[from].length - 1];
-      // 同色のかたまりを動かす意味がない場合（topがそのtube内で1つだけで、かつそれを動かしても良くならないケース）
-      // → 単純に色マッチを優先
-      for (let to = 0; to < tubes.length; to++) {
-        if (from === to) continue;
-        if (tubes[to].length >= cap) continue;
-        const dstTop = tubes[to].length === 0 ? null : tubes[to][tubes[to].length - 1];
-        if (dstTop === null) {
-          // 空筒：fromが「複数色混在の上に乗っているtop」のときだけ意味がある
-          // すでに同色だけの筒なら空筒に移すのは意味がない
-          const fromAllSame = tubes[from].every((c) => c === top);
-          if (!fromAllSame) {
-            candidates.push({ from, to, score: 1 });
+  // ===== ヒント（実ソルバーで勝ち筋の1手目を提示） =====
+  // 現在の盤面から勝利可能な手順を探索（DFS + メモ化）。見つかれば1手目を返す。
+  function canMoveTubes(tubes, cap, from, to) {
+    if (from === to) return false;
+    const src = tubes[from], dst = tubes[to];
+    if (src.length === 0) return false;
+    if (dst.length >= cap) return false;
+    if (dst.length === 0) {
+      const top = src[src.length - 1];
+      // 既に同色だけの筒を空筒に移しても意味がない（探索枝刈り）
+      if (src.every((c) => c === top)) return false;
+      return true;
+    }
+    return dst[dst.length - 1] === src[src.length - 1];
+  }
+  function canonicalTubes(tubes) {
+    return tubes.map((t) => t.join(',')).sort().join('|');
+  }
+  function solveBoard(initialTubes, cap, maxIters) {
+    const start = initialTubes.map((t) => t.slice());
+    if (isCleared(start, cap)) return [];
+    // parent[key] = {parentKey, from, to} で経路を逆引き
+    const parent = new Map();
+    const startKey = canonicalTubes(start);
+    parent.set(startKey, null);
+    const stack = [{ tubes: start, key: startKey }];
+    let iters = 0;
+    while (stack.length) {
+      iters++;
+      if (iters > maxIters) return null;
+      const st = stack.pop();
+      const T = st.tubes;
+      for (let from = 0; from < T.length; from++) {
+        for (let to = 0; to < T.length; to++) {
+          if (!canMoveTubes(T, cap, from, to)) continue;
+          const newT = T.map((t) => t.slice());
+          const c = newT[from].pop();
+          newT[to].push(c);
+          const k = canonicalTubes(newT);
+          if (parent.has(k)) continue;
+          parent.set(k, { parentKey: st.key, from, to });
+          if (isCleared(newT, cap)) {
+            // 経路を逆引きして1手目を返す
+            const moves = [];
+            let cur = k;
+            while (parent.get(cur)) {
+              const p = parent.get(cur);
+              moves.push({ from: p.from, to: p.to });
+              cur = p.parentKey;
+            }
+            moves.reverse();
+            return moves;
           }
-        } else if (dstTop === top) {
-          // 同色マッチ
-          // スコア：to に同色が多いほど高評価（完成に近い）
-          let score = 10;
-          for (let i = tubes[to].length - 1; i >= 0; i--) {
-            if (tubes[to][i] === top) score += 5; else break;
-          }
-          // from のすぐ下も同色なら、続けて流せるのでさらに+
-          if (tubes[from].length >= 2 && tubes[from][tubes[from].length - 2] === top) score += 3;
-          candidates.push({ from, to, score });
+          stack.push({ tubes: newT, key: k });
         }
       }
     }
-    if (candidates.length === 0) return null;
-    candidates.sort((a, b) => b.score - a.score);
-    return candidates[0];
+    return null;
+  }
+  function findHint() {
+    const path = solveBoard(State.tubes, State.capacity, 800000);
+    if (path && path.length > 0) return path[0];
+    return null;
   }
 
   function onHint() {
