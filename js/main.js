@@ -393,6 +393,7 @@ if (logo) {
 
   // フォールバック用データ（fetchが失敗した場合に使用）
   var fallbackNews = [
+    { date: '2026.05.21', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「カブトムシ様のお着換えあそばせ」を公開しました！カブトムシ様を世界で一人だけのお人へ変身してさしあげろ！', url: 'games/emoji-catcher/index.html' },
     { date: '2026.04.26', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「THE MACHINE」を公開しました！押せ！考えるな！', url: 'games/the-machine-comedy/index.html' },
     { date: '2026.04.23', tag: 'new', tagLabel: '新ページ', text: 'しろたんだいちゅきちゅき', url: 'shirotan-fan/index.html' },
     { date: '2026.04.13', tag: 'new', tagLabel: '新ゲーム', text: '新ゲーム「漆黒のリバーシ」を公開しました！吾輩の番だが？', url: 'games/reversi/index.html' },

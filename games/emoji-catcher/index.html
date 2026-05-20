@@ -23,8 +23,8 @@
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: #1e0a3c;
-  color: #fff;
+  background: #fff8e1;
+  color: #4a3a2a;
   font-family: 'Zen Maru Gothic', sans-serif;
   display: flex;
   flex-direction: column;
@@ -54,19 +54,19 @@ body {
 
 /* ===== タイトル画面 ===== */
 #title-screen {
-  background: radial-gradient(ellipse at center, #2e1660 0%, #1e0a3c 70%);
+  background: radial-gradient(ellipse at center, #fffde7 0%, #fff8e1 70%);
 }
 #title-screen h1 {
   font-size: clamp(1.2rem, 5vw, 1.8rem);
-  color: #ffd700;
-  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+  color: #c9750e;
+  text-shadow: 0 0 20px rgba(201,117,14,0.5);
   margin-bottom: 0.2em;
   text-align: center;
 }
 #title-screen .title-character {
   width: clamp(120px, 35vw, 200px);
   margin: 0.5em 0;
-  filter: drop-shadow(0 0 15px rgba(255,215,0,0.3));
+  filter: drop-shadow(0 0 15px rgba(201,117,14,0.3));
   animation: titleBounce 2s ease-in-out infinite;
 }
 @keyframes titleBounce {
@@ -75,7 +75,7 @@ body {
 }
 #title-screen .subtitle {
   font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-  color: #c9a0dc;
+  color: #8d6e63;
   margin-bottom: 1.5em;
   text-align: center;
 }
@@ -83,21 +83,21 @@ body {
   font-family: inherit;
   font-size: clamp(1rem, 3.5vw, 1.2rem);
   padding: 0.7em 2.2em;
-  border: 2px solid #ffd700;
+  border: 2px solid #c9750e;
   background: transparent;
-  color: #ffd700;
+  color: #c9750e;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s;
 }
 .game-btn:hover, .game-btn:active {
-  background: #ffd700;
+  background: #c9750e;
   color: #0d0221;
 }
 
 /* ===== 選択画面 ===== */
 #select-screen {
-  background: radial-gradient(ellipse at center, #2e1660 0%, #1e0a3c 70%);
+  background: radial-gradient(ellipse at center, #fffde7 0%, #fff8e1 70%);
   justify-content: space-evenly;
   padding-top: 28px;
   padding-bottom: 28px;
@@ -110,8 +110,8 @@ body {
 }
 .select-category {
   font-size: clamp(1rem, 4vw, 1.4rem);
-  color: #ffd700;
-  text-shadow: 0 0 10px rgba(255,215,0,0.4);
+  color: #c9750e;
+  text-shadow: 0 0 10px rgba(201,117,14,0.4);
   margin-bottom: 0;
   text-align: center;
   flex-shrink: 0;
@@ -124,7 +124,7 @@ body {
 }
 .select-character-wrap img {
   width: 100%;
-  filter: drop-shadow(0 0 10px rgba(255,215,0,0.2));
+  filter: drop-shadow(0 0 10px rgba(201,117,14,0.2));
 }
 .equipped-layer {
   position: absolute;
@@ -143,9 +143,9 @@ body {
   font-family: inherit;
   font-size: clamp(0.75rem, 2.8vw, 0.95rem);
   padding: 0.5em 0.4em;
-  border: 2px solid #c9a0dc;
-  background: rgba(201,160,220,0.08);
-  color: #e0d0f0;
+  border: 2px solid #8d6e63;
+  background: rgba(141,110,99,0.08);
+  color: #5d4037;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.25s;
@@ -155,9 +155,9 @@ body {
   gap: 2px;
 }
 .choice-btn:hover, .choice-btn:active {
-  background: rgba(201,160,220,0.25);
-  border-color: #ffd700;
-  color: #ffd700;
+  background: rgba(141,110,99,0.25);
+  border-color: #c9750e;
+  color: #c9750e;
   transform: scale(1.04);
 }
 .choice-emoji {
@@ -169,21 +169,21 @@ body {
 
 /* ===== 結果画面 ===== */
 #result-screen {
-  background: radial-gradient(ellipse at center, #2e1660 0%, #1e0a3c 70%);
+  background: radial-gradient(ellipse at center, #fffde7 0%, #fff8e1 70%);
   justify-content: flex-start;
   padding-top: 24px;
   overflow-y: auto;
 }
 .result-title {
   font-size: clamp(1rem, 4vw, 1.4rem);
-  color: #ffd700;
-  text-shadow: 0 0 15px rgba(255,215,0,0.5);
+  color: #c9750e;
+  text-shadow: 0 0 15px rgba(201,117,14,0.5);
   margin-bottom: 0.3em;
   text-align: center;
 }
 .result-subtitle {
   font-size: clamp(0.75rem, 2.5vw, 0.9rem);
-  color: #c9a0dc;
+  color: #8d6e63;
   margin-bottom: 0.6em;
   text-align: center;
 }
@@ -194,8 +194,8 @@ body {
   animation: resultGlow 2s ease-in-out infinite;
 }
 @keyframes resultGlow {
-  0%, 100% { filter: drop-shadow(0 0 15px rgba(255,215,0,0.3)); }
-  50% { filter: drop-shadow(0 0 30px rgba(255,215,0,0.6)); }
+  0%, 100% { filter: drop-shadow(0 0 15px rgba(201,117,14,0.3)); }
+  50% { filter: drop-shadow(0 0 30px rgba(201,117,14,0.6)); }
 }
 .result-character-wrap img {
   width: 100%;
@@ -218,17 +218,17 @@ body {
   justify-content: space-between;
   padding: 0.3em 0.8em;
   font-size: clamp(0.7rem, 2.5vw, 0.85rem);
-  border-bottom: 1px solid rgba(201,160,220,0.15);
+  border-bottom: 1px solid rgba(141,110,99,0.15);
 }
 .result-choice-row .cat { color: #888; }
-.result-choice-row .val { color: #e0d0f0; }
+.result-choice-row .val { color: #5d4037; }
 .result-comment {
   font-size: clamp(0.75rem, 2.8vw, 0.95rem);
-  color: #ffd700;
+  color: #c9750e;
   text-align: center;
   margin-bottom: 0.8em;
   line-height: 1.6;
-  text-shadow: 0 0 8px rgba(255,215,0,0.3);
+  text-shadow: 0 0 8px rgba(201,117,14,0.3);
 }
 .result-buttons {
   display: flex;
@@ -241,15 +241,15 @@ body {
   font-family: inherit;
   font-size: clamp(0.8rem, 2.8vw, 0.95rem);
   padding: 0.6em 1.5em;
-  border: 2px solid #ffd700;
+  border: 2px solid #c9750e;
   background: transparent;
-  color: #ffd700;
+  color: #c9750e;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s;
 }
 .result-buttons button:hover, .result-buttons button:active {
-  background: #ffd700;
+  background: #c9750e;
   color: #0d0221;
 }
 
@@ -275,14 +275,14 @@ body {
   position: fixed;
   top: 12px;
   left: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(74, 58, 42, 0.6);
   font-size: 13px;
   text-decoration: none;
   z-index: 100;
   transition: color 0.2s;
 }
 .back-to-top-link:hover {
-  color: #fff;
+  color: #4a3a2a;
 }
 
 @media (min-width: 700px) {
@@ -360,6 +360,31 @@ body {
     max-width: 28ch;
   }
 }
+
+/* ===== 明るい背景用：共通セクションの文字色オーバーライド ===== */
+.sg-recommend { background: rgba(141,110,99,0.10); }
+.sg-recommend-title { color: #4a3a2a; text-shadow: none; }
+.sg-recommend-card {
+  background: rgba(141,110,99,0.10);
+  color: #4a3a2a;
+  border-color: rgba(141,110,99,0.25);
+}
+.sg-recommend-card:hover { background: rgba(141,110,99,0.20); }
+.sg-recommend-genre { background: rgba(141,110,99,0.15); color: #5d4037; }
+.sg-follow {
+  background: rgba(141,110,99,0.08);
+  border-color: rgba(141,110,99,0.20);
+}
+.sg-follow-title { color: #4a3a2a; }
+.sg-follow-link {
+  color: #4a3a2a;
+  background: rgba(141,110,99,0.12);
+  border-color: rgba(141,110,99,0.25);
+}
+.sg-follow-link:hover { background: rgba(141,110,99,0.25); }
+.sg-follow-link--x { background: rgba(0, 0, 0, 0.7); color: #fff; }
+.sg-follow-link--youtube { background: rgba(255, 0, 0, 0.7); color: #fff; }
+.sg-follow-link--note { background: rgba(58, 191, 156, 0.7); color: #fff; }
 </style>
 </head>
 <body>
@@ -416,7 +441,7 @@ body {
       choices: [
         { label: 'ブリーフ', emoji: '🩲', img: 'ブリーフ.png' },
         { label: 'ボクサーパンツ', emoji: '🩳', img: 'ボクサーパンツ.png' },
-        { label: 'トランクス', emoji: '🩱' },
+        { label: 'トランクス', emoji: '🩱', img: 'トランクス.png' },
         { label: '解き放つ', emoji: '🌀', img: 'はかない.png' }
       ]
     },
@@ -436,10 +461,10 @@ body {
       name: 'バッグ',
       emoji: '👜',
       choices: [
-        { label: 'L○uis Vuitt○n', emoji: '👜' },
-        { label: 'MIU○MIU', emoji: '👛' },
-        { label: 'Di○r', emoji: '💼' },
-        { label: 'しま○ら', emoji: '🛍️' }
+        { label: 'L○uis Vuitt○n', emoji: '👜', img: 'ルイヴィトン.png' },
+        { label: 'MIU○MIU', emoji: '👛', img: 'みゅう.png' },
+        { label: 'Di○r', emoji: '💼', img: 'doa.png' },
+        { label: 'しま○ら', emoji: '🛍️', img: 'しまむら.png' }
       ]
     },
     {
@@ -447,10 +472,10 @@ body {
       name: '虫',
       emoji: '🐛',
       choices: [
-        { label: 'クワガタ', emoji: '🪲' },
-        { label: 'チョウバエ', emoji: '🪰' },
-        { label: 'セミ', emoji: '🦗' },
-        { label: '殺虫剤', emoji: '🧴' }
+        { label: 'クワガタ', emoji: '🪲', img: 'くわがた.png' },
+        { label: 'チョウバエ', emoji: '🪰', img: 'はえ.png' },
+        { label: 'セミ', emoji: '🦗', img: 'せみ.png' },
+        { label: '殺虫剤', emoji: '🧴', img: '殺虫剤.png' }
       ]
     },
     {
@@ -458,10 +483,10 @@ body {
       name: '行動',
       emoji: '⚡',
       choices: [
-        { label: '整形', emoji: '💉' },
-        { label: '生誕', emoji: '🎂' },
-        { label: '請求', emoji: '💸' },
-        { label: '整体', emoji: '💆' }
+        { label: '整形', emoji: '💉', img: '整形.png' },
+        { label: '生誕', emoji: '🎂', img: '生誕.png' },
+        { label: '請求', emoji: '💸', img: '請求.png' },
+        { label: '整体', emoji: '💆', img: '整体.png' }
       ]
     }
   ];
@@ -525,8 +550,16 @@ body {
   // ===== 装備表示更新 =====
   function updateEquipped(container, sels) {
     container.innerHTML = '';
-    sels.forEach(function(sel) {
-      if (!sel) return;
+    // 描画順: 先に追加したものが下レイヤー。生誕は最背面、クワガタは最前面に固定。
+    function layerRank(label) {
+      if (label === '生誕') return 0;       // 最背面
+      if (label === 'クワガタ') return 2;   // 最前面
+      return 1;
+    }
+    var ordered = sels.filter(function(s){ return s; }).slice().sort(function(a, b){
+      return layerRank(a.choice.label) - layerRank(b.choice.label);
+    });
+    ordered.forEach(function(sel) {
       var choice = sel.choice;
 
       if (choice.img) {
@@ -630,7 +663,7 @@ body {
       s.y -= s.speed;
       if (s.y < -5) { s.y = bgCanvas.height + 5; s.x = Math.random() * bgCanvas.width; }
       var alpha = 0.4 + 0.35 * Math.sin(t * 2 + s.phase);
-      bgCtx.fillStyle = 'rgba(255, 215, 0, ' + alpha + ')';
+      bgCtx.fillStyle = 'rgba(201, 117, 14, ' + alpha + ')';
       bgCtx.beginPath();
       bgCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
       bgCtx.fill();
