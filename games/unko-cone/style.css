@@ -347,7 +347,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
   font-family: 'Dela Gothic One', sans-serif;
-  font-size: 2rem;
+  font-size: 1.6rem;
   color: var(--gold);
   text-shadow: 0 0 20px rgba(251, 191, 36, 0.8), 0 0 40px rgba(251, 191, 36, 0.4);
   width: 92vw;
@@ -367,9 +367,9 @@ body {
 
 @keyframes comboFlash {
   0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
-  20% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
-  40% { transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1) translateY(-30px); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  40% { transform: translate(-50%, -50%) scale(0.95); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1) translateY(-30px); }
 }
 
 /* Nishida comment bubble */
@@ -657,7 +657,7 @@ body {
   }
 
   .combo-text {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
   }
 }
 
