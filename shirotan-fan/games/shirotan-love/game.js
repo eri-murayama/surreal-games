@@ -1437,7 +1437,7 @@
     }
 
     document.getElementById('share-btn').addEventListener('click', function () {
-      var url = 'https://eri-murayama.github.io/surreal-games/games/shirotan-love/index.html';
+      var url = 'https://eri-murayama.github.io/surreal-games/shirotan-fan/games/shirotan-love/index.html';
       var endTxt = document.getElementById('end-title').textContent;
       var storyTitle = state.storyId ? getStory().title : '';
       var text = t('shareText') + ' [' + storyTitle + '] ' + endTxt + ' #しろたん恋のかけら #シュールゲームス';

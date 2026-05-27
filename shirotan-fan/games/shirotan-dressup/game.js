@@ -373,7 +373,7 @@
   }
 
   function share() {
-    var url = 'https://eri-murayama.github.io/surreal-games/games/shirotan-dressup/index.html';
+    var url = 'https://eri-murayama.github.io/surreal-games/shirotan-fan/games/shirotan-dressup/index.html';
     var text = t('shareText');
     var shareUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
     window.open(shareUrl, '_blank', 'noopener');

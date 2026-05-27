@@ -439,7 +439,7 @@
     });
 
     document.getElementById('share-btn').addEventListener('click', function () {
-      var url = 'https://eri-murayama.github.io/surreal-games/games/shirotan-care/index.html';
+      var url = 'https://eri-murayama.github.io/surreal-games/shirotan-fan/games/shirotan-care/index.html';
       var text = t('shareText') + ' Lv.' + state.level + ' 💗' + state.lovePoints;
       window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank', 'noopener');
     });
